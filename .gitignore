@@ -1,0 +1,10 @@
+#Idea IDE files
+.idea/
+.idea/*
+
+#IML files
+*.iml
+
+#Mac OS Extras
+.DS_Store/
+.DS_Store/*
