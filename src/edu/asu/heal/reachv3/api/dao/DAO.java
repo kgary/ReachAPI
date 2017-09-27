@@ -3,16 +3,18 @@ package edu.asu.heal.reachv3.api.dao;
 public interface DAO {
     ValueObject getScheduledActivities(int currentDay) throws DAOException;
 
-    boolean scheduleSTOPActivity();
+    boolean scheduleSTOPActivity(String STOPWeeklySchedule) throws DAOException;
 
-    boolean scheduleSTICActivity();
+    boolean scheduleSTICActivity(int STICWeeklySchedule);
 
-    boolean scheduleRelaxationActivity();
+    boolean scheduleRelaxationActivity(String relaxationWeeklySchedule);
 
-    boolean scheduleDailyDiaryActivity();
+    boolean scheduleDailyDiaryActivity(String dailyDiaryWeeklySchedule);
 
-    boolean scheduleABMTActivity();
+    boolean scheduleABMTActivity(String ABMTWeeklySchedule);
 
-    boolean scheduleWorryHeadsActivity();
+    boolean scheduleWorryHeadsActivity(String worryHeadsWeeklySchedule);
+
+    boolean scheduleSAFEACtivity(String SAFEWeeklySchedule);
 
 }

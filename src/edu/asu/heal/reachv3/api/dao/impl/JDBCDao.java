@@ -58,16 +58,14 @@ public class JDBCDao implements DAO {
             boolean SAFE = resultSet.getInt("SAFE") == 1;
             boolean WorryHeads = resultSet.getInt("STOP_WORRYHEADS") == 1;
 
-
-
             if(resultSet.next()){
                 vo = new ValueObject();
                 vo.putAttribute("STIC", STIC);
                 vo.putAttribute("STOP", STOP);
                 vo.putAttribute("RELAXATION", Relaxation);
-                vo.putAttribute("DAILYDIARY", DailyDiary);
+                vo.putAttribute("DAILY_DIARY", DailyDiary);
                 vo.putAttribute("SAFE", SAFE);
-                vo.putAttribute("WORRYHEADS", WorryHeads);
+                vo.putAttribute("WORRY_HEADS", WorryHeads);
                 vo.putAttribute("ABMT", true);
             }
         }catch (Throwable t){
@@ -86,32 +84,58 @@ public class JDBCDao implements DAO {
     }
 
     @Override
-    public boolean scheduleSTOPActivity() {
+    public boolean scheduleSTOPActivity(String STOPWeeklySchedule) throws DAOException {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        STOPWeeklySchedule = STOPWeeklySchedule.replaceAll("\\[", "\\(").replaceAll("]", "\\)");
+        try{
+            String query = DAOFactory.getDAOProperties().getProperty("sql.scheduleSTOPActivity");
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, STOPWeeklySchedule);
+            if(preparedStatement.executeUpdate(query) > 0)
+                return true;
+
+        }catch (Throwable t){
+            t.printStackTrace();
+            throw new DAOException("Unable to process results from query sql.scheduleSTOPActivity");
+        }finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
         return false;
     }
 
     @Override
-    public boolean scheduleSTICActivity() {
+    public boolean scheduleSTICActivity(int STICWeeklySchedule) {
         return false;
     }
 
     @Override
-    public boolean scheduleRelaxationActivity() {
+    public boolean scheduleRelaxationActivity(String relaxationWeeklySchedule) {
         return false;
     }
 
     @Override
-    public boolean scheduleDailyDiaryActivity() {
+    public boolean scheduleDailyDiaryActivity(String dailyDiaryWeeklySchedule) {
         return false;
     }
 
     @Override
-    public boolean scheduleABMTActivity() {
+    public boolean scheduleABMTActivity(String ABMTWeeklySchedule) {
         return false;
     }
 
     @Override
-    public boolean scheduleWorryHeadsActivity() {
+    public boolean scheduleWorryHeadsActivity(String worryHeadsWeeklySchedule) {
+        return false;
+    }
+
+    @Override
+    public boolean scheduleSAFEACtivity(String SAFEWeeklySchedule) {
         return false;
     }
 }
