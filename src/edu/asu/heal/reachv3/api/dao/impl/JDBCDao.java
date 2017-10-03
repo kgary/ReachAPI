@@ -9,7 +9,7 @@ import javax.management.ValueExp;
 import java.sql.*;
 import java.util.Properties;
 
-public class JDBCDao implements DAO {
+public abstract class JDBCDao implements DAO {
     private String __jdbcDriver;
     protected String _jdbcUser;
     protected String _jdbcPasswd;

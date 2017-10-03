@@ -6,5 +6,10 @@
 *.iml
 
 #Mac OS Extras
-.DS_Store/
+
+.DS_Store
 .DS_Store/*
+
+#Idea build artifact
+
+out
