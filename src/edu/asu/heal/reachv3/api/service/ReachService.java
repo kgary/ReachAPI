@@ -1,16 +1,19 @@
 package edu.asu.heal.reachv3.api.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.org.apache.regexp.internal.RE;
 import edu.asu.heal.reachv3.api.dao.ValueObject;
 import edu.asu.heal.reachv3.api.errorHandler.ErrorMessage;
 import edu.asu.heal.reachv3.api.errorHandler.NotFoundException;
 import edu.asu.heal.reachv3.api.model.ModelException;
 import edu.asu.heal.reachv3.api.model.ModelFactory;
+import edu.asu.heal.reachv3.api.model.ScheduleModel;
 
 import javax.json.*;
 import javax.json.stream.JsonParser;
 import javax.ws.rs.core.Response;
 import java.io.StringReader;
+import java.util.Random;
 
 public class ReachService {
 
@@ -18,17 +21,17 @@ public class ReachService {
 
 
     public ReachService(){
-        try {
+        /*try {
             _modelFactory = new ModelFactory();
         }catch (ModelException me){
             me.printStackTrace();
-        }
+        }*/
 
     }
 
-    public JsonObject checkScheduledActivities(int currentDay, int pin){
+    public String checkScheduledActivities(int currentDay, int pin){
         try {
-            ValueObject vo = _modelFactory.getScheduledActivities(currentDay);
+            /*ValueObject vo = _modelFactory.getScheduledActivities(currentDay);
 
             JsonBuilderFactory factory = Json.createBuilderFactory(null);
             JsonObject responseJSON = factory.createObjectBuilder()
@@ -41,8 +44,27 @@ public class ReachService {
                     .add("SAFE", (Boolean)vo.getAttribute("SAFE"))
                     .build();
 
-            return responseJSON;
-        }catch (ModelException me){
+            return responseJSON;*/
+
+            Random r = new Random();
+            ScheduleModel schedule = new ScheduleModel();
+            schedule.setDay(r.nextInt(43));
+            schedule.setDiaryEvent1(r.nextBoolean());
+            schedule.setDiaryEvent2(r.nextBoolean());
+            schedule.setBlob(r.nextBoolean());
+            schedule.setSafe(r.nextBoolean());
+            schedule.setStop(r.nextBoolean());
+            schedule.setRelaxation(r.nextBoolean());
+            schedule.setStic(r.nextInt(4));
+            schedule.setRtu(r.nextBoolean());
+            schedule.setStopWorryheads(r.nextBoolean());
+            schedule.setSudScaleEvent(r.nextBoolean());
+            schedule.setWeekNumber(r.nextInt(7));
+
+            ObjectMapper mapper = new ObjectMapper();
+
+            return mapper.writeValueAsString(schedule);
+        }catch(Exception e){ //catch (ModelException me){
             //TODO String JsonErrorMessage = mapper.writeValueAsString(new ErrorMessage("Invalid survey instance ID"));
             //TODO throw new NotFoundException(Response.Status.BAD_REQUEST, JsonErrorMessage);
             System.out.println("Do something here");

@@ -1,5 +1,6 @@
 package edu.asu.heal.reachv3.api.resources;
 
+import edu.asu.heal.reachv3.api.model.ScheduleModel;
 import edu.asu.heal.reachv3.api.service.ReachService;
 
 import javax.json.JsonObject;
@@ -25,10 +26,9 @@ public class SchedulerResource {
     @Path("/scheduledactivities/")
     public Response getScheduledActivities(){
         Response response = null;
-        JsonObject jsonResponse = reachService.checkScheduledActivities(0,0);
+        String jsonResponse = reachService.checkScheduledActivities(0,0);
 
         response = Response.status(Response.Status.OK).entity(jsonResponse).build();
-
         return response;
     }
 
