@@ -1,127 +1,60 @@
 package edu.asu.heal.reachv3.api.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.org.apache.regexp.internal.RE;
-import edu.asu.heal.reachv3.api.dao.ValueObject;
-import edu.asu.heal.reachv3.api.errorHandler.ErrorMessage;
-import edu.asu.heal.reachv3.api.errorHandler.NotFoundException;
-import edu.asu.heal.reachv3.api.model.ModelException;
-import edu.asu.heal.reachv3.api.model.ModelFactory;
+import edu.asu.heal.core.HealCoreInterface;
 import edu.asu.heal.reachv3.api.model.ScheduleModel;
 
-import javax.json.*;
-import javax.json.stream.JsonParser;
-import javax.ws.rs.core.Response;
-import java.io.StringReader;
+import java.util.Date;
 import java.util.Random;
 
-public class ReachService {
+public class ReachService implements HealCoreInterface {
 
-    private ModelFactory _modelFactory;
+    @Override
+    public String getActivityInstances(String patientPin) {
 
+        // return the mockup data
+        Random randomizer = new Random();
 
-    public ReachService(){
-        /*try {
-            _modelFactory = new ModelFactory();
-        }catch (ModelException me){
-            me.printStackTrace();
-        }*/
+        ScheduleModel instance = new ScheduleModel();
+        instance.setWeekNumber(randomizer.nextInt(7));
+        instance.setDay(randomizer.nextInt(43));
+        instance.setRelaxation(randomizer.nextBoolean());
+        instance.setDiaryEvent1(randomizer.nextBoolean());
+        instance.setDiaryEvent2(randomizer.nextBoolean());
+        instance.setStop(randomizer.nextBoolean());
+        instance.setStopWorryheads(randomizer.nextBoolean());
+        instance.setStic(randomizer.nextInt(4));
+        instance.setSudScaleEvent(randomizer.nextBoolean());
+        instance.setRtu(randomizer.nextBoolean());
+        instance.setBlob(randomizer.nextBoolean());
+        instance.setSafe(randomizer.nextBoolean());
 
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(instance);
     }
 
-    public String checkScheduledActivities(int currentDay, int pin){
-        try {
-            /*ValueObject vo = _modelFactory.getScheduledActivities(currentDay);
+    @Override
+    public String getActivityInstanceDetail(Integer activityInstanceId, String patientPin) {
 
-            JsonBuilderFactory factory = Json.createBuilderFactory(null);
-            JsonObject responseJSON = factory.createObjectBuilder()
-                    .add("RELAXATION", (Boolean) vo.getAttribute("RELAXATION"))
-                    .add("STOP", (Boolean) vo.getAttribute("STOP"))
-                    .add("STIC", (Integer) vo.getAttribute("STIC"))
-                    .add("WORRY_HEADS", (Boolean)vo.getAttribute("WORRY_HEADS"))
-                    .add("ABMT", (Boolean)vo.getAttribute("ABMT"))
-                    .add("DAILY_DIARY", (Boolean)vo.getAttribute("DAILY_DIARY"))
-                    .add("SAFE", (Boolean)vo.getAttribute("SAFE"))
-                    .build();
+        // TODO
 
-            return responseJSON;*/
-
-            Random r = new Random();
-            ScheduleModel schedule = new ScheduleModel();
-            schedule.setDay(r.nextInt(43));
-            schedule.setDiaryEvent1(r.nextBoolean());
-            schedule.setDiaryEvent2(r.nextBoolean());
-            schedule.setBlob(r.nextBoolean());
-            schedule.setSafe(r.nextBoolean());
-            schedule.setStop(r.nextBoolean());
-            schedule.setRelaxation(r.nextBoolean());
-            schedule.setStic(r.nextInt(4));
-            schedule.setRtu(r.nextBoolean());
-            schedule.setStopWorryheads(r.nextBoolean());
-            schedule.setSudScaleEvent(r.nextBoolean());
-            schedule.setWeekNumber(r.nextInt(7));
-
-            ObjectMapper mapper = new ObjectMapper();
-
-            return mapper.writeValueAsString(schedule);
-        }catch(Exception e){ //catch (ModelException me){
-            //TODO String JsonErrorMessage = mapper.writeValueAsString(new ErrorMessage("Invalid survey instance ID"));
-            //TODO throw new NotFoundException(Response.Status.BAD_REQUEST, JsonErrorMessage);
-            System.out.println("Do something here");
-        }
-        return  null;
+        return null;
     }
 
-    public JsonObject scheduleActivities(String requestPayload){
-        try{
-            JsonParser parser = Json.createParser(new StringReader(requestPayload));
-            String STOP, Relaxation, DailyDiary, SAFE, WorryHeads, ABMT;
-            STOP = Relaxation = DailyDiary =  SAFE = WorryHeads = ABMT = null;
-            int STIC = -1;
+    @Override
+    public String createActivityInstance(Date startTime, Date endTime, Date userSubmissionType,
+                                         Date actualSubmissionType, String State, String patientPin,
+                                         String Sequence, String activityTitle, String description) {
 
-            while(parser.hasNext()){
-                JsonParser.Event event = parser.next();
-                if(event == JsonParser.Event.KEY_NAME){
-                    switch (parser.getString()){
-                        case "STOP":
-                            if(parser.next() != JsonParser.Event.VALUE_FALSE)
-                                STOP = parser.getString();
-                            break;
-                        case "SAFE":
-                            if(parser.next() != JsonParser.Event.VALUE_FALSE)
-                                SAFE = parser.getString();
-                            break;
-                        case "RELAXATION":
-                            if(parser.next() != JsonParser.Event.VALUE_FALSE)
-                                Relaxation = parser.getString();
-                            break;
-                        case "WORRY_HEADS":
-                            if(parser.next() != JsonParser.Event.VALUE_FALSE)
-                                WorryHeads = parser.getString();
-                            break;
-                        case "ABMT":
-                            if(parser.next() != JsonParser.Event.VALUE_FALSE)
-                                ABMT = parser.getString();
-                            break;
-                        case "DAILY_DIARY":
-                            if(parser.next() != JsonParser.Event.VALUE_FALSE)
-                                ABMT = parser.getString();
-                            break;
-                        case "STIC":
-                            parser.next();
-                            STIC = parser.getInt();
-                            break;
-                    }
+        // TODO
 
-                }
-            }
+        return null;
+    }
 
-            _modelFactory.scheduleActivities(STOP, SAFE, WorryHeads, DailyDiary, ABMT, Relaxation, STIC);
+    @Override
+    public String updateActivities(String patientPin) {
 
+        // TODO
 
-        }catch (Exception e){
-
-        }
         return null;
     }
 }

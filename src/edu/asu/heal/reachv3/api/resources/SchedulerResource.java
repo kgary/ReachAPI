@@ -23,23 +23,26 @@ public class SchedulerResource {
     * method below through query parameter.
     */
     @GET
-    @Path("/scheduledactivities/")
-    public Response getScheduledActivities(){
-        Response response = null;
+    public Response fetchActivityInstances(){
+        /*Response response = null;
         String jsonResponse = reachService.checkScheduledActivities(0,0);
 
         response = Response.status(Response.Status.OK).entity(jsonResponse).build();
-        return response;
+        return response;*/
+
+        return Response.status(Response.Status.OK).entity(reachService.getActivityInstances("1011")).build();
+
     }
 
     @POST
-    @Path("/scheduleactivities")
-    public Response scheduleActivities(String requestPayload){
-        Response response = null;
+    public Response addActivityInstance(String requestPayload){
+        /*Response response = null;
         JsonObject jsonResponse = reachService.scheduleActivities(requestPayload);
 
         response = Response.status(Response.Status.OK).entity(jsonResponse).build();
-        return response;
+        return response;*/
+
+        return Response.status(Response.Status.OK).entity("").build();
     }
 
 
