@@ -112,4 +112,15 @@ public class ScheduleModel {
     public void setSafe(boolean safe) {
         this.safe = safe;
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(this.getWeekNumber()) + "\n" +
+                String.valueOf(this.getDay()) + "\n" +
+                String.valueOf(this.getStic()) + "\n" +
+                String.valueOf(this.isRelaxation()) + "\n" +
+                String.valueOf(this.isStop()) + "\n" +
+                String.valueOf(this.isSafe()) + "\n" +
+                String.valueOf(this.isStopWorryheads());
+    }
 }

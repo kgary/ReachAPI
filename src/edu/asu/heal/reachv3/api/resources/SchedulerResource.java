@@ -1,5 +1,6 @@
 package edu.asu.heal.reachv3.api.resources;
 
+import com.sun.org.apache.regexp.internal.RE;
 import edu.asu.heal.reachv3.api.model.ScheduleModel;
 import edu.asu.heal.reachv3.api.service.ReachService;
 
@@ -11,7 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/activities/")
+@Path("/activityinstance/")
 @Produces(MediaType.APPLICATION_JSON)
 public class SchedulerResource {
 
@@ -41,8 +42,14 @@ public class SchedulerResource {
 
         response = Response.status(Response.Status.OK).entity(jsonResponse).build();
         return response;*/
+        String response = reachService.createActivityInstance(requestPayload);
+        if(response != null)
+            return Response.status(Response.Status.OK).entity("Success").build();
 
-        return Response.status(Response.Status.OK).entity("").build();
+        else
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error").build();
+
+
     }
 
 

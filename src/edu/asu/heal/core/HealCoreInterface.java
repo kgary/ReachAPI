@@ -11,9 +11,16 @@ public interface HealCoreInterface {
     String getActivityInstanceDetail(Integer activityInstanceId, String patientPin);
 
     // create activity instance for a patient
-    String createActivityInstance(Date startTime, Date endTime, Date userSubmissionType, Date actualSubmissionType,
-                                  String State, String patientPin, String Sequence, String activityTitle,
-                                  String description);
+    /*
+    * String createActivityInstance(Date startTime, Date endTime, Date userSubmissionType, Date actualSubmissionType,
+    *                              String State, String patientPin, String Sequence, String activityTitle,
+    *                              String description);
+    *
+    *                              Commented by Mohit and replaced with the method below
+    */
+
+    String createActivityInstance(String requestPayload);
+
 
     // TODO -- discuss with team about a probable confusion
     /*
