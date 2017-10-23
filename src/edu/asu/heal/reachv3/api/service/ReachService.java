@@ -1,13 +1,12 @@
 package edu.asu.heal.reachv3.api.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.asu.heal.core.HealCoreInterface;
+import edu.asu.heal.core.service.HealService;
 import edu.asu.heal.reachv3.api.model.ScheduleModel;
 
-import java.util.Date;
 import java.util.Random;
 
-public class ReachService implements HealCoreInterface {
+public class ReachService implements HealService {
 
     @Override
     public String getActivityInstances(String patientPin) {

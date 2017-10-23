@@ -1,8 +1,8 @@
-package edu.asu.heal.core;
+package edu.asu.heal.core.service;
 
 import java.util.Date;
 
-public interface HealCoreInterface {
+public interface HealService {
 
     // get all activityInstances associated with a patient
     String getActivityInstances(String patientPin);

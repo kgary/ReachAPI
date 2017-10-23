@@ -1,10 +1,8 @@
-package edu.asu.heal.reachv3.api.resources;
+package edu.asu.heal.core.resources;
 
-import com.sun.org.apache.regexp.internal.RE;
-import edu.asu.heal.reachv3.api.model.ScheduleModel;
-import edu.asu.heal.reachv3.api.service.ReachService;
+import edu.asu.heal.core.service.HealService;
+import edu.asu.heal.core.service.HealServiceFactory;
 
-import javax.json.JsonObject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -16,7 +14,7 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class SchedulerResource {
 
-    ReachService reachService = new ReachService();
+    HealService service = HealServiceFactory.getTheService();
 
     /*
     *
@@ -31,7 +29,7 @@ public class SchedulerResource {
         response = Response.status(Response.Status.OK).entity(jsonResponse).build();
         return response;*/
 
-        return Response.status(Response.Status.OK).entity(reachService.getActivityInstances("1011")).build();
+        return Response.status(Response.Status.OK).entity(service.getActivityInstances("1011")).build();
 
     }
 
@@ -42,7 +40,7 @@ public class SchedulerResource {
 
         response = Response.status(Response.Status.OK).entity(jsonResponse).build();
         return response;*/
-        String response = reachService.createActivityInstance(requestPayload);
+        String response = service.createActivityInstance(requestPayload);
         if(response != null)
             return Response.status(Response.Status.OK).entity("Success").build();
 
