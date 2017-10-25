@@ -1,7 +1,9 @@
 package edu.asu.heal.reachv3.api.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.asu.heal.core.service.HealService;
+import edu.asu.heal.core.api.dao.DAO;
+import edu.asu.heal.core.api.dao.DAOFactory;
+import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.reachv3.api.model.ScheduleModel;
 
 import java.util.Random;
@@ -12,9 +14,11 @@ public class ReachService implements HealService {
     public String getActivityInstances(String patientPin) {
         try {
             // return the mockup data
+            DAO dao = DAOFactory.getTheDAO();
+            ScheduleModel instance = (ScheduleModel)dao.getScheduledActivities( 2);
             Random randomizer = new Random();
 
-            ScheduleModel instance = new ScheduleModel();
+            /*ScheduleModel instance = new ScheduleModel();
             instance.setWeekNumber(randomizer.nextInt(7));
             instance.setDay(randomizer.nextInt(43));
             instance.setRelaxation(randomizer.nextBoolean());
@@ -26,7 +30,7 @@ public class ReachService implements HealService {
             instance.setSudScaleEvent(randomizer.nextBoolean());
             instance.setRtu(randomizer.nextBoolean());
             instance.setBlob(randomizer.nextBoolean());
-            instance.setSafe(randomizer.nextBoolean());
+            instance.setSafe(randomizer.nextBoolean());*/
 
             ObjectMapper mapper = new ObjectMapper();
             return mapper.writeValueAsString(instance);

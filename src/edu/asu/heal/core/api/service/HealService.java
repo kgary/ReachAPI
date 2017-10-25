@@ -1,6 +1,4 @@
-package edu.asu.heal.core.service;
-
-import java.util.Date;
+package edu.asu.heal.core.api.service;
 
 public interface HealService {
 

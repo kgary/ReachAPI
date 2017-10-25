@@ -1,9 +1,10 @@
-package edu.asu.heal.reachv3.api.dao.impl;
+package edu.asu.heal.core.api.dao.impl;
 
-import edu.asu.heal.reachv3.api.dao.DAO;
-import edu.asu.heal.reachv3.api.dao.DAOException;
-import edu.asu.heal.reachv3.api.dao.DAOFactory;
-import edu.asu.heal.reachv3.api.dao.ValueObject;
+import edu.asu.heal.core.api.dao.DAO;
+import edu.asu.heal.core.api.dao.DAOException;
+import edu.asu.heal.core.api.dao.DAOFactory;
+import edu.asu.heal.core.api.dao.ValueObject;
+import edu.asu.heal.reachv3.api.model.ScheduleModel;
 
 import java.sql.*;
 import java.util.Properties;
@@ -39,33 +40,42 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
-    public ValueObject getScheduledActivities(int currentDay) throws DAOException {
+    public Object getScheduledActivities(int currentDay) throws DAOException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         ValueObject vo = null;
+        ScheduleModel sm = null;
         try{
             String query = DAOFactory.getDAOProperties().getProperty("sql.scheduledActivities");
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, currentDay);
             resultSet = preparedStatement.executeQuery();
 
-            int STIC = resultSet.getInt("STIC");
-            boolean STOP = resultSet.getInt("STOP") == 1;
-            boolean Relaxation = resultSet.getInt("RELAXATION") == 1;
-            boolean DailyDiary = resultSet.getInt("DIARY_EVENT1") == 1;
-            boolean SAFE = resultSet.getInt("SAFE") == 1;
-            boolean WorryHeads = resultSet.getInt("STOP_WORRYHEADS") == 1;
-
             if(resultSet.next()){
-                vo = new ValueObject();
+                int STIC = resultSet.getInt("STIC");
+                boolean STOP = resultSet.getInt("STOP") == 1;
+                boolean Relaxation = resultSet.getInt("RELAXATION") == 1;
+                boolean DailyDiary = resultSet.getInt("DIARY_EVENT1") == 1;
+                boolean SAFE = resultSet.getInt("SAFE") == 1;
+                boolean WorryHeads = resultSet.getInt("STOP_WORRYHEADS") == 1;
+
+                /*vo = new ValueObject();
                 vo.putAttribute("STIC", STIC);
                 vo.putAttribute("STOP", STOP);
                 vo.putAttribute("RELAXATION", Relaxation);
                 vo.putAttribute("DAILY_DIARY", DailyDiary);
                 vo.putAttribute("SAFE", SAFE);
                 vo.putAttribute("WORRY_HEADS", WorryHeads);
-                vo.putAttribute("ABMT", true);
+                vo.putAttribute("ABMT", true);*/
+
+                sm = new ScheduleModel();
+                sm.setStic(STIC);
+                sm.setRelaxation(Relaxation);
+                sm.setSafe(SAFE);
+                sm.setDiaryEvent1(DailyDiary);
+                sm.setStopWorryheads(WorryHeads);
+                sm.setStop(STOP);
             }
         }catch (Throwable t){
             t.printStackTrace();
@@ -79,7 +89,7 @@ public abstract class JDBCDao implements DAO {
                 se.printStackTrace();
             }
         }
-        return vo;
+        return sm;
     }
 
     @Override

@@ -1,7 +1,7 @@
-package edu.asu.heal.core.resources;
+package edu.asu.heal.core.api.resources;
 
-import edu.asu.heal.core.service.HealService;
-import edu.asu.heal.core.service.HealServiceFactory;
+import edu.asu.heal.core.api.service.HealService;
+import edu.asu.heal.core.api.service.HealServiceFactory;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;

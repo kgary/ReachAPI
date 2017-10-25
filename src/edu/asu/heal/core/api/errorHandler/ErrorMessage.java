@@ -1,4 +1,4 @@
-package edu.asu.heal.reachv3.api.errorHandler;
+package edu.asu.heal.core.api.errorHandler;
 
 public class ErrorMessage {
     private String developerMessage;

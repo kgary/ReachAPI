@@ -1,7 +1,7 @@
-package edu.asu.heal.reachv3.api.dao;
+package edu.asu.heal.core.api.dao;
 
 public interface DAO {
-    ValueObject getScheduledActivities(int currentDay) throws DAOException;
+    Object getScheduledActivities(int currentDay) throws DAOException;
 
     boolean scheduleSTOPActivity(String STOPWeeklySchedule) throws DAOException;
 

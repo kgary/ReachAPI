@@ -1,9 +1,9 @@
 package edu.asu.heal.reachv3.api.model;
 
-import edu.asu.heal.reachv3.api.dao.DAO;
-import edu.asu.heal.reachv3.api.dao.DAOException;
-import edu.asu.heal.reachv3.api.dao.DAOFactory;
-import edu.asu.heal.reachv3.api.dao.ValueObject;
+import edu.asu.heal.core.api.dao.DAO;
+import edu.asu.heal.core.api.dao.DAOException;
+import edu.asu.heal.core.api.dao.DAOFactory;
+import edu.asu.heal.core.api.dao.ValueObject;
 
 public final class ModelFactory {
     private DAO _theDAO = null;
@@ -19,7 +19,7 @@ public final class ModelFactory {
 
     public ValueObject getScheduledActivities(int currentDay) throws ModelException{
         try{
-            ValueObject vo = _theDAO.getScheduledActivities(currentDay);
+            ValueObject vo = (ValueObject)_theDAO.getScheduledActivities(currentDay);
             if(vo == null){
                 return null;
             }
