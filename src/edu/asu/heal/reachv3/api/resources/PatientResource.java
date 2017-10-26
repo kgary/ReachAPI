@@ -12,8 +12,8 @@ public class PatientResource {
     private IHealContract reachService = HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
 
     @GET
-    public Response fetchPatients(){
-        return Response.status(Response.Status.OK).entity(reachService.getPatients()).build();
+    public Response fetchPatients(@QueryParam("trialId") int trialId){
+        return Response.status(Response.Status.OK).entity(reachService.getPatients(trialId)).build();
     }
 
     @GET
@@ -37,18 +37,5 @@ public class PatientResource {
     public Response removePatient(@PathParam("patientPin") String patientPin){
         return Response.status(Response.Status.OK).entity(reachService.deletePatient(patientPin)).build();
     }
-
-    /*@GET
-    @Path("/{patientPin}/activities")
-    public Response fetchPatientActivities(@PathParam("patientPin") String patientPin){
-        return Response.status(Response.Status.OK).entity(reachService.getPatientActivities(patientPin)).build();
-    }
-
-    @POST
-    @Path("/{patientPin}/activities/schedule")
-    public Response schedulePatientActivities(@PathParam("patientPin") String patientPin, String requestBody){
-        return Response.status(Response.Status.OK).entity(reachService.schedulePatientActivities(patientPin, requestBody)).build();
-    }*/
-
 
 }

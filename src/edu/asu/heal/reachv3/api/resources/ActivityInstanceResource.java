@@ -11,11 +11,17 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class ActivityInstanceResource {
 
-    private  IHealContract reachService = HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
+    private static IHealContract reachService =
+            HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
 
     @GET
-    public Response fetchActivityInstances(){
-        return Response.status(Response.Status.OK).entity(reachService.getActivityInstances()).build();
+    public Response fetchActivityInstances(@QueryParam("patientPin") String patientPin,
+                                           @QueryParam("trialId") int trialId){
+
+        // URI pattern: /activityisntance?patientPin=1011&trialId=1
+
+        return Response.status(Response.Status.OK).entity(
+                reachService.getActivityInstances(patientPin, trialId)).build();
     }
 
     @GET
@@ -44,13 +50,15 @@ public class ActivityInstanceResource {
     @DELETE
     @Path("/{activityInstanceId}")
     public Response removeActivityInstance(@PathParam("activityInstanceId") String activityInstanceId){
-        return Response.status(Response.Status.OK).entity(reachService.deleteActivityInstance(activityInstanceId)).build();
+        return Response.status(Response.Status.OK).entity(
+                reachService.deleteActivityInstance(activityInstanceId)).build();
     }
 
     @GET
     @Path("/schedule")
     public Response scheduleActivities(String requestBody){
-        return Response.status(Response.Status.OK).entity(reachService.scheduleActivityInstancesForPatient(requestBody)).build();
+        return Response.status(Response.Status.OK).entity(
+                reachService.scheduleActivityInstancesForPatient(requestBody)).build();
     }
 
 }

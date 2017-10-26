@@ -3,14 +3,12 @@ package edu.asu.heal.core.api.contracts;
 public interface IHealContract {
 
     // methods pertaining to activityInstance resource
-    // get all activityInstances associated with a patient
-    String getActivityInstances();
+
+    String getActivityInstances(String patientPin, int trialId);
 
     String getActivityInstance(String activityInstanceId);
 
-    // create activity instance
     String createActivityInstance(String requestPayload);
-
 
     // TODO -- discuss with team about a probable confusion -- @author dpurbey
     /*
@@ -25,7 +23,7 @@ public interface IHealContract {
     String scheduleActivityInstancesForPatient(String requestBody);
 
     // methods pertaining to patient resource
-    String getPatients();
+    String getPatients(int trialId);
 
     String getPatient(String patientPin);
 
@@ -34,9 +32,5 @@ public interface IHealContract {
     String updatePatient(String requestBody);
 
     String deletePatient(String patientPin);
-
-    /*String getPatientActivities(String patientPin);
-
-    String schedulePatientActivities(String patientPin, String requestBody);*/
 
 }

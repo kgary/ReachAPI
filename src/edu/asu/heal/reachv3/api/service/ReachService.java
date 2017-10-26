@@ -6,13 +6,15 @@ import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.reachv3.api.model.ScheduleModel;
 
-import java.util.Random;
-
 public class ReachService implements IHealContract {
 
     @Override
-    public String getActivityInstances() {
+    public String getActivityInstances(String patientPin, int trialId) {
         try {
+
+            // TODO -- scope in the possibility that when queryParams(patientPin, trialId) are not present, then
+            // we will return activityInstance collection
+
             // return the mockup data
             DAO dao = DAOFactory.getTheDAO();
             ScheduleModel instance = (ScheduleModel)dao.getScheduledActivities( 2);
@@ -78,7 +80,8 @@ public class ReachService implements IHealContract {
 
     // patient resource method
     @Override
-    public String getPatients(){
+    public String getPatients(int trialId){
+        // explore the option - if trialId is not present then return patients collections
         return "GET ALL PATIENTS";
     }
 
@@ -102,13 +105,4 @@ public class ReachService implements IHealContract {
         return "DELETE PATIENT";
     }
 
-    /*@Override
-    public String getPatientActivities(String patientPin) {
-        return "Patient Activities: "+patientPin;
-    }
-
-    @Override
-    public String schedulePatientActivities(String patientPin, String requestBody) {
-        return "Schedule Patient Activities: "+ patientPin;
-    }*/
 }
