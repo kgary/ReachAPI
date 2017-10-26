@@ -20,7 +20,8 @@ public interface IHealContract {
 
     String deleteActivityInstance(String activityInstanceId);
 
-    String scheduleActivityInstancesForPatient(String requestBody);
+    // methods pertaining to activity resource
+    String createActivity(String requestBody);
 
     // methods pertaining to patient resource
     String getPatients(int trialId);

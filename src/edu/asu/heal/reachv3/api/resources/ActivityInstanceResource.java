@@ -54,11 +54,4 @@ public class ActivityInstanceResource {
                 reachService.deleteActivityInstance(activityInstanceId)).build();
     }
 
-    @GET
-    @Path("/schedule")
-    public Response scheduleActivities(String requestBody){
-        return Response.status(Response.Status.OK).entity(
-                reachService.scheduleActivityInstancesForPatient(requestBody)).build();
-    }
-
 }

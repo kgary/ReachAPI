@@ -62,20 +62,10 @@ public class ReachService implements IHealContract {
         return "DELETE AI: "+activityInstanceId;
     }
 
+    // methods pertaining to activity resource
     @Override
-    public String scheduleActivityInstancesForPatient(String requestBody){
-        try {
-            //Mock data as of now
-            ObjectMapper mapper = new ObjectMapper();
-            ScheduleModel model = mapper.readValue(requestBody, ScheduleModel.class);
-
-            return model.toString();
-        }catch (Exception e){
-            System.out.println("Error from createActivityInstance() in ReachService");
-            e.printStackTrace();
-        }
-
-        return null;
+    public String createActivity(String requestBody){
+        return "Create activity for patient";
     }
 
     // patient resource method
