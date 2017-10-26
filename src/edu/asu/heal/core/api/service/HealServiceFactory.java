@@ -1,32 +1,46 @@
 package edu.asu.heal.core.api.service;
 
+import edu.asu.heal.core.api.contracts.IHealContract;
+
 import java.lang.reflect.Constructor;
 
 public class HealServiceFactory {
-    private static HealService _theService;
 
-    public HealServiceFactory() {
-    }
+    /* TODO -- Doubt - @dpurbey -- discuss with team & Dr.G
+    *
+    * here returning the service instance is singleton instance, which makes me wonder, if we are to deploy
+    * for example 3 API from a single WAR, then how to achieve service instantiation of 2 other applications
+    *
+    * We will have to change this from singleton to something else where you can have multiple instances of service,
+    * each for a specific applications
+    *
+    * */
 
-    public static HealService getTheService(){
+    // service bound to IHealContract should be instantiated
+    private static IHealContract _theService;
+
+    public static IHealContract getTheService(String serviceClassName){
         if(_theService == null){
-            System.out.println("The service is null");
+            return HealServiceFactory.initializeService(serviceClassName);
         }
+
         return _theService;
     }
 
-    static {
+    private static IHealContract initializeService(String serviceClassName){
         try {
-            Class<?> apiClass = Class.forName("edu.asu.heal.reachv3.api.service.ReachService");
-            Constructor<?> apiClassConstructor = apiClass.getConstructor();
-            _theService = (HealService) apiClassConstructor.newInstance();
 
-        }catch (ClassNotFoundException ce){
-            System.out.println("The required class is not found");
-        }catch (NoSuchMethodException ne){
-            System.out.println("No Such method");
-        }catch (Exception e){
-            System.out.println("Other exception in getting service");
+            Class<?> serviceClass = Class.forName(serviceClassName);
+            Constructor<?> serviceClassConstructor = serviceClass.getConstructor();
+            _theService = (IHealContract) serviceClassConstructor.newInstance();
+
+        } catch (ClassNotFoundException ce){
+            System.out.println(ce.getMessage());
+        } catch (Exception ex){
+            System.out.println("Exception occurred: " + ex.getMessage());
         }
+
+        return _theService;
     }
+
 }
