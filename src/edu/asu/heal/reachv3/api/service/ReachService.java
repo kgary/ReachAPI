@@ -39,11 +39,28 @@ public class ReachService implements IHealContract {
     public String createActivityInstance(String requestPayload) {
         try {
             //Mock data as of now
+            DAO dao = DAOFactory.getTheDAO();
             ObjectMapper mapper = new ObjectMapper();
             ScheduleModel model = mapper.readValue(requestPayload, ScheduleModel.class);
 
-            System.out.println(model.toString());
+            int day = model.getDay();
+            boolean COMPLETED = false;
 
+            if(model.isSafe()){
+                dao.scheduleSAFEACtivity(day, COMPLETED);
+            }
+            if(model.isRelaxation()){
+                dao.scheduleRelaxationActivity(day, COMPLETED);
+            }
+            if(model.isStop()){
+                dao.scheduleSTOPActivity(day, COMPLETED);
+            }
+            if(model.isAbmt()){
+                dao.scheduleABMTActivity(day, COMPLETED);
+            }
+            if(model.getStic() > 0){
+                dao.scheduleSTICActivity(day, model.getStic());
+            }
             return "OK";
         }catch (Exception e){
             System.out.println("Error from createActivityInstance() in ReachService");
@@ -54,7 +71,36 @@ public class ReachService implements IHealContract {
 
     @Override
     public String updateActivityInstance(String requestBody) {
-        return "UPDATE AI";
+        try {
+            //Mock data as of now
+            DAO dao = DAOFactory.getTheDAO();
+            ObjectMapper mapper = new ObjectMapper();
+            ScheduleModel model = mapper.readValue(requestBody, ScheduleModel.class);
+            boolean COMPLETED = true;
+
+            int day = model.getDay();
+
+            if(model.isSafe()){
+                dao.scheduleSAFEACtivity(day, COMPLETED);
+            }
+            if(model.isRelaxation()){
+                dao.scheduleRelaxationActivity(day, COMPLETED);
+            }
+            if(model.isStop()){
+                dao.scheduleSTOPActivity(day, COMPLETED);
+            }
+            if(model.isAbmt()){
+                dao.scheduleABMTActivity(day, COMPLETED);
+            }
+            if(model.getStic() == 0){
+                dao.scheduleSTICActivity(day, 0);
+            }
+            return "OK";
+        }catch (Exception e){
+            System.out.println("Error from createActivityInstance() in ReachService");
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

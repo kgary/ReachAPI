@@ -32,36 +32,36 @@ public final class ModelFactory {
         }
     }
 
-    public boolean scheduleActivities(String STOP, String SAFE, String WorryHeads, String DailyDiary, String ABMT, String Relaxation, int STIC){
-        try {
-            if(STOP != null){
-                if(!_theDAO.scheduleSTOPActivity(STOP))
-                    return false;
-            }
-            if(SAFE != null){
-                _theDAO.scheduleSAFEACtivity(SAFE);
-            }
-            if(WorryHeads != null){
-                _theDAO.scheduleWorryHeadsActivity(WorryHeads);
-            }
-            if(DailyDiary != null){
-                _theDAO.scheduleDailyDiaryActivity(DailyDiary);
-            }
-            if(ABMT != null){
-                _theDAO.scheduleABMTActivity(ABMT);
-            }
-            if(Relaxation != null){
-                _theDAO.scheduleRelaxationActivity(Relaxation);
-            }
-            if(STIC > -1){
-                _theDAO.scheduleSTICActivity(STIC);
-            }
-        }catch (Exception e){
-            System.out.println("EXCEPTION THROWN IN MODELFACTORY.SCHEDULEACTIVITIES");
-            return false;
-        }
-        return true;
-    }
+//    public boolean scheduleActivities(String STOP, String SAFE, String WorryHeads, String DailyDiary, String ABMT, String Relaxation, int STIC){
+//        try {
+//            if(STOP != null){
+//                if(!_theDAO.scheduleSTOPActivity(STOP))
+//                    return false;
+//            }
+//            if(SAFE != null){
+//                _theDAO.scheduleSAFEACtivity(SAFE);
+//            }
+//            if(WorryHeads != null){
+//                _theDAO.scheduleWorryHeadsActivity(WorryHeads);
+//            }
+//            if(DailyDiary != null){
+//                _theDAO.scheduleDailyDiaryActivity(DailyDiary);
+//            }
+//            if(ABMT != null){
+//                _theDAO.scheduleABMTActivity(ABMT);
+//            }
+//            if(Relaxation != null){
+//                _theDAO.scheduleRelaxationActivity(Relaxation);
+//            }
+//            if(STIC > -1){
+//                _theDAO.scheduleSTICActivity(STIC);
+//            }
+//        }catch (Exception e){
+//            System.out.println("EXCEPTION THROWN IN MODELFACTORY.SCHEDULEACTIVITIES");
+//            return false;
+//        }
+//        return true;
+//    }
 
 
 }

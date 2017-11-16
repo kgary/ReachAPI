@@ -59,6 +59,7 @@ public abstract class JDBCDao implements DAO {
                 boolean DailyDiary = resultSet.getInt("DIARY_EVENT1") == 1;
                 boolean SAFE = resultSet.getInt("SAFE") == 1;
                 boolean WorryHeads = resultSet.getInt("STOP_WORRYHEADS") == 1;
+                boolean ABMT = resultSet.getInt("ABMT") == 1;
 
                 /*vo = new ValueObject();
                 vo.putAttribute("STIC", STIC);
@@ -76,6 +77,8 @@ public abstract class JDBCDao implements DAO {
                 sm.setDiaryEvent1(DailyDiary);
                 sm.setStopWorryheads(WorryHeads);
                 sm.setStop(STOP);
+                sm.setAbmt(ABMT);
+
             }
         }catch (Throwable t){
             t.printStackTrace();
@@ -92,21 +95,94 @@ public abstract class JDBCDao implements DAO {
         return sm;
     }
 
+//    @Override
+//    public boolean scheduleSTOPActivity(String STOPWeeklySchedule) throws DAOException {
+//
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean scheduleSTICActivity(int STICWeeklySchedule) {
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean scheduleRelaxationActivity(String relaxationWeeklySchedule) {
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean scheduleDailyDiaryActivity(String dailyDiaryWeeklySchedule) {
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean scheduleABMTActivity(String ABMTWeeklySchedule) {
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean scheduleWorryHeadsActivity(String worryHeadsWeeklySchedule) {
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean scheduleSAFEACtivity(String SAFEWeeklySchedule) {
+//        return false;
+//    }
+
+
     @Override
-    public boolean scheduleSTOPActivity(String STOPWeeklySchedule) throws DAOException {
+    public boolean scheduleSTOPActivity(int day, boolean completed) throws DAOException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
-        STOPWeeklySchedule = STOPWeeklySchedule.replaceAll("\\[", "\\(").replaceAll("]", "\\)");
         try{
             String query = DAOFactory.getDAOProperties().getProperty("sql.scheduleSTOPActivity");
             preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, STOPWeeklySchedule);
-            if(preparedStatement.executeUpdate(query) > 0)
+            if(completed)
+                preparedStatement.setInt(1, 0);
+            else
+                preparedStatement.setInt(1, 1);
+            preparedStatement.setInt(2, day);
+            boolean result = preparedStatement.execute();
+
+            if(result)
                 return true;
+            else
+                return false;
+
+        }catch (Throwable t){
+                t.printStackTrace();
+                throw new DAOException("Unable to process results from query sql.scheduleSTOPActivity");
+            }finally {
+                try {
+                    if (preparedStatement != null) preparedStatement.close();
+                    if (connection != null) connection.close();
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                }
+            }
+    }
+
+    @Override
+    public boolean scheduleSTICActivity(int day, int sticVariable) throws DAOException{
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        try{
+            String query = DAOFactory.getDAOProperties().getProperty("sql.scheduleSTICActivity");
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, sticVariable);
+            preparedStatement.setInt(2, day);
+            boolean result = preparedStatement.execute();
+
+            if(result)
+                return true;
+            else
+                return false;
 
         }catch (Throwable t){
             t.printStackTrace();
-            throw new DAOException("Unable to process results from query sql.scheduleSTOPActivity");
+            throw new DAOException("Unable to process results from query sql.scheduleSTICActivity");
         }finally {
             try {
                 if (preparedStatement != null) preparedStatement.close();
@@ -115,17 +191,38 @@ public abstract class JDBCDao implements DAO {
                 se.printStackTrace();
             }
         }
-        return false;
     }
 
     @Override
-    public boolean scheduleSTICActivity(int STICWeeklySchedule) {
-        return false;
-    }
+    public boolean scheduleRelaxationActivity(int day, boolean completed) throws DAOException {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        try{
+            String query = DAOFactory.getDAOProperties().getProperty("sql.scheduleRelaxationActivity");
+            preparedStatement = connection.prepareStatement(query);
+            if(completed)
+                preparedStatement.setInt(1, 0);
+            else
+                preparedStatement.setInt(1, 1);
+            preparedStatement.setInt(2, day);
+            boolean result = preparedStatement.execute();
 
-    @Override
-    public boolean scheduleRelaxationActivity(String relaxationWeeklySchedule) {
-        return false;
+            if(result)
+                return true;
+            else
+                return false;
+
+        }catch (Throwable t){
+            t.printStackTrace();
+            throw new DAOException("Unable to process results from query sql.scheduleRelaxationActivity");
+        }finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -134,8 +231,35 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
-    public boolean scheduleABMTActivity(String ABMTWeeklySchedule) {
-        return false;
+    public boolean scheduleABMTActivity(int day, boolean completed) throws DAOException {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        try{
+            String query = DAOFactory.getDAOProperties().getProperty("sql.scheduleABMTActivity");
+            preparedStatement = connection.prepareStatement(query);
+            if(completed)
+                preparedStatement.setInt(1, 0);
+            else
+                preparedStatement.setInt(1, 1);
+            preparedStatement.setInt(2, day);
+            boolean result = preparedStatement.execute();
+
+            if(result)
+                return true;
+            else
+                return false;
+
+        }catch (Throwable t){
+            t.printStackTrace();
+            throw new DAOException("Unable to process results from query sql.scheduleABMTActivity");
+        }finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -144,7 +268,34 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
-    public boolean scheduleSAFEACtivity(String SAFEWeeklySchedule) {
-        return false;
+    public boolean scheduleSAFEACtivity(int day, boolean completed) throws DAOException {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = null;
+        try{
+            String query = DAOFactory.getDAOProperties().getProperty("sql.scheduleSAFEActivity");
+            preparedStatement = connection.prepareStatement(query);
+            if(completed)
+                preparedStatement.setInt(1, 0);
+            else
+                preparedStatement.setInt(1, 1);
+            preparedStatement.setInt(2, day);
+            boolean result = preparedStatement.execute();
+
+            if(result)
+                return true;
+            else
+                return false;
+
+        }catch (Throwable t){
+            t.printStackTrace();
+            throw new DAOException("Unable to process results from query sql.scheduleSAFEActivity");
+        }finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
     }
 }
