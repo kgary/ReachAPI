@@ -1,6 +1,6 @@
-package edu.asu.heal.reachv3.api.resources;
+package edu.asu.heal.core.api.resources;
 
-import edu.asu.heal.core.api.contracts.IHealContract;
+import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
 import javax.ws.rs.POST;
@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class ActivityResource {
 
-    private static IHealContract reachService =
+    private static HealService reachService =
             HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
 
     @POST

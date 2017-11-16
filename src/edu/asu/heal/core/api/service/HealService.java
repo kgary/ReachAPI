@@ -1,6 +1,6 @@
-package edu.asu.heal.core.api.contracts;
+package edu.asu.heal.core.api.service;
 
-public interface IHealContract {
+public interface HealService {
 
     // methods pertaining to activityInstance resource
 

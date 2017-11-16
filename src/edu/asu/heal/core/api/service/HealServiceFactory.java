@@ -1,7 +1,5 @@
 package edu.asu.heal.core.api.service;
 
-import edu.asu.heal.core.api.contracts.IHealContract;
-
 import java.lang.reflect.Constructor;
 
 public class HealServiceFactory {
@@ -16,10 +14,10 @@ public class HealServiceFactory {
     *
     * */
 
-    // service bound to IHealContract should be instantiated
-    private static IHealContract _theService;
+    // service bound to HealService should be instantiated
+    private static HealService _theService;
 
-    public static IHealContract getTheService(String serviceClassName){
+    public static HealService getTheService(String serviceClassName){
         if(_theService == null){
             return HealServiceFactory.initializeService(serviceClassName);
         }
@@ -27,12 +25,12 @@ public class HealServiceFactory {
         return _theService;
     }
 
-    private static IHealContract initializeService(String serviceClassName){
+    private static HealService initializeService(String serviceClassName){
         try {
 
             Class<?> serviceClass = Class.forName(serviceClassName);
             Constructor<?> serviceClassConstructor = serviceClass.getConstructor();
-            _theService = (IHealContract) serviceClassConstructor.newInstance();
+            _theService = (HealService) serviceClassConstructor.newInstance();
 
         } catch (ClassNotFoundException ce){
             System.out.println(ce.getMessage());
