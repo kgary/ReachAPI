@@ -1,10 +1,15 @@
 package edu.asu.heal.reachv3.api.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOFactory;
-import edu.asu.heal.reachv3.api.model.ScheduleModel;
+import edu.asu.heal.reachv3.api.model.*;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReachService implements HealService {
 
@@ -141,4 +146,65 @@ public class ReachService implements HealService {
         return "DELETE PATIENT";
     }
 
+    public String getMakeBelieveInstance() {
+        MakeBelieveSituation situation = new MakeBelieveSituation();
+
+        situation.setSituationId(1000);
+        situation.setSituationTitle("talking with friends about movies");
+
+        List<MakeBelieveOption> whenOptions = new ArrayList<>();
+        whenOptions.add(new MakeBelieveOption(1, "talking to a friend "));
+        whenOptions.add(new MakeBelieveOption(2, "starts doing homework "));
+        whenOptions.add(new MakeBelieveOption(3, "talking to the teacher"));
+        whenOptions.add(new MakeBelieveOption(4, "invites you over"));
+
+        List<MakeBelieveOption> howOptions = new ArrayList<>();
+        howOptions.add(new MakeBelieveOption(5, "I don't like movies"));
+        howOptions.add(new MakeBelieveOption(6, "What are you guys doing? "));
+        howOptions.add(new MakeBelieveOption(7, "Do you want to talk about books? "));
+        howOptions.add(new MakeBelieveOption(8, "What movies do you guys like? "));
+        
+        List<MakeBelieveQuestion> questions = new ArrayList<>();
+        questions.add(new MakeBelieveQuestion("when", whenOptions));
+        questions.add(new MakeBelieveQuestion("how", howOptions));
+
+        situation.setQuestions(questions);
+        try {
+            return new ObjectMapper().writeValueAsString(situation);
+        }catch (JsonProcessingException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getMakeBelieveInstanceAnswer(int instanceId){
+        MakeBelieveAnswers answers = new MakeBelieveAnswers();
+        answers.setSituationId(instanceId);
+        answers.setHowResponseId(8);
+        answers.setWhenResponseId(4);
+
+        try {
+            return new ObjectMapper().writeValueAsString(answers);
+        }catch (JsonProcessingException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public int updateMakeBelieveInstance(int instanceId, String responses){
+        MakeBelieveResponse response;
+        if(instanceId != 1000){
+            return 401;
+        }
+        try {
+            response = new ObjectMapper().readValue(responses, MakeBelieveResponse.class);
+        }catch(IOException e){
+            e.printStackTrace();
+            return 400;
+        }
+        if(instanceId != response.getSituationId()){
+            return 400;
+        }
+        return 204;
+    }
 }

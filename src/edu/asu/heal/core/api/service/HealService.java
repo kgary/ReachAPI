@@ -34,4 +34,10 @@ public interface HealService {
 
     String deletePatient(String patientPin);
 
+    String getMakeBelieveInstance();
+
+    String getMakeBelieveInstanceAnswer(int instanceId);
+
+    int updateMakeBelieveInstance(int instanceId, String responses);
+
 }

@@ -54,4 +54,28 @@ public class ActivityInstanceResource {
                 reachService.deleteActivityInstance(activityInstanceId)).build();
     }
 
+    @GET
+    @Path("/makebelieve/")
+    public Response fetchMakeBelieveInstance(){
+        String makeBelieveInstanceString = reachService.getMakeBelieveInstance();
+        if(makeBelieveInstanceString == null)
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Some server error. Please contact administrator").build();
+        return Response.status(Response.Status.OK).entity(makeBelieveInstanceString).build();
+    }
+
+    @GET
+    @Path("/makebelieveanswers/")
+    public Response fetchMakeBelieveInstanceAnswers(@QueryParam("situation_id") int situationId){
+        String makeBelieveInstanceAnswerString = reachService.getMakeBelieveInstanceAnswer(situationId);
+        if(makeBelieveInstanceAnswerString== null)
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Some server error. Please contact administrator").build();
+        return Response.status(Response.Status.OK).entity(makeBelieveInstanceAnswerString).build();
+    }
+
+    @PUT()
+    @Path("/makebelieveinstance/")
+    public Response updateMakeBelieveInstance(@QueryParam("situation_id") int situationId, String requestBody){
+        int response = reachService.updateMakeBelieveInstance(situationId, requestBody);
+        return Response.status(response).build();
+    }
 }
