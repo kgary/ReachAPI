@@ -150,13 +150,13 @@ public class ReachService implements HealService {
         MakeBelieveSituation situation = new MakeBelieveSituation();
 
         situation.setSituationId(1000);
-        situation.setSituationTitle("talking with friends about movies");
+        situation.setSituationTitle("You see Alex. Alex is talking with friends about movies");
 
         List<MakeBelieveOption> whenOptions = new ArrayList<>();
-        whenOptions.add(new MakeBelieveOption(1, "talking to a friend "));
-        whenOptions.add(new MakeBelieveOption(2, "starts doing homework "));
-        whenOptions.add(new MakeBelieveOption(3, "talking to the teacher"));
-        whenOptions.add(new MakeBelieveOption(4, "invites you over"));
+        whenOptions.add(new MakeBelieveOption(1, "When Alex talking to a friend "));
+        whenOptions.add(new MakeBelieveOption(2, "When Alex starts doing homework "));
+        whenOptions.add(new MakeBelieveOption(3, "When Alex is talking to the teacher"));
+        whenOptions.add(new MakeBelieveOption(4, "When Alex invites you over"));
 
         List<MakeBelieveOption> howOptions = new ArrayList<>();
         howOptions.add(new MakeBelieveOption(5, "I don't like movies"));
