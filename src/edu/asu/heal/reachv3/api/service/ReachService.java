@@ -178,6 +178,9 @@ public class ReachService implements HealService {
     }
 
     public String getMakeBelieveInstanceAnswer(int instanceId){
+        if(instanceId != 1000){
+            return "Bad Request";
+        }
         MakeBelieveAnswers answers = new MakeBelieveAnswers();
         answers.setSituationId(instanceId);
         answers.setHowResponseId(8);
