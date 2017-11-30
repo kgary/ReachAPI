@@ -31,4 +31,12 @@ public interface DAO {
 
     boolean scheduleSAFEACtivity(int day, boolean completed) throws DAOException;
 
+    Object getMakeBelieveActivityInstance() throws DAOException;
+
+    boolean checkSituationExists(int situationId) throws DAOException;
+
+    Object getMakeBelieveActivityAnswers(int situationId) throws DAOException;
+
+    boolean updateMakeBelieveActivityInstance(Object makeBelieveResponse) throws DAOException;
+
 }
