@@ -9,4 +9,4 @@ Once you're done adding the dependencies to the project. You'll need to configur
 Once the WAR is generated, deploy (copy & paste) the WAR file on a Tomcat Server (recommended) or any other server which is capable of serving Java-servlet based applications.
 
 The recommended context name for the API is ReachAPI. Once the context is completely deployed on a server. You can access endpoints of the API using 
-`http://{server_address}}/ReachAPI/rest/{endpoint_name}
+`http://{server_address}}/ReachAPI/rest/{endpoint_name}`
