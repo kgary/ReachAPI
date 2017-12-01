@@ -67,7 +67,7 @@ public class ActivityInstanceResource {
     @Path("/makebelieveanswers/")
     public Response fetchMakeBelieveInstanceAnswers(@QueryParam("situation_id") int situationId){
         String makeBelieveInstanceAnswerString = reachService.getMakeBelieveInstanceAnswer(situationId);
-        if(makeBelieveInstanceAnswerString== null)
+        if(makeBelieveInstanceAnswerString == null)
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Some server error. Please contact administrator").build();
         if(makeBelieveInstanceAnswerString.equals("Bad Request"))
             return Response.status(400).build();

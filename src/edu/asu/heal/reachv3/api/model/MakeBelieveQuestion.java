@@ -4,13 +4,14 @@ import java.util.List;
 
 public class MakeBelieveQuestion {
     private String type;
+    private List<MakeBelieveOption> options;
+
+    public MakeBelieveQuestion(){}
 
     public MakeBelieveQuestion(String type, List<MakeBelieveOption> options) {
         this.type = type;
         this.options = options;
     }
-
-    private List<MakeBelieveOption> options;
 
     public List<MakeBelieveOption> getOptions() {
         return options;

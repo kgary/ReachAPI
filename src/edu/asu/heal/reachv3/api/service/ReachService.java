@@ -147,67 +147,54 @@ public class ReachService implements HealService {
     }
 
     public String getMakeBelieveInstance() {
-        MakeBelieveSituation situation = new MakeBelieveSituation();
-
-        situation.setSituationId(1000);
-        situation.setSituationTitle("You see Alex. Alex is talking with friends about movies");
-
-        List<MakeBelieveOption> whenOptions = new ArrayList<>();
-        whenOptions.add(new MakeBelieveOption(1, "When Alex is talking to a friend "));
-        whenOptions.add(new MakeBelieveOption(2, "When Alex starts doing homework "));
-        whenOptions.add(new MakeBelieveOption(3, "When Alex is talking to the teacher"));
-        whenOptions.add(new MakeBelieveOption(4, "When Alex invites you over"));
-
-        List<MakeBelieveOption> howOptions = new ArrayList<>();
-        howOptions.add(new MakeBelieveOption(5, "I don't like movies"));
-        howOptions.add(new MakeBelieveOption(6, "What are you guys doing? "));
-        howOptions.add(new MakeBelieveOption(7, "Do you want to talk about books? "));
-        howOptions.add(new MakeBelieveOption(8, "What movies do you guys like? "));
-        
-        List<MakeBelieveQuestion> questions = new ArrayList<>();
-        questions.add(new MakeBelieveQuestion("when", whenOptions));
-        questions.add(new MakeBelieveQuestion("how", howOptions));
-
-        situation.setQuestions(questions);
         try {
+            DAO dao = DAOFactory.getTheDAO();
+            MakeBelieveSituation situation = (MakeBelieveSituation) dao.getMakeBelieveActivityInstance();
             return new ObjectMapper().writeValueAsString(situation);
-        }catch (JsonProcessingException e){
+        } catch (Exception e){
             e.printStackTrace();
-            return null;
+            System.out.println("Some problem in getMakeBelieveInstance in Reach Service");
         }
+        return null;
     }
 
     public String getMakeBelieveInstanceAnswer(int instanceId){
-        if(instanceId != 1000){
-            return "Bad Request";
-        }
-        MakeBelieveAnswers answers = new MakeBelieveAnswers();
-        answers.setSituationId(instanceId);
-        answers.setHowResponseId(8);
-        answers.setWhenResponseId(4);
+        try{
+            DAO dao = DAOFactory.getTheDAO();
+            if(!dao.checkSituationExists(instanceId)){
+                return "Bad Request";
+            }
 
-        try {
-            return new ObjectMapper().writeValueAsString(answers);
-        }catch (JsonProcessingException e){
+            MakeBelieveAnswers answers = (MakeBelieveAnswers) dao.getMakeBelieveActivityAnswers(instanceId);
+            if(answers != null)
+                return new ObjectMapper().writeValueAsString(answers);
+            return null;
+        }catch (Exception e){
             e.printStackTrace();
+            System.out.println("Some problem in getMakeBelieveInstanceAnswer in Reach service");
             return null;
         }
     }
 
     public int updateMakeBelieveInstance(int instanceId, String responses){
-        MakeBelieveResponse response;
-        if(instanceId != 1000){
-            return 401;
-        }
-        try {
+        try{
+            MakeBelieveResponse response;
+            DAO dao = DAOFactory.getTheDAO();
+            if(!dao.checkSituationExists(instanceId)){
+                return 400;
+            }
             response = new ObjectMapper().readValue(responses, MakeBelieveResponse.class);
-        }catch(IOException e){
+            if(instanceId != response.getSituationId()){
+                return 400;
+            }
+            if(dao.updateMakeBelieveActivityInstance(response))
+                return 204;
+            return 500;
+        }catch (Exception e){
             e.printStackTrace();
-            return 400;
+            System.out.println("Some problem in getMakeBelieveInstanceAnswer in Reach service");
+            return 500;
         }
-        if(instanceId != response.getSituationId()){
-            return 400;
-        }
-        return 204;
+
     }
 }
