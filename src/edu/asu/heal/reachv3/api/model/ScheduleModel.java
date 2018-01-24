@@ -13,6 +13,8 @@ public class ScheduleModel {
     private boolean rtu;
     private boolean blob;
     private boolean safe;
+    private boolean abmt;
+
 
     public ScheduleModel() {
     }
@@ -113,6 +115,14 @@ public class ScheduleModel {
         this.safe = safe;
     }
 
+    public boolean isAbmt() {
+        return abmt;
+    }
+
+    public void setAbmt(boolean abmt) {
+        this.abmt = abmt;
+    }
+
     @Override
     public String toString() {
         return String.valueOf(this.getWeekNumber()) + "\n" +
@@ -121,6 +131,7 @@ public class ScheduleModel {
                 String.valueOf(this.isRelaxation()) + "\n" +
                 String.valueOf(this.isStop()) + "\n" +
                 String.valueOf(this.isSafe()) + "\n" +
-                String.valueOf(this.isStopWorryheads());
+                String.valueOf(this.isStopWorryheads()) + "\n" +
+                String.valueOf(this.isAbmt());
     }
 }

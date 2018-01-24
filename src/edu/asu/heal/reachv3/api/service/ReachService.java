@@ -1,33 +1,28 @@
 package edu.asu.heal.reachv3.api.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.asu.heal.core.HealCoreInterface;
-import edu.asu.heal.reachv3.api.model.ScheduleModel;
+import edu.asu.heal.core.api.service.HealService;
+import edu.asu.heal.core.api.dao.DAO;
+import edu.asu.heal.core.api.dao.DAOFactory;
+import edu.asu.heal.reachv3.api.model.*;
 
-import java.util.Date;
-import java.util.Random;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ReachService implements HealCoreInterface {
+public class ReachService implements HealService {
 
     @Override
-    public String getActivityInstances(String patientPin) {
+    public String getActivityInstances(String patientPin, int trialId) {
         try {
-            // return the mockup data
-            Random randomizer = new Random();
 
-            ScheduleModel instance = new ScheduleModel();
-            instance.setWeekNumber(randomizer.nextInt(7));
-            instance.setDay(randomizer.nextInt(43));
-            instance.setRelaxation(randomizer.nextBoolean());
-            instance.setDiaryEvent1(randomizer.nextBoolean());
-            instance.setDiaryEvent2(randomizer.nextBoolean());
-            instance.setStop(randomizer.nextBoolean());
-            instance.setStopWorryheads(randomizer.nextBoolean());
-            instance.setStic(randomizer.nextInt(4));
-            instance.setSudScaleEvent(randomizer.nextBoolean());
-            instance.setRtu(randomizer.nextBoolean());
-            instance.setBlob(randomizer.nextBoolean());
-            instance.setSafe(randomizer.nextBoolean());
+            // TODO -- scope in the possibility that when queryParams(patientPin, trialId) are not present, then
+            // we will return activityInstance collection
+
+            // return the mockup data
+            DAO dao = DAOFactory.getTheDAO();
+            ScheduleModel instance = (ScheduleModel)dao.getScheduledActivities( 2);
 
             ObjectMapper mapper = new ObjectMapper();
             return mapper.writeValueAsString(instance);
@@ -41,22 +36,36 @@ public class ReachService implements HealCoreInterface {
     }
 
     @Override
-    public String getActivityInstanceDetail(Integer activityInstanceId, String patientPin) {
-
-        // TODO
-
-        return null;
+    public String getActivityInstance(String activityInstanceId){
+        return "ActivityInstance: "+activityInstanceId;
     }
 
     @Override
     public String createActivityInstance(String requestPayload) {
         try {
             //Mock data as of now
+            DAO dao = DAOFactory.getTheDAO();
             ObjectMapper mapper = new ObjectMapper();
             ScheduleModel model = mapper.readValue(requestPayload, ScheduleModel.class);
 
-            System.out.println(model.toString());
+            int day = model.getDay();
+            boolean COMPLETED = false;
 
+            if(model.isSafe()){
+                dao.scheduleSAFEACtivity(day, COMPLETED);
+            }
+            if(model.isRelaxation()){
+                dao.scheduleRelaxationActivity(day, COMPLETED);
+            }
+            if(model.isStop()){
+                dao.scheduleSTOPActivity(day, COMPLETED);
+            }
+            if(model.isAbmt()){
+                dao.scheduleABMTActivity(day, COMPLETED);
+            }
+            if(model.getStic() > 0){
+                dao.scheduleSTICActivity(day, model.getStic());
+            }
             return "OK";
         }catch (Exception e){
             System.out.println("Error from createActivityInstance() in ReachService");
@@ -66,10 +75,126 @@ public class ReachService implements HealCoreInterface {
     }
 
     @Override
-    public String updateActivities(String patientPin) {
+    public String updateActivityInstance(String requestBody) {
+        try {
+            //Mock data as of now
+            DAO dao = DAOFactory.getTheDAO();
+            ObjectMapper mapper = new ObjectMapper();
+            ScheduleModel model = mapper.readValue(requestBody, ScheduleModel.class);
+            boolean COMPLETED = true;
 
-        // TODO
+            int day = model.getDay();
 
+            if(model.isSafe()){
+                dao.scheduleSAFEACtivity(day, COMPLETED);
+            }
+            if(model.isRelaxation()){
+                dao.scheduleRelaxationActivity(day, COMPLETED);
+            }
+            if(model.isStop()){
+                dao.scheduleSTOPActivity(day, COMPLETED);
+            }
+            if(model.isAbmt()){
+                dao.scheduleABMTActivity(day, COMPLETED);
+            }
+            if(model.getStic() == 0){
+                dao.scheduleSTICActivity(day, 0);
+            }
+            return "OK";
+        }catch (Exception e){
+            System.out.println("Error from createActivityInstance() in ReachService");
+            e.printStackTrace();
+        }
         return null;
+    }
+
+    @Override
+    public String deleteActivityInstance(String activityInstanceId){
+        return "DELETE AI: "+activityInstanceId;
+    }
+
+    // methods pertaining to activity resource
+    @Override
+    public String createActivity(String requestBody){
+        return "Create activity for patient";
+    }
+
+    // patient resource method
+    @Override
+    public String getPatients(int trialId){
+        // explore the option - if trialId is not present then return patients collections
+        return "GET ALL PATIENTS";
+    }
+
+    @Override
+    public String getPatient(String patientPin) {
+        return "GET PATIENT: " + patientPin;
+    }
+
+    @Override
+    public String createPatient(String requestBody) {
+        return null;
+    }
+
+    @Override
+    public String updatePatient(String requestBody) {
+        return null;
+    }
+
+    @Override
+    public String deletePatient(String patientPin){
+        return "DELETE PATIENT";
+    }
+
+    public String getMakeBelieveInstance() {
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+            MakeBelieveSituation situation = (MakeBelieveSituation) dao.getMakeBelieveActivityInstance();
+            return new ObjectMapper().writeValueAsString(situation);
+        } catch (Exception e){
+            e.printStackTrace();
+            System.out.println("Some problem in getMakeBelieveInstance in Reach Service");
+        }
+        return null;
+    }
+
+    public String getMakeBelieveInstanceAnswer(int instanceId){
+        try{
+            DAO dao = DAOFactory.getTheDAO();
+            if(!dao.checkSituationExists(instanceId)){
+                return "Bad Request";
+            }
+
+            MakeBelieveAnswers answers = (MakeBelieveAnswers) dao.getMakeBelieveActivityAnswers(instanceId);
+            if(answers != null)
+                return new ObjectMapper().writeValueAsString(answers);
+            return null;
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println("Some problem in getMakeBelieveInstanceAnswer in Reach service");
+            return null;
+        }
+    }
+
+    public int updateMakeBelieveInstance(int instanceId, String responses){
+        try{
+            MakeBelieveResponse response;
+            DAO dao = DAOFactory.getTheDAO();
+            if(!dao.checkSituationExists(instanceId)){
+                return 400;
+            }
+            response = new ObjectMapper().readValue(responses, MakeBelieveResponse.class);
+            if(instanceId != response.getSituationId()){
+                return 400;
+            }
+            if(dao.updateMakeBelieveActivityInstance(response))
+                return 204;
+            return 500;
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println("Some problem in getMakeBelieveInstanceAnswer in Reach service");
+            return 500;
+        }
+
     }
 }

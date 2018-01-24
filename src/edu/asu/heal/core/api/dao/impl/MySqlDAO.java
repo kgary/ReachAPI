@@ -1,6 +1,6 @@
-package edu.asu.heal.reachv3.api.dao.impl;
+package edu.asu.heal.core.api.dao.impl;
 
-import edu.asu.heal.reachv3.api.dao.DAOException;
+import edu.asu.heal.core.api.dao.DAOException;
 
 import java.util.Properties;
 

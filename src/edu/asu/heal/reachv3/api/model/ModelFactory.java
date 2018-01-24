@@ -1,9 +1,9 @@
 package edu.asu.heal.reachv3.api.model;
 
-import edu.asu.heal.reachv3.api.dao.DAO;
-import edu.asu.heal.reachv3.api.dao.DAOException;
-import edu.asu.heal.reachv3.api.dao.DAOFactory;
-import edu.asu.heal.reachv3.api.dao.ValueObject;
+import edu.asu.heal.core.api.dao.DAO;
+import edu.asu.heal.core.api.dao.DAOException;
+import edu.asu.heal.core.api.dao.DAOFactory;
+import edu.asu.heal.core.api.dao.ValueObject;
 
 public final class ModelFactory {
     private DAO _theDAO = null;
@@ -19,7 +19,7 @@ public final class ModelFactory {
 
     public ValueObject getScheduledActivities(int currentDay) throws ModelException{
         try{
-            ValueObject vo = _theDAO.getScheduledActivities(currentDay);
+            ValueObject vo = (ValueObject)_theDAO.getScheduledActivities(currentDay);
             if(vo == null){
                 return null;
             }
@@ -32,36 +32,36 @@ public final class ModelFactory {
         }
     }
 
-    public boolean scheduleActivities(String STOP, String SAFE, String WorryHeads, String DailyDiary, String ABMT, String Relaxation, int STIC){
-        try {
-            if(STOP != null){
-                if(!_theDAO.scheduleSTOPActivity(STOP))
-                    return false;
-            }
-            if(SAFE != null){
-                _theDAO.scheduleSAFEACtivity(SAFE);
-            }
-            if(WorryHeads != null){
-                _theDAO.scheduleWorryHeadsActivity(WorryHeads);
-            }
-            if(DailyDiary != null){
-                _theDAO.scheduleDailyDiaryActivity(DailyDiary);
-            }
-            if(ABMT != null){
-                _theDAO.scheduleABMTActivity(ABMT);
-            }
-            if(Relaxation != null){
-                _theDAO.scheduleRelaxationActivity(Relaxation);
-            }
-            if(STIC > -1){
-                _theDAO.scheduleSTICActivity(STIC);
-            }
-        }catch (Exception e){
-            System.out.println("EXCEPTION THROWN IN MODELFACTORY.SCHEDULEACTIVITIES");
-            return false;
-        }
-        return true;
-    }
+//    public boolean scheduleActivities(String STOP, String SAFE, String WorryHeads, String DailyDiary, String ABMT, String Relaxation, int STIC){
+//        try {
+//            if(STOP != null){
+//                if(!_theDAO.scheduleSTOPActivity(STOP))
+//                    return false;
+//            }
+//            if(SAFE != null){
+//                _theDAO.scheduleSAFEACtivity(SAFE);
+//            }
+//            if(WorryHeads != null){
+//                _theDAO.scheduleWorryHeadsActivity(WorryHeads);
+//            }
+//            if(DailyDiary != null){
+//                _theDAO.scheduleDailyDiaryActivity(DailyDiary);
+//            }
+//            if(ABMT != null){
+//                _theDAO.scheduleABMTActivity(ABMT);
+//            }
+//            if(Relaxation != null){
+//                _theDAO.scheduleRelaxationActivity(Relaxation);
+//            }
+//            if(STIC > -1){
+//                _theDAO.scheduleSTICActivity(STIC);
+//            }
+//        }catch (Exception e){
+//            System.out.println("EXCEPTION THROWN IN MODELFACTORY.SCHEDULEACTIVITIES");
+//            return false;
+//        }
+//        return true;
+//    }
 
 
 }

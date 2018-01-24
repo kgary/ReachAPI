@@ -1,4 +1,4 @@
-package edu.asu.heal.reachv3.api.errorHandler;
+package edu.asu.heal.core.api.errorHandler;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
