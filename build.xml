@@ -1,0 +1,34 @@
+<project name="ReachAPI" default="deploy">
+
+  <property name="srclib" value="lib"/>
+  <property name="destdir" value="ReachAPI/WEB-INF"/>
+  <property name="daopackage" value="edu/asu/heal/core/api/dao"/>
+  <property name="srcweb" value="web/WEB-INF" />
+  <property name="warfile" value="ReachAPI.war"/>
+  <property name="tomcat_webapps" value="/var/lib/tomcat-8.5.24-8080/webapps"/>
+
+  <path id="classpath">
+		<fileset dir="./">
+			<include name="${srclib}/*.jar" />
+		</fileset>
+	</path>
+
+  <target name="compile">
+    <mkdir dir="${destdir}/classes"/>
+    <mkdir dir="${destdir}/lib/"/>
+    <copy todir="${destdir}/lib">
+      <fileset dir="lib"/>
+    </copy>
+    <javac classpathref="classpath" srcdir="src" destdir="${destdir}/classes/" />
+    <copy file="src/${daopackage}/dao.properties" todir="${destdir}/classes/${daopackage}"/>
+  </target>
+
+  <target name="build" depends="compile">
+    <copy file="${srcweb}/web.xml" todir="${destdir}"/>
+    <war destfile="${warfile}" basedir="ReachAPI" needxmlfile="false"/>
+  </target>
+
+  <target name="deploy" depends="build">
+    <copy file="${warfile}" todir="${tomcat_webapps}" />
+  </target>
+</project>
