@@ -12,8 +12,26 @@ public class PatientResource {
     private HealService reachService = HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
 
     /**
-     * @apiDefine PatientNotFoundError
-     * @apiError (Error 4xx) {404} PatientNotFoundError The <code>id</code> was not found
+     * @apiDefine BadRequestError
+     * @apiError (Error 4xx) {400} BadRequest Bad Request Encountered
+     * */
+
+    /** @apiDefine UnAuthorizedError
+     * @apiError (Error 4xx) {401} UnAuthorized The Client must be authorized to access the resource
+     * */
+
+    /** @apiDefine PatientNotFoundError
+     * @apiError (Error 4xx) {404} NotFound The patient cannot be found
+     * */
+
+    /**
+     * @apiDefine InternalServerError
+     * @apiError (Error 5xx) {500} InternalServerError Something went wrong at server, Please contact the administrator!
+     * */
+
+    /**
+     * @apiDefine NotImplementedError
+     * @apiError (Error 5xx) {501} NotImplemented The resource has not been implemented. Please keep patience, our developers are working hard on it!!
      * */
 
     /**
@@ -24,7 +42,11 @@ public class PatientResource {
      * @apiParam {Number} id Trial Unique Id
      * @apiParam (Login) {String} pass Only logged in user can get this
      *
+     * @apiUse BadRequestError
+     * @apiUse UnAuthorizedError
      * @apiUse PatientNotFoundError
+     * @apiUse InternalServerError
+     * @apiUse NotImplementedError
      * */
     @GET
     public Response fetchPatients(@QueryParam("trialId") int trialId){
@@ -37,8 +59,14 @@ public class PatientResource {
      * @apiGroup Patient
      *
      * @apiParam {Number} id Patient's Unique Id
+     *
      * @apiParam (Login) {String} pass Only logged in user can get this
+     *
+     * @apiUse BadRequestError
+     * @apiUse UnAuthorizedError
      * @apiUse PatientNotFoundError
+     * @apiUse InternalServerError
+     * @apiUse NotImplementedError
     * */
     @GET
     @Path("/{patientPin}")
@@ -60,6 +88,11 @@ public class PatientResource {
      * @apiParam {Number} ParentPinId Patient's Unique Id
      *
      * @apiParam (Login) {String} pass Only logged in user can post this
+     *
+     * @apiUse BadRequestError
+     * @apiUse UnAuthorizedError
+     * @apiUse InternalServerError
+     * @apiUse NotImplementedError
      * */
     @POST
     public Response addPatient(String requestBody){
@@ -80,6 +113,11 @@ public class PatientResource {
      * @apiParam {Number} ParentPinId Patient's Unique Id
      *
      * @apiParam (Login) {String} pass Only logged in user can put this
+     *
+     * @apiUse BadRequestError
+     * @apiUse UnAuthorizedError
+     * @apiUse InternalServerError
+     * @apiUse NotImplementedError
      * */
     @PUT
     public Response updatePatient(String requestBody){
@@ -94,7 +132,11 @@ public class PatientResource {
      * @apiParam {Number} patientId Unique Patient's Id
      * @apiParam (Login) {String} pass Only logged in user can delete this
      *
+     * @apiUse BadRequestError
+     * @apiUse UnAuthorizedError
      * @apiUse PatientNotFoundError
+     * @apiUse InternalServerError
+     * @apiUse NotImplementedError
      * */
     @DELETE
     @Path("/{patientPin}")
