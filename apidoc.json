@@ -1,0 +1,13 @@
+{
+  "name": "HEAL API",
+  "version": "0.1.0",
+  "description": "HEAL API Documentation",
+  "title": "HEAL API",
+  "order":[
+    "GetPatientsOfTrial",
+    "GetPatientDetail",
+    "AddPatient",
+    "UpdatePatient",
+    "RemovePatient"
+  ]
+}
