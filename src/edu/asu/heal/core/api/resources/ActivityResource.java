@@ -25,8 +25,8 @@ public class ActivityResource {
      * @apiError (Error 4xx) {401} UnAuthorized The Client must be authorized to access the resource
      * */
 
-    /** @apiDefine PatientNotFoundError
-     * @apiError (Error 4xx) {404} NotFound The activity cannot be found
+    /** @apiDefine ActivityNotFoundError
+     * @apiError (Error 4xx) {404} NotFound Activity cannot be found
      * */
 
     /**

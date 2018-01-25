@@ -15,6 +15,29 @@ public class ActivityInstanceResource {
             HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
 
     /**
+     * @apiDefine BadRequestError
+     * @apiError (Error 4xx) {400} BadRequest Bad Request Encountered
+     * */
+
+    /** @apiDefine UnAuthorizedError
+     * @apiError (Error 4xx) {401} UnAuthorized The Client must be authorized to access the resource
+     * */
+
+    /** @apiDefine ActivityInstanceNotFoundError
+     * @apiError (Error 4xx) {404} NotFound ActivityInstance(s) cannot be found
+     * */
+
+    /**
+     * @apiDefine InternalServerError
+     * @apiError (Error 5xx) {500} InternalServerError Something went wrong at server, Please contact the administrator!
+     * */
+
+    /**
+     * @apiDefine NotImplementedError
+     * @apiError (Error 5xx) {501} NotImplemented The resource has not been implemented. Please keep patience, our developers are working hard on it!!
+     * */
+
+    /**
      * @api {get} /activityInstance?patientPin={patientPin}&trialId={trialId} ActivityInstances
      * @apiName GetActivityInstances
      * @apiGroup ActivityInstance
@@ -24,7 +47,11 @@ public class ActivityInstanceResource {
      *
      * @apiParam (Login) {String} pass Only logged in user can get this
      *
-     * @apiError (Error 4xx) {404} ActivityInstancesNotFound Activity Instances cannot be found
+     * @apiUse BadRequestError
+     * @apiUse UnAuthorizedError
+     * @apiUse ActivityInstanceNotFoundError
+     * @apiUse InternalServerError
+     * @apiUse NotImplementedError
      * */
     @GET
     public Response fetchActivityInstances(@QueryParam("patientPin") String patientPin,
@@ -43,7 +70,11 @@ public class ActivityInstanceResource {
      *
      * @apiParam (Login) {String} pass Only logged in user can get this
      *
-     * @apiError (4xx) {404} ActivityInstanceNotFound Activity Instance cannot be found with <code>id</code>
+     * @apiUse BadRequestError
+     * @apiUse UnAuthorizedError
+     * @apiUse ActivityInstanceNotFoundError
+     * @apiUse InternalServerError
+     * @apiUse NotImplementedError
      * */
     @GET
     @Path("/{id}/")
@@ -65,6 +96,11 @@ public class ActivityInstanceResource {
      * @apiParam {String} Description Description about the Activity Instance
      *
      * @apiParam (Login) {String} pass Only logged in user can get this
+     *
+     * @apiUse BadRequestError
+     * @apiUse UnAuthorizedError
+     * @apiUse InternalServerError
+     * @apiUse NotImplementedError
      * */
     @POST
     public Response addActivityInstance(String requestBody){
@@ -92,6 +128,11 @@ public class ActivityInstanceResource {
      * @apiParam {String} Description Description about the Activity Instance
      *
      * @apiParam (Login) {String} pass Only logged in user can get this
+     *
+     * @apiUse BadRequestError
+     * @apiUse UnAuthorizedError
+     * @apiUse InternalServerError
+     * @apiUse NotImplementedError
      * */
     @PUT
     public Response updateActivityInstance(String requestBody){
@@ -106,6 +147,12 @@ public class ActivityInstanceResource {
      * @apiParam {Number} id ActivityInstance's unique id
      *
      * @apiParam (Login) {String} pass Only logged in user can get this
+     *
+     * @apiUse BadRequestError
+     * @apiUse UnAuthorizedError
+     * @apiUse ActivityInstanceNotFoundError
+     * @apiUse InternalServerError
+     * @apiUse NotImplementedError
      * */
     @DELETE
     @Path("/{id}")
