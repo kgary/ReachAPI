@@ -10,6 +10,12 @@
     "AddPatient",
     "UpdatePatient",
     "RemovePatient",
+    "ActivityInstance",
+    "GetActivityInstances",
+    "ActivityInstanceDetail",
+    "CreateActivityInstance",
+    "UpdateActivityInstance",
+    "DeleteActivityInstance",
     "Activity",
     "CreateActivity"
   ]

@@ -14,22 +14,58 @@ public class ActivityInstanceResource {
     private static HealService reachService =
             HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
 
+    /**
+     * @api {get} /activityInstance?patientPin={patientPin}&trialId={trialId} ActivityInstances
+     * @apiName GetActivityInstances
+     * @apiGroup ActivityInstance
+     *
+     * @apiParam {Number} patientPin Patient's Unique Id
+     * @apiParam {Number} trialId Trial's Unique Id
+     *
+     * @apiParam (Login) {String} pass Only logged in user can get this
+     *
+     * @apiError (Error 4xx) {404} ActivityInstancesNotFound Activity Instances cannot be found
+     * */
     @GET
     public Response fetchActivityInstances(@QueryParam("patientPin") String patientPin,
                                            @QueryParam("trialId") int trialId){
-
-        // URI pattern: /activityisntance?patientPin=1011&trialId=1
 
         return Response.status(Response.Status.OK).entity(
                 reachService.getActivityInstances(patientPin, trialId)).build();
     }
 
+    /**
+     * @api {get} /activityInstance/:id ActivityInstance Detail
+     * @apiName ActivityInstanceDetail
+     * @apiGroup ActivityInstance
+     *
+     * @apiParam {Number} id ActivityInstance's Unique Id
+     *
+     * @apiParam (Login) {String} pass Only logged in user can get this
+     *
+     * @apiError (4xx) {404} ActivityInstanceNotFound Activity Instance cannot be found with <code>id</code>
+     * */
     @GET
-    @Path("/{activityInstanceId}/")
-    public Response fetchActivityInstance(@PathParam("activityInstanceId") String activityInstanceId){
+    @Path("/{id}/")
+    public Response fetchActivityInstance(@PathParam("id") String activityInstanceId){
         return Response.status(Response.Status.OK).entity(reachService.getActivityInstance(activityInstanceId)).build();
     }
 
+    /**
+     * @api {post} /activityInstance Create ActivityInstance
+     * @apiName CreateActivityInstance
+     * @apiGroup ActivityInstance
+     *
+     * @apiParam {DateTime} StartTime Start Time of the Activity Instance
+     * @apiParam {DateTime} EndTime End Time of the Activity Instance
+     * @apiParam {DateTime} UserSubmissionTime User Submission Time of the ActivityInstance
+     * @apiParam {String} Status The status of the Activity Instance from Created | Available | In Execution (Running) | Suspended | Completed | Aborted
+     * @apiParam {String} Sequence The sequence of the activities
+     * @apiParam {String} ActivityTitle The title of the Activity Instance
+     * @apiParam {String} Description Description about the Activity Instance
+     *
+     * @apiParam (Login) {String} pass Only logged in user can get this
+     * */
     @POST
     public Response addActivityInstance(String requestBody){
         String response = reachService.createActivityInstance(requestBody);
@@ -42,14 +78,38 @@ public class ActivityInstanceResource {
         }
     }
 
+    /**
+     * @api {put} activityInstance Update ActivityInstance
+     * @apiName UpdateActivityInstance
+     * @apiGroup ActivityInstance
+     *
+     * @apiParam {DateTime} StartTime Start Time of the Activity Instance
+     * @apiParam {DateTime} EndTime End Time of the Activity Instance
+     * @apiParam {DateTime} UserSubmissionTime User Submission Time of the ActivityInstance
+     * @apiParam {String} Status The status of the Activity Instance from Created | Available | In Execution (Running) | Suspended | Completed | Aborted
+     * @apiParam {String} Sequence The sequence of the activities
+     * @apiParam {String} ActivityTitle The title of the Activity Instance
+     * @apiParam {String} Description Description about the Activity Instance
+     *
+     * @apiParam (Login) {String} pass Only logged in user can get this
+     * */
     @PUT
     public Response updateActivityInstance(String requestBody){
         return Response.status(Response.Status.OK).entity(reachService.updateActivityInstance(requestBody)).build();
     }
 
+    /**
+     * @api {delete} /activityInstance/:id Delete ActivityInstance
+     * @apiName DeleteActivityInstance
+     * @apiGroup ActivityInstance
+     *
+     * @apiParam {Number} id ActivityInstance's unique id
+     *
+     * @apiParam (Login) {String} pass Only logged in user can get this
+     * */
     @DELETE
-    @Path("/{activityInstanceId}")
-    public Response removeActivityInstance(@PathParam("activityInstanceId") String activityInstanceId){
+    @Path("/{id}")
+    public Response removeActivityInstance(@PathParam("id") String activityInstanceId){
         return Response.status(Response.Status.OK).entity(
                 reachService.deleteActivityInstance(activityInstanceId)).build();
     }
@@ -59,7 +119,8 @@ public class ActivityInstanceResource {
     public Response fetchMakeBelieveInstance(){
         String makeBelieveInstanceString = reachService.getMakeBelieveInstance();
         if(makeBelieveInstanceString == null)
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Some server error. Please contact administrator").build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Some server error. Please contact " +
+                    "administrator").build();
         return Response.status(Response.Status.OK).entity(makeBelieveInstanceString).build();
     }
 
@@ -68,7 +129,8 @@ public class ActivityInstanceResource {
     public Response fetchMakeBelieveInstanceAnswers(@QueryParam("situation_id") int situationId){
         String makeBelieveInstanceAnswerString = reachService.getMakeBelieveInstanceAnswer(situationId);
         if(makeBelieveInstanceAnswerString == null)
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Some server error. Please contact administrator").build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Some server error. Please contact " +
+                    "administrator").build();
         if(makeBelieveInstanceAnswerString.equals("Bad Request"))
             return Response.status(400).build();
         return Response.status(Response.Status.OK).entity(makeBelieveInstanceAnswerString).build();
