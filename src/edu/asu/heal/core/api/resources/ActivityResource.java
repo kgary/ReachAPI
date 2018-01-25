@@ -16,6 +16,21 @@ public class ActivityResource {
     private static HealService reachService =
             HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
 
+    /**
+     * @api {post} /activity Create Activity
+     * @apiName CreateActivity
+     * @apiGroup Activity
+     *
+     * @apiParam {String} ActivityId Id of the Activity
+     * @apiParam {String} ActivityName Name of the Activity
+     * @apiParam {String} ActivityType Type of the Activity
+     * @apiParam {String} Description Description of the Activity
+     * @apiParam {String} CanonicalOrder Canonical Order of the Activity
+     * @apiParam {String} MetaData Meta Data of the Activity
+     *
+     * @apiParam (Login) {String} pass Only logged in user can post this
+     *
+     * */
     @POST
     public Response scheduleActivity(String requestBody){
         // schedules activity for a patient of a trial

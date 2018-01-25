@@ -4,10 +4,13 @@
   "description": "HEAL API Documentation",
   "title": "HEAL API",
   "order":[
+    "Patient",
     "GetPatientsOfTrial",
     "GetPatientDetail",
     "AddPatient",
     "UpdatePatient",
-    "RemovePatient"
+    "RemovePatient",
+    "Activity",
+    "CreateActivity"
   ]
 }
