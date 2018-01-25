@@ -1,7 +1,7 @@
 <project name="ReachAPI" default="deploy">
 
   <property name="srclib" value="lib"/>
-  <property name="destdir" value="ReachAPI/WEB-INF"/>
+  <property name="destdir" value="ReachAPI"/>
   <property name="daopackage" value="edu/asu/heal/core/api/dao"/>
   <property name="srcweb" value="web/WEB-INF" />
   <property name="warfile" value="ReachAPI.war"/>
@@ -14,21 +14,30 @@
 	</path>
 
   <target name="compile">
-    <mkdir dir="${destdir}/classes"/>
-    <mkdir dir="${destdir}/lib/"/>
-    <copy todir="${destdir}/lib">
+    <mkdir dir="${destdir}/WEB-INF/classes"/>
+    <mkdir dir="${destdir}/WEB-INF/lib/"/>
+    <copy todir="${destdir}/WEB-INF/lib">
       <fileset dir="lib"/>
     </copy>
-    <javac classpathref="classpath" srcdir="src" destdir="${destdir}/classes/" />
-    <copy file="src/${daopackage}/dao.properties" todir="${destdir}/classes/${daopackage}"/>
+    <javac classpathref="classpath" srcdir="src" destdir="${destdir}/WEB-INF/classes/" />
+    <copy file="src/${daopackage}/dao.properties" todir="${destdir}/WEB-INF/classes/${daopackage}"/>
   </target>
 
   <target name="build" depends="compile">
-    <copy file="${srcweb}/web.xml" todir="${destdir}"/>
-    <war destfile="${warfile}" basedir="ReachAPI" needxmlfile="false"/>
+    <copy file="${srcweb}/web.xml" todir="${destdir}/WEB-INF"/>
+    <war destfile="${warfile}" basedir="${destdir}" needxmlfile="false"/>
   </target>
 
   <target name="deploy" depends="build">
     <copy file="${warfile}" todir="${tomcat_webapps}" />
+  </target>
+
+  <target name="clean">
+    <delete file="${warfile}" />
+    <delete dir="${destdir}"/>
+  </target>
+
+  <target name="undeploy">
+    <delete file="${tomcat_webapps}/${warfile}" />
   </target>
 </project>
