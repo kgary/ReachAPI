@@ -32,12 +32,13 @@ public class PatientResource {
     }
 
     /**
-     * @api {get} /patient/:patientId Patient Detail
+     * @api {get} /patient/:id Patient Detail
      * @apiName GetPatientDetail
      * @apiGroup Patient
      *
-     * @apiParam {Number} patientId Patient's Unique Id
+     * @apiParam {Number} id Patient's Unique Id
      * @apiParam (Login) {String} pass Only logged in user can get this
+     * @apiUse PatientNotFoundError
     * */
     @GET
     @Path("/{patientPin}")
@@ -86,12 +87,14 @@ public class PatientResource {
     }
 
     /**
-     * @api {delete} /patient/:patientId Delete Patient
+     * @api {delete} /patient/:id Delete Patient
      * @apiName RemovePatient
      * @apiGroup Patient
      *
      * @apiParam {Number} patientId Unique Patient's Id
      * @apiParam (Login) {String} pass Only logged in user can delete this
+     *
+     * @apiUse PatientNotFoundError
      * */
     @DELETE
     @Path("/{patientPin}")
