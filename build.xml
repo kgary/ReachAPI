@@ -1,12 +1,7 @@
 <project name="ReachAPI" default="deploy">
 
-  <property name="srclib" value="lib"/>
-  <property name="destdir" value="ReachAPI"/>
-  <property name="daopackage" value="edu/asu/heal/core/api/dao"/>
-  <property name="srcweb" value="web/WEB-INF" />
-  <property name="warfile" value="ReachAPI.war"/>
-  <property name="tomcat_webapps" value="/var/lib/tomcat-8.5.24-8080/webapps"/>
-
+  <property file="build.properties" />
+  
   <path id="classpath">
 		<fileset dir="./">
 			<include name="${srclib}/*.jar" />
