@@ -189,4 +189,18 @@ public class ActivityInstanceResource {
         int response = reachService.updateMakeBelieveInstance(situationId, requestBody);
         return Response.status(response).build();
     }
+
+    @GET
+    @Path("/worryheads")
+    public Response fetchWorryHeadsInstance(){
+        String worryHeadsInstanceString = reachService.getWorryHeadsInstance();
+        if(worryHeadsInstanceString == null)
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Some server error. Please contact "
+            + "administrator").build();
+
+        if(worryHeadsInstanceString.equals("Bad Request"))
+            return Response.status(Response.Status.BAD_REQUEST).build();
+
+        return Response.status(Response.Status.OK).entity(worryHeadsInstanceString).build();
+    }
 }

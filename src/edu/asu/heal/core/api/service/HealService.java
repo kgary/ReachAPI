@@ -40,4 +40,6 @@ public interface HealService {
 
     int updateMakeBelieveInstance(int instanceId, String responses);
 
+    String getWorryHeadsInstance();
+
 }

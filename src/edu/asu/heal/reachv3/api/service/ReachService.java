@@ -10,6 +10,7 @@ import edu.asu.heal.reachv3.api.model.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class ReachService implements HealService {
 
@@ -144,6 +145,32 @@ public class ReachService implements HealService {
     @Override
     public String deletePatient(String patientPin){
         return "DELETE PATIENT";
+    }
+
+    @Override
+    public String getWorryHeadsInstance() {
+        try {
+            Random r = new Random();
+            String[] o_options = {"The goalie isn't the only player on the team," +
+                    " so it couldn't have been only my fault that we lost",
+                    "Even though we didn't win, we tied the game, so we still did pretty well",
+                    "I've practiced and I feel that I did the best I could and sometimes losing just happens",
+                    "I should have practice harder."};
+
+            WorryHeadsModel whm = new WorryHeadsModel(0,
+                    "WorryHeads",
+                    "You think, \"She thinks it's my fault we didn't win.\"",
+                    "You are the goalie for your soccer team and today's game ended in a tie. " +
+                            "After the game, you hear a teammate say that your team should have won",
+                    "P text",
+                    r.nextInt(4),
+                    o_options);
+
+            return new ObjectMapper().writeValueAsString(whm);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public String getMakeBelieveInstance() {
