@@ -6,6 +6,7 @@ import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOException;
 import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.core.api.dao.ValueObject;
+import edu.asu.heal.core.api.models.Domain;
 import edu.asu.heal.reachv3.api.model.*;
 
 import java.sql.*;
@@ -40,6 +41,11 @@ public abstract class JDBCDao implements DAO {
             se.printStackTrace();
             throw new DAOException("Unable to get connection to database", se);
         }
+    }
+
+    @Override
+    public String createDomain(Domain instance) {
+        return null;
     }
 
     @Override

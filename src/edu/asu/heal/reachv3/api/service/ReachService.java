@@ -2,6 +2,9 @@ package edu.asu.heal.reachv3.api.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.asu.heal.core.api.models.Activity;
+import edu.asu.heal.core.api.models.Domain;
+import edu.asu.heal.core.api.models.Trial;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOFactory;
@@ -13,6 +16,21 @@ import java.util.List;
 import java.util.Random;
 
 public class ReachService implements HealService {
+
+    @Override
+    public String addDomain(String title, String description, String state) {
+
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+            Domain instance = new Domain(title, description, state);
+            instance.setActivities(new ArrayList<Activity>());
+            instance.setTrials(new ArrayList<Trial>());
+
+            return dao.createDomain(instance);
+        } catch (Exception e){
+            return e.getMessage();
+        }
+    }
 
     @Override
     public String getActivityInstances(String patientPin, int trialId) {

@@ -1,11 +1,20 @@
 package edu.asu.heal.core.api.dao.impl;
 
 import com.mongodb.*;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOException;
+import edu.asu.heal.core.api.models.Domain;
+import org.bson.Document;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 
 import java.util.Arrays;
 import java.util.Properties;
+
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class MongoDBDAO implements DAO {
     private String __mongoUser;
@@ -19,28 +28,34 @@ public class MongoDBDAO implements DAO {
 
     public MongoDBDAO(Properties properties){
         __mongoURI = properties.getProperty("mongo.uri");
+        __mongoDBName = properties.getProperty("mongo.dbname");
 
         // Alternatively, the following properties can be used if we don't want to deal with URIs separately
 //        __mongoUser = properties.getProperty("mongo.username");
 //        __mongoPassword = properties.getProperty("mongo.password");
 //        __mongoHost = properties.getProperty("mongo.host");
 //        __mongoPort = Integer.parseInt(properties.getProperty("mongo.port"));
-//        __mongoDBName = properties.getProperty("mongo.dbname");
+
     }
 
     private MongoClient getConnection(){
         try {
             return new MongoClient(new MongoClientURI(__mongoURI));
 
-            //Alternatively the following lines of code can be used
-//            MongoCredential credential = MongoCredential.createCredential(__mongoUser, __mongoDBName, __mongoPassword.toCharArray());
-//            MongoClient client = new MongoClient(new ServerAddress(__mongoHost, __mongoPort), credential, MongoClientOptions.builder().build());
+            // Alternatively the following lines of code can be used
+            // MongoCredential credential = MongoCredential.createCredential(__mongoUser, __mongoDBName, __mongoPassword.toCharArray());
+            // MongoClient client = new MongoClient(new ServerAddress(__mongoHost, __mongoPort), credential, MongoClientOptions.builder().build());
         }catch (Exception e){
             System.out.println("SOME ERROR GETTING MONGO CONNECTION");
             e.printStackTrace();
             return null;
         }
 
+    }
+
+    @Override
+    public String createDomain(Domain instance) {
+        return "TODO";
     }
 
     @Override

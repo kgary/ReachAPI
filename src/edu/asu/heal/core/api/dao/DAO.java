@@ -1,6 +1,12 @@
 package edu.asu.heal.core.api.dao;
 
+import edu.asu.heal.core.api.models.Domain;
+
 public interface DAO {
+
+    // methods pertaining to Domain Model
+    String createDomain(Domain instance);
+
     Object getScheduledActivities(int currentDay) throws DAOException;
 
 //    boolean scheduleSTOPActivity(String STOPWeeklySchedule) throws DAOException;

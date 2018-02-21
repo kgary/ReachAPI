@@ -1,6 +1,12 @@
 package edu.asu.heal.core.api.service;
 
+import edu.asu.heal.core.api.models.Domain;
+
 public interface HealService {
+
+    // methods pertaining to domain resource
+
+    String addDomain(String title, String description, String state);
 
     // methods pertaining to activityInstance resource
 
