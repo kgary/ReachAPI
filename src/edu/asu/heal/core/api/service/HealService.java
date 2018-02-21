@@ -10,6 +10,8 @@ public interface HealService {
 
     String addDomain(String title, String description, String state);
 
+    String addTestDomain(String title, String description, String state);
+
     // methods pertaining to activityInstance resource
 
     String getActivityInstances(String patientPin, int trialId);

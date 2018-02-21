@@ -28,8 +28,19 @@ public class DomainResource {
     public Response addDomain(@FormParam("title") String title, @FormParam("description") String description,
                                     @FormParam("state") String state){
 
-        return Response.status(Response.Status.NOT_IMPLEMENTED).entity(
+        return Response.status(Response.Status.OK).entity(
                 reachService.addDomain(title, description, state)
+        ).build();
+    }
+
+    @Path("/provision")
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response addTestDomain(@FormParam("title") String title, @FormParam("description") String description,
+                                   @FormParam("state") String state){
+
+        return Response.status(Response.Status.OK).entity(
+                reachService.addTestDomain(title, description, state)
         ).build();
     }
 
