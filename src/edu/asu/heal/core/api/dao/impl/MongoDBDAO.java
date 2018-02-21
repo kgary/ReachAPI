@@ -2,6 +2,7 @@ package edu.asu.heal.core.api.dao.impl;
 
 import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOException;
@@ -10,7 +11,9 @@ import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -38,9 +41,17 @@ public class MongoDBDAO implements DAO {
 
     }
 
-    private MongoClient getConnection(){
+    private MongoDatabase getConnectedDatabase(){
         try {
-            return new MongoClient(new MongoClientURI(__mongoURI));
+
+            // create codec registry for POJOs
+            CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(),
+                    fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+
+            MongoClient mongoClient = new MongoClient(new MongoClientURI(__mongoURI));
+
+            // get handle to "_mongoDBName" database
+            return mongoClient.getDatabase(__mongoDBName).withCodecRegistry(pojoCodecRegistry);
 
             // Alternatively the following lines of code can be used
             // MongoCredential credential = MongoCredential.createCredential(__mongoUser, __mongoDBName, __mongoPassword.toCharArray());
@@ -53,14 +64,16 @@ public class MongoDBDAO implements DAO {
 
     }
 
+    public List<Domain> getDomains(){
+        MongoDatabase database = getConnectedDatabase();
+        MongoCollection<Domain> domainCollection = database.getCollection("domains", Domain.class);
+
+        return domainCollection.find().into(new ArrayList<>());
+    }
+
     @Override
     public String createDomain(Domain instance) {
-        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(),
-                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
-
-        MongoDatabase database = getConnection().getDatabase(__mongoDBName);
-        database = database.withCodecRegistry(pojoCodecRegistry);
-
+        MongoDatabase database = getConnectedDatabase();
         MongoCollection<Domain> domainCollection = database.getCollection("domains", Domain.class);
 
         domainCollection.insertOne(instance);

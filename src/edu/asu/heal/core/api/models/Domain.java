@@ -13,6 +13,10 @@ public class Domain {
     private ArrayList<Activity> activities;
     private ArrayList<Trial> trials;
 
+    public Domain(){
+        // default constructor
+    }
+
     public Domain(String title, String description, String state){
         this.title = title;
         this.description = description;

@@ -18,7 +18,9 @@ public class DomainResource {
 
     @GET
     public Response fetchDomains(){
-        return Response.status(Response.Status.NOT_IMPLEMENTED).entity("NOT IMPLEMENTED").build();
+        return Response.status(Response.Status.NOT_IMPLEMENTED).entity(
+                reachService.getDomains()
+        ).build();
     }
 
     @POST

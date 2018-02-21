@@ -6,6 +6,8 @@ public interface HealService {
 
     // methods pertaining to domain resource
 
+    String getDomains();
+
     String addDomain(String title, String description, String state);
 
     // methods pertaining to activityInstance resource

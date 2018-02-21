@@ -5,6 +5,8 @@ import edu.asu.heal.core.api.models.Domain;
 public interface DAO {
 
     // methods pertaining to Domain Model
+    Object getDomains();
+
     String createDomain(Domain instance);
 
     Object getScheduledActivities(int currentDay) throws DAOException;

@@ -17,6 +17,22 @@ import java.util.Random;
 
 public class ReachService implements HealService {
 
+    public String getDomains(){
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+
+            List<Domain> domains = (List<Domain>) dao.getDomains();
+            if (domains != null){
+                return new ObjectMapper().writeValueAsString(domains);
+            } else {
+                return null;
+            }
+        } catch(Exception e){
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+
     @Override
     public String addDomain(String title, String description, String state) {
 
