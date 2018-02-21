@@ -55,7 +55,17 @@ public class MongoDBDAO implements DAO {
 
     @Override
     public String createDomain(Domain instance) {
-        return "TODO";
+        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(),
+                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+
+        MongoDatabase database = getConnection().getDatabase(__mongoDBName);
+        database = database.withCodecRegistry(pojoCodecRegistry);
+
+        MongoCollection<Domain> domainCollection = database.getCollection("domains", Domain.class);
+
+        domainCollection.insertOne(instance);
+
+        return "SUCCESS";
     }
 
     @Override
