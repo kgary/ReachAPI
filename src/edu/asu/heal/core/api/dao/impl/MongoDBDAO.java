@@ -161,4 +161,26 @@ public class MongoDBDAO implements DAO {
             return null;
         }
     }
+
+    @Override
+    public String getTrials(String domain) throws DAOException {
+        try{
+            MongoDatabase database = getConnectedDatabase();
+            MongoCollection<Document> domainCollection = database.getCollection("domains");
+
+            Document document = domainCollection
+                    .find()
+                    .filter(Filters.eq("title", domain.toUpperCase()))
+                    .projection(Projections.include("trials.title",
+                            "trials.description",
+                            "trials.endDate",
+                            "trials.startDate"))
+                    .first();
+
+            return document.toJson();
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

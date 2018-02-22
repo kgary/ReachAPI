@@ -54,4 +54,6 @@ public interface HealService {
 
     String getActivities(String domain);
 
+    String getTrials(String domain);
+
 }

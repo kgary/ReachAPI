@@ -51,4 +51,6 @@ public interface DAO {
     boolean updateMakeBelieveActivityInstance(Object makeBelieveResponse) throws DAOException;
 
     String getActivities(String domain) throws DAOException;
+
+    String getTrials(String domain) throws DAOException;
 }

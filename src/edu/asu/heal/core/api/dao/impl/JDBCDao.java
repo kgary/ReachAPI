@@ -468,4 +468,10 @@ public abstract class JDBCDao implements DAO {
     public String getActivities(String domain) throws DAOException {
         return null;
     }
+
+    // TODO implement later for MySQL database. Currently implementing just for MongoDB
+    @Override
+    public String getTrials(String domain) throws DAOException {
+        return null;
+    }
 }

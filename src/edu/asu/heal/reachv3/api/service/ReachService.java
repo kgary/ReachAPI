@@ -336,4 +336,16 @@ public class ReachService implements HealService {
             return null;
         }
     }
+
+    @Override
+    public String getTrials(String domain) {
+        try{
+            DAO dao = DAOFactory.getTheDAO();
+            return dao.getTrials(domain);
+        }catch (Exception e){
+            System.out.println("SOME ERROR IN GETTRIALS() IN REACHSERVICE CLASS");
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
