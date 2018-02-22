@@ -222,9 +222,19 @@ public class ReachService implements HealService {
 
     // patient resource method
     @Override
-    public String getPatients(int trialId){
+    public String getPatients(String trialId){
         // explore the option - if trialId is not present then return patients collections
-        return "GET ALL PATIENTS";
+//        return "GET ALL PATIENTS";
+
+        try{
+            DAO dao = DAOFactory.getTheDAO();
+            return dao.getPatients(trialId);
+
+        }catch (Exception e){
+            System.out.println("SOME ERROR IN GETPATIENTS() IN REACHSERVICE CLASS");
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

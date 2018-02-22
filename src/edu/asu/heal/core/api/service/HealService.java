@@ -34,7 +34,7 @@ public interface HealService {
     String createActivity(String requestBody);
 
     // methods pertaining to patient resource
-    String getPatients(int trialId);
+    String getPatients(String trialId);
 
     String getPatient(String patientPin);
 

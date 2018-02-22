@@ -13,6 +13,7 @@ import edu.asu.heal.core.api.models.Domain;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.types.ObjectId;
 
 import java.util.*;
 
@@ -178,6 +179,26 @@ public class MongoDBDAO implements DAO {
                     .first();
 
             return document.toJson();
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public String getPatients(String trialId) throws DAOException {
+        try{
+            MongoDatabase database = getConnectedDatabase();
+            MongoCollection<Document> domainCollection = database.getCollection("domains");
+
+            Document document = domainCollection
+                    .find()
+                    .filter(Filters.eq("_id", new ObjectId(trialId)))
+                    .projection(Projections.include("trials.patients"))
+                    .first();
+
+            return document.toJson();
+
         }catch (Exception e){
             e.printStackTrace();
             return null;

@@ -474,4 +474,9 @@ public abstract class JDBCDao implements DAO {
     public String getTrials(String domain) throws DAOException {
         return null;
     }
+
+    @Override
+    public String getPatients(String trialId) throws DAOException {
+        return null;
+    }
 }

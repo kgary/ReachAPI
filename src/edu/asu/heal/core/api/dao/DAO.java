@@ -53,4 +53,6 @@ public interface DAO {
     String getActivities(String domain) throws DAOException;
 
     String getTrials(String domain) throws DAOException;
+
+    String getPatients(String trialId) throws DAOException;
 }
