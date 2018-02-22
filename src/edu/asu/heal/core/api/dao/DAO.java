@@ -1,6 +1,9 @@
 package edu.asu.heal.core.api.dao;
 
+import edu.asu.heal.core.api.models.Activity;
 import edu.asu.heal.core.api.models.Domain;
+
+import java.util.List;
 
 public interface DAO {
 
@@ -47,4 +50,5 @@ public interface DAO {
 
     boolean updateMakeBelieveActivityInstance(Object makeBelieveResponse) throws DAOException;
 
+    String getActivities(String domain) throws DAOException;
 }

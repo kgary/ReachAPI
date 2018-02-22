@@ -52,4 +52,6 @@ public interface HealService {
 
     String getWorryHeadsInstance();
 
+    String getActivities(String domain);
+
 }

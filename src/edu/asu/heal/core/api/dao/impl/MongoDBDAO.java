@@ -4,17 +4,17 @@ import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOException;
+import edu.asu.heal.core.api.models.Activity;
 import edu.asu.heal.core.api.models.Domain;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
@@ -139,5 +139,26 @@ public class MongoDBDAO implements DAO {
     @Override
     public boolean updateMakeBelieveActivityInstance(Object makeBelieveResponse) throws DAOException {
         return false;
+    }
+
+    @Override
+    public String getActivities(String domain) throws DAOException {
+        try {
+            MongoDatabase database = getConnectedDatabase();
+            MongoCollection<Document> domainCollection = database.getCollection("domains");
+
+            Document document = domainCollection
+                    .find()
+                    .filter(Filters.eq("title", domain.toUpperCase()))
+                    .projection(Projections.fields(Projections.include("activities"),
+                            Projections.excludeId()))
+                    .first();
+
+            return document.toJson();
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 }
