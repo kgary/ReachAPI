@@ -5,6 +5,10 @@ public class Activity {
     private String title;
     private String description;
 
+    public Activity(){
+        // blank constructor
+    }
+
     public Activity(String title, String description){
         this.title = title;
         this.description = description;

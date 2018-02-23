@@ -11,6 +11,10 @@ public class ActivityInstance {
     private ActivityInstanceStatus status;
     private ActivityInstanceResult result;
 
+    public ActivityInstance(){
+        // blank constructor
+    }
+
     public ActivityInstance(String title, Date startTime, Date endTime, String sequence,
                             ActivityInstanceStatus status, ActivityInstanceResult result){
 
