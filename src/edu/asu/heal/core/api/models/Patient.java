@@ -11,10 +11,15 @@ public class Patient {
     private String state;
     private ArrayList<ActivityInstance> activityInstances = new ArrayList<ActivityInstance>();
 
-    public Patient(int pin, Date startDate, Date endDate, ArrayList<ActivityInstance> activityInstances){
+    public Patient(){
+        // blank constructor
+    }
+
+    public Patient(int pin, Date startDate, Date endDate, String state, ArrayList<ActivityInstance> activityInstances){
         this.pin = pin;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.state = state;
         this.activityInstances = activityInstances;
     }
 

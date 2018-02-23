@@ -85,8 +85,8 @@ public class ReachService implements HealService {
             instances.add(stopWeek3);
             instances.add(whWeek3);
 
-            Patient patient = new Patient(4010, new Date("02/05/2018"), new Date("04/01/2018"), instances);
-            Patient myPatient = new Patient(4011, new Date("02/05/2018"), new Date("04/01/2018"), instances);
+            Patient patient = new Patient(4010, new Date("02/05/2018"), new Date("04/01/2018"), "active", instances);
+            Patient myPatient = new Patient(4011, new Date("02/05/2018"), new Date("04/01/2018"), "active", instances);
 
             ArrayList<Patient> patients = new ArrayList<Patient>();
             patients.add(patient);

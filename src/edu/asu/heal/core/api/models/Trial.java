@@ -13,6 +13,10 @@ public class Trial {
     private int targetCount;
     private ArrayList<Patient> patients = new ArrayList<Patient>();
 
+    public Trial(){
+        // blank constructor
+    }
+
     public Trial(String title, String description, Date startDate, Date endDate, int targetCount,
                  ArrayList<Patient> patients){
 
