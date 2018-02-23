@@ -55,7 +55,7 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
-    public Object getScheduledActivities(int currentDay) throws DAOException {
+    public Object getScheduledActivities(int patientPin, int currentDay) throws DAOException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;

@@ -12,7 +12,7 @@ public interface DAO {
 
     String createDomain(Domain instance);
 
-    Object getScheduledActivities(int currentDay) throws DAOException;
+    Object getScheduledActivities(int patientPin, int currentDay) throws DAOException;
 
 //    boolean scheduleSTOPActivity(String STOPWeeklySchedule) throws DAOException;
 //

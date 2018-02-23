@@ -15,6 +15,7 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.types.ObjectId;
 
+import javax.print.Doc;
 import java.util.*;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -83,8 +84,26 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public Object getScheduledActivities(int currentDay) throws DAOException {
+    public Object getScheduledActivities(int patientPin, int currentDay) throws DAOException {
+        try {
+            MongoDatabase database = getConnectedDatabase();
+            MongoCollection<Document> domainCollection = database.getCollection("domains");
+
+
+/*          TODO This needs to be completed with a more elegant solution. Needs some more work. Carried on to Sprint 7
+Document document = domainCollection.find()
+                    .filter(Filters.eq("trial.patients.pin", patientPin))
+                    .projection(Projections.elemMatch("trial.patients", Filters.eq("pin", patientPin)))
+                    .first();
+
+
+            return document.toJson();
+*/
         return null;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

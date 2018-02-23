@@ -19,7 +19,7 @@ public final class ModelFactory {
 
     public ValueObject getScheduledActivities(int currentDay) throws ModelException{
         try{
-            ValueObject vo = (ValueObject)_theDAO.getScheduledActivities(currentDay);
+            ValueObject vo = (ValueObject)_theDAO.getScheduledActivities(0, currentDay);
             if(vo == null){
                 return null;
             }

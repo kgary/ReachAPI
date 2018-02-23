@@ -115,7 +115,7 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public String getActivityInstances(String patientPin, int trialId) {
+    public String getActivityInstances(int patientPin, int trialId) {
         try {
 
             // TODO -- scope in the possibility that when queryParams(patientPin, trialId) are not present, then
@@ -123,17 +123,25 @@ public class ReachService implements HealService {
 
             // return the mockup data
             DAO dao = DAOFactory.getTheDAO();
-            ScheduleModel instance = (ScheduleModel)dao.getScheduledActivities( 2);
+//            ScheduleModel instance = (ScheduleModel)dao.getScheduledActivities( 2);
+//
+//            ObjectMapper mapper = new ObjectMapper();
+//            return mapper.writeValueAsString(instance);
 
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.writeValueAsString(instance);
+            // TODO kept as (String) for now. To be refactored and method signature changed to return String
+
+            String instances = (String) dao.getScheduledActivities(patientPin, 0);
+            if(instances == null)
+                return null;
+
+            return instances;
         } catch(Exception e){
             //TODO String JsonErrorMessage = mapper.writeValueAsString(new ErrorMessage("Invalid survey instance ID"));
             //TODO throw new NotFoundException(Response.Status.BAD_REQUEST, JsonErrorMessage);
-
-            System.out.println("Do something here");
+            System.out.println("SOME ERROR IN GETACTIVITYINSTANCES() IN REACHSERVICE");
+            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     @Override

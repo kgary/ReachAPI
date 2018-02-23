@@ -14,7 +14,7 @@ public interface HealService {
 
     // methods pertaining to activityInstance resource
 
-    String getActivityInstances(String patientPin, int trialId);
+    String getActivityInstances(int patientPin, int trialId);
 
     String getActivityInstance(String activityInstanceId);
 
