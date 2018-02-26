@@ -1,7 +1,10 @@
 package edu.asu.heal.core.api.models;
 
+import org.bson.types.ObjectId;
+
 public class Activity {
 
+    private ObjectId id;
     private String title;
     private String description;
 
@@ -14,7 +17,21 @@ public class Activity {
         this.description = description;
     }
 
+    public Activity(ObjectId id, String title, String description){
+        this.id = id;
+        this.title = title;
+        this.description = description;
+    }
+
     // getters and setters
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;

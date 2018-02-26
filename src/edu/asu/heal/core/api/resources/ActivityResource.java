@@ -111,4 +111,34 @@ public class ActivityResource {
                 .entity(activities)
                 .build();
     }
+
+    /**
+     * @api {post} /activities Create Activity
+     * @apiName CreateActivity
+     * @apiGroup Activity
+     *
+     * @apiParam {String} Title Title of the Activity
+     * @apiParam {String} Description Description of the Activity
+     *
+     *
+     * @apiParam (Login) {String} pass Only logged in user can get this
+     *
+     * @apiSuccess {String} text SUCCESS
+     *
+     * @apiUse BadRequestError
+     * @apiUse UnAuthorizedError
+     * @apiUse InternalServerError
+     * @apiUse NotImplementedError
+     * */
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response addActivity(@FormParam("title") String title, @FormParam("description") String description){
+
+        String activity = reachService.addActivity(title, description);
+        if (activity != null) {
+            return Response.status(Response.Status.OK).entity("Successfully Created Activity!").build();
+        }
+
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Something Went Wrong!!!").build();
+    }
 }

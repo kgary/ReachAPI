@@ -27,6 +27,7 @@ public class MongoDBDAO implements DAO {
     // collection captions
     public static final String DOMAINS_COLLECTION = "domains";
     public static final String TRIALS_COLLECTION = "trials";
+    public static final String ACTIVITIES_COLLECTION = "activities";
     public static final String PATIENTS_COLLECTION = "patients";
 
     private String __mongoUser;
@@ -177,6 +178,7 @@ Document document = domainCollection.find()
         return false;
     }
 
+    // methods pertaining to Activity (activities) collection
     @Override
     public String getActivities(String domain) throws DAOException {
         try {
@@ -193,6 +195,22 @@ Document document = domainCollection.find()
             return document.toJson();
 
         }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public String createActivity(Activity activity) throws DAOException {
+        try {
+            MongoDatabase database = getConnectedDatabase();
+            MongoCollection<Activity> activitiesCollection = database.getCollection(MongoDBDAO.ACTIVITIES_COLLECTION,
+                    Activity.class);
+
+            activitiesCollection.insertOne(activity);
+
+            return "SUCCESS";
+        } catch (Exception e){
             e.printStackTrace();
             return null;
         }

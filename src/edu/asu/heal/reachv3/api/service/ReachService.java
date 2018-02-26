@@ -365,6 +365,7 @@ public class ReachService implements HealService {
 
     }
 
+    // methods pertaining to Activity Model
     @Override
     public String getActivities(String domain) {
         try{
@@ -372,6 +373,18 @@ public class ReachService implements HealService {
              return dao.getActivities(domain);
         }catch (Exception e){
             System.out.println("SOME ERROR IN GETACTIVITIES() IN REACHSERVICE CLASS");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public String addActivity(String title, String description){
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+
+            return dao.createActivity(new Activity(title, description));
+        } catch (Exception e){
             e.printStackTrace();
             return null;
         }

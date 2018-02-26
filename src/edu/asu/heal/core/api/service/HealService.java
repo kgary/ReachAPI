@@ -51,7 +51,10 @@ public interface HealService {
 
     String getWorryHeadsInstance();
 
+    // methods pertaining to Activity Resource
     String getActivities(String domain);
+
+    String addActivity(String title, String description);
 
     // methods pertaining to Trial Resource
     String getTrials(String domain);
