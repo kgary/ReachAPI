@@ -1,11 +1,14 @@
 package edu.asu.heal.core.api.resources;
 
+import edu.asu.heal.core.api.models.Trial;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Path("/trials")
 @Produces(MediaType.APPLICATION_JSON)
@@ -22,8 +25,8 @@ public class TrialsResource {
      * @apiError (Error 4xx) {401} UnAuthorized The Client must be authorized to access the resource
      * */
 
-    /** @apiDefine ActivityNotFoundError
-     * @apiError (Error 4xx) {404} NotFound Activity cannot be found
+    /** @apiDefine TrialNotFoundError
+     * @apiError (Error 4xx) {404} NotFound Trial cannot be found
      * */
 
     /**
@@ -62,12 +65,42 @@ public class TrialsResource {
                 .build();
     }
 
-    // TODO -- add api doc entry
+    /**
+     * @api {post} /trails Create Trial
+     * @apiName CreateTrial
+     * @apiGroup Trial
+     *
+     * @apiParam {String} domainId DomainId for which the trial is being created
+     * @apiParam {String} Title Title of the Trial
+     * @apiParam {String} Description Description of the Trial
+     * @apiParam {String} startDate Start Date for the Trial
+     * @apiParam {String} endDate End Date for the Trial
+     * @apiParam {Number} targetCount Target Count of the Trial
+     *
+     *
+     * @apiParam (Login) {String} pass Only logged in user can get this
+     *
+     * @apiSuccess {String} text SUCCESS
+     *
+     * @apiUse BadRequestError
+     * @apiUse UnAuthorizedError
+     * @apiUse InternalServerError
+     * @apiuse TrialNotFoundError
+     * @apiUse NotImplementedError
+     * */
     @POST
-    @Path("/{domain}/trial")
-    public Response addTrial(@PathParam("domain") String domain){
-        // TODO
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addTrial(@FormParam("domainId") String domainId, @FormParam("title") String title,
+                             @FormParam("description") String description, @FormParam("startDate") String startDate,
+                             @FormParam("endDate") String endDate, @FormParam("targetCount") int targetCount){
 
-        return Response.status(Response.Status.NOT_IMPLEMENTED).entity("Not Implemented").build();
+        String trial = reachService.addTrial(domainId, title, description, startDate, endDate, targetCount);
+
+        if (trial != null) {
+            return Response.status(Response.Status.OK).entity("Successfully Created").build();
+        }
+
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Trial Could not be created").build();
     }
 }

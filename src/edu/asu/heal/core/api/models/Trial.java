@@ -1,11 +1,15 @@
 package edu.asu.heal.core.api.models;
 
+import org.bson.types.ObjectId;
+
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Trial {
 
 
+    private ObjectId id;
+    private ObjectId domainId;
     private String title;
     private String description;
     private Date startDate;
@@ -28,7 +32,32 @@ public class Trial {
         this.patients = patients;
     }
 
+    public Trial(ObjectId domainId, String title, String description, Date startDate, Date endDate, int targetCount){
+        this.domainId = domainId;
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.targetCount = targetCount;
+    }
+
     // getters and setters
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
+
+    public ObjectId getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(ObjectId domainId) {
+        this.domainId = domainId;
+    }
+
     public String getTitle() {
         return title;
     }

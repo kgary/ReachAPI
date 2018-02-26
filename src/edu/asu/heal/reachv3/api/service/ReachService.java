@@ -11,12 +11,15 @@ import edu.asu.heal.reachv3.api.model.*;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
 public class ReachService implements HealService {
+
+    private static final String DATE_FORMAT = "MM/dd/yyyy";
 
     @Override
     public String getDomains(){
@@ -387,13 +390,27 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public String addTrial(String domain) {
+    public String addTrial(String domainId, String title, String description, String startDate, String endDate,
+                           int targetCount) {
         try {
             DAO dao = DAOFactory.getTheDAO();
 
-            // TODO -- check if the domain exist, if yes get the id of domain
+            // check if the domain exist, if yes get the id of domain
+            Document domain = (Document) dao.getDomain(domainId);
+            if (domain != null) {
 
-            return "OK";
+                Date startDateFormat = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(startDate);
+                Date endDateFormat = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(endDate);
+
+                Trial trialInstance = new Trial((ObjectId) domain.get("_id"), title, description,
+                        startDateFormat, endDateFormat, targetCount);
+
+                dao.createTrial(trialInstance);
+
+                return "OK";
+            }
+
+            return null;
         } catch (Exception e){
             e.printStackTrace();
             return null;

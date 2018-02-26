@@ -228,7 +228,6 @@ Document document = domainCollection.find()
             MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
             trialCollection.insertOne(trialInstance);
 
-
             return "SUCCESS";
         } catch (Exception e) {
             e.printStackTrace();
