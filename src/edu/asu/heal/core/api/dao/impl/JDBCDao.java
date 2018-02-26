@@ -6,6 +6,8 @@ import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOException;
 import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.core.api.dao.ValueObject;
+import edu.asu.heal.core.api.models.Activity;
+import edu.asu.heal.core.api.models.Domain;
 import edu.asu.heal.reachv3.api.model.*;
 
 import java.sql.*;
@@ -43,7 +45,17 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
-    public Object getScheduledActivities(int currentDay) throws DAOException {
+    public Object getDomains() {
+        return null;
+    }
+
+    @Override
+    public String createDomain(Domain instance) {
+        return null;
+    }
+
+    @Override
+    public Object getScheduledActivities(int patientPin, int currentDay) throws DAOException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -97,43 +109,6 @@ public abstract class JDBCDao implements DAO {
         }
         return sm;
     }
-
-//    @Override
-//    public boolean scheduleSTOPActivity(String STOPWeeklySchedule) throws DAOException {
-//
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean scheduleSTICActivity(int STICWeeklySchedule) {
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean scheduleRelaxationActivity(String relaxationWeeklySchedule) {
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean scheduleDailyDiaryActivity(String dailyDiaryWeeklySchedule) {
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean scheduleABMTActivity(String ABMTWeeklySchedule) {
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean scheduleWorryHeadsActivity(String worryHeadsWeeklySchedule) {
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean scheduleSAFEACtivity(String SAFEWeeklySchedule) {
-//        return false;
-//    }
-
 
     @Override
     public boolean scheduleSTOPActivity(int day, boolean completed) throws DAOException {
@@ -486,5 +461,22 @@ public abstract class JDBCDao implements DAO {
             t.printStackTrace();
             return false;
         }
+    }
+
+    // TODO implement later for MySQL database. Currently implementing just for MongoDB
+    @Override
+    public String getActivities(String domain) throws DAOException {
+        return null;
+    }
+
+    // TODO implement later for MySQL database. Currently implementing just for MongoDB
+    @Override
+    public String getTrials(String domain) throws DAOException {
+        return null;
+    }
+
+    @Override
+    public String getPatients(String trialId) throws DAOException {
+        return null;
     }
 }

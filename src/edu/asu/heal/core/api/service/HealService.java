@@ -1,10 +1,20 @@
 package edu.asu.heal.core.api.service;
 
+import edu.asu.heal.core.api.models.Domain;
+
 public interface HealService {
+
+    // methods pertaining to domain resource
+
+    String getDomains();
+
+    String addDomain(String title, String description, String state);
+
+    String addTestDomain(String title, String description, String state);
 
     // methods pertaining to activityInstance resource
 
-    String getActivityInstances(String patientPin, int trialId);
+    String getActivityInstances(int patientPin, int trialId);
 
     String getActivityInstance(String activityInstanceId);
 
@@ -24,7 +34,7 @@ public interface HealService {
     String createActivity(String requestBody);
 
     // methods pertaining to patient resource
-    String getPatients(int trialId);
+    String getPatients(String trialId);
 
     String getPatient(String patientPin);
 
@@ -41,5 +51,9 @@ public interface HealService {
     int updateMakeBelieveInstance(int instanceId, String responses);
 
     String getWorryHeadsInstance();
+
+    String getActivities(String domain);
+
+    String getTrials(String domain);
 
 }

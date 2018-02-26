@@ -1,7 +1,18 @@
 package edu.asu.heal.core.api.dao;
 
+import edu.asu.heal.core.api.models.Activity;
+import edu.asu.heal.core.api.models.Domain;
+
+import java.util.List;
+
 public interface DAO {
-    Object getScheduledActivities(int currentDay) throws DAOException;
+
+    // methods pertaining to Domain Model
+    Object getDomains();
+
+    String createDomain(Domain instance);
+
+    Object getScheduledActivities(int patientPin, int currentDay) throws DAOException;
 
 //    boolean scheduleSTOPActivity(String STOPWeeklySchedule) throws DAOException;
 //
@@ -39,4 +50,9 @@ public interface DAO {
 
     boolean updateMakeBelieveActivityInstance(Object makeBelieveResponse) throws DAOException;
 
+    String getActivities(String domain) throws DAOException;
+
+    String getTrials(String domain) throws DAOException;
+
+    String getPatients(String trialId) throws DAOException;
 }
