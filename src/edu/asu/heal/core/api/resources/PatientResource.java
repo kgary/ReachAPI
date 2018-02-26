@@ -6,7 +6,7 @@ import edu.asu.heal.core.api.service.HealServiceFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
-@Path("/patient")
+@Path("/patients")
 public class PatientResource {
 
     private HealService reachService = HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
@@ -48,10 +48,18 @@ public class PatientResource {
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
      * */
-    @GET
-    public Response fetchPatients(@QueryParam("trialId") int trialId){
-        return Response.status(Response.Status.OK).entity(reachService.getPatients(trialId)).build();
-    }
+//    @GET
+//    public Response fetchPatients(@QueryParam("trialId") String trialId){
+//        String patients = reachService.getPatients(trialId);
+//        if(patients == null)
+//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+//                    .entity("Some problem on server. Check logs")
+//                    .build();
+//
+//        return Response.status(Response.Status.OK)
+//                .entity(patients)
+//                .build();
+//    }
 
     /**
      * @api {get} /patient/:id Patient Detail

@@ -33,7 +33,6 @@ public class DAOFactory {
 
             if (daoClass != null) {
                 Class<?> daoClazz = Class.forName(daoClass);
-                //get constructor
                 Constructor<?> constructor = daoClazz.getConstructor(Properties.class);
                 _theDAO = (DAO) constructor.newInstance(_properties);
             }

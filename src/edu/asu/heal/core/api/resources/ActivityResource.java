@@ -3,13 +3,11 @@ package edu.asu.heal.core.api.resources;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/activity")
+@Path("/activities")
 @Produces(MediaType.APPLICATION_JSON)
 public class ActivityResource {
 
@@ -62,5 +60,55 @@ public class ActivityResource {
     public Response scheduleActivity(String requestBody){
         // schedules activity for a patient of a trial
         return Response.status(Response.Status.OK).entity(reachService.createActivity(requestBody)).build();
+    }
+
+    /**
+     * @apiDefine BadRequestError
+     * @apiError (Error 4xx) {400} BadRequest Bad Request Encountered
+     * */
+
+    /** @apiDefine UnAuthorizedError
+     * @apiError (Error 4xx) {401} UnAuthorized The Client must be authorized to access the resource
+     * */
+
+    /** @apiDefine ActivityNotFoundError
+     * @apiError (Error 4xx) {404} NotFound Activity cannot be found
+     * */
+
+    /**
+     * @apiDefine InternalServerError
+     * @apiError (Error 5xx) {500} InternalServerError Something went wrong at server, Please contact the administrator!
+     * */
+
+    /**
+     * @apiDefine NotImplementedError
+     * @apiError (Error 5xx) {501} NotImplemented The resource has not been implemented. Please keep patience, our developers are working hard on it!!
+     * */
+
+    /**
+     * @api {get} /activities/{domain} Get list of Activities for a given domain
+     * @apiName getActivities
+     * @apiGroup Activity
+     *
+     * @apiParam {String} domain Domain name for which activities are to be fetched
+     *
+     * @apiUse BadRequestError
+     * @apiUse UnAuthorizedError
+     * @apiUse InternalServerError
+     * @apiUse NotImplementedError
+     * */
+    @GET
+    @Path("/{domain}")
+    public Response getActivities(@PathParam("domain") String domain){
+        String activities = null;
+        activities = reachService.getActivities(domain);
+        if(activities == null)
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Some problem in error. See logs.")
+                    .build();
+
+        return Response.status(Response.Status.OK)
+                .entity(activities)
+                .build();
     }
 }

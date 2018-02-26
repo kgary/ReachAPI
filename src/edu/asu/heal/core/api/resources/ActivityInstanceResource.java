@@ -7,7 +7,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/activityinstance/")
+@Path("/activityinstances/")
 @Produces(MediaType.APPLICATION_JSON)
 public class ActivityInstanceResource {
 
@@ -54,11 +54,18 @@ public class ActivityInstanceResource {
      * @apiUse NotImplementedError
      * */
     @GET
-    public Response fetchActivityInstances(@QueryParam("patientPin") String patientPin,
+    public Response fetchActivityInstances(@QueryParam("patientPin") int patientPin,
                                            @QueryParam("trialId") int trialId){
 
-        return Response.status(Response.Status.OK).entity(
-                reachService.getActivityInstances(patientPin, trialId)).build();
+        String instances = reachService.getActivityInstances(patientPin, trialId);
+        if(instances == null)
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+            .entity("SOME PROBLEM IN SERVER. CHECK LOGS")
+            .build();
+
+        return Response.status(Response.Status.OK)
+                .entity(instances)
+                .build();
     }
 
     /**
