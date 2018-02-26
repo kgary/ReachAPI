@@ -1,12 +1,15 @@
 package edu.asu.heal.core.api.service;
 
 import edu.asu.heal.core.api.models.Domain;
+import org.bson.types.ObjectId;
 
 public interface HealService {
 
     // methods pertaining to domain resource
 
     String getDomains();
+
+    String getDomain(String id);
 
     String addDomain(String title, String description, String state);
 
@@ -20,12 +23,6 @@ public interface HealService {
 
     String createActivityInstance(String requestPayload);
 
-    // TODO -- discuss with team about a probable confusion -- @author dpurbey
-    /*
-    * confusion - whether there should be individual attribute's update method or not
-    * if not then the sql statement to perform update operation for certain set of attribute would require if/else
-    * blocks and sql statement would be constructed in the service rather than picking up from the dao.properties
-    * */
     String updateActivityInstance(String requestBody);
 
     String deleteActivityInstance(String activityInstanceId);
@@ -54,6 +51,9 @@ public interface HealService {
 
     String getActivities(String domain);
 
+    // methods pertaining to Trial Resource
     String getTrials(String domain);
+
+    String addTrial(String domain);
 
 }

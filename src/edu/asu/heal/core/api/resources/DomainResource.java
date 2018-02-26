@@ -1,8 +1,10 @@
 package edu.asu.heal.core.api.resources;
 
 import edu.asu.heal.core.api.models.Domain;
+import edu.asu.heal.core.api.models.Trial;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
+import org.bson.types.ObjectId;
 
 import javax.json.Json;
 import javax.ws.rs.*;
@@ -81,10 +83,43 @@ public class DomainResource {
      * */
     @GET
     public Response fetchDomains(){
-        return Response.status(Response.Status.NOT_IMPLEMENTED).entity(
+        return Response.status(Response.Status.OK).entity(
                 reachService.getDomains()
         ).build();
     }
+
+    /**
+     * @api {get} /domain/:id Domain Detail
+     * @apiName DomainDetail
+     * @apiGroup Domain
+     *
+     * @apiParam {Number} id Domain's Unique Id
+     *
+     * @apiParam (Login) {String} pass Only logged in user can get this
+     *
+     * @apiSuccess {Object} _id List of Domains
+     * @apiSuccess {String} id.$oid  Domain Id
+     * @apiSuccess {String} title Domain's Title
+     * @apiSuccess {String} description Domain's Description
+     * @apiSuccess {String} state Domain's current State
+     *
+     * @apiUse BadRequestError
+     * @apiUse UnAuthorizedError
+     * @apiUse InternalServerError
+     * @apiUse NotImplementedError
+     * */
+    @GET
+    @Path("/{id}")
+    public Response fetchDomain(@PathParam("id") String id){
+        String domain = reachService.getDomain(id);
+
+        if (domain != null) {
+            return Response.status(Response.Status.OK).entity(domain).build();
+        }
+
+        return Response.status(Response.Status.NOT_FOUND).entity("No Such Domain Exists").build();
+    }
+
 
     /**
      * @api {post} /domain Create Domain

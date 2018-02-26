@@ -2,6 +2,8 @@ package edu.asu.heal.core.api.dao;
 
 import edu.asu.heal.core.api.models.Activity;
 import edu.asu.heal.core.api.models.Domain;
+import edu.asu.heal.core.api.models.Trial;
+import org.bson.types.ObjectId;
 
 import java.util.List;
 
@@ -9,6 +11,8 @@ public interface DAO {
 
     // methods pertaining to Domain Model
     Object getDomains();
+
+    Object getDomain(String id);
 
     String createDomain(Domain instance);
 
@@ -52,7 +56,10 @@ public interface DAO {
 
     String getActivities(String domain) throws DAOException;
 
+    // methods pertaining trail model
     String getTrials(String domain) throws DAOException;
+
+    String createTrial(Trial trialInstance) throws DAOException;
 
     String getPatients(String trialId) throws DAOException;
 }

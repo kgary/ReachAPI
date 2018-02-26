@@ -8,7 +8,9 @@ import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.core.api.dao.ValueObject;
 import edu.asu.heal.core.api.models.Activity;
 import edu.asu.heal.core.api.models.Domain;
+import edu.asu.heal.core.api.models.Trial;
 import edu.asu.heal.reachv3.api.model.*;
+import org.bson.types.ObjectId;
 
 import java.sql.*;
 import java.sql.Date;
@@ -477,6 +479,16 @@ public abstract class JDBCDao implements DAO {
 
     @Override
     public String getPatients(String trialId) throws DAOException {
+        return null;
+    }
+
+    @Override
+    public Object getDomain(String id) {
+        return null;
+    }
+
+    @Override
+    public String createTrial(Trial trialInstance) throws DAOException {
         return null;
     }
 }

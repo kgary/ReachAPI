@@ -3,10 +3,7 @@ package edu.asu.heal.core.api.resources;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -63,5 +60,14 @@ public class TrialsResource {
         return Response.status(Response.Status.OK)
                 .entity(trials)
                 .build();
+    }
+
+    // TODO -- add api doc entry
+    @POST
+    @Path("/{domain}/trial")
+    public Response addTrial(@PathParam("domain") String domain){
+        // TODO
+
+        return Response.status(Response.Status.NOT_IMPLEMENTED).entity("Not Implemented").build();
     }
 }

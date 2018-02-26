@@ -10,6 +10,7 @@ import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOException;
 import edu.asu.heal.core.api.models.Activity;
 import edu.asu.heal.core.api.models.Domain;
+import edu.asu.heal.core.api.models.Trial;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -22,6 +23,12 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class MongoDBDAO implements DAO {
+
+    // collection captions
+    public static final String DOMAINS_COLLECTION = "domains";
+    public static final String TRIALS_COLLECTION = "trials";
+    public static final String PATIENTS_COLLECTION = "patients";
+
     private String __mongoUser;
     private String __mongoPassword;
     private String __mongoHost;
@@ -66,6 +73,7 @@ public class MongoDBDAO implements DAO {
 
     }
 
+    @Override
     public List<Domain> getDomains(){
         MongoDatabase database = getConnectedDatabase();
         MongoCollection<Domain> domainCollection = database.getCollection("domains", Domain.class);
@@ -74,9 +82,17 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
+    public Object getDomain(String id){
+        MongoDatabase database = getConnectedDatabase();
+        MongoCollection<Document> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION);
+
+        return domainCollection.find(Filters.eq("_id", new ObjectId(id))).first();
+    }
+
+    @Override
     public String createDomain(Domain instance) {
         MongoDatabase database = getConnectedDatabase();
-        MongoCollection<Domain> domainCollection = database.getCollection("domains", Domain.class);
+        MongoCollection<Domain> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION, Domain.class);
 
         domainCollection.insertOne(instance);
 
@@ -182,6 +198,7 @@ Document document = domainCollection.find()
         }
     }
 
+    // methods pertaining to the Trial Model
     @Override
     public String getTrials(String domain) throws DAOException {
         try{
@@ -199,6 +216,21 @@ Document document = domainCollection.find()
 
             return document.toJson();
         }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public String createTrial(Trial trialInstance) throws DAOException {
+        try {
+            MongoDatabase database = getConnectedDatabase();
+            MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
+            trialCollection.insertOne(trialInstance);
+
+
+            return "SUCCESS";
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
