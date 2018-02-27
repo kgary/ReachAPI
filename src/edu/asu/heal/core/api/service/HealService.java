@@ -1,5 +1,6 @@
 package edu.asu.heal.core.api.service;
 
+import edu.asu.heal.core.api.models.Activity;
 import edu.asu.heal.core.api.models.Domain;
 import edu.asu.heal.core.api.models.Trial;
 import org.bson.types.ObjectId;
@@ -31,9 +32,6 @@ public interface HealService {
 
     String deleteActivityInstance(String activityInstanceId);
 
-    // methods pertaining to activity resource
-    String createActivity(String requestBody);
-
     // methods pertaining to patient resource
     String getPatients(String trialId);
 
@@ -54,7 +52,10 @@ public interface HealService {
     String getWorryHeadsInstance();
 
     // methods pertaining to Activity Resource
-    String getActivities(String domain);
+    List<Activity> getActivities(String domain);
+
+    String createActivity(String requestBody);
+
 
     String addActivity(String title, String description);
 

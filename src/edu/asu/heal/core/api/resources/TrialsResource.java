@@ -41,11 +41,11 @@ public class TrialsResource {
      * */
 
     /**
-     * @api {get} /trials/{domain} Get list of trials for a given domain
+     * @api {get} /trials?domain=domainName Get list of trials for a given domain
      * @apiName getTrials
      * @apiGroup Trials
      *
-     * @apiParam {String} domain Domain name for which trials are to be fetched
+     * @apiParam {String} domain Domain name for which trials are to be fetched. Use "_" in place of space character. Case sensitive.
      *
      * @apiUse BadRequestError
      * @apiUse UnAuthorizedError

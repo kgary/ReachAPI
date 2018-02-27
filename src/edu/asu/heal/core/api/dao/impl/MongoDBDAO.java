@@ -180,19 +180,17 @@ Document document = domainCollection.find()
 
     // methods pertaining to Activity (activities) collection
     @Override
-    public String getActivities(String domain) throws DAOException {
+    public List<Activity> getActivities(String domain) throws DAOException {
         try {
             MongoDatabase database = getConnectedDatabase();
-            MongoCollection<Document> domainCollection = database.getCollection("domains");
+            MongoCollection<Domain> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION, Domain.class);
 
-            Document document = domainCollection
-                    .find()
-                    .filter(Filters.eq("title", domain.toUpperCase()))
-                    .projection(Projections.fields(Projections.include("activities"),
-                            Projections.excludeId()))
-                    .first();
+            Domain domain1 = domainCollection.find(Filters.eq(Domain.TITLE_ATTRIBUTE, domain)).first();
+            MongoCollection<Activity> activityCollection = database.getCollection(MongoDBDAO.ACTIVITIES_COLLECTION, Activity.class);
 
-            return document.toJson();
+            return activityCollection
+                    .find(Filters.in(Activity.ID_ATTRIBUTE, domain1.getActivities().toArray(new ObjectId[]{})))
+                    .into(new ArrayList<>());
 
         }catch (Exception e){
             e.printStackTrace();
@@ -223,7 +221,7 @@ Document document = domainCollection.find()
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Domain> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION, Domain.class);
 
-            Domain domain1 = domainCollection.find(Filters.eq(Trial.NAME_ATTRIBUTE, domain)).first();
+            Domain domain1 = domainCollection.find(Filters.eq(Domain.TITLE_ATTRIBUTE, domain)).first();
             MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
 
             return  trialCollection.find(

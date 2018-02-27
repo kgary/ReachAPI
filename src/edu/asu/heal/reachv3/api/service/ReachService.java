@@ -367,7 +367,7 @@ public class ReachService implements HealService {
 
     // methods pertaining to Activity Model
     @Override
-    public String getActivities(String domain) {
+    public List<Activity> getActivities(String domain) {
         try{
             DAO dao = DAOFactory.getTheDAO();
              return dao.getActivities(domain);

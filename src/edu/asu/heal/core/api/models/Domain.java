@@ -6,6 +6,13 @@ import java.util.ArrayList;
 
 public class Domain {
 
+    public static String ID_ATTRIBUTE = "_id";
+    public static String TITLE_ATTRIBUTE = "title";
+    public static String DESCRIPTION_ATTRIBUTE = "description";
+    public static String STATE_ATTRIBUTE = "state";
+    public static String ACTIVITIES_ATTRIBUTE = "activities";
+    public static String TRIALS_ATTRIBUTE = "trials";
+
     private ObjectId id;
     private String title;
     private String description;

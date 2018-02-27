@@ -55,7 +55,7 @@ public interface DAO {
     boolean updateMakeBelieveActivityInstance(Object makeBelieveResponse) throws DAOException;
 
     // methods pertaining to Activity (activities) collection
-    String getActivities(String domain) throws DAOException;
+    List<Activity> getActivities(String domain) throws DAOException;
 
     String createActivity(Activity activity) throws DAOException;
 
