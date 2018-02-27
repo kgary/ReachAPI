@@ -120,12 +120,12 @@ public class ReachService implements HealService {
             activities.add(new Activity("WorryHeads", "WorryHeads Activity"));
 
             ArrayList<Trial> trials = new ArrayList<Trial>();
-            trials.add(new Trial("Compass", "Compass for courage", new Date("02/05/2018"),
-                    new Date("04/01/2018"), 100, patients));
+//            trials.add(new Trial("Compass", "Compass for courage", new Date("02/05/2018"),
+//                    new Date("04/01/2018"), 100, patients));
 
             Domain domainInstance = new Domain("REACH", "REACH BASED DOMAIN", "ACTIVE");
-            domainInstance.setTrials(trials);
-            domainInstance.setActivities(activities);
+//            domainInstance.setTrials(trials);
+//            domainInstance.setActivities(activities);
 
             DAO dao = DAOFactory.getTheDAO();
 
@@ -391,7 +391,7 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public String getTrials(String domain) {
+    public List<Trial> getTrials(String domain) {
         try{
             DAO dao = DAOFactory.getTheDAO();
             return dao.getTrials(domain);

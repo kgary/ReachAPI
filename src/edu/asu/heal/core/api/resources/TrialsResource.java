@@ -9,6 +9,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Path("/trials")
 @Produces(MediaType.APPLICATION_JSON)
@@ -52,9 +53,9 @@ public class TrialsResource {
      * @apiUse NotImplementedError
      * */
     @GET
-    @Path("/{domain}")
-    public Response getTrials(@PathParam("domain") String domain){
-        String trials = reachService.getTrials(domain);
+    @QueryParam("domain")
+    public Response getTrials(@QueryParam("domain") String domain){
+        List<Trial> trials = reachService.getTrials(domain.replace("_", " "));
         if(trials == null)
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("Some problem on server. See logs.")

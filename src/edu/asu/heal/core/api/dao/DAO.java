@@ -60,7 +60,7 @@ public interface DAO {
     String createActivity(Activity activity) throws DAOException;
 
     // methods pertaining trail model
-    String getTrials(String domain) throws DAOException;
+    List<Trial> getTrials(String domain) throws DAOException;
 
     String createTrial(Trial trialInstance) throws DAOException;
 

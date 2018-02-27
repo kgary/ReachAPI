@@ -10,8 +10,8 @@ public class Domain {
     private String title;
     private String description;
     private String state;
-    private ArrayList<Activity> activities;
-    private ArrayList<Trial> trials;
+    private ArrayList<ObjectId> activities;
+    private ArrayList<ObjectId> trials;
 
     public Domain(){
         // default constructor
@@ -57,19 +57,19 @@ public class Domain {
         this.state = state;
     }
 
-    public ArrayList<Activity> getActivities() {
+    public ArrayList<ObjectId> getActivities() {
         return activities;
     }
 
-    public void setActivities(ArrayList<Activity> activities) {
+    public void setActivities(ArrayList<ObjectId> activities) {
         this.activities = activities;
     }
 
-    public ArrayList<Trial> getTrials() {
+    public ArrayList<ObjectId> getTrials() {
         return trials;
     }
 
-    public void setTrials(ArrayList<Trial> trials) {
+    public void setTrials(ArrayList<ObjectId> trials) {
         this.trials = trials;
     }
 }
