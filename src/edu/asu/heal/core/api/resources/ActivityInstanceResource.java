@@ -1,11 +1,13 @@
 package edu.asu.heal.core.api.resources;
 
+import edu.asu.heal.core.api.models.ActivityInstance;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/activityinstances/")
 @Produces(MediaType.APPLICATION_JSON)
@@ -57,7 +59,7 @@ public class ActivityInstanceResource {
     public Response fetchActivityInstances(@QueryParam("patientPin") int patientPin,
                                            @QueryParam("trialId") int trialId){
 
-        String instances = reachService.getActivityInstances(patientPin, trialId);
+        List<ActivityInstance> instances = reachService.getActivityInstances(patientPin, trialId);
         if(instances == null)
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
             .entity("SOME PROBLEM IN SERVER. CHECK LOGS")

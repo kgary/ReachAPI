@@ -7,6 +7,7 @@ import edu.asu.heal.core.api.dao.DAOException;
 import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.core.api.dao.ValueObject;
 import edu.asu.heal.core.api.models.Activity;
+import edu.asu.heal.core.api.models.ActivityInstance;
 import edu.asu.heal.core.api.models.Domain;
 import edu.asu.heal.core.api.models.Trial;
 import edu.asu.heal.reachv3.api.model.*;
@@ -57,7 +58,7 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
-    public Object getScheduledActivities(int patientPin, int currentDay) throws DAOException {
+    public List<ActivityInstance> getScheduledActivities(int patientPin, int currentDay) throws DAOException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -109,7 +110,8 @@ public abstract class JDBCDao implements DAO {
                 se.printStackTrace();
             }
         }
-        return sm;
+//        return sm;
+        return null;
     }
 
     @Override

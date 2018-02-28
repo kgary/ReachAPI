@@ -2,21 +2,17 @@ package edu.asu.heal.core.api.dao.impl;
 
 import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOException;
-import edu.asu.heal.core.api.models.Activity;
-import edu.asu.heal.core.api.models.Domain;
-import edu.asu.heal.core.api.models.Trial;
+import edu.asu.heal.core.api.models.*;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.types.ObjectId;
 
-import javax.print.Doc;
 import java.util.*;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -28,7 +24,8 @@ public class MongoDBDAO implements DAO {
     public static final String DOMAINS_COLLECTION = "domains";
     public static final String TRIALS_COLLECTION = "trials";
     public static final String ACTIVITIES_COLLECTION = "activities";
-    public static final String PATIENTS_COLLECTION = "patients";
+    public static final String PATIENTS_COLLECTION = "Patients";
+    public static final String ACTIVITYINSTANCES_COLLECTION = "ActivityInstances";
 
     private String __mongoUser;
     private String __mongoPassword;
@@ -101,22 +98,20 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public Object getScheduledActivities(int patientPin, int currentDay) throws DAOException {
+    public List<ActivityInstance> getScheduledActivities(int patientPin, int currentDay) throws DAOException {
         try {
             MongoDatabase database = getConnectedDatabase();
-            MongoCollection<Document> domainCollection = database.getCollection("domains");
+            MongoCollection<Patient> patientCollection = database.getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class);
 
+            Patient patient = patientCollection.find(Filters.eq(Patient.PIN_ATTRIBUTE, patientPin)).first();
 
-/*          TODO This needs to be completed with a more elegant solution. Needs some more work. Carried on to Sprint 7
-Document document = domainCollection.find()
-                    .filter(Filters.eq("trial.patients.pin", patientPin))
-                    .projection(Projections.elemMatch("trial.patients", Filters.eq("pin", patientPin)))
-                    .first();
+            MongoCollection<ActivityInstance> activityInstanceCollection =
+                    database.getCollection(MongoDBDAO.ACTIVITYINSTANCES_COLLECTION, ActivityInstance.class);
 
-
-            return document.toJson();
-*/
-        return null;
+            return activityInstanceCollection
+                    .find(Filters.in(ActivityInstance.ID_ATTRIBUTE,
+                            patient.getActivityInstances().toArray(new ObjectId[] {})))
+                    .into(new ArrayList<>());
         }catch (Exception e){
             e.printStackTrace();
             return null;

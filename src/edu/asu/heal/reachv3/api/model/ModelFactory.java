@@ -18,18 +18,19 @@ public final class ModelFactory {
     }
 
     public ValueObject getScheduledActivities(int currentDay) throws ModelException{
-        try{
-            ValueObject vo = (ValueObject)_theDAO.getScheduledActivities(0, currentDay);
-            if(vo == null){
-                return null;
-            }
-            return vo;
-            //TODO @kgary DO WE NEED A MODEL HERE ??
-        }catch (DAOException de){
-            de.printStackTrace();
-            //TODO NEED TO IMPLEMENT A LOGGER log.error(de);
-            throw new ModelException("Unable to create Model Object", de);
-        }
+//        try{
+//            ValueObject vo; = (ValueObject)_theDAO.getScheduledActivities(0, currentDay);
+//            if(vo == null){
+//                return null;
+//            }
+//            return vo;
+//            //TODO @kgary DO WE NEED A MODEL HERE ??
+//        }catch (DAOException de){
+//            de.printStackTrace();
+//            //TODO NEED TO IMPLEMENT A LOGGER log.error(de);
+//            throw new ModelException("Unable to create Model Object", de);
+//        }
+        return null;
     }
 
 //    public boolean scheduleActivities(String STOP, String SAFE, String WorryHeads, String DailyDiary, String ABMT, String Relaxation, int STIC){

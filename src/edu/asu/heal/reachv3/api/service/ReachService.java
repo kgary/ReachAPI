@@ -69,7 +69,12 @@ public class ReachService implements HealService {
         }
     }
 
-    public String addTestDomain(String title, String description, String state){
+    @Override
+    public String addTestDomain(String title, String description, String state) {
+        return null;
+    }
+
+    /* public String addTestDomain(String title, String description, String state){
         try{
 
             // NOTE - please note that this record consist of fabricated data just to test the queries
@@ -134,25 +139,21 @@ public class ReachService implements HealService {
             e.printStackTrace();
             return e.getMessage();
         }
-    }
+    } */
 
     @Override
-    public String getActivityInstances(int patientPin, int trialId) {
+    public List<ActivityInstance> getActivityInstances(int patientPin, int trialId) {
         try {
 
             // TODO -- scope in the possibility that when queryParams(patientPin, trialId) are not present, then
-            // we will return activityInstance collection
-
-            // return the mockup data
             DAO dao = DAOFactory.getTheDAO();
 //            ScheduleModel instance = (ScheduleModel)dao.getScheduledActivities( 2);
 //
 //            ObjectMapper mapper = new ObjectMapper();
 //            return mapper.writeValueAsString(instance);
 
-            // TODO kept as (String) for now. To be refactored and method signature changed to return String
-
-            String instances = (String) dao.getScheduledActivities(patientPin, 0);
+//            String instances = (String) dao.getScheduledActivities(patientPin, 0);
+            List<ActivityInstance> instances = dao.getScheduledActivities(patientPin, trialId);
             if(instances == null)
                 return null;
 

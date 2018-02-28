@@ -1,6 +1,7 @@
 package edu.asu.heal.core.api.dao;
 
 import edu.asu.heal.core.api.models.Activity;
+import edu.asu.heal.core.api.models.ActivityInstance;
 import edu.asu.heal.core.api.models.Domain;
 import edu.asu.heal.core.api.models.Trial;
 import org.bson.types.ObjectId;
@@ -16,7 +17,7 @@ public interface DAO {
 
     String createDomain(Domain instance);
 
-    Object getScheduledActivities(int patientPin, int currentDay) throws DAOException;
+    List<ActivityInstance> getScheduledActivities(int patientPin, int currentDay) throws DAOException;
 
 //    boolean scheduleSTOPActivity(String STOPWeeklySchedule) throws DAOException;
 //

@@ -1,6 +1,7 @@
 package edu.asu.heal.core.api.service;
 
 import edu.asu.heal.core.api.models.Activity;
+import edu.asu.heal.core.api.models.ActivityInstance;
 import edu.asu.heal.core.api.models.Domain;
 import edu.asu.heal.core.api.models.Trial;
 import org.bson.types.ObjectId;
@@ -22,7 +23,7 @@ public interface HealService {
 
     // methods pertaining to activityInstance resource
 
-    String getActivityInstances(int patientPin, int trialId);
+    List<ActivityInstance> getActivityInstances(int patientPin, int trialId);
 
     String getActivityInstance(String activityInstanceId);
 
