@@ -3,11 +3,14 @@ package edu.asu.heal.core.api.dao.impl;
 import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOException;
 import edu.asu.heal.core.api.models.*;
+import org.bson.BSON;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -24,8 +27,8 @@ public class MongoDBDAO implements DAO {
     public static final String DOMAINS_COLLECTION = "domains";
     public static final String TRIALS_COLLECTION = "trials";
     public static final String ACTIVITIES_COLLECTION = "activities";
-    public static final String PATIENTS_COLLECTION = "Patients";
-    public static final String ACTIVITYINSTANCES_COLLECTION = "ActivityInstances";
+    public static final String PATIENTS_COLLECTION = "patients";
+    public static final String ACTIVITYINSTANCES_COLLECTION = "activityInstances";
 
     private String __mongoUser;
     private String __mongoPassword;
@@ -261,4 +264,45 @@ public class MongoDBDAO implements DAO {
             return null;
         }
     }
+
+    @Override
+    public int createPatient(String patientDetails) {
+        try{
+            int newPin = getConnectedDatabase()
+                    .getCollection(MongoDBDAO.PATIENTS_COLLECTION)
+                    .aggregate(Arrays.asList(Aggregates.group(null,
+                            Accumulators.max("pin", "$"+Patient.PIN_ATTRIBUTE))))
+                    .first()
+                    .getInteger("pin");
+
+            ++newPin;
+
+            Patient patient = new Patient();
+            patient.setId(new ObjectId());
+            patient.setPin(newPin);
+            patient.setCreatedAt(new Date());
+            patient.setEndDate(new Date());
+            patient.setStartDate(new Date());
+            patient.setUpdatedAt(new Date());
+            patient.setState("created");
+            patient.setActivityInstances(null);
+
+            MongoDatabase database = getConnectedDatabase();
+            MongoCollection<Patient> patientCollection = database.getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class);
+
+            patientCollection.insertOne(patient);
+
+            // TODO NEED TO WRITE CODE TO INSERT NEWLY CREATED PATIENT TO THE APPROPRIATE TRIAL.
+            // PROBLEM: UNIQUE IDENTIFIER FOR TRIAL
+            //            Trial trial = getConnectedDatabase()
+//                    .getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class)
+//                    .find()
+
+            return newPin;
+        }catch (Exception e){
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
 }

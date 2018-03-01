@@ -274,8 +274,14 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public String createPatient(String requestBody) {
-        return null;
+    public int createPatient(String requestBody) {
+        try{
+            DAO dao = DAOFactory.getTheDAO();
+            return dao.createPatient(requestBody);
+        }catch (Exception e){
+            e.printStackTrace();
+            return -1;
+        }
     }
 
     @Override

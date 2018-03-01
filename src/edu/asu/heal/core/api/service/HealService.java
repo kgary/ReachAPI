@@ -38,7 +38,7 @@ public interface HealService {
 
     String getPatient(String patientPin);
 
-    String createPatient(String requestBody);
+    int createPatient(String requestBody);
 
     String updatePatient(String requestBody);
 

@@ -104,7 +104,10 @@ public class PatientResource {
      * */
     @POST
     public Response addPatient(String requestBody){
-        return Response.status(Response.Status.OK).entity(reachService.createPatient(requestBody)).build();
+        int inserted = reachService.createPatient(requestBody);
+        if(inserted != -1)
+            return Response.status(Response.Status.CREATED).entity("{\"patient\": \"/patients/" + inserted +"\"}").build();
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 
     /**
