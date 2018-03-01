@@ -266,13 +266,14 @@ public class MongoDBDAO implements DAO {
     @Override
     public int createPatient(String patientDetails) {
         try{
+
+            //Temporary code to generate new pin. It just increments the largest pin number in the database by 1
             int newPin = getConnectedDatabase()
                     .getCollection(MongoDBDAO.PATIENTS_COLLECTION)
                     .aggregate(Arrays.asList(Aggregates.group(null,
-                            Accumulators.max("pin", "$"+Patient.PIN_ATTRIBUTE))))
+                            Accumulators.max(Patient.PIN_ATTRIBUTE, "$"+Patient.PIN_ATTRIBUTE))))
                     .first()
-                    .getInteger("pin");
-
+                    .getInteger(Patient.PIN_ATTRIBUTE);
             ++newPin;
 
             Patient patient = new Patient();
@@ -290,11 +291,14 @@ public class MongoDBDAO implements DAO {
 
             patientCollection.insertOne(patient);
 
-            // TODO NEED TO WRITE CODE TO INSERT NEWLY CREATED PATIENT TO THE APPROPRIATE TRIAL.
-            // PROBLEM: UNIQUE IDENTIFIER FOR TRIAL
-            //            Trial trial = getConnectedDatabase()
-//                    .getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class)
-//                    .find()
+            MongoCollection<Trial> trialsCollection = getConnectedDatabase()
+                    .getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
+
+            Trial trial = trialsCollection.find(Filters.eq(Trial.TRIALID_ATTRIBUTE, patientDetails)).first();
+
+            trial.getPatients().add(patient.getId());
+
+            trialsCollection.replaceOne(Filters.eq(Trial.TRIALID_ATTRIBUTE, patientDetails), trial);
 
             return newPin;
         }catch (Exception e){
