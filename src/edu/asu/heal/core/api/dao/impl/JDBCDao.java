@@ -500,4 +500,9 @@ public abstract class JDBCDao implements DAO {
     public String createTrial(Trial trialInstance) throws DAOException {
         return null;
     }
+
+    @Override
+    public Patient getPatient(int patientPin) {
+        return null;
+    }
 }

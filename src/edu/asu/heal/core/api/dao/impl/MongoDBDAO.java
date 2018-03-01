@@ -307,4 +307,16 @@ public class MongoDBDAO implements DAO {
         }
     }
 
+    @Override
+    public Patient getPatient(int patientPin) {
+        try{
+            MongoDatabase database = getConnectedDatabase();
+            return database.getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class)
+                    .find(Filters.eq(Patient.PIN_ATTRIBUTE, patientPin))
+                    .first();
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

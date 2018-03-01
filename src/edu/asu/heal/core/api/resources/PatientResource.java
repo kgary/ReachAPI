@@ -81,8 +81,14 @@ public class PatientResource {
     * */
     @GET
     @Path("/{patientPin}")
-    public Response fetchPatient(@PathParam("patientPin") String patientPin){
-        return Response.status(Response.Status.OK).entity(reachService.getPatient(patientPin)).build();
+    public Response fetchPatient(@PathParam("patientPin") int patientPin){
+        Patient patient = reachService.getPatient(patientPin);
+        if(patient == null)
+            return Response
+                    .status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                    "Some problem with the server. Please contact administrator.")
+                    .build();
+        return Response.status(Response.Status.OK).entity(patient).build();
     }
 
 //    * @apiParam {String} DeviceType Type of Device used by the patient

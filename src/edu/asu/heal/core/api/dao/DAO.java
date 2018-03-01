@@ -64,5 +64,7 @@ public interface DAO {
 
     List<Patient> getPatients(String trialId) throws DAOException;
 
+    Patient getPatient(int patientPin);
+
     int createPatient(String patientDetails);
 }

@@ -33,7 +33,7 @@ public interface HealService {
     // methods pertaining to patient resource
     List<Patient> getPatients(String trialId);
 
-    String getPatient(String patientPin);
+    Patient getPatient(int patientPin);
 
     int createPatient(String requestBody);
 
