@@ -10,6 +10,7 @@ public class Trial {
 
     public static String NAME_ATTRIBUTE = "name";
     public static String ID_ATTRIBUTE = "_id";
+    public static String TRIALID_ATTRIBUTE = "trialId";
     public static String TITLE_ATTRIBUTE = "title";
     public static String DESCRIPTION_ATTRIBUTE = "description";
     public static String STARTDATE_ATTRIBUTE = "startDate";
@@ -21,6 +22,7 @@ public class Trial {
 
     private ObjectId id;
     private ObjectId domainId;
+    private String trialId;
     private String title;
     private String description;
     private Date startDate;
@@ -34,24 +36,26 @@ public class Trial {
         // blank constructor
     }
 
-    public Trial(String title, String description, Date startDate, Date endDate, int targetCount,
-                 ArrayList<ObjectId> patients){
-
+    public Trial(ObjectId id, ObjectId domainId, String trialId, String title, String description, Date startDate, Date endDate, int targetCount){
+        this.id = id;
+        this.domainId = domainId;
+        this.trialId = trialId;
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.targetCount = targetCount;
+    }
+    public Trial(ObjectId id, ObjectId domainId, String trialId, String title, String description, Date startDate, Date endDate, int targetCount, ArrayList<ObjectId> patients) {
+        this.id = id;
+        this.domainId = domainId;
+        this.trialId = trialId;
         this.title = title;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
         this.targetCount = targetCount;
         this.patients = patients;
-    }
-
-    public Trial(ObjectId domainId, String title, String description, Date startDate, Date endDate, int targetCount){
-        this.domainId = domainId;
-        this.title = title;
-        this.description = description;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.targetCount = targetCount;
     }
 
     // getters and setters
@@ -119,4 +123,11 @@ public class Trial {
         this.patients = patients;
     }
 
+    public String getTrialId() {
+        return trialId;
+    }
+
+    public void setTrialId(String trialId) {
+        this.trialId = trialId;
+    }
 }

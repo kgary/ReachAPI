@@ -6,11 +6,9 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Projections;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOException;
 import edu.asu.heal.core.api.models.*;
-import org.bson.BSON;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -246,19 +244,19 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public String getPatients(String trialId) throws DAOException {
+    public List<Patient> getPatients(String trialId) throws DAOException {
         try{
             MongoDatabase database = getConnectedDatabase();
-            MongoCollection<Document> domainCollection = database.getCollection("domains");
+            MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
 
-            Document document = domainCollection
-                    .find()
-                    .filter(Filters.eq("_id", new ObjectId(trialId)))
-                    .projection(Projections.include("trials.patients"))
-                    .first();
+            Trial trial = trialCollection.find(Filters.eq(Trial.TRIALID_ATTRIBUTE, trialId)).first();
 
-            return document.toJson();
+            MongoCollection<Patient> patientsCollection = database
+                    .getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class);
 
+            return patientsCollection
+                    .find(Filters.in(Patient.ID_ATTRIBUTE, trial.getPatients().toArray(new ObjectId[] {})))
+                    .into(new ArrayList<>());
         }catch (Exception e){
             e.printStackTrace();
             return null;

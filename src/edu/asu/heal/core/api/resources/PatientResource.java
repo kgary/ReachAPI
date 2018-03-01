@@ -1,10 +1,12 @@
 package edu.asu.heal.core.api.resources;
 
+import edu.asu.heal.core.api.models.Patient;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/patients")
 public class PatientResource {
@@ -48,18 +50,18 @@ public class PatientResource {
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
      * */
-//    @GET
-//    public Response fetchPatients(@QueryParam("trialId") String trialId){
-//        String patients = reachService.getPatients(trialId);
-//        if(patients == null)
-//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-//                    .entity("Some problem on server. Check logs")
-//                    .build();
-//
-//        return Response.status(Response.Status.OK)
-//                .entity(patients)
-//                .build();
-//    }
+    @GET
+    public Response fetchPatients(@QueryParam("trialId") String trialId){
+        List<Patient> patients = reachService.getPatients(trialId);
+        if(patients == null)
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Some problem on server. Check logs")
+                    .build();
+
+        return Response.status(Response.Status.OK)
+                .entity(patients)
+                .build();
+    }
 
     /**
      * @api {get} /patient/:id Patient Detail

@@ -253,7 +253,7 @@ public class ReachService implements HealService {
 
     // patient resource method
     @Override
-    public String getPatients(String trialId){
+    public List<Patient> getPatients(String trialId){
         // explore the option - if trialId is not present then return patients collections
 //        return "GET ALL PATIENTS";
 
@@ -422,7 +422,9 @@ public class ReachService implements HealService {
                 Date startDateFormat = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(startDate);
                 Date endDateFormat = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(endDate);
 
-                Trial trialInstance = new Trial((ObjectId) domain.get("_id"), title, description,
+                ObjectId newId = ObjectId.get();
+                String trialId = newId.toHexString();
+                Trial trialInstance = new Trial(newId, (ObjectId) domain.get("_id"), trialId, title, description,
                         startDateFormat, endDateFormat, targetCount);
 
                 dao.createTrial(trialInstance);
