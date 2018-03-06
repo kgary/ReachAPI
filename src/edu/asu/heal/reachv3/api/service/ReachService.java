@@ -1,5 +1,7 @@
 package edu.asu.heal.reachv3.api.service;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.asu.heal.core.api.service.HealService;
@@ -7,7 +9,9 @@ import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.reachv3.api.model.*;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -37,8 +41,33 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public String getActivityInstance(String activityInstanceId){
-        return "ActivityInstance: "+activityInstanceId;
+    public String getActivityInstance(String activityInstanceId, String emotion, int intensity){
+        try{
+            DAO dao = DAOFactory.getTheDAO();
+            String EMOTION_ACTIVITY = "emotions";
+            if(activityInstanceId.toLowerCase().equals(EMOTION_ACTIVITY)) {
+                List<String> results = dao.getEmotionsActivityInstance(emotion.toLowerCase(), intensity);
+                if(results == null)
+                    return "400";
+
+                StringWriter writer = new StringWriter();
+                JsonGenerator generator = new JsonFactory().createGenerator(writer);
+                generator.setCodec(new ObjectMapper());
+                generator.writeStartObject();
+                generator.writeObjectField("activities", results);
+                generator.writeEndObject();
+
+                generator.close();
+                String emotionsActivities = writer.toString();
+                writer.close();
+                return emotionsActivities;
+            }
+            return "400";
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

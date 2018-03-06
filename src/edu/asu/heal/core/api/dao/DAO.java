@@ -1,5 +1,7 @@
 package edu.asu.heal.core.api.dao;
 
+import java.util.List;
+
 public interface DAO {
     Object getScheduledActivities(int currentDay) throws DAOException;
 
@@ -38,5 +40,7 @@ public interface DAO {
     Object getMakeBelieveActivityAnswers(int situationId) throws DAOException;
 
     boolean updateMakeBelieveActivityInstance(Object makeBelieveResponse) throws DAOException;
+
+    List<String> getEmotionsActivityInstance(String emotion, int intensity) throws DAOException;
 
 }

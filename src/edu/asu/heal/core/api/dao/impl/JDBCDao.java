@@ -8,6 +8,7 @@ import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.core.api.dao.ValueObject;
 import edu.asu.heal.reachv3.api.model.*;
 
+import java.io.IOException;
 import java.sql.*;
 import java.sql.Date;
 import java.util.*;
@@ -17,6 +18,8 @@ public abstract class JDBCDao implements DAO {
     protected String _jdbcUser;
     protected String _jdbcPasswd;
     protected String _jdbcUrl;
+    private Map<String, List<String>> emotionsMap = new HashMap<>();
+
 
     public JDBCDao(Properties properties) throws DAOException{
         _jdbcUrl    = properties.getProperty("jdbc.url");
@@ -30,6 +33,26 @@ public abstract class JDBCDao implements DAO {
             throw new DAOException("*** Cannot find the JDBC driver " + __jdbcDriver, ce);
         }catch (Throwable t){
             throw new DAOException(t);
+        }
+
+        try {
+            Properties properties1 = new Properties();
+            properties1.load(JDBCDao.class.getResourceAsStream("emotions.properties"));
+
+            emotionsMap.put(Emotions.happy.toString(),
+                    new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.happy").split(","))));
+            emotionsMap.put(Emotions.sad.toString(),
+                    new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.sad").split(","))));
+            emotionsMap.put(Emotions.ill.toString(),
+                    new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.ill").split(","))));
+            emotionsMap.put(Emotions.angry.toString(),
+                    new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.angry").split(","))));
+            emotionsMap.put(Emotions.scared.toString(),
+                    new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.scared").split(","))));
+            emotionsMap.put(Emotions.worried.toString(),
+                    new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.worried").split(","))));
+        }catch (IOException e){
+            e.printStackTrace();
         }
     }
 
@@ -487,4 +510,27 @@ public abstract class JDBCDao implements DAO {
             return false;
         }
     }
+
+    @Override
+    public List<String> getEmotionsActivityInstance(String emotion, int intensity) throws DAOException {
+        try {
+            if (emotion.equals(Emotions.worried.toString())) {
+                if (intensity >= 6) {
+                    List<String> temp = emotionsMap.get(emotion);
+                    temp.remove("faceIt");
+                    return temp;
+                }
+            }
+
+            return emotionsMap.get(emotion);
+        }catch (NullPointerException npe){
+            npe.printStackTrace();
+            return null;
+        }
+
+    }
+}
+
+enum Emotions{
+    happy, sad, ill, scared, worried, angry
 }

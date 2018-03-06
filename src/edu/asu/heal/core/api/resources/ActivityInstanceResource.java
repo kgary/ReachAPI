@@ -78,8 +78,23 @@ public class ActivityInstanceResource {
      * */
     @GET
     @Path("/{id}/")
-    public Response fetchActivityInstance(@PathParam("id") String activityInstanceId){
-        return Response.status(Response.Status.OK).entity(reachService.getActivityInstance(activityInstanceId)).build();
+    public Response fetchActivityInstance(@PathParam("id") String activityInstanceId,
+                                          @QueryParam("emotion") String emotion, @QueryParam("intensity") int intensity){
+        String response = reachService.getActivityInstance(activityInstanceId, emotion, intensity);
+        if (response.equals("400"))
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .build();
+
+        if (response == null)
+            return Response
+                    .status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .build();
+
+        return Response
+                .status(Response.Status.OK)
+                .entity(response)
+                .build();
     }
 
     /**

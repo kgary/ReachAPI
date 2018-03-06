@@ -6,7 +6,7 @@ public interface HealService {
 
     String getActivityInstances(String patientPin, int trialId);
 
-    String getActivityInstance(String activityInstanceId);
+    String getActivityInstance(String activityInstanceId, String emotion, int intensity);
 
     String createActivityInstance(String requestPayload);
 
