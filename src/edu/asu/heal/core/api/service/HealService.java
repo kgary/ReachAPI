@@ -31,7 +31,7 @@ public interface HealService {
     String deleteActivityInstance(String activityInstanceId);
 
     // methods pertaining to patient resource
-    List<Patient> getPatients(String trialId);
+    HEALResponse getPatients(String trialId);
 
     Patient getPatient(int patientPin);
 

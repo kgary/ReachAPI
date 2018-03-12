@@ -1,30 +1,27 @@
 package edu.asu.heal.core.api.resources;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.asu.heal.core.api.models.HEALResponse;
 import edu.asu.heal.core.api.models.Patient;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 @Path("/patients")
 public class PatientResource {
 
-    private HealService reachService = HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
+    private HealService reachService =
+            HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
 
-    /**
-     * @apiDefine BadRequestError
-     * @apiError (Error 4xx) {400} BadRequest Bad Request Encountered
-     * */
-
-    /** @apiDefine UnAuthorizedError
-     * @apiError (Error 4xx) {401} UnAuthorized The Client must be authorized to access the resource
-     * */
 
     /** @apiDefine PatientNotFoundError
      * @apiError (Error 4xx) {404} NotFound The patient cannot be found
+     * */
+
+    /**
+     * @apiDefine PatientsNotFoundError
+     * @apiError (Error 4xx) {404} NotFound No patients exist!
      * */
 
     /**
@@ -38,30 +35,53 @@ public class PatientResource {
      * */
 
     /**
-     * @api {get} /patient?trialId={id} Get Patients of Trial
-     * @apiName GetPatientsOfTrial
+     * @api {get} /patient Get Patients
+     * @apiName GetPatients
      * @apiGroup Patient
      *
-     * @apiParam {Number} id Trial Unique Id
-     * @apiParam (Login) {String} pass Only logged in user can get this
+     * @apiParam {Number} [trialId] Pass trialId = 'some-unique-id' as query parameter to fetch the list of
+     * patients for a particular trial; eg: `/patient?trialId=1`
      *
-     * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
-     * @apiUse PatientNotFoundError
-     * @apiUse InternalServerError
-     * @apiUse NotImplementedError
+     * @apiSuccess {Object[]} data List of Patients
+     * @apiSuccess {Object[]} data.activityInstances Patient's Activity Instances
+     * @apiSuccess {DateTime} data.createdAt CreatedAt
+     * @apiSuccess {Number} data.pin Patient's pin
+     * @apiSuccess {DateTime} data.startDate Patient's Start Date of Trial
+     * @apiSuccess {String} data.state Patient's Current State in the Trial
+     * @apiSuccess {DateTime} data.updatedAt UpdatedAt
+     * @apiSuccess {String} message Response Message
+     * @apiSuccess {String} messageType Response Message Type
+     * @apiSuccess {Number} statusCode  Response Status Code
+     *
+     * @apiSuccessExample {json} Success-Response:
+     *      HTTP/1.1 200 OK
+     *      {
+     *          "data": [
+     *              {
+     *                  "activityInstances": [
+     *                      {
+     *                          id: 87612kjbacskhv121
+     *                      }
+     *                  ],
+     *                  "createdAt": "2018-02-26T07:00:00Z[UTC]",
+     *                  "pin": 4010,
+     *                  "startDate": "2018-02-26T07:00:00Z[UTC]",
+     *                  "state": "Active",
+     *                  "updatedAt": "2018-02-26T07:00:00Z[UTC]"
+     *              }
+     *          ],
+     *          "message": "Success",
+     *          "messageType": "success",
+     *          "statusCode": 200
+     *      }
+     *
+     * @apiUse PatientsNotFoundError
      * */
     @GET
     public Response fetchPatients(@QueryParam("trialId") String trialId){
-        List<Patient> patients = reachService.getPatients(trialId);
-        if(patients == null)
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Some problem on server. Check logs")
-                    .build();
+        HEALResponse response = reachService.getPatients(trialId);
 
-        return Response.status(Response.Status.OK)
-                .entity(patients)
-                .build();
+        return Response.status(response.getStatusCode()).entity(response).build();
     }
 
     /**
@@ -71,13 +91,7 @@ public class PatientResource {
      *
      * @apiParam {Number} id Patient's Unique Id
      *
-     * @apiParam (Login) {String} pass Only logged in user can get this
-     *
-     * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
      * @apiUse PatientNotFoundError
-     * @apiUse InternalServerError
-     * @apiUse NotImplementedError
     * */
     @GET
     @Path("/{patientPin}")
@@ -90,15 +104,6 @@ public class PatientResource {
                     .build();
         return Response.status(Response.Status.OK).entity(patient).build();
     }
-
-//    * @apiParam {String} DeviceType Type of Device used by the patient
-//     * @apiParam {String} [DeviceVersion] Version of the Device
-//     * @apiParam {String} DateStarted DateTime at which the patient has started the participation
-//     * @apiParam {String} DateCompleted DateTime at which the patient is expected to complete the trial
-//     * @apiParam {String} Type Patient Type: Child | Adult | Parent Proxy
-//     * @apiParam {Number} StageId Unique Trial's Stage Id
-//            * @apiParam {Number} ParentPinId Patient's Unique Id
-//         * @apiParam (Login) {String} pass Only logged in user can post this
 
     /**
      * @api {post} /patient Add Patient
@@ -114,56 +119,11 @@ public class PatientResource {
      * @apiUse NotImplementedError
      * */
     @POST
-    public Response addPatient(String requestBody){
+    public Response createPatient(String requestBody){
         int inserted = reachService.createPatient(requestBody);
         if(inserted != -1)
             return Response.status(Response.Status.CREATED).entity("{\"patient\": \"/patients/" + inserted +"\"}").build();
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-    }
-
-    /**
-     * @api {put} /patient Update Patient
-     * @apiName UpdatePatient
-     * @apiGroup Patient
-     *
-     * @apiParam {String} DeviceType Type of Device used by the patient
-     * @apiParam {String} [DeviceVersion] Version of the Device
-     * @apiParam {String} DateStarted DateTime at which the patient has started the participation
-     * @apiParam {String} DateCompleted DateTime at which the patient is expected to complete the trial
-     * @apiParam {String} Type Patient Type: Child | Adult | Parent Proxy
-     * @apiParam {Number} StageId Unique Trial's Stage Id
-     * @apiParam {Number} ParentPinId Patient's Unique Id
-     *
-     * @apiParam (Login) {String} pass Only logged in user can put this
-     *
-     * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
-     * @apiUse InternalServerError
-     * @apiUse NotImplementedError
-     * */
-    @PUT
-    public Response updatePatient(String requestBody){
-        return Response.status(Response.Status.OK).entity(reachService.updatePatient(requestBody)).build();
-    }
-
-    /**
-     * @api {delete} /patient/:id Delete Patient
-     * @apiName RemovePatient
-     * @apiGroup Patient
-     *
-     * @apiParam {Number} patientId Unique Patient's Id
-     * @apiParam (Login) {String} pass Only logged in user can delete this
-     *
-     * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
-     * @apiUse PatientNotFoundError
-     * @apiUse InternalServerError
-     * @apiUse NotImplementedError
-     * */
-    @DELETE
-    @Path("/{patientPin}")
-    public Response removePatient(@PathParam("patientPin") String patientPin){
-        return Response.status(Response.Status.OK).entity(reachService.deletePatient(patientPin)).build();
     }
 
 }

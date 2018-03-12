@@ -40,13 +40,6 @@ public class MongoDBDAO implements DAO {
     public MongoDBDAO(Properties properties){
         __mongoURI = properties.getProperty("mongo.uri");
         __mongoDBName = properties.getProperty("mongo.dbname");
-
-        // Alternatively, the following properties can be used if we don't want to deal with URIs separately
-//        __mongoUser = properties.getProperty("mongo.username");
-//        __mongoPassword = properties.getProperty("mongo.password");
-//        __mongoHost = properties.getProperty("mongo.host");
-//        __mongoPort = Integer.parseInt(properties.getProperty("mongo.port"));
-
     }
 
     private MongoDatabase getConnectedDatabase(){
@@ -60,10 +53,6 @@ public class MongoDBDAO implements DAO {
 
             // get handle to "_mongoDBName" database
             return mongoClient.getDatabase(__mongoDBName).withCodecRegistry(pojoCodecRegistry);
-
-            // Alternatively the following lines of code can be used
-            // MongoCredential credential = MongoCredential.createCredential(__mongoUser, __mongoDBName, __mongoPassword.toCharArray());
-            // MongoClient client = new MongoClient(new ServerAddress(__mongoHost, __mongoPort), credential, MongoClientOptions.builder().build());
         }catch (Exception e){
             System.out.println("SOME ERROR GETTING MONGO CONNECTION");
             e.printStackTrace();
@@ -238,6 +227,19 @@ public class MongoDBDAO implements DAO {
 
             return "SUCCESS";
         } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<Patient> getPatients() throws DAOException {
+        try {
+            MongoDatabase database = getConnectedDatabase();
+            MongoCollection<Patient> patientCollection = database.getCollection(PATIENTS_COLLECTION, Patient.class);
+
+            return patientCollection.find().into(new ArrayList<>());
+        } catch (Exception e){
             e.printStackTrace();
             return null;
         }

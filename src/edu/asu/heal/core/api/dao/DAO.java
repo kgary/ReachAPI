@@ -62,6 +62,8 @@ public interface DAO {
 
     String createTrial(Trial trialInstance) throws DAOException;
 
+    List<Patient> getPatients() throws DAOException;
+
     List<Patient> getPatients(String trialId) throws DAOException;
 
     Patient getPatient(int patientPin);

@@ -1,8 +1,7 @@
 package edu.asu.heal.reachv3.api.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import edu.asu.heal.core.api.dao.DAOException;
 import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.dao.DAO;
@@ -11,8 +10,8 @@ import edu.asu.heal.reachv3.api.model.*;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import javax.ws.rs.core.Response;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -74,85 +73,12 @@ public class ReachService implements HealService {
         return null;
     }
 
-    /* public String addTestDomain(String title, String description, String state){
-        try{
-
-            // NOTE - please note that this record consist of fabricated data just to test the queries
-            ActivityInstance sticWeek1 = new ActivityInstance("STIC", new Date("02/05/2018"),
-                    new Date("02/11/2018"), "", ActivityInstanceStatus.CREATED, null);
-            ActivityInstance stopWeek1 = new ActivityInstance("STOP", new Date("02/05/2018"),
-                    new Date("02/11/2018"), "", ActivityInstanceStatus.CREATED, null);
-            ActivityInstance whWeek1 = new ActivityInstance("WorryHeads", new Date("02/05/2018"),
-                    new Date("02/11/2018"), "", ActivityInstanceStatus.CREATED, null);
-
-
-            ActivityInstance sticWeek2 = new ActivityInstance("STIC", new Date("02/12/2018"),
-                    new Date("02/18/2018"), "", ActivityInstanceStatus.CREATED, null);
-            ActivityInstance stopWeek2 = new ActivityInstance("STOP", new Date("02/12/2018"),
-                    new Date("02/18/2018"), "", ActivityInstanceStatus.CREATED, null);
-            ActivityInstance whWeek2 = new ActivityInstance("WorryHeads", new Date("02/12/2018"),
-                    new Date("02/18/2018"), "", ActivityInstanceStatus.CREATED, null);
-
-
-            ActivityInstance sticWeek3 = new ActivityInstance("STIC", new Date("02/19/2018"),
-                    new Date("02/25/2018"), "", ActivityInstanceStatus.CREATED, null);
-            ActivityInstance stopWeek3 = new ActivityInstance("STOP", new Date("02/19/2018"),
-                    new Date("02/25/2018"), "", ActivityInstanceStatus.CREATED, null);
-            ActivityInstance whWeek3 = new ActivityInstance("WorryHeads", new Date("02/19/2018"),
-                    new Date("02/25/2018"), "", ActivityInstanceStatus.CREATED, null);
-
-            ArrayList<ActivityInstance> instances = new ArrayList<ActivityInstance>();
-            instances.add(sticWeek1);
-            instances.add(stopWeek1);
-            instances.add(whWeek1);
-            instances.add(sticWeek2);
-            instances.add(stopWeek2);
-            instances.add(whWeek2);
-            instances.add(sticWeek3);
-            instances.add(stopWeek3);
-            instances.add(whWeek3);
-
-            Patient patient = new Patient(4010, new Date("02/05/2018"), new Date("04/01/2018"), "active", instances);
-            Patient myPatient = new Patient(4011, new Date("02/05/2018"), new Date("04/01/2018"), "active", instances);
-
-            ArrayList<Patient> patients = new ArrayList<Patient>();
-            patients.add(patient);
-            patients.add(myPatient);
-
-            ArrayList<Activity> activities = new ArrayList<Activity>();
-            activities.add(new Activity("STIC", "STIC Activity"));
-            activities.add(new Activity("STOP", "STOP Activity"));
-            activities.add(new Activity("WorryHeads", "WorryHeads Activity"));
-
-            ArrayList<Trial> trials = new ArrayList<Trial>();
-//            trials.add(new Trial("Compass", "Compass for courage", new Date("02/05/2018"),
-//                    new Date("04/01/2018"), 100, patients));
-
-            Domain domainInstance = new Domain("REACH", "REACH BASED DOMAIN", "ACTIVE");
-//            domainInstance.setTrials(trials);
-//            domainInstance.setActivities(activities);
-
-            DAO dao = DAOFactory.getTheDAO();
-
-            return dao.createDomain(domainInstance);
-        } catch (Exception e){
-            e.printStackTrace();
-            return e.getMessage();
-        }
-    } */
-
     @Override
     public List<ActivityInstance> getActivityInstances(int patientPin, int trialId) {
         try {
 
             // TODO -- scope in the possibility that when queryParams(patientPin, trialId) are not present, then
             DAO dao = DAOFactory.getTheDAO();
-//            ScheduleModel instance = (ScheduleModel)dao.getScheduledActivities( 2);
-//
-//            ObjectMapper mapper = new ObjectMapper();
-//            return mapper.writeValueAsString(instance);
-
-//            String instances = (String) dao.getScheduledActivities(patientPin, 0);
             List<ActivityInstance> instances = dao.getScheduledActivities(patientPin, trialId);
             if(instances == null)
                 return null;
@@ -253,18 +179,35 @@ public class ReachService implements HealService {
 
     // patient resource method
     @Override
-    public List<Patient> getPatients(String trialId){
-        // explore the option - if trialId is not present then return patients collections
-//        return "GET ALL PATIENTS";
+    public HEALResponse getPatients(String trialId){
 
+        System.out.println("trialId: " + trialId);
         try{
             DAO dao = DAOFactory.getTheDAO();
-            return dao.getPatients(trialId);
+            List<Patient> result;
 
-        }catch (Exception e){
-            System.out.println("SOME ERROR IN GETPATIENTS() IN REACHSERVICE CLASS");
-            e.printStackTrace();
-            return null;
+            if (trialId == null){
+                // return list of all patients present
+                result = dao.getPatients();
+            } else {
+                // return list of patients for given trialId
+                result = dao.getPatients(trialId);
+            }
+
+            if (result.isEmpty()) {
+                return HEALResponse.getErrorMessage(Response.Status.NOT_FOUND.getStatusCode(),
+                        "No Patients Found!!!", null);
+            }
+
+            return HEALResponse.getSuccessMessage(Response.Status.OK.getStatusCode(), "Success", result);
+        } catch (DAOException e){
+
+            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                    e.getMessage(), null);
+        } catch (Exception e) {
+
+            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                    "UnHandled Exception: " + e.getMessage(), null);
         }
     }
 

@@ -505,4 +505,9 @@ public abstract class JDBCDao implements DAO {
     public Patient getPatient(int patientPin) {
         return null;
     }
+
+    @Override
+    public List<Patient> getPatients() throws DAOException {
+        return null;
+    }
 }
