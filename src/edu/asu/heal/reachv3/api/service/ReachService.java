@@ -8,7 +8,10 @@ import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.reachv3.api.model.*;
+import org.bson.Document;
+import org.bson.types.ObjectId;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +19,9 @@ import java.util.Random;
 
 public class ReachService implements HealService {
 
+    private static final String DATE_FORMAT = "MM/dd/yyyy";
+
+    @Override
     public String getDomains(){
         try {
             DAO dao = DAOFactory.getTheDAO();
@@ -33,13 +39,29 @@ public class ReachService implements HealService {
     }
 
     @Override
+    public String getDomain(String id){
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+            Document domain = (Document) dao.getDomain(id);
+
+            if (domain != null) {
+                return domain.toJson();
+            }
+
+            return null;
+        } catch (Exception e ){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
     public String addDomain(String title, String description, String state) {
 
         try {
             DAO dao = DAOFactory.getTheDAO();
             Domain instance = new Domain(title, description, state);
-            instance.setActivities(new ArrayList<Activity>());
-            instance.setTrials(new ArrayList<Trial>());
+            instance.setId(new ObjectId(new Date()));
 
             return dao.createDomain(instance);
         } catch (Exception e){
@@ -47,7 +69,12 @@ public class ReachService implements HealService {
         }
     }
 
-    public String addTestDomain(String title, String description, String state){
+    @Override
+    public String addTestDomain(String title, String description, String state) {
+        return null;
+    }
+
+    /* public String addTestDomain(String title, String description, String state){
         try{
 
             // NOTE - please note that this record consist of fabricated data just to test the queries
@@ -98,12 +125,12 @@ public class ReachService implements HealService {
             activities.add(new Activity("WorryHeads", "WorryHeads Activity"));
 
             ArrayList<Trial> trials = new ArrayList<Trial>();
-            trials.add(new Trial("Compass", "Compass for courage", new Date("02/05/2018"),
-                    new Date("04/01/2018"), 100, patients));
+//            trials.add(new Trial("Compass", "Compass for courage", new Date("02/05/2018"),
+//                    new Date("04/01/2018"), 100, patients));
 
             Domain domainInstance = new Domain("REACH", "REACH BASED DOMAIN", "ACTIVE");
-            domainInstance.setTrials(trials);
-            domainInstance.setActivities(activities);
+//            domainInstance.setTrials(trials);
+//            domainInstance.setActivities(activities);
 
             DAO dao = DAOFactory.getTheDAO();
 
@@ -112,25 +139,21 @@ public class ReachService implements HealService {
             e.printStackTrace();
             return e.getMessage();
         }
-    }
+    } */
 
     @Override
-    public String getActivityInstances(int patientPin, int trialId) {
+    public List<ActivityInstance> getActivityInstances(int patientPin, int trialId) {
         try {
 
             // TODO -- scope in the possibility that when queryParams(patientPin, trialId) are not present, then
-            // we will return activityInstance collection
-
-            // return the mockup data
             DAO dao = DAOFactory.getTheDAO();
 //            ScheduleModel instance = (ScheduleModel)dao.getScheduledActivities( 2);
 //
 //            ObjectMapper mapper = new ObjectMapper();
 //            return mapper.writeValueAsString(instance);
 
-            // TODO kept as (String) for now. To be refactored and method signature changed to return String
-
-            String instances = (String) dao.getScheduledActivities(patientPin, 0);
+//            String instances = (String) dao.getScheduledActivities(patientPin, 0);
+            List<ActivityInstance> instances = dao.getScheduledActivities(patientPin, trialId);
             if(instances == null)
                 return null;
 
@@ -230,7 +253,7 @@ public class ReachService implements HealService {
 
     // patient resource method
     @Override
-    public String getPatients(String trialId){
+    public List<Patient> getPatients(String trialId){
         // explore the option - if trialId is not present then return patients collections
 //        return "GET ALL PATIENTS";
 
@@ -246,13 +269,25 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public String getPatient(String patientPin) {
-        return "GET PATIENT: " + patientPin;
+    public Patient getPatient(int patientPin) {
+        try{
+            DAO dao = DAOFactory.getTheDAO();
+            return dao.getPatient(patientPin);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
-    public String createPatient(String requestBody) {
-        return null;
+    public int createPatient(String requestBody) {
+        try{
+            DAO dao = DAOFactory.getTheDAO();
+            return dao.createPatient(requestBody);
+        }catch (Exception e){
+            e.printStackTrace();
+            return -1;
+        }
     }
 
     @Override
@@ -343,8 +378,9 @@ public class ReachService implements HealService {
 
     }
 
+    // methods pertaining to Activity Model
     @Override
-    public String getActivities(String domain) {
+    public List<Activity> getActivities(String domain) {
         try{
             DAO dao = DAOFactory.getTheDAO();
              return dao.getActivities(domain);
@@ -356,12 +392,54 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public String getTrials(String domain) {
+    public String addActivity(String title, String description){
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+
+            return dao.createActivity(new Activity(title, description));
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<Trial> getTrials(String domain) {
         try{
             DAO dao = DAOFactory.getTheDAO();
             return dao.getTrials(domain);
         }catch (Exception e){
             System.out.println("SOME ERROR IN GETTRIALS() IN REACHSERVICE CLASS");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public String addTrial(String domainId, String title, String description, String startDate, String endDate,
+                           int targetCount) {
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+
+            // check if the domain exist, if yes get the id of domain
+            Document domain = (Document) dao.getDomain(domainId);
+            if (domain != null) {
+
+                Date startDateFormat = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(startDate);
+                Date endDateFormat = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(endDate);
+
+                ObjectId newId = ObjectId.get();
+                String trialId = newId.toHexString();
+                Trial trialInstance = new Trial(newId, (ObjectId) domain.get("_id"), trialId, title, description,
+                        startDateFormat, endDateFormat, targetCount);
+
+                dao.createTrial(trialInstance);
+
+                return "OK";
+            }
+
+            return null;
+        } catch (Exception e){
             e.printStackTrace();
             return null;
         }

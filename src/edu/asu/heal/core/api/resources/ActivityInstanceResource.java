@@ -1,19 +1,25 @@
 package edu.asu.heal.core.api.resources;
 
+import edu.asu.heal.core.api.models.ActivityInstance;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/activityinstances/")
 @Produces(MediaType.APPLICATION_JSON)
 public class ActivityInstanceResource {
 
+	// XXX the classname should not be hardcoded
     private static HealService reachService =
             HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
 
+    // XXX does apidoc let you put the definitions after references, like at the bottom of the class?
+    // are these definitions repeated in every resource class? Seems like there would be a shortcut,
+    // and they are in the way here. Finally, the apidoc needs to give JSON examples.
     /**
      * @apiDefine BadRequestError
      * @apiError (Error 4xx) {400} BadRequest Bad Request Encountered
@@ -53,18 +59,19 @@ public class ActivityInstanceResource {
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
      * */
-    @GET
+    @GET  
     public Response fetchActivityInstances(@QueryParam("patientPin") int patientPin,
                                            @QueryParam("trialId") int trialId){
-
-        String instances = reachService.getActivityInstances(patientPin, trialId);
+    	// XXX are the query string params required? I would think there would be a more general
+    	// set of query string parameters that could cut across these. Candidate for shortcut endpoint
+        List<ActivityInstance> instances = reachService.getActivityInstances(patientPin, trialId);
         if(instances == null)
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-            .entity("SOME PROBLEM IN SERVER. CHECK LOGS")
+            .entity("SOME PROBLEM IN SERVER. CHECK LOGS")  // XXX add more info, you have patientPin and trialId
             .build();
 
         return Response.status(Response.Status.OK)
-                .entity(instances)
+                .entity(instances)  // XXX need to talk JSON payload
                 .build();
     }
 
@@ -84,7 +91,7 @@ public class ActivityInstanceResource {
      * @apiUse NotImplementedError
      * */
     @GET
-    @Path("/{id}/")
+    @Path("/{id}/")  // XXX why the / at the end?
     public Response fetchActivityInstance(@PathParam("id") String activityInstanceId){
         return Response.status(Response.Status.OK).entity(reachService.getActivityInstance(activityInstanceId)).build();
     }
@@ -110,13 +117,17 @@ public class ActivityInstanceResource {
      * @apiUse NotImplementedError
      * */
     @POST
-    public Response addActivityInstance(String requestBody){
+    public Response addActivityInstance(String requestBody){  // XXX I prefer "create" over "add"
         String response = reachService.createActivityInstance(requestBody);
+        // XXX why are we using String and not an @Consumes of JSON?
         if(response != null) {
-
+        		// XXX we should add the Location header here, or at the least decide if we are going to link in the JSON
+        		// But the new resource link should be in the response somewhere
+        		// XXX We HAVE to get away from wrapped responses like "Success" and "Error". Return the resource representation
             return Response.status(Response.Status.CREATED).entity("Success").build();
         } else {
-
+        		// XXX can we improve our error handling? Why would the service return null? Can it tell us anything?
+        		// for example, what if the requestBody makes no sense? Shouldn't that be a 400?
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error").build();
         }
     }
@@ -142,7 +153,9 @@ public class ActivityInstanceResource {
      * @apiUse NotImplementedError
      * */
     @PUT
-    public Response updateActivityInstance(String requestBody){
+    public Response updateActivityInstance(String requestBody){ // XXX see comment above regarding use of String
+    		// XXX No error cases possible on the call to the service? You list 4 above
+    		// XXX we return OK but we should distinguish an update from a created on PUT (200 vs 201)
         return Response.status(Response.Status.OK).entity(reachService.updateActivityInstance(requestBody)).build();
     }
 
@@ -166,8 +179,11 @@ public class ActivityInstanceResource {
     public Response removeActivityInstance(@PathParam("id") String activityInstanceId){
         return Response.status(Response.Status.OK).entity(
                 reachService.deleteActivityInstance(activityInstanceId)).build();
+        // XXX proper response code is 204. Again, no error handling?
     }
 
+    // XXX Why not use a query param like type=makebelieve instead of making a new endpoint?
+    // when we extend our endpoint we think of it as a path param usually, whereas this is a subtype
     @GET
     @Path("/makebelieve/")
     public Response fetchMakeBelieveInstance(){
@@ -178,8 +194,10 @@ public class ActivityInstanceResource {
         return Response.status(Response.Status.OK).entity(makeBelieveInstanceString).build();
     }
 
+    // XXX I am pretty confused why we need a new endpoint at all. Why can't the service distinguish the special case
+    // of a MB AI?
     @GET
-    @Path("/makebelieveanswers/")
+    @Path("/makebelieveanswers/")  // XXX this would be /makebelieve/answers?situation_id=...
     public Response fetchMakeBelieveInstanceAnswers(@QueryParam("situation_id") int situationId){
         String makeBelieveInstanceAnswerString = reachService.getMakeBelieveInstanceAnswer(situationId);
         if(makeBelieveInstanceAnswerString == null)
@@ -190,6 +208,7 @@ public class ActivityInstanceResource {
         return Response.status(Response.Status.OK).entity(makeBelieveInstanceAnswerString).build();
     }
 
+    // XXX if we do keep a /makebelieve endpoint then you PUT on that, not on a separate one here
     @PUT()
     @Path("/makebelieveinstance/")
     public Response updateMakeBelieveInstance(@QueryParam("situation_id") int situationId, String requestBody){
@@ -197,9 +216,13 @@ public class ActivityInstanceResource {
         return Response.status(response).build();
     }
 
+    // XXX again why a new endpoint? WorryHeads is just an acivityinstance from the API perspective. Yes, we
+    // will need to route to the right service call, but we do not have to expose a new endpoint. Rather,
+    // the subtype we are looking for (WH, MB, etc.) is a query filter
     @GET
     @Path("/worryheads")
     public Response fetchWorryHeadsInstance(){
+    		// XXX what WH instance would this even return? A single or a collection? How would it be scoped?
         String worryHeadsInstanceString = reachService.getWorryHeadsInstance();
         if(worryHeadsInstanceString == null)
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Some server error. Please contact "

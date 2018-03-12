@@ -1,25 +1,55 @@
 package edu.asu.heal.core.api.models;
 
+import org.bson.types.ObjectId;
+
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Trial {
 
 
+    public static String NAME_ATTRIBUTE = "name";
+    public static String ID_ATTRIBUTE = "_id";
+    public static String TRIALID_ATTRIBUTE = "trialId";
+    public static String TITLE_ATTRIBUTE = "title";
+    public static String DESCRIPTION_ATTRIBUTE = "description";
+    public static String STARTDATE_ATTRIBUTE = "startDate";
+    public static String ENDDATE_ATTRIBUTE = "endDate";
+    public static String TARGETCOUNT_ATTRIBUTE = "targetCount";
+    public static String PATIENTS_ATTRIBUTE = "patients";
+    public static String CREATEDAT_ATTRIBUTE = "createdAt";
+    public static String UPDATEDAT_ATTRIBUTE = "updatedAt";
+
+    private ObjectId id;
+    private ObjectId domainId;
+    private String trialId;
     private String title;
     private String description;
     private Date startDate;
     private Date endDate;
     private int targetCount;
-    private ArrayList<Patient> patients = new ArrayList<Patient>();
+    private ArrayList<ObjectId> patients = new ArrayList<>();
+//    private Date createdAt; TODO shall we add this field too @dpurbey?
+//    private Date updatedAt;  TODO shall we add this field too @dpurbey?
 
     public Trial(){
         // blank constructor
     }
 
-    public Trial(String title, String description, Date startDate, Date endDate, int targetCount,
-                 ArrayList<Patient> patients){
-
+    public Trial(ObjectId id, ObjectId domainId, String trialId, String title, String description, Date startDate, Date endDate, int targetCount){
+        this.id = id;
+        this.domainId = domainId;
+        this.trialId = trialId;
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.targetCount = targetCount;
+    }
+    public Trial(ObjectId id, ObjectId domainId, String trialId, String title, String description, Date startDate, Date endDate, int targetCount, ArrayList<ObjectId> patients) {
+        this.id = id;
+        this.domainId = domainId;
+        this.trialId = trialId;
         this.title = title;
         this.description = description;
         this.startDate = startDate;
@@ -29,6 +59,22 @@ public class Trial {
     }
 
     // getters and setters
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
+
+    public ObjectId getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(ObjectId domainId) {
+        this.domainId = domainId;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -69,12 +115,19 @@ public class Trial {
         this.targetCount = targetCount;
     }
 
-    public ArrayList<Patient> getPatients() {
+    public ArrayList<ObjectId> getPatients() {
         return patients;
     }
 
-    public void setPatients(ArrayList<Patient> patients) {
+    public void setPatients(ArrayList<ObjectId> patients) {
         this.patients = patients;
     }
 
+    public String getTrialId() {
+        return trialId;
+    }
+
+    public void setTrialId(String trialId) {
+        this.trialId = trialId;
+    }
 }

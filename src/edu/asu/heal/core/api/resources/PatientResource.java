@@ -1,10 +1,13 @@
 package edu.asu.heal.core.api.resources;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.asu.heal.core.api.models.Patient;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/patients")
 public class PatientResource {
@@ -48,18 +51,18 @@ public class PatientResource {
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
      * */
-//    @GET
-//    public Response fetchPatients(@QueryParam("trialId") String trialId){
-//        String patients = reachService.getPatients(trialId);
-//        if(patients == null)
-//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-//                    .entity("Some problem on server. Check logs")
-//                    .build();
-//
-//        return Response.status(Response.Status.OK)
-//                .entity(patients)
-//                .build();
-//    }
+    @GET
+    public Response fetchPatients(@QueryParam("trialId") String trialId){
+        List<Patient> patients = reachService.getPatients(trialId);
+        if(patients == null)
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Some problem on server. Check logs")
+                    .build();
+
+        return Response.status(Response.Status.OK)
+                .entity(patients)
+                .build();
+    }
 
     /**
      * @api {get} /patient/:id Patient Detail
@@ -78,24 +81,32 @@ public class PatientResource {
     * */
     @GET
     @Path("/{patientPin}")
-    public Response fetchPatient(@PathParam("patientPin") String patientPin){
-        return Response.status(Response.Status.OK).entity(reachService.getPatient(patientPin)).build();
+    public Response fetchPatient(@PathParam("patientPin") int patientPin){
+        Patient patient = reachService.getPatient(patientPin);
+        if(patient == null)
+            return Response
+                    .status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                    "Some problem with the server. Please contact administrator.")
+                    .build();
+        return Response.status(Response.Status.OK).entity(patient).build();
     }
+
+//    * @apiParam {String} DeviceType Type of Device used by the patient
+//     * @apiParam {String} [DeviceVersion] Version of the Device
+//     * @apiParam {String} DateStarted DateTime at which the patient has started the participation
+//     * @apiParam {String} DateCompleted DateTime at which the patient is expected to complete the trial
+//     * @apiParam {String} Type Patient Type: Child | Adult | Parent Proxy
+//     * @apiParam {Number} StageId Unique Trial's Stage Id
+//            * @apiParam {Number} ParentPinId Patient's Unique Id
+//         * @apiParam (Login) {String} pass Only logged in user can post this
 
     /**
      * @api {post} /patient Add Patient
      * @apiName AddPatient
      * @apiGroup Patient
      *
-     * @apiParam {String} DeviceType Type of Device used by the patient
-     * @apiParam {String} [DeviceVersion] Version of the Device
-     * @apiParam {String} DateStarted DateTime at which the patient has started the participation
-     * @apiParam {String} DateCompleted DateTime at which the patient is expected to complete the trial
-     * @apiParam {String} Type Patient Type: Child | Adult | Parent Proxy
-     * @apiParam {Number} StageId Unique Trial's Stage Id
-     * @apiParam {Number} ParentPinId Patient's Unique Id
      *
-     * @apiParam (Login) {String} pass Only logged in user can post this
+     * @apiParam {String} Trial ID of the trial to which the patient needs to be added
      *
      * @apiUse BadRequestError
      * @apiUse UnAuthorizedError
@@ -104,7 +115,10 @@ public class PatientResource {
      * */
     @POST
     public Response addPatient(String requestBody){
-        return Response.status(Response.Status.OK).entity(reachService.createPatient(requestBody)).build();
+        int inserted = reachService.createPatient(requestBody);
+        if(inserted != -1)
+            return Response.status(Response.Status.CREATED).entity("{\"patient\": \"/patients/" + inserted +"\"}").build();
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 
     /**

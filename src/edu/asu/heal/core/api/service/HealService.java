@@ -1,6 +1,10 @@
 package edu.asu.heal.core.api.service;
 
-import edu.asu.heal.core.api.models.Domain;
+import edu.asu.heal.core.api.models.*;
+import org.bson.types.ObjectId;
+
+import java.util.Date;
+import java.util.List;
 
 public interface HealService {
 
@@ -8,37 +12,30 @@ public interface HealService {
 
     String getDomains();
 
+    String getDomain(String id);
+
     String addDomain(String title, String description, String state);
 
     String addTestDomain(String title, String description, String state);
 
     // methods pertaining to activityInstance resource
 
-    String getActivityInstances(int patientPin, int trialId);
+    List<ActivityInstance> getActivityInstances(int patientPin, int trialId);
 
     String getActivityInstance(String activityInstanceId);
 
     String createActivityInstance(String requestPayload);
 
-    // TODO -- discuss with team about a probable confusion -- @author dpurbey
-    /*
-    * confusion - whether there should be individual attribute's update method or not
-    * if not then the sql statement to perform update operation for certain set of attribute would require if/else
-    * blocks and sql statement would be constructed in the service rather than picking up from the dao.properties
-    * */
     String updateActivityInstance(String requestBody);
 
     String deleteActivityInstance(String activityInstanceId);
 
-    // methods pertaining to activity resource
-    String createActivity(String requestBody);
-
     // methods pertaining to patient resource
-    String getPatients(String trialId);
+    List<Patient> getPatients(String trialId);
 
-    String getPatient(String patientPin);
+    Patient getPatient(int patientPin);
 
-    String createPatient(String requestBody);
+    int createPatient(String requestBody);
 
     String updatePatient(String requestBody);
 
@@ -52,8 +49,17 @@ public interface HealService {
 
     String getWorryHeadsInstance();
 
-    String getActivities(String domain);
+    // methods pertaining to Activity Resource
+    List<Activity> getActivities(String domain);
 
-    String getTrials(String domain);
+    String createActivity(String requestBody);
+
+
+    String addActivity(String title, String description);
+
+    // methods pertaining to Trial Resource
+    List<Trial> getTrials(String domain);
+
+    String addTrial(String domainId, String title, String description, String startDate, String endDate, int targetCount);
 
 }

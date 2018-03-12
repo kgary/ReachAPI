@@ -6,9 +6,9 @@ import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOException;
 import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.core.api.dao.ValueObject;
-import edu.asu.heal.core.api.models.Activity;
-import edu.asu.heal.core.api.models.Domain;
+import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.reachv3.api.model.*;
+import org.bson.types.ObjectId;
 
 import java.sql.*;
 import java.sql.Date;
@@ -55,7 +55,12 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
-    public Object getScheduledActivities(int patientPin, int currentDay) throws DAOException {
+    public int createPatient(String patientDetails) {
+        return -1;
+    }
+
+    @Override
+    public List<ActivityInstance> getScheduledActivities(int patientPin, int currentDay) throws DAOException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -107,7 +112,8 @@ public abstract class JDBCDao implements DAO {
                 se.printStackTrace();
             }
         }
-        return sm;
+//        return sm;
+        return null;
     }
 
     @Override
@@ -465,18 +471,38 @@ public abstract class JDBCDao implements DAO {
 
     // TODO implement later for MySQL database. Currently implementing just for MongoDB
     @Override
-    public String getActivities(String domain) throws DAOException {
+    public List<Activity> getActivities(String domain) throws DAOException {
+        return null;
+    }
+
+    @Override
+    public String createActivity(Activity activity) throws DAOException {
         return null;
     }
 
     // TODO implement later for MySQL database. Currently implementing just for MongoDB
     @Override
-    public String getTrials(String domain) throws DAOException {
+    public List<Trial> getTrials(String domain) throws DAOException {
         return null;
     }
 
     @Override
-    public String getPatients(String trialId) throws DAOException {
+    public List<Patient> getPatients(String trialId) throws DAOException {
+        return null;
+    }
+
+    @Override
+    public Object getDomain(String id) {
+        return null;
+    }
+
+    @Override
+    public String createTrial(Trial trialInstance) throws DAOException {
+        return null;
+    }
+
+    @Override
+    public Patient getPatient(int patientPin) {
         return null;
     }
 }

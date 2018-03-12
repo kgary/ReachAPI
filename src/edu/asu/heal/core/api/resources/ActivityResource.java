@@ -1,11 +1,13 @@
 package edu.asu.heal.core.api.resources;
 
+import edu.asu.heal.core.api.models.Activity;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/activities")
 @Produces(MediaType.APPLICATION_JSON)
@@ -86,11 +88,11 @@ public class ActivityResource {
      * */
 
     /**
-     * @api {get} /activities/{domain} Get list of Activities for a given domain
+     * @api {get} /activities?domain=domainName Get list of Activities for a given domain
      * @apiName getActivities
      * @apiGroup Activity
      *
-     * @apiParam {String} domain Domain name for which activities are to be fetched
+     * @apiParam {String} domain Domain name for which activities are to be fetched. Use "_" in place of space character. Case sensitive.
      *
      * @apiUse BadRequestError
      * @apiUse UnAuthorizedError
@@ -98,10 +100,10 @@ public class ActivityResource {
      * @apiUse NotImplementedError
      * */
     @GET
-    @Path("/{domain}")
-    public Response getActivities(@PathParam("domain") String domain){
-        String activities = null;
-        activities = reachService.getActivities(domain);
+    @QueryParam("domain")
+    public Response getActivities(@QueryParam("domain") String domain){
+        List<Activity> activities = null;
+        activities = reachService.getActivities(domain.replace("_", " "));
         if(activities == null)
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("Some problem in error. See logs.")
@@ -110,5 +112,35 @@ public class ActivityResource {
         return Response.status(Response.Status.OK)
                 .entity(activities)
                 .build();
+    }
+
+    /**
+     * @api {post} /activities Create Activity
+     * @apiName CreateActivity
+     * @apiGroup Activity
+     *
+     * @apiParam {String} Title Title of the Activity
+     * @apiParam {String} Description Description of the Activity
+     *
+     *
+     * @apiParam (Login) {String} pass Only logged in user can get this
+     *
+     * @apiSuccess {String} text SUCCESS
+     *
+     * @apiUse BadRequestError
+     * @apiUse UnAuthorizedError
+     * @apiUse InternalServerError
+     * @apiUse NotImplementedError
+     * */
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response addActivity(@FormParam("title") String title, @FormParam("description") String description){
+
+        String activity = reachService.addActivity(title, description);
+        if (activity != null) {
+            return Response.status(Response.Status.OK).entity("Successfully Created Activity!").build();
+        }
+
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Something Went Wrong!!!").build();
     }
 }
