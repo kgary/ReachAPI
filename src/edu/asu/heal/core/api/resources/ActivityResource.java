@@ -1,6 +1,7 @@
 package edu.asu.heal.core.api.resources;
 
 import edu.asu.heal.core.api.models.Activity;
+import edu.asu.heal.core.api.models.HEALResponse;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
@@ -16,15 +17,6 @@ public class ActivityResource {
     private static HealService reachService =
             HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
 
-    /**
-     * @apiDefine BadRequestError
-     * @apiError (Error 4xx) {400} BadRequest Bad Request Encountered
-     * */
-
-    /** @apiDefine UnAuthorizedError
-     * @apiError (Error 4xx) {401} UnAuthorized The Client must be authorized to access the resource
-     * */
-
     /** @apiDefine ActivityNotFoundError
      * @apiError (Error 4xx) {404} NotFound Activity cannot be found
      * */
@@ -32,86 +24,27 @@ public class ActivityResource {
     /**
      * @apiDefine InternalServerError
      * @apiError (Error 5xx) {500} InternalServerError Something went wrong at server, Please contact the administrator!
-     * */
-
-    /**
-     * @apiDefine NotImplementedError
-     * @apiError (Error 5xx) {501} NotImplemented The resource has not been implemented. Please keep patience, our developers are working hard on it!!
-     * */
-
-    /**
-     * @api {post} /activity Create Activity
-     * @apiName CreateActivity
-     * @apiGroup Activity
-     *
-     * @apiParam {String} ActivityId Id of the Activity
-     * @apiParam {String} ActivityName Name of the Activity
-     * @apiParam {String} ActivityType Type of the Activity
-     * @apiParam {String} Description Description of the Activity
-     * @apiParam {String} CanonicalOrder Canonical Order of the Activity
-     * @apiParam {String} MetaData Meta Data of the Activity
-     *
-     * @apiParam (Login) {String} pass Only logged in user can post this
-     *
-     * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
-     * @apiUse InternalServerError
-     * @apiUse NotImplementedError
-     * */
-    @POST
-    public Response scheduleActivity(String requestBody){
-        // schedules activity for a patient of a trial
-        return Response.status(Response.Status.OK).entity(reachService.createActivity(requestBody)).build();
-    }
-
-    /**
-     * @apiDefine BadRequestError
-     * @apiError (Error 4xx) {400} BadRequest Bad Request Encountered
-     * */
-
-    /** @apiDefine UnAuthorizedError
-     * @apiError (Error 4xx) {401} UnAuthorized The Client must be authorized to access the resource
-     * */
-
-    /** @apiDefine ActivityNotFoundError
-     * @apiError (Error 4xx) {404} NotFound Activity cannot be found
-     * */
-
-    /**
-     * @apiDefine InternalServerError
-     * @apiError (Error 5xx) {500} InternalServerError Something went wrong at server, Please contact the administrator!
-     * */
-
-    /**
-     * @apiDefine NotImplementedError
-     * @apiError (Error 5xx) {501} NotImplemented The resource has not been implemented. Please keep patience, our developers are working hard on it!!
      * */
 
     /**
      * @api {get} /activities?domain=domainName Get list of Activities for a given domain
-     * @apiName getActivities
+     * @apiName GetActivities
      * @apiGroup Activity
      *
-     * @apiParam {String} domain Domain name for which activities are to be fetched. Use "_" in place of space character. Case sensitive.
+     * @apiParam {String} domain Domain name for which activities are to be fetched. Use "_" in place of space
+     * character. Case sensitive.
      *
-     * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
+     *
+     *
+     * @apiUse ActivityNotFoundError
      * @apiUse InternalServerError
-     * @apiUse NotImplementedError
      * */
     @GET
     @QueryParam("domain")
     public Response getActivities(@QueryParam("domain") String domain){
-        List<Activity> activities = null;
-        activities = reachService.getActivities(domain.replace("_", " "));
-        if(activities == null)
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Some problem in error. See logs.")
-                    .build();
+        HEALResponse response = reachService.getActivities(domain);
 
-        return Response.status(Response.Status.OK)
-                .entity(activities)
-                .build();
+        return Response.status(response.getStatusCode()).entity(response).build();
     }
 
     /**
@@ -125,22 +58,27 @@ public class ActivityResource {
      *
      * @apiParam (Login) {String} pass Only logged in user can get this
      *
-     * @apiSuccess {String} text SUCCESS
+     * @apiSuccess {Object[]} data null
+     * @apiSuccess {String} message Response Message
+     * @apiSuccess {String} messageType Response Message Type
+     * @apiSuccess {Number} statusCode  Response Status Code
      *
-     * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
+     * @apiSuccessExample {json} Success-Response:
+     *      HTTP/1.1 201 CREATED
+     *      {
+     *          "data": null,
+     *          "message": "Created",
+     *          "messageType": "success",
+     *          "statusCode": 201
+     *      }
+     *
      * @apiUse InternalServerError
-     * @apiUse NotImplementedError
      * */
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response addActivity(@FormParam("title") String title, @FormParam("description") String description){
+    public Response createActivity(@FormParam("title") String title, @FormParam("description") String description){
+        HEALResponse response = reachService.createActivity(title, description);
 
-        String activity = reachService.addActivity(title, description);
-        if (activity != null) {
-            return Response.status(Response.Status.OK).entity("Successfully Created Activity!").build();
-        }
-
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Something Went Wrong!!!").build();
+        return Response.status(response.getStatusCode()).entity(response).build();
     }
 }

@@ -168,10 +168,10 @@ public class MongoDBDAO implements DAO {
     public List<Activity> getActivities(String domain) throws DAOException {
         try {
             MongoDatabase database = getConnectedDatabase();
-            MongoCollection<Domain> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION, Domain.class);
+            MongoCollection<Domain> domainCollection = database.getCollection(DOMAINS_COLLECTION, Domain.class);
 
             Domain domain1 = domainCollection.find(Filters.eq(Domain.TITLE_ATTRIBUTE, domain)).first();
-            MongoCollection<Activity> activityCollection = database.getCollection(MongoDBDAO.ACTIVITIES_COLLECTION, Activity.class);
+            MongoCollection<Activity> activityCollection = database.getCollection(ACTIVITIES_COLLECTION, Activity.class);
 
             return activityCollection
                     .find(Filters.in(Activity.ID_ATTRIBUTE, domain1.getActivities().toArray(new ObjectId[]{})))
@@ -184,7 +184,7 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public String createActivity(Activity activity) throws DAOException {
+    public boolean createActivity(Activity activity) throws DAOException {
         try {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Activity> activitiesCollection = database.getCollection(MongoDBDAO.ACTIVITIES_COLLECTION,
@@ -192,10 +192,10 @@ public class MongoDBDAO implements DAO {
 
             activitiesCollection.insertOne(activity);
 
-            return "SUCCESS";
+            return true;
         } catch (Exception e){
             e.printStackTrace();
-            return null;
+            return false;
         }
     }
 

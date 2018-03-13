@@ -172,10 +172,6 @@ public class ReachService implements HealService {
     }
 
     // methods pertaining to activity resource
-    @Override
-    public String createActivity(String requestBody){
-        return "Create activity for patient";
-    }
 
     // patient resource method
     @Override
@@ -323,26 +319,43 @@ public class ReachService implements HealService {
 
     // methods pertaining to Activity Model
     @Override
-    public List<Activity> getActivities(String domain) {
+    public HEALResponse getActivities(String domain) {
         try{
             DAO dao = DAOFactory.getTheDAO();
-             return dao.getActivities(domain);
+            List<Activity> result = dao.getActivities(domain);
+
+            if (result.isEmpty()) {
+                return HEALResponse.getErrorMessage(Response.Status.NOT_FOUND.getStatusCode(),
+                        "No Activities for domain were found!", null);
+            }
+
+            return HEALResponse.getSuccessMessage(Response.Status.OK.getStatusCode(), "Found Activities!",
+                    result);
         }catch (Exception e){
             System.out.println("SOME ERROR IN GETACTIVITIES() IN REACHSERVICE CLASS");
             e.printStackTrace();
-            return null;
+
+            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                    "UnHandled Exception: " + e.getMessage(), null);
         }
     }
 
     @Override
-    public String addActivity(String title, String description){
+    public HEALResponse createActivity(String title, String description){
         try {
             DAO dao = DAOFactory.getTheDAO();
+            boolean createStatus = dao.createActivity(new Activity(title, description));
 
-            return dao.createActivity(new Activity(title, description));
+            if (createStatus){
+                return HEALResponse.getSuccessMessage(Response.Status.CREATED.getStatusCode(), "Created", null);
+            }
+
+            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                    "Could not create activity", null);
         } catch (Exception e){
             e.printStackTrace();
-            return null;
+            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                    "Unhandled Exception: " + e.getMessage(), null);
         }
     }
 
