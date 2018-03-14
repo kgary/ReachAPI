@@ -1,6 +1,7 @@
 package edu.asu.heal.core.api.resources;
 
 import edu.asu.heal.core.api.models.Domain;
+import edu.asu.heal.core.api.models.HEALResponse;
 import edu.asu.heal.core.api.models.Trial;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
@@ -19,17 +20,8 @@ public class DomainResource {
             HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
 
     /**
-     * @apiDefine BadRequestError
-     * @apiError (Error 4xx) {400} BadRequest Bad Request Encountered
-     * */
-
-    /** @apiDefine UnAuthorizedError
-     * @apiError (Error 4xx) {401} UnAuthorized The Client must be authorized to access the resource
-     * */
-
-    /**
-     * @apiDefine InternalServerError
-     * @apiError (Error 5xx) {500} InternalServerError Something went wrong at server, Please contact the administrator!
+     * @apiDefine DomainNotFoundError
+     * @apiError (Error 4xx) {404} DomainNotFoundError Domain Not Found!
      * */
 
     /**
@@ -76,16 +68,14 @@ public class DomainResource {
      *
      * @apiSuccess {Object} trials.patients.activityInstances.result Result for ActivityInstance of Patient
      *
-     * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
+     * @apiUse DomainNotFoundError
      * @apiUse InternalServerError
-     * @apiUse NotImplementedError
      * */
     @GET
     public Response fetchDomains(){
-        return Response.status(Response.Status.OK).entity(
-                reachService.getDomains()
-        ).build();
+        HEALResponse response = reachService.getDomains();
+
+        return Response.status(response.getStatusCode()).entity(response).build();
     }
 
     /**
@@ -111,13 +101,9 @@ public class DomainResource {
     @GET
     @Path("/{id}")
     public Response fetchDomain(@PathParam("id") String id){
-        String domain = reachService.getDomain(id);
+        HEALResponse response = reachService.getDomain(id);
 
-        if (domain != null) {
-            return Response.status(Response.Status.OK).entity(domain).build();
-        }
-
-        return Response.status(Response.Status.NOT_FOUND).entity("No Such Domain Exists").build();
+        return Response.status(response.getStatusCode()).entity(response).build();
     }
 
 
@@ -134,47 +120,16 @@ public class DomainResource {
      *
      * @apiSuccess {String} text SUCCESS
      *
-     * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
+     * @apiUse DomainNotFoundError
      * @apiUse InternalServerError
-     * @apiUse NotImplementedError
      * */
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response addDomain(@FormParam("title") String title, @FormParam("description") String description,
-                                    @FormParam("state") String state){
+                              @FormParam("state") String state){
 
         return Response.status(Response.Status.OK).entity(
                 reachService.addDomain(title, description, state)
-        ).build();
-    }
-
-    /**
-     * @api {post} /domain/provision Create Test Domain
-     * @apiName CreateTestDomain
-     * @apiGroup Domain
-     *
-     * @apiParam {String} Title Title of the Domain
-     * @apiParam {String} Description Description of the Domain
-     * @apiParam {String} Status The status of the Domain from Active | InActive
-     *
-     * @apiParam (Login) {String} pass Only logged in user can get this
-     *
-     * @apiSuccess {String} text SUCCESS
-     *
-     * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
-     * @apiUse InternalServerError
-     * @apiUse NotImplementedError
-     * */
-    @Path("/provision")
-    @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response addTestDomain(@FormParam("title") String title, @FormParam("description") String description,
-                                   @FormParam("state") String state){
-
-        return Response.status(Response.Status.OK).entity(
-                reachService.addTestDomain(title, description, state)
         ).build();
     }
 

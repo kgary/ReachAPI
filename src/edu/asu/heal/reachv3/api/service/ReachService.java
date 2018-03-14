@@ -12,6 +12,7 @@ import org.bson.types.ObjectId;
 
 import javax.ws.rs.core.Response;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -21,36 +22,48 @@ public class ReachService implements HealService {
     private static final String DATE_FORMAT = "MM/dd/yyyy";
 
     @Override
-    public String getDomains(){
+    public HEALResponse getDomains(){
         try {
             DAO dao = DAOFactory.getTheDAO();
 
             List<Domain> domains = (List<Domain>) dao.getDomains();
             if (domains != null){
-                return new ObjectMapper().writeValueAsString(domains);
-            } else {
-                return null;
+
+                return HEALResponse.getSuccessMessage(Response.Status.OK.getStatusCode(),
+                        "Domain List", domains);
             }
+
+            return HEALResponse.getErrorMessage(Response.Status.NOT_FOUND.getStatusCode(),
+                    "Domains Not Found", null);
         } catch(Exception e){
             e.printStackTrace();
-            return e.getMessage();
+
+            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                    "Unhandled Exception: " + e.getMessage(), null);
         }
     }
 
     @Override
-    public String getDomain(String id){
+    public HEALResponse getDomain(String id){
         try {
             DAO dao = DAOFactory.getTheDAO();
             Document domain = (Document) dao.getDomain(id);
 
             if (domain != null) {
-                return domain.toJson();
+                List<String> data = new ArrayList<String>();
+                data.add(domain.toJson());
+
+                return HEALResponse.getSuccessMessage(Response.Status.OK.getStatusCode(),
+                        "Domain Description", data);
             }
 
-            return null;
+            return HEALResponse.getErrorMessage(Response.Status.NOT_FOUND.getStatusCode(),
+                    "Domain Not Found", null);
         } catch (Exception e ){
             e.printStackTrace();
-            return null;
+
+            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                    "UnHandled Exception: " + e.getMessage(), null);
         }
     }
 

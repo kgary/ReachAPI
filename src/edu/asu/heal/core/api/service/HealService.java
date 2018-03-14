@@ -10,9 +10,9 @@ public interface HealService {
 
     // methods pertaining to domain resource
 
-    String getDomains();
+    HEALResponse getDomains();
 
-    String getDomain(String id);
+    HEALResponse getDomain(String id);
 
     String addDomain(String title, String description, String state);
 
