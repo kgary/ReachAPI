@@ -373,19 +373,50 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public List<Trial> getTrials(String domain) {
+    public HEALResponse getTrials(String domain) {
+        HEALResponse response = null;
         try{
             DAO dao = DAOFactory.getTheDAO();
-            return dao.getTrials(domain);
+            Object trials = dao.getTrials(domain);
+
+            if(trials == null){
+                response = new HEALResponse(500,
+                        "SOME PROBLEM ON THE SERVER SIDE. CHECK LOGS",
+                        HEALResponse.ERROR_MESSAGE_TYPE,
+                        null);
+                return response;
+            }
+
+            if(trials instanceof NullPointerException){
+                response = new HEALResponse(400,
+                        "THE DOMAIN NAME YOU PASSED IN DOES NOT EXIST",
+                        HEALResponse.ERROR_MESSAGE_TYPE,
+                        null);
+                return response;
+            }
+
+            if(trials instanceof List){
+                response = new HEALResponse(200,
+                        "SUCCESS",
+                        HEALResponse.SUCCESS_MESSAGE_TYPE,
+                        (List)trials);
+                return response;
+            }
+
+            return response;
         }catch (Exception e){
             System.out.println("SOME ERROR IN GETTRIALS() IN REACHSERVICE CLASS");
             e.printStackTrace();
-            return null;
+            response = new HEALResponse(500,
+                    "SOME PROBLEM ON THE SERVER SIDE. CHECK LOGS",
+                    HEALResponse.ERROR_MESSAGE_TYPE,
+                    null);
+            return response;
         }
     }
 
     @Override
-    public String addTrial(String domainId, String title, String description, String startDate, String endDate,
+    public HEALResponse addTrial(String domainId, String title, String description, String startDate, String endDate,
                            int targetCount) {
         try {
             DAO dao = DAOFactory.getTheDAO();
@@ -402,15 +433,28 @@ public class ReachService implements HealService {
                 Trial trialInstance = new Trial(newId, (ObjectId) domain.get("_id"), trialId, title, description,
                         startDateFormat, endDateFormat, targetCount);
 
-                dao.createTrial(trialInstance);
-
-                return "OK";
+                if(dao.createTrial(trialInstance)){
+                    return new HEALResponse(201,
+                            "CREATED. TODO: add link to newly created resource",
+                            HEALResponse.SUCCESS_MESSAGE_TYPE,
+                            null);
+                }
+                return new HEALResponse(500,
+                        "SOME ERROR CREATING A NEW TRIAL. CHECK LOGS.",
+                        HEALResponse.ERROR_MESSAGE_TYPE,
+                        null);
+            }else{
+                return new HEALResponse(400,
+                        "INCORRECT DOMAINID",
+                        HEALResponse.ERROR_MESSAGE_TYPE,
+                        null);
             }
-
-            return null;
         } catch (Exception e){
             e.printStackTrace();
-            return null;
+            return new HEALResponse(500,
+                    "SOME ERROR CREATING A NEW TRIAL. CHECK LOGS.",
+                    HEALResponse.ERROR_MESSAGE_TYPE,
+                    null);
         }
     }
 }

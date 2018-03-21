@@ -55,8 +55,8 @@ public interface HealService {
     HEALResponse createActivity(String title, String description);
 
     // methods pertaining to Trial Resource
-    List<Trial> getTrials(String domain);
+    HEALResponse getTrials(String domain);
 
-    String addTrial(String domainId, String title, String description, String startDate, String endDate, int targetCount);
+    HEALResponse addTrial(String domainId, String title, String description, String startDate, String endDate, int targetCount);
 
 }

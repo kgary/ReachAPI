@@ -58,9 +58,9 @@ public interface DAO {
     boolean createActivity(Activity activity) throws DAOException;
 
     // methods pertaining trail model
-    List<Trial> getTrials(String domain) throws DAOException;
+    Object getTrials(String domain) throws DAOException;
 
-    String createTrial(Trial trialInstance) throws DAOException;
+    boolean createTrial(Trial trialInstance) throws DAOException;
 
     List<Patient> getPatients() throws DAOException;
 

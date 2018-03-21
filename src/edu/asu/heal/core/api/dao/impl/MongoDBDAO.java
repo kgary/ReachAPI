@@ -201,7 +201,7 @@ public class MongoDBDAO implements DAO {
 
     // methods pertaining to the Trial Model
     @Override
-    public List<Trial> getTrials(String domain) throws DAOException {
+    public Object getTrials(String domain) throws DAOException {
         try{
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Domain> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION, Domain.class);
@@ -212,23 +212,29 @@ public class MongoDBDAO implements DAO {
             return  trialCollection.find(
                     Filters.in(Trial.ID_ATTRIBUTE, domain1.getTrials().toArray(new ObjectId[]{})))
                     .into(new ArrayList<Trial>());
+        }catch (NullPointerException ne){
+            System.out.println("SOME ERROR IN GETTING DOMAIN DATA");
+            ne.printStackTrace();
+            return ne;
         }catch (Exception e){
+            System.out.println("SOME PROBLEM IN GETTRIALS() METHOD OF MONGODBDAO");
             e.printStackTrace();
             return null;
         }
     }
 
     @Override
-    public String createTrial(Trial trialInstance) throws DAOException {
+    public boolean createTrial(Trial trialInstance) throws DAOException {
         try {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
             trialCollection.insertOne(trialInstance);
 
-            return "SUCCESS";
+            return true;
         } catch (Exception e) {
+            System.out.println("ERROR CREATING A NEW TRIAL");
             e.printStackTrace();
-            return null;
+            return false;
         }
     }
 
