@@ -15,7 +15,7 @@ import java.util.List;
 public class ActivityResource {
 
     private static HealService reachService =
-            HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
+            HealServiceFactory.getTheService();
 
     /** @apiDefine ActivityNotFoundError
      * @apiError (Error 4xx) {404} NotFound Activity cannot be found

@@ -22,11 +22,11 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 public class MongoDBDAO implements DAO {
 
     // collection captions
-    public static final String DOMAINS_COLLECTION = "domains";
-    public static final String TRIALS_COLLECTION = "trials";
-    public static final String ACTIVITIES_COLLECTION = "activities";
-    public static final String PATIENTS_COLLECTION = "patients";
-    public static final String ACTIVITYINSTANCES_COLLECTION = "activityInstances";
+    public static final String DOMAINS_COLLECTION = "Domains";
+    public static final String TRIALS_COLLECTION = "Trials";
+    public static final String ACTIVITIES_COLLECTION = "Activities";
+    public static final String PATIENTS_COLLECTION = "Patients";
+    public static final String ACTIVITYINSTANCES_COLLECTION = "ActivityInstances";
 
     private String __mongoUser;
     private String __mongoPassword;
@@ -88,7 +88,7 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public List<ActivityInstance> getScheduledActivities(int patientPin, int currentDay) throws DAOException {
+    public Object getScheduledActivities(int patientPin, int currentDay) throws DAOException {
         try {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Patient> patientCollection = database.getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class);
@@ -102,6 +102,10 @@ public class MongoDBDAO implements DAO {
                     .find(Filters.in(ActivityInstance.ID_ATTRIBUTE,
                             patient.getActivityInstances().toArray(new ObjectId[] {})))
                     .into(new ArrayList<>());
+        }catch (NullPointerException ne){
+            System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCES FOR PATIENT PIN " + patientPin);
+            ne.printStackTrace();
+            return ne;
         }catch (Exception e){
             e.printStackTrace();
             return null;
@@ -200,57 +204,35 @@ public class MongoDBDAO implements DAO {
     }
 
     // methods pertaining to the Trial Model
-
-
     @Override
-    public Object getTrials() throws DAOException {
-        try {
-            MongoDatabase database = getConnectedDatabase();
-            MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
-
-            return trialCollection.find().into(new ArrayList<Trial>());
-        }catch (Exception e){
-            System.out.println("SOME PROBLEM IN GETTRIALS() METHOD OF MONGODBDAO");
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public Object getTrials(String domain) throws DAOException {
+    public List<Trial> getTrials(String domain) throws DAOException {
         try{
             MongoDatabase database = getConnectedDatabase();
+            MongoCollection<Domain> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION, Domain.class);
+
+            Domain domain1 = domainCollection.find(Filters.eq(Domain.TITLE_ATTRIBUTE, domain)).first();
             MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
 
-            MongoCollection<Domain> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION, Domain.class);
-            Domain domain1 = domainCollection.find(Filters.eq(Domain.TITLE_ATTRIBUTE, domain)).first();
             return  trialCollection.find(
                     Filters.in(Trial.ID_ATTRIBUTE, domain1.getTrials().toArray(new ObjectId[]{})))
                     .into(new ArrayList<Trial>());
-
-        }catch (NullPointerException ne){
-            System.out.println("SOME ERROR IN GETTING DOMAIN DATA");
-            ne.printStackTrace();
-            return ne;
         }catch (Exception e){
-            System.out.println("SOME PROBLEM IN GETTRIALS() METHOD OF MONGODBDAO");
             e.printStackTrace();
             return null;
         }
     }
 
     @Override
-    public boolean createTrial(Trial trialInstance) throws DAOException {
+    public String createTrial(Trial trialInstance) throws DAOException {
         try {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
             trialCollection.insertOne(trialInstance);
 
-            return true;
+            return "SUCCESS";
         } catch (Exception e) {
-            System.out.println("ERROR CREATING A NEW TRIAL");
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 

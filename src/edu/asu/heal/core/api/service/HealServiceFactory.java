@@ -1,6 +1,9 @@
 package edu.asu.heal.core.api.service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.util.Properties;
 
 public class HealServiceFactory {
 
@@ -17,9 +20,22 @@ public class HealServiceFactory {
     // service bound to HealService should be instantiated
     private static HealService _theService;
 
-    public static HealService getTheService(String serviceClassName){
+    private static Properties properties;
+
+    static{
+        try {
+            InputStream temp = HealServiceFactory.class.getResourceAsStream("service.properties");
+            properties = new Properties();
+            properties.load(temp);
+        }catch (Exception e){
+            System.out.println("SOME ERROR IN LOADING SERVICE PROPERTIES");
+            e.printStackTrace();
+        }
+    }
+
+    public static HealService getTheService(){
         if(_theService == null){
-            return HealServiceFactory.initializeService(serviceClassName);
+            return HealServiceFactory.initializeService(properties.getProperty("healservice.classname"));
         }
 
         return _theService;
