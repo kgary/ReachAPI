@@ -1,6 +1,7 @@
 package edu.asu.heal.core.api.resources;
 
 import edu.asu.heal.core.api.models.ActivityInstance;
+import edu.asu.heal.core.api.models.HEALResponse;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
@@ -13,20 +14,11 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class ActivityInstanceResource {
 
-	// XXX the classname should not be hardcoded
-    private static HealService reachService =
-            HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
+    private static HealService reachService = HealServiceFactory.getTheService();
 
-    // XXX does apidoc let you put the definitions after references, like at the bottom of the class?
-    // are these definitions repeated in every resource class? Seems like there would be a shortcut,
-    // and they are in the way here. Finally, the apidoc needs to give JSON examples.
     /**
      * @apiDefine BadRequestError
      * @apiError (Error 4xx) {400} BadRequest Bad Request Encountered
-     * */
-
-    /** @apiDefine UnAuthorizedError
-     * @apiError (Error 4xx) {401} UnAuthorized The Client must be authorized to access the resource
      * */
 
     /** @apiDefine ActivityInstanceNotFoundError
@@ -54,24 +46,28 @@ public class ActivityInstanceResource {
      * @apiParam (Login) {String} pass Only logged in user can get this
      *
      * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
      * @apiUse ActivityInstanceNotFoundError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
      * */
-    @GET  
+    @GET
     public Response fetchActivityInstances(@QueryParam("patientPin") int patientPin,
                                            @QueryParam("trialId") int trialId){
-    	// XXX are the query string params required? I would think there would be a more general
-    	// set of query string parameters that could cut across these. Candidate for shortcut endpoint
-        List<ActivityInstance> instances = reachService.getActivityInstances(patientPin, trialId);
-        if(instances == null)
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-            .entity("SOME PROBLEM IN SERVER. CHECK LOGS")  // XXX add more info, you have patientPin and trialId
-            .build();
+        // XXX are the query string params required? I would think there would be a more general
+        // set of query string parameters that could cut across these. Candidate for shortcut endpoint
+        HEALResponse response = null;
+        if(patientPin == 0 || patientPin < -1) {
+            response = new HEALResponse(400,
+                    "YOUR PATIENT PIN ABSENT FROM THE REQUEST",
+                    HEALResponse.ERROR_MESSAGE_TYPE,
+                    null);
+        }
+        else {
+            response = reachService.getActivityInstances(patientPin, trialId);
+        }
 
-        return Response.status(Response.Status.OK)
-                .entity(instances)  // XXX need to talk JSON payload
+        return Response.status(response.getStatusCode())
+                .entity(response)
                 .build();
     }
 
@@ -85,13 +81,12 @@ public class ActivityInstanceResource {
      * @apiParam (Login) {String} pass Only logged in user can get this
      *
      * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
      * @apiUse ActivityInstanceNotFoundError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
      * */
     @GET
-    @Path("/{id}/")  // XXX why the / at the end?
+    @Path("/{id}")
     public Response fetchActivityInstance(@PathParam("id") String activityInstanceId){
         return Response.status(Response.Status.OK).entity(reachService.getActivityInstance(activityInstanceId)).build();
     }
@@ -112,22 +107,21 @@ public class ActivityInstanceResource {
      * @apiParam (Login) {String} pass Only logged in user can get this
      *
      * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
      * */
     @POST
-    public Response addActivityInstance(String requestBody){  // XXX I prefer "create" over "add"
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createActivityInstance(String requestBody){
         String response = reachService.createActivityInstance(requestBody);
-        // XXX why are we using String and not an @Consumes of JSON?
         if(response != null) {
-        		// XXX we should add the Location header here, or at the least decide if we are going to link in the JSON
-        		// But the new resource link should be in the response somewhere
-        		// XXX We HAVE to get away from wrapped responses like "Success" and "Error". Return the resource representation
+            // XXX we should add the Location header here, or at the least decide if we are going to link in the JSON
+            // But the new resource link should be in the response somewhere
+            // XXX We HAVE to get away from wrapped responses like "Success" and "Error". Return the resource representation
             return Response.status(Response.Status.CREATED).entity("Success").build();
         } else {
-        		// XXX can we improve our error handling? Why would the service return null? Can it tell us anything?
-        		// for example, what if the requestBody makes no sense? Shouldn't that be a 400?
+            // XXX can we improve our error handling? Why would the service return null? Can it tell us anything?
+            // for example, what if the requestBody makes no sense? Shouldn't that be a 400?
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error").build();
         }
     }
@@ -148,14 +142,13 @@ public class ActivityInstanceResource {
      * @apiParam (Login) {String} pass Only logged in user can get this
      *
      * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
      * */
     @PUT
     public Response updateActivityInstance(String requestBody){ // XXX see comment above regarding use of String
-    		// XXX No error cases possible on the call to the service? You list 4 above
-    		// XXX we return OK but we should distinguish an update from a created on PUT (200 vs 201)
+        // XXX No error cases possible on the call to the service? You list 4 above
+        // XXX we return OK but we should distinguish an update from a created on PUT (200 vs 201)
         return Response.status(Response.Status.OK).entity(reachService.updateActivityInstance(requestBody)).build();
     }
 
@@ -169,7 +162,6 @@ public class ActivityInstanceResource {
      * @apiParam (Login) {String} pass Only logged in user can get this
      *
      * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
      * @apiUse ActivityInstanceNotFoundError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
@@ -177,7 +169,7 @@ public class ActivityInstanceResource {
     @DELETE
     @Path("/{id}")
     public Response removeActivityInstance(@PathParam("id") String activityInstanceId){
-        return Response.status(Response.Status.OK).entity(
+        return Response.status(Response.Status.NO_CONTENT).entity(
                 reachService.deleteActivityInstance(activityInstanceId)).build();
         // XXX proper response code is 204. Again, no error handling?
     }
@@ -209,7 +201,7 @@ public class ActivityInstanceResource {
     }
 
     // XXX if we do keep a /makebelieve endpoint then you PUT on that, not on a separate one here
-    @PUT()
+    @PUT
     @Path("/makebelieveinstance/")
     public Response updateMakeBelieveInstance(@QueryParam("situation_id") int situationId, String requestBody){
         int response = reachService.updateMakeBelieveInstance(situationId, requestBody);
@@ -222,11 +214,11 @@ public class ActivityInstanceResource {
     @GET
     @Path("/worryheads")
     public Response fetchWorryHeadsInstance(){
-    		// XXX what WH instance would this even return? A single or a collection? How would it be scoped?
+        // XXX what WH instance would this even return? A single or a collection? How would it be scoped?
         String worryHeadsInstanceString = reachService.getWorryHeadsInstance();
         if(worryHeadsInstanceString == null)
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Some server error. Please contact "
-            + "administrator").build();
+                    + "administrator").build();
 
         if(worryHeadsInstanceString.equals("Bad Request"))
             return Response.status(Response.Status.BAD_REQUEST).build();

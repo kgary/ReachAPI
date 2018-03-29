@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
 public class DomainResource {
 
     private static HealService reachService =
-            HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
+            HealServiceFactory.getTheService();
 
     /**
      * @apiDefine DomainNotFoundError

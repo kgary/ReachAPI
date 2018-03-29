@@ -14,21 +14,7 @@ public interface DAO {
 
     String createDomain(Domain instance);
 
-    List<ActivityInstance> getScheduledActivities(int patientPin, int currentDay) throws DAOException;
-
-//    boolean scheduleSTOPActivity(String STOPWeeklySchedule) throws DAOException;
-//
-//    boolean scheduleSTICActivity(int STICWeeklySchedule);
-//
-//    boolean scheduleRelaxationActivity(String relaxationWeeklySchedule);
-//
-//    boolean scheduleDailyDiaryActivity(String dailyDiaryWeeklySchedule);
-//
-//    boolean scheduleABMTActivity(String ABMTWeeklySchedule);
-//
-//    boolean scheduleWorryHeadsActivity(String worryHeadsWeeklySchedule);
-//
-//    boolean scheduleSAFEACtivity(String SAFEWeeklySchedule);
+    Object getScheduledActivities(int patientPin, int currentDay) throws DAOException;
 
     boolean scheduleSTOPActivity(int day, boolean completed) throws DAOException;
 
@@ -58,12 +44,9 @@ public interface DAO {
     boolean createActivity(Activity activity) throws DAOException;
 
     // methods pertaining trail model
+    List<Trial> getTrials(String domain) throws DAOException;
 
-    Object getTrials() throws DAOException;
-
-    Object getTrials(String domain) throws DAOException;
-
-    boolean createTrial(Trial trialInstance) throws DAOException;
+    String createTrial(Trial trialInstance) throws DAOException;
 
     List<Patient> getPatients() throws DAOException;
 

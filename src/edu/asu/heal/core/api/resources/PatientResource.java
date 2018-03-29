@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response;
 public class PatientResource {
 
     private HealService reachService =
-            HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
+            HealServiceFactory.getTheService();
 
 
     /** @apiDefine PatientNotFoundError
@@ -92,7 +92,7 @@ public class PatientResource {
      * @apiParam {Number} id Patient's Unique Id
      *
      * @apiUse PatientNotFoundError
-    * */
+     * */
     @GET
     @Path("/{patientPin}")
     public Response fetchPatient(@PathParam("patientPin") int patientPin){
@@ -100,7 +100,7 @@ public class PatientResource {
         if(patient == null)
             return Response
                     .status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                    "Some problem with the server. Please contact administrator.")
+                            "Some problem with the server. Please contact administrator.")
                     .build();
         return Response.status(Response.Status.OK).entity(patient).build();
     }

@@ -87,22 +87,40 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public List<ActivityInstance> getActivityInstances(int patientPin, int trialId) {
+    public HEALResponse getActivityInstances(int patientPin, int trialId) {
+        HEALResponse response = null;
         try {
 
             // TODO -- scope in the possibility that when queryParams(patientPin, trialId) are not present, then
             DAO dao = DAOFactory.getTheDAO();
-            List<ActivityInstance> instances = dao.getScheduledActivities(patientPin, trialId);
-            if(instances == null)
-                return null;
+            Object instances = dao.getScheduledActivities(patientPin, trialId);
+            if(instances == null){
+                response = new HEALResponse(500,
+                        "Some error connecting to the database", HEALResponse.ERROR_MESSAGE_TYPE ,null);
+                return response;
+            }
 
-            return instances;
+            if(instances instanceof NullPointerException){
+                response = new HEALResponse(400,
+                        "Patient pin invalid or not does not exist",
+                        HEALResponse.ERROR_MESSAGE_TYPE, null);
+                return response;
+            }
+
+            if(instances instanceof List){
+                response = new HEALResponse(200,
+                        "Success",
+                        HEALResponse.SUCCESS_MESSAGE_TYPE,
+                        (List) instances);
+            }
+
+            return response;
         } catch(Exception e){
-            //TODO String JsonErrorMessage = mapper.writeValueAsString(new ErrorMessage("Invalid survey instance ID"));
-            //TODO throw new NotFoundException(Response.Status.BAD_REQUEST, JsonErrorMessage);
             System.out.println("SOME ERROR IN GETACTIVITYINSTANCES() IN REACHSERVICE");
             e.printStackTrace();
-            return null;
+            response = new HEALResponse(500,
+                    "Some error connecting to the database", HEALResponse.ERROR_MESSAGE_TYPE ,null);
+            return response;
         }
     }
 
@@ -373,55 +391,19 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public HEALResponse getTrials(String domain) {
-        HEALResponse response = null;
+    public List<Trial> getTrials(String domain) {
         try{
             DAO dao = DAOFactory.getTheDAO();
-            Object trials;
-
-            if(domain == null)
-                trials = dao.getTrials();
-            else
-                trials = dao.getTrials(domain);
-
-            if(trials == null){
-                response = new HEALResponse(500,
-                        "SOME PROBLEM ON THE SERVER SIDE. CHECK LOGS",
-                        HEALResponse.ERROR_MESSAGE_TYPE,
-                        null);
-                return response;
-            }
-
-            if(trials instanceof NullPointerException){
-                response = new HEALResponse(400,
-                        "THE DOMAIN NAME YOU PASSED IN DOES NOT EXIST",
-                        HEALResponse.ERROR_MESSAGE_TYPE,
-                        null);
-                return response;
-            }
-
-            if(trials instanceof List){
-                response = new HEALResponse(200,
-                        "SUCCESS",
-                        HEALResponse.SUCCESS_MESSAGE_TYPE,
-                        (List)trials);
-                return response;
-            }
-
-            return response;
+            return dao.getTrials(domain);
         }catch (Exception e){
             System.out.println("SOME ERROR IN GETTRIALS() IN REACHSERVICE CLASS");
             e.printStackTrace();
-            response = new HEALResponse(500,
-                    "SOME PROBLEM ON THE SERVER SIDE. CHECK LOGS",
-                    HEALResponse.ERROR_MESSAGE_TYPE,
-                    null);
-            return response;
+            return null;
         }
     }
 
     @Override
-    public HEALResponse addTrial(String domainId, String title, String description, String startDate, String endDate,
+    public String addTrial(String domainId, String title, String description, String startDate, String endDate,
                            int targetCount) {
         try {
             DAO dao = DAOFactory.getTheDAO();
@@ -438,29 +420,15 @@ public class ReachService implements HealService {
                 Trial trialInstance = new Trial(newId, (ObjectId) domain.get("_id"), trialId, title, description,
                         startDateFormat, endDateFormat, targetCount);
 
-                if(dao.createTrial(trialInstance)){
-                    return new HEALResponse(201,
-                            "CREATED. TODO: add link to newly created resource",
-                            HEALResponse.SUCCESS_MESSAGE_TYPE,
-                            null);
-                }
-                return new HEALResponse(500,
-                        "SOME ERROR CREATING A NEW TRIAL. CHECK LOGS.",
-                        HEALResponse.ERROR_MESSAGE_TYPE,
-                        null);
-            }else{
-                return new HEALResponse(400,
-                        "INCORRECT DOMAINID",
-                        HEALResponse.ERROR_MESSAGE_TYPE,
-                        null);
+                dao.createTrial(trialInstance);
+
+                return "OK";
             }
+
+            return null;
         } catch (Exception e){
             e.printStackTrace();
-            return new HEALResponse(500,
-                    "SOME ERROR CREATING A NEW TRIAL. CHECK LOGS.",
-                    HEALResponse.ERROR_MESSAGE_TYPE,
-                    null);
+            return null;
         }
     }
-
 }

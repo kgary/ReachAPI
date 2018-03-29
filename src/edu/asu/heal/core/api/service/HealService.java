@@ -20,7 +20,7 @@ public interface HealService {
 
     // methods pertaining to activityInstance resource
 
-    List<ActivityInstance> getActivityInstances(int patientPin, int trialId);
+    HEALResponse getActivityInstances(int patientPin, int trialId);
 
     String getActivityInstance(String activityInstanceId);
 
@@ -55,8 +55,8 @@ public interface HealService {
     HEALResponse createActivity(String title, String description);
 
     // methods pertaining to Trial Resource
-    HEALResponse getTrials(String domain);
+    List<Trial> getTrials(String domain);
 
-    HEALResponse addTrial(String domainId, String title, String description, String startDate, String endDate, int targetCount);
+    String addTrial(String domainId, String title, String description, String startDate, String endDate, int targetCount);
 
 }
