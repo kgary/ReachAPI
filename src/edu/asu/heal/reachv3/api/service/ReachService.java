@@ -377,7 +377,12 @@ public class ReachService implements HealService {
         HEALResponse response = null;
         try{
             DAO dao = DAOFactory.getTheDAO();
-            Object trials = dao.getTrials(domain);
+            Object trials;
+
+            if(domain == null)
+                trials = dao.getTrials();
+            else
+                trials = dao.getTrials(domain);
 
             if(trials == null){
                 response = new HEALResponse(500,
@@ -457,4 +462,5 @@ public class ReachService implements HealService {
                     null);
         }
     }
+
 }

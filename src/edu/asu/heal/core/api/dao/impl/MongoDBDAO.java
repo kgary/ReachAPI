@@ -200,18 +200,34 @@ public class MongoDBDAO implements DAO {
     }
 
     // methods pertaining to the Trial Model
+
+
+    @Override
+    public Object getTrials() throws DAOException {
+        try {
+            MongoDatabase database = getConnectedDatabase();
+            MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
+
+            return trialCollection.find().into(new ArrayList<Trial>());
+        }catch (Exception e){
+            System.out.println("SOME PROBLEM IN GETTRIALS() METHOD OF MONGODBDAO");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @Override
     public Object getTrials(String domain) throws DAOException {
         try{
             MongoDatabase database = getConnectedDatabase();
-            MongoCollection<Domain> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION, Domain.class);
-
-            Domain domain1 = domainCollection.find(Filters.eq(Domain.TITLE_ATTRIBUTE, domain)).first();
             MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
 
+            MongoCollection<Domain> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION, Domain.class);
+            Domain domain1 = domainCollection.find(Filters.eq(Domain.TITLE_ATTRIBUTE, domain)).first();
             return  trialCollection.find(
                     Filters.in(Trial.ID_ATTRIBUTE, domain1.getTrials().toArray(new ObjectId[]{})))
                     .into(new ArrayList<Trial>());
+
         }catch (NullPointerException ne){
             System.out.println("SOME ERROR IN GETTING DOMAIN DATA");
             ne.printStackTrace();

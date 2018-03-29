@@ -60,6 +60,11 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
+    public Object getTrials() throws DAOException {
+        return null;
+    }
+
+    @Override
     public List<ActivityInstance> getScheduledActivities(int patientPin, int currentDay) throws DAOException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -497,8 +502,8 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
-    public String createTrial(Trial trialInstance) throws DAOException {
-        return null;
+    public boolean createTrial(Trial trialInstance) throws DAOException {
+        return false;
     }
 
     @Override

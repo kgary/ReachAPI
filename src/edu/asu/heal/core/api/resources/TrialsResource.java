@@ -55,10 +55,7 @@ public class TrialsResource {
         HEALResponse response;
 
         if(domain == null || domain.equals("")){
-            response = new HEALResponse(400,
-                    "THE REQUEST YOU SENT DOES NOT CONTAIN A DOMAIN",
-                    HEALResponse.ERROR_MESSAGE_TYPE,
-                    null);
+            response = reachService.getTrials(null);
         }else{
             response = reachService.getTrials(domain.replace("_", " "));
         }
