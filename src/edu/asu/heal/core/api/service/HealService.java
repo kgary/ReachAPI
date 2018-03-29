@@ -1,5 +1,6 @@
 package edu.asu.heal.core.api.service;
 
+import edu.asu.heal.core.api.models.ActivityInstance;
 import edu.asu.heal.core.api.models.HEALResponse;
 import edu.asu.heal.core.api.models.Patient;
 
@@ -19,13 +20,13 @@ public interface HealService {
 
     HEALResponse getActivityInstances(int patientPin, int trialId);
 
-    String getActivityInstance(String activityInstanceId);
+    HEALResponse getActivityInstance(String activityInstanceId);
 
-    String createActivityInstance(String requestPayload);
+    HEALResponse createActivityInstance(ActivityInstance activityInstanceJson);
 
     String updateActivityInstance(String requestBody);
 
-    String deleteActivityInstance(String activityInstanceId);
+    HEALResponse deleteActivityInstance(String activityInstanceId);
 
     // methods pertaining to patient resource
     HEALResponse getPatients(String trialId);

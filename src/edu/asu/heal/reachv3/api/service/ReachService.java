@@ -125,11 +125,42 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public String getActivityInstance(String activityInstanceId) {
-        return "ActivityInstance: " + activityInstanceId;
+    public HEALResponse getActivityInstance(String activityInstanceId) {
+        try{
+            DAO dao = DAOFactory.getTheDAO();
+            Object instance = dao.getActivityInstance(activityInstanceId);
+
+            if(instance == null){
+                return new HEALResponse(500,
+                        "Some server error. Check logs",
+                        HEALResponse.ERROR_MESSAGE_TYPE,
+                        null);
+            }else if(instance instanceof NullPointerException){
+                return new HEALResponse(404,
+                        "Incorrect activity instance id or id does not exist",
+                        HEALResponse.ERROR_MESSAGE_TYPE,
+                        null);
+            }else{
+                return new HEALResponse(200,
+                        "Success",
+                        HEALResponse.SUCCESS_MESSAGE_TYPE,
+                        null);
+            }
+        }catch (Exception e){
+            System.out.println("SOME ERROR IN HEAL SERVICE getActivityInstance");
+            e.printStackTrace();
+            return new HEALResponse(500,
+                    "Some server error. Check logs",
+                    HEALResponse.ERROR_MESSAGE_TYPE,
+                    null);
+        }
     }
 
-    @Override
+
+    // First version of createActivityInstance when it was a whole schedule. Revised to the one below this.
+    // need to integrate schedule into that
+
+    /*@Override
     public String createActivityInstance(String requestPayload) {
         try {
             //Mock data as of now
@@ -161,6 +192,31 @@ public class ReachService implements HealService {
             e.printStackTrace();
         }
         return null;
+    }*/
+
+
+    @Override
+    public HEALResponse createActivityInstance(ActivityInstance activityInstance) {
+        try{
+            DAO dao = DAOFactory.getTheDAO();
+            if((activityInstance = dao.createActivityInstance(activityInstance)) != null){
+                return new HEALResponse(201,
+                        "Successfully created activity instance " + activityInstance.getActivityInstanceId(),
+                        HEALResponse.SUCCESS_MESSAGE_TYPE,
+                        null);
+            }
+
+            return new HEALResponse(500,
+                    "Some problem creating activity instance",
+                    HEALResponse.ERROR_MESSAGE_TYPE,
+                    null);
+        }catch (Exception e){
+            return new HEALResponse(500,
+                    "Some problem creating activity instance",
+                    HEALResponse.ERROR_MESSAGE_TYPE,
+                    null);
+
+        }
     }
 
     @Override
@@ -198,8 +254,26 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public String deleteActivityInstance(String activityInstanceId) {
-        return "DELETE AI: " + activityInstanceId;
+    public HEALResponse deleteActivityInstance(String activityInstanceId) {
+        try{
+            DAO dao = DAOFactory.getTheDAO();
+            if(dao.deleteActivityInstance(activityInstanceId)){
+                return new HEALResponse(204,
+                        "Successfully deleted activity instance " + activityInstanceId,
+                        HEALResponse.SUCCESS_MESSAGE_TYPE,
+                        null);
+            }
+
+            return new HEALResponse(500,
+                    "Some problem in deleting activity instance " + activityInstanceId,
+                    HEALResponse.ERROR_MESSAGE_TYPE,
+                    null);
+        }catch (Exception e){
+            return new HEALResponse(500,
+                    "Some problem in deleting activity instance " + activityInstanceId,
+                    HEALResponse.ERROR_MESSAGE_TYPE,
+                    null);
+        }
     }
 
     // methods pertaining to activity resource

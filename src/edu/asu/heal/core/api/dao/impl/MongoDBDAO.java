@@ -23,11 +23,11 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 public class MongoDBDAO implements DAO {
 
     // collection captions
-    public static final String DOMAINS_COLLECTION = "Domains";
-    public static final String TRIALS_COLLECTION = "Trials";
-    public static final String ACTIVITIES_COLLECTION = "Activities";
-    public static final String PATIENTS_COLLECTION = "Patients";
-    public static final String ACTIVITYINSTANCES_COLLECTION = "ActivityInstances";
+    public static final String DOMAINS_COLLECTION = "domains";
+    public static final String TRIALS_COLLECTION = "trials";
+    public static final String ACTIVITIES_COLLECTION = "activities";
+    public static final String PATIENTS_COLLECTION = "patients";
+    public static final String ACTIVITYINSTANCES_COLLECTION = "activityInstances";
 
     private String __mongoUser;
     private String __mongoPassword;
@@ -344,6 +344,67 @@ public class MongoDBDAO implements DAO {
                     .find(Filters.eq(Patient.PIN_ATTRIBUTE, patientPin))
                     .first();
         } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public boolean deleteActivityInstance(String activityInstanceId) {
+        try{
+            MongoDatabase database = getConnectedDatabase();
+            MongoCollection<ActivityInstance> activityInstanceMongoCollection =
+                    database.getCollection(ACTIVITYINSTANCES_COLLECTION, ActivityInstance.class);
+
+            activityInstanceMongoCollection.findOneAndDelete(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE,
+                    activityInstanceId));
+            return true;
+        }catch (Exception e){
+            System.out.println("SOME PROBLEM DELETING ACTIVITY INSTANCE " + activityInstanceId);
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public ActivityInstance createActivityInstance(ActivityInstance instance) {
+        try{
+            MongoDatabase database = getConnectedDatabase();
+            MongoCollection<ActivityInstance> activityInstanceMongoCollection =
+                    database.getCollection(ACTIVITYINSTANCES_COLLECTION, ActivityInstance.class);
+
+            ObjectId id = ObjectId.get();
+            instance.setId(id);
+            instance.setActivityInstanceId(id.toHexString());
+
+            activityInstanceMongoCollection.insertOne(instance);
+
+            return instance;
+        }catch (Exception e){
+            System.out.println("SOME ERROR INSERTING NEW ACTIVITY INSTANCE INTO DATABASE");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Object getActivityInstance(String activityInstanceId) {
+        try{
+            MongoDatabase database = getConnectedDatabase();
+            MongoCollection<ActivityInstance> activityInstanceMongoCollection =
+                    database.getCollection(ACTIVITYINSTANCES_COLLECTION, ActivityInstance.class);
+
+            ActivityInstance instance = activityInstanceMongoCollection
+                    .find(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId))
+                    .first();
+
+            return instance;
+        }catch (NullPointerException ne){
+            System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCE WITH ID " + activityInstanceId);
+            ne.printStackTrace();
+            return ne;
+        }catch (Exception e){
+            System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
             e.printStackTrace();
             return null;
         }

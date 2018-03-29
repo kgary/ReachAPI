@@ -1,16 +1,22 @@
 package edu.asu.heal.core.api.resources;
 
+import edu.asu.heal.core.api.models.ActivityInstance;
 import edu.asu.heal.core.api.models.HEALResponse;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 @Path("/activityinstances/")
 @Produces(MediaType.APPLICATION_JSON)
 public class ActivityInstanceResource {
+
+    @Context
+    private UriInfo _uri;
 
     private static HealService reachService = HealServiceFactory.getTheService();
 
@@ -70,7 +76,7 @@ public class ActivityInstanceResource {
      * @apiName ActivityInstanceDetail
      * @apiGroup ActivityInstance
      * @apiParam {Number} id ActivityInstance's Unique Id
-     * @apiParam (Login) {String} pass Only logged in user can get this
+     * @apiParamExample http://localhost:8080/ReachAPI/rest/activityinstances/5abd71b82e027e29ca2353a0
      * @apiUse BadRequestError
      * @apiUse ActivityInstanceNotFoundError
      * @apiUse InternalServerError
@@ -79,7 +85,8 @@ public class ActivityInstanceResource {
     @GET
     @Path("/{id}")
     public Response fetchActivityInstance(@PathParam("id") String activityInstanceId) {
-        return Response.status(Response.Status.OK).entity(reachService.getActivityInstance(activityInstanceId)).build();
+        HEALResponse response = reachService.getActivityInstance(activityInstanceId);
+        return Response.status(response.getStatusCode()).entity(response).build();
     }
 
     /**
@@ -94,19 +101,37 @@ public class ActivityInstanceResource {
      * @apiParam {String} ActivityTitle The title of the Activity Instance
      * @apiParam {String} Description Description about the Activity Instance
      * @apiParam (Login) {String} pass Only logged in user can get this
+     * @apiParamExample {json} Activity Instance Example:
+     * {
+     *      "createdAt": "2018-02-26T07:00:00.000Z",
+     *      "updatedAt": "2018-02-26T07:00:00.000Z",
+     *      "startTime": "2018-02-26T07:00:00.000Z",
+     *      "endTime": "2018-02-27T07:00:00.000Z",
+     *      "userSubmissionTime": "2000-01-01T07:00:00.000Z",
+     *      "actualSubmissionTime": "2000-01-01T07:00:00.000Z",
+     *      "instanceOf": {
+     *      "name": "Relaxation"
+     *      "activityId": 5a9499e066684905df626003
+     *          },
+     *      "state": "New",
+     *      "description": "Relaxation instance"
+     * }
      * @apiUse BadRequestError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createActivityInstance(String requestBody) {
-        String response = reachService.createActivityInstance(requestBody);
-        if (response != null) {
-            // XXX we should add the Location header here, or at the least decide if we are going to link in the JSON
-            // But the new resource link should be in the response somewhere
-            // XXX We HAVE to get away from wrapped responses like "Success" and "Error". Return the resource representation
-            return Response.status(Response.Status.CREATED).entity("Success").build();
+    public Response createActivityInstance(ActivityInstance activityInstanceJson) {
+        HEALResponse response = reachService.createActivityInstance(activityInstanceJson);
+        if (response.getStatusCode() == Response.Status.CREATED.getStatusCode()) {
+            return Response
+                    .status(Response.Status.CREATED)
+                    .header("Location",
+                            String.format("%s/%s",_uri.getAbsolutePath().toString(),
+                                    activityInstanceJson.getActivityInstanceId()))
+                    .entity(response)
+                    .build();
         } else {
             // XXX can we improve our error handling? Why would the service return null? Can it tell us anything?
             // for example, what if the requestBody makes no sense? Shouldn't that be a 400?
@@ -131,18 +156,19 @@ public class ActivityInstanceResource {
      * @apiUse NotImplementedError
      */
     @PUT
-    public Response updateActivityInstance(String requestBody) { // XXX see comment above regarding use of String
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateActivityInstance(String requestBody) {
         // XXX No error cases possible on the call to the service? You list 4 above
         // XXX we return OK but we should distinguish an update from a created on PUT (200 vs 201)
-        return Response.status(Response.Status.OK).entity(reachService.updateActivityInstance(requestBody)).build();
+        return Response.status(Response.Status.NO_CONTENT).entity(reachService.updateActivityInstance(requestBody)).build();
     }
 
     /**
      * @api {delete} /activityInstance/:id Delete ActivityInstance
      * @apiName DeleteActivityInstance
      * @apiGroup ActivityInstance
-     * @apiParam {Number} id ActivityInstance's unique id
-     * @apiParam (Login) {String} pass Only logged in user can get this
+     * @apiParam {String} id ActivityInstance's unique id
+     * @apiParamExample http://localhost:8080/ReachAPI/rest/activityinstances/5abd71b82e027e29ca2353a0
      * @apiUse BadRequestError
      * @apiUse ActivityInstanceNotFoundError
      * @apiUse InternalServerError
@@ -151,9 +177,9 @@ public class ActivityInstanceResource {
     @DELETE
     @Path("/{id}")
     public Response removeActivityInstance(@PathParam("id") String activityInstanceId) {
-        return Response.status(Response.Status.NO_CONTENT).entity(
-                reachService.deleteActivityInstance(activityInstanceId)).build();
-        // XXX proper response code is 204. Again, no error handling?
+        HEALResponse response = reachService.deleteActivityInstance(activityInstanceId);
+        return Response.status(response.getStatusCode()).entity(response).build();
+
     }
 
     // XXX Why not use a query param like type=makebelieve instead of making a new endpoint?

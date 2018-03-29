@@ -1,18 +1,16 @@
 package edu.asu.heal.core.api.models;
 
-import org.bson.types.ObjectId;
-
 public class ActivityInstanceType {
     public static String NAME_ATTRIBUTE = "name";
     public static String ACTIVITYID_ATTRIBUTE = "activityId";
 
     private String name;
-    private ObjectId activityId;
+    private String activityId;
 
     public ActivityInstanceType() {
     }
 
-    public ActivityInstanceType(String name, ObjectId activityId) {
+    public ActivityInstanceType(String name, String activityId) {
         this.name = name;
         this.activityId = activityId;
     }
@@ -25,11 +23,11 @@ public class ActivityInstanceType {
         this.name = name;
     }
 
-    public ObjectId getActivityId() {
+    public String getActivityId() {
         return activityId;
     }
 
-    public void setActivityId(ObjectId activityId) {
+    public void setActivityId(String activityId) {
         this.activityId = activityId;
     }
 }

@@ -512,4 +512,19 @@ public abstract class JDBCDao implements DAO {
     public Object getTrials() throws DAOException {
         return null;
     }
+
+    @Override
+    public boolean deleteActivityInstance(String activityInstanceId) {
+        return false;
+    }
+
+    @Override
+    public ActivityInstance createActivityInstance(ActivityInstance instance) {
+        return null;
+    }
+
+    @Override
+    public Object getActivityInstance(String activityInstanceId) {
+        return null;
+    }
 }

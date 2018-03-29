@@ -16,9 +16,11 @@ public class ActivityInstance {
     public static String INSTANCEOF_ATTRIBUTE = "instanceOf";
     public static String STATE_ATTRIBUTE = "state";
     public static String DESCRIPTION_ATTRIBUTE = "description";
+    public static String ACTIVITYINSTANCEID_ATTRIBUTE = "activityInstanceId";
 
 
     private ObjectId id;
+    private String activityInstanceId;
     private Date createdAt;
     private Date updatedAt;
     private Date startTime;
@@ -123,5 +125,13 @@ public class ActivityInstance {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getActivityInstanceId() {
+        return activityInstanceId;
+    }
+
+    public void setActivityInstanceId(String activityInstanceId) {
+        this.activityInstanceId = activityInstanceId;
     }
 }
