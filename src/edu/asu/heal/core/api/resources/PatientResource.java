@@ -38,10 +38,8 @@ public class PatientResource {
      * @api {get} /patient Get Patients
      * @apiName GetPatients
      * @apiGroup Patient
-     *
      * @apiParam {Number} [trialId] Pass trialId = 'some-unique-id' as query parameter to fetch the list of
      * patients for a particular trial; eg: `/patient?trialId=1`
-     *
      * @apiSuccess {Object[]} data List of Patients
      * @apiSuccess {Object[]} data.activityInstances Patient's Activity Instances
      * @apiSuccess {DateTime} data.createdAt CreatedAt
@@ -52,33 +50,31 @@ public class PatientResource {
      * @apiSuccess {String} message Response Message
      * @apiSuccess {String} messageType Response Message Type
      * @apiSuccess {Number} statusCode  Response Status Code
-     *
      * @apiSuccessExample {json} Success-Response:
-     *      HTTP/1.1 200 OK
-     *      {
-     *          "data": [
-     *              {
-     *                  "activityInstances": [
-     *                      {
-     *                          id: 87612kjbacskhv121
-     *                      }
-     *                  ],
-     *                  "createdAt": "2018-02-26T07:00:00Z[UTC]",
-     *                  "pin": 4010,
-     *                  "startDate": "2018-02-26T07:00:00Z[UTC]",
-     *                  "state": "Active",
-     *                  "updatedAt": "2018-02-26T07:00:00Z[UTC]"
-     *              }
-     *          ],
-     *          "message": "Success",
-     *          "messageType": "success",
-     *          "statusCode": 200
-     *      }
-     *
+     * HTTP/1.1 200 OK
+     * {
+     * "data": [
+     * {
+     * "activityInstances": [
+     * {
+     * id: 87612kjbacskhv121
+     * }
+     * ],
+     * "createdAt": "2018-02-26T07:00:00Z[UTC]",
+     * "pin": 4010,
+     * "startDate": "2018-02-26T07:00:00Z[UTC]",
+     * "state": "Active",
+     * "updatedAt": "2018-02-26T07:00:00Z[UTC]"
+     * }
+     * ],
+     * "message": "Success",
+     * "messageType": "success",
+     * "statusCode": 200
+     * }
      * @apiUse PatientsNotFoundError
-     * */
+     */
     @GET
-    public Response fetchPatients(@QueryParam("trialId") String trialId){
+    public Response fetchPatients(@QueryParam("trialId") String trialId) {
         HEALResponse response = reachService.getPatients(trialId);
 
         return Response.status(response.getStatusCode()).entity(response).build();
@@ -88,16 +84,14 @@ public class PatientResource {
      * @api {get} /patient/:id Patient Detail
      * @apiName GetPatientDetail
      * @apiGroup Patient
-     *
      * @apiParam {Number} id Patient's Unique Id
-     *
      * @apiUse PatientNotFoundError
-     * */
+     */
     @GET
     @Path("/{patientPin}")
-    public Response fetchPatient(@PathParam("patientPin") int patientPin){
+    public Response fetchPatient(@PathParam("patientPin") int patientPin) {
         Patient patient = reachService.getPatient(patientPin);
-        if(patient == null)
+        if (patient == null)
             return Response
                     .status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                             "Some problem with the server. Please contact administrator.")
@@ -109,20 +103,17 @@ public class PatientResource {
      * @api {post} /patient Add Patient
      * @apiName AddPatient
      * @apiGroup Patient
-     *
-     *
      * @apiParam {String} Trial ID of the trial to which the patient needs to be added
-     *
      * @apiUse BadRequestError
      * @apiUse UnAuthorizedError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
-     * */
+     */
     @POST
-    public Response createPatient(String requestBody){
+    public Response createPatient(String requestBody) {
         int inserted = reachService.createPatient(requestBody);
-        if(inserted != -1)
-            return Response.status(Response.Status.CREATED).entity("{\"patient\": \"/patients/" + inserted +"\"}").build();
+        if (inserted != -1)
+            return Response.status(Response.Status.CREATED).entity("{\"patient\": \"/patients/" + inserted + "\"}").build();
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 

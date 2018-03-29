@@ -1,6 +1,7 @@
 package edu.asu.heal.core.api.dao.impl;
 
-import com.mongodb.*;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Accumulators;
@@ -35,14 +36,15 @@ public class MongoDBDAO implements DAO {
     private String __mongoDBName;
     private String __mongoURI;
 
-    public MongoDBDAO() {}
+    public MongoDBDAO() {
+    }
 
-    public MongoDBDAO(Properties properties){
+    public MongoDBDAO(Properties properties) {
         __mongoURI = properties.getProperty("mongo.uri");
         __mongoDBName = properties.getProperty("mongo.dbname");
     }
 
-    private MongoDatabase getConnectedDatabase(){
+    private MongoDatabase getConnectedDatabase() {
         try {
 
             // create codec registry for POJOs
@@ -53,7 +55,7 @@ public class MongoDBDAO implements DAO {
 
             // get handle to "_mongoDBName" database
             return mongoClient.getDatabase(__mongoDBName).withCodecRegistry(pojoCodecRegistry);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("SOME ERROR GETTING MONGO CONNECTION");
             e.printStackTrace();
             return null;
@@ -62,7 +64,7 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public List<Domain> getDomains(){
+    public List<Domain> getDomains() {
         MongoDatabase database = getConnectedDatabase();
         MongoCollection<Domain> domainCollection = database.getCollection("domains", Domain.class);
 
@@ -70,7 +72,7 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public Object getDomain(String id){
+    public Object getDomain(String id) {
         MongoDatabase database = getConnectedDatabase();
         MongoCollection<Document> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION);
 
@@ -100,13 +102,13 @@ public class MongoDBDAO implements DAO {
 
             return activityInstanceCollection
                     .find(Filters.in(ActivityInstance.ID_ATTRIBUTE,
-                            patient.getActivityInstances().toArray(new ObjectId[] {})))
+                            patient.getActivityInstances().toArray(new ObjectId[]{})))
                     .into(new ArrayList<>());
-        }catch (NullPointerException ne){
+        } catch (NullPointerException ne) {
             System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCES FOR PATIENT PIN " + patientPin);
             ne.printStackTrace();
             return ne;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -181,7 +183,7 @@ public class MongoDBDAO implements DAO {
                     .find(Filters.in(Activity.ID_ATTRIBUTE, domain1.getActivities().toArray(new ObjectId[]{})))
                     .into(new ArrayList<>());
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -197,42 +199,63 @@ public class MongoDBDAO implements DAO {
             activitiesCollection.insertOne(activity);
 
             return true;
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
     // methods pertaining to the Trial Model
-    @Override
-    public List<Trial> getTrials(String domain) throws DAOException {
-        try{
-            MongoDatabase database = getConnectedDatabase();
-            MongoCollection<Domain> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION, Domain.class);
 
-            Domain domain1 = domainCollection.find(Filters.eq(Domain.TITLE_ATTRIBUTE, domain)).first();
+
+    @Override
+    public Object getTrials() throws DAOException {
+        try {
+            MongoDatabase database = getConnectedDatabase();
             MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
 
-            return  trialCollection.find(
-                    Filters.in(Trial.ID_ATTRIBUTE, domain1.getTrials().toArray(new ObjectId[]{})))
-                    .into(new ArrayList<Trial>());
-        }catch (Exception e){
+            return trialCollection.find().into(new ArrayList<Trial>());
+        } catch (Exception e) {
+            System.out.println("SOME PROBLEM IN GETTRIALS() METHOD OF MONGODBDAO");
             e.printStackTrace();
             return null;
         }
     }
 
     @Override
-    public String createTrial(Trial trialInstance) throws DAOException {
+    public Object getTrials(String domain) throws DAOException {
+        try {
+            MongoDatabase database = getConnectedDatabase();
+            MongoCollection<Domain> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION, Domain.class);
+
+            Domain domain1 = domainCollection.find(Filters.eq(Domain.TITLE_ATTRIBUTE, domain)).first();
+            MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
+
+            return trialCollection.find(
+                    Filters.in(Trial.ID_ATTRIBUTE, domain1.getTrials().toArray(new ObjectId[]{})))
+                    .into(new ArrayList<Trial>());
+        } catch (NullPointerException ne) {
+            System.out.println("SOME ERROR IN GETTING DOMAIN DATA");
+            ne.printStackTrace();
+            return ne;
+        } catch (Exception e) {
+            System.out.println("SOME PROBLEM IN GETTRIALS() METHOD OF MONGODBDAO");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public boolean createTrial(Trial trialInstance) throws DAOException {
         try {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
             trialCollection.insertOne(trialInstance);
 
-            return "SUCCESS";
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return false;
         }
     }
 
@@ -243,7 +266,7 @@ public class MongoDBDAO implements DAO {
             MongoCollection<Patient> patientCollection = database.getCollection(PATIENTS_COLLECTION, Patient.class);
 
             return patientCollection.find().into(new ArrayList<>());
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -251,7 +274,7 @@ public class MongoDBDAO implements DAO {
 
     @Override
     public List<Patient> getPatients(String trialId) throws DAOException {
-        try{
+        try {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
 
@@ -261,9 +284,9 @@ public class MongoDBDAO implements DAO {
                     .getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class);
 
             return patientsCollection
-                    .find(Filters.in(Patient.ID_ATTRIBUTE, trial.getPatients().toArray(new ObjectId[] {})))
+                    .find(Filters.in(Patient.ID_ATTRIBUTE, trial.getPatients().toArray(new ObjectId[]{})))
                     .into(new ArrayList<>());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -271,13 +294,13 @@ public class MongoDBDAO implements DAO {
 
     @Override
     public int createPatient(String patientDetails) {
-        try{
+        try {
 
             //Temporary code to generate new pin. It just increments the largest pin number in the database by 1
             int newPin = getConnectedDatabase()
                     .getCollection(MongoDBDAO.PATIENTS_COLLECTION)
                     .aggregate(Arrays.asList(Aggregates.group(null,
-                            Accumulators.max(Patient.PIN_ATTRIBUTE, "$"+Patient.PIN_ATTRIBUTE))))
+                            Accumulators.max(Patient.PIN_ATTRIBUTE, "$" + Patient.PIN_ATTRIBUTE))))
                     .first()
                     .getInteger(Patient.PIN_ATTRIBUTE);
             ++newPin;
@@ -307,7 +330,7 @@ public class MongoDBDAO implements DAO {
             trialsCollection.replaceOne(Filters.eq(Trial.TRIALID_ATTRIBUTE, patientDetails), trial);
 
             return newPin;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return -1;
         }
@@ -315,12 +338,12 @@ public class MongoDBDAO implements DAO {
 
     @Override
     public Patient getPatient(int patientPin) {
-        try{
+        try {
             MongoDatabase database = getConnectedDatabase();
             return database.getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class)
                     .find(Filters.eq(Patient.PIN_ATTRIBUTE, patientPin))
                     .first();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

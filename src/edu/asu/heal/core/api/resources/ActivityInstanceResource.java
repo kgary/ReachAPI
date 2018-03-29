@@ -1,6 +1,5 @@
 package edu.asu.heal.core.api.resources;
 
-import edu.asu.heal.core.api.models.ActivityInstance;
 import edu.asu.heal.core.api.models.HEALResponse;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
@@ -8,7 +7,6 @@ import edu.asu.heal.core.api.service.HealServiceFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 @Path("/activityinstances/")
 @Produces(MediaType.APPLICATION_JSON)
@@ -39,30 +37,26 @@ public class ActivityInstanceResource {
      * @api {get} /activityInstance?patientPin={patientPin}&trialId={trialId} ActivityInstances
      * @apiName GetActivityInstances
      * @apiGroup ActivityInstance
-     *
      * @apiParam {Number} patientPin Patient's Unique Id
      * @apiParam {Number} trialId Trial's Unique Id
-     *
      * @apiParam (Login) {String} pass Only logged in user can get this
-     *
      * @apiUse BadRequestError
      * @apiUse ActivityInstanceNotFoundError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
-     * */
+     */
     @GET
     public Response fetchActivityInstances(@QueryParam("patientPin") int patientPin,
-                                           @QueryParam("trialId") int trialId){
+                                           @QueryParam("trialId") int trialId) {
         // XXX are the query string params required? I would think there would be a more general
         // set of query string parameters that could cut across these. Candidate for shortcut endpoint
         HEALResponse response = null;
-        if(patientPin == 0 || patientPin < -1) {
+        if (patientPin == 0 || patientPin < -1) {
             response = new HEALResponse(400,
                     "YOUR PATIENT PIN ABSENT FROM THE REQUEST",
                     HEALResponse.ERROR_MESSAGE_TYPE,
                     null);
-        }
-        else {
+        } else {
             response = reachService.getActivityInstances(patientPin, trialId);
         }
 
@@ -75,19 +69,16 @@ public class ActivityInstanceResource {
      * @api {get} /activityInstance/:id ActivityInstance Detail
      * @apiName ActivityInstanceDetail
      * @apiGroup ActivityInstance
-     *
      * @apiParam {Number} id ActivityInstance's Unique Id
-     *
      * @apiParam (Login) {String} pass Only logged in user can get this
-     *
      * @apiUse BadRequestError
      * @apiUse ActivityInstanceNotFoundError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
-     * */
+     */
     @GET
     @Path("/{id}")
-    public Response fetchActivityInstance(@PathParam("id") String activityInstanceId){
+    public Response fetchActivityInstance(@PathParam("id") String activityInstanceId) {
         return Response.status(Response.Status.OK).entity(reachService.getActivityInstance(activityInstanceId)).build();
     }
 
@@ -95,7 +86,6 @@ public class ActivityInstanceResource {
      * @api {post} /activityInstance Create ActivityInstance
      * @apiName CreateActivityInstance
      * @apiGroup ActivityInstance
-     *
      * @apiParam {DateTime} StartTime Start Time of the Activity Instance
      * @apiParam {DateTime} EndTime End Time of the Activity Instance
      * @apiParam {DateTime} UserSubmissionTime User Submission Time of the ActivityInstance
@@ -103,18 +93,16 @@ public class ActivityInstanceResource {
      * @apiParam {String} Sequence The sequence of the activities
      * @apiParam {String} ActivityTitle The title of the Activity Instance
      * @apiParam {String} Description Description about the Activity Instance
-     *
      * @apiParam (Login) {String} pass Only logged in user can get this
-     *
      * @apiUse BadRequestError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
-     * */
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createActivityInstance(String requestBody){
+    public Response createActivityInstance(String requestBody) {
         String response = reachService.createActivityInstance(requestBody);
-        if(response != null) {
+        if (response != null) {
             // XXX we should add the Location header here, or at the least decide if we are going to link in the JSON
             // But the new resource link should be in the response somewhere
             // XXX We HAVE to get away from wrapped responses like "Success" and "Error". Return the resource representation
@@ -130,7 +118,6 @@ public class ActivityInstanceResource {
      * @api {put} activityInstance Update ActivityInstance
      * @apiName UpdateActivityInstance
      * @apiGroup ActivityInstance
-     *
      * @apiParam {DateTime} StartTime Start Time of the Activity Instance
      * @apiParam {DateTime} EndTime End Time of the Activity Instance
      * @apiParam {DateTime} UserSubmissionTime User Submission Time of the ActivityInstance
@@ -138,15 +125,13 @@ public class ActivityInstanceResource {
      * @apiParam {String} Sequence The sequence of the activities
      * @apiParam {String} ActivityTitle The title of the Activity Instance
      * @apiParam {String} Description Description about the Activity Instance
-     *
      * @apiParam (Login) {String} pass Only logged in user can get this
-     *
      * @apiUse BadRequestError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
-     * */
+     */
     @PUT
-    public Response updateActivityInstance(String requestBody){ // XXX see comment above regarding use of String
+    public Response updateActivityInstance(String requestBody) { // XXX see comment above regarding use of String
         // XXX No error cases possible on the call to the service? You list 4 above
         // XXX we return OK but we should distinguish an update from a created on PUT (200 vs 201)
         return Response.status(Response.Status.OK).entity(reachService.updateActivityInstance(requestBody)).build();
@@ -156,19 +141,16 @@ public class ActivityInstanceResource {
      * @api {delete} /activityInstance/:id Delete ActivityInstance
      * @apiName DeleteActivityInstance
      * @apiGroup ActivityInstance
-     *
      * @apiParam {Number} id ActivityInstance's unique id
-     *
      * @apiParam (Login) {String} pass Only logged in user can get this
-     *
      * @apiUse BadRequestError
      * @apiUse ActivityInstanceNotFoundError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
-     * */
+     */
     @DELETE
     @Path("/{id}")
-    public Response removeActivityInstance(@PathParam("id") String activityInstanceId){
+    public Response removeActivityInstance(@PathParam("id") String activityInstanceId) {
         return Response.status(Response.Status.NO_CONTENT).entity(
                 reachService.deleteActivityInstance(activityInstanceId)).build();
         // XXX proper response code is 204. Again, no error handling?
@@ -178,9 +160,9 @@ public class ActivityInstanceResource {
     // when we extend our endpoint we think of it as a path param usually, whereas this is a subtype
     @GET
     @Path("/makebelieve/")
-    public Response fetchMakeBelieveInstance(){
+    public Response fetchMakeBelieveInstance() {
         String makeBelieveInstanceString = reachService.getMakeBelieveInstance();
-        if(makeBelieveInstanceString == null)
+        if (makeBelieveInstanceString == null)
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Some server error. Please contact " +
                     "administrator").build();
         return Response.status(Response.Status.OK).entity(makeBelieveInstanceString).build();
@@ -190,12 +172,12 @@ public class ActivityInstanceResource {
     // of a MB AI?
     @GET
     @Path("/makebelieveanswers/")  // XXX this would be /makebelieve/answers?situation_id=...
-    public Response fetchMakeBelieveInstanceAnswers(@QueryParam("situation_id") int situationId){
+    public Response fetchMakeBelieveInstanceAnswers(@QueryParam("situation_id") int situationId) {
         String makeBelieveInstanceAnswerString = reachService.getMakeBelieveInstanceAnswer(situationId);
-        if(makeBelieveInstanceAnswerString == null)
+        if (makeBelieveInstanceAnswerString == null)
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Some server error. Please contact " +
                     "administrator").build();
-        if(makeBelieveInstanceAnswerString.equals("Bad Request"))
+        if (makeBelieveInstanceAnswerString.equals("Bad Request"))
             return Response.status(400).build();
         return Response.status(Response.Status.OK).entity(makeBelieveInstanceAnswerString).build();
     }
@@ -203,7 +185,7 @@ public class ActivityInstanceResource {
     // XXX if we do keep a /makebelieve endpoint then you PUT on that, not on a separate one here
     @PUT
     @Path("/makebelieveinstance/")
-    public Response updateMakeBelieveInstance(@QueryParam("situation_id") int situationId, String requestBody){
+    public Response updateMakeBelieveInstance(@QueryParam("situation_id") int situationId, String requestBody) {
         int response = reachService.updateMakeBelieveInstance(situationId, requestBody);
         return Response.status(response).build();
     }
@@ -213,14 +195,14 @@ public class ActivityInstanceResource {
     // the subtype we are looking for (WH, MB, etc.) is a query filter
     @GET
     @Path("/worryheads")
-    public Response fetchWorryHeadsInstance(){
+    public Response fetchWorryHeadsInstance() {
         // XXX what WH instance would this even return? A single or a collection? How would it be scoped?
         String worryHeadsInstanceString = reachService.getWorryHeadsInstance();
-        if(worryHeadsInstanceString == null)
+        if (worryHeadsInstanceString == null)
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Some server error. Please contact "
                     + "administrator").build();
 
-        if(worryHeadsInstanceString.equals("Bad Request"))
+        if (worryHeadsInstanceString.equals("Bad Request"))
             return Response.status(Response.Status.BAD_REQUEST).build();
 
         return Response.status(Response.Status.OK).entity(worryHeadsInstanceString).build();

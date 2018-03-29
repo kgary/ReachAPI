@@ -1,7 +1,6 @@
 package edu.asu.heal.core.api.dao;
 
 import edu.asu.heal.core.api.models.*;
-import org.bson.types.ObjectId;
 
 import java.util.List;
 
@@ -43,10 +42,12 @@ public interface DAO {
 
     boolean createActivity(Activity activity) throws DAOException;
 
-    // methods pertaining trail model
-    List<Trial> getTrials(String domain) throws DAOException;
+    // methods pertaining trial model
+    Object getTrials() throws DAOException;
 
-    String createTrial(Trial trialInstance) throws DAOException;
+    Object getTrials(String domain) throws DAOException;
+
+    boolean createTrial(Trial trialInstance) throws DAOException;
 
     List<Patient> getPatients() throws DAOException;
 

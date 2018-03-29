@@ -1,10 +1,7 @@
 package edu.asu.heal.core.api.service;
 
-import edu.asu.heal.core.api.models.*;
-import org.bson.types.ObjectId;
-
-import java.util.Date;
-import java.util.List;
+import edu.asu.heal.core.api.models.HEALResponse;
+import edu.asu.heal.core.api.models.Patient;
 
 public interface HealService {
 
@@ -55,8 +52,8 @@ public interface HealService {
     HEALResponse createActivity(String title, String description);
 
     // methods pertaining to Trial Resource
-    List<Trial> getTrials(String domain);
+    HEALResponse getTrials(String domain);
 
-    String addTrial(String domainId, String title, String description, String startDate, String endDate, int targetCount);
+    HEALResponse addTrial(String domainId, String title, String description, String startDate, String endDate, int targetCount);
 
 }
