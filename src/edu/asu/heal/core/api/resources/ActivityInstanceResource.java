@@ -10,6 +10,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.List;
 
 @Path("/activityinstances/")
 @Produces(MediaType.APPLICATION_JSON)
@@ -57,13 +58,22 @@ public class ActivityInstanceResource {
         // XXX are the query string params required? I would think there would be a more general
         // set of query string parameters that could cut across these. Candidate for shortcut endpoint
         HEALResponse response = null;
+        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
         if (patientPin == 0 || patientPin < -1) {
-            response = new HEALResponse(400,
-                    "YOUR PATIENT PIN ABSENT FROM THE REQUEST",
-                    HEALResponse.ERROR_MESSAGE_TYPE,
-                    null);
+            response = builder
+                    .setData(null)
+                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .setMessage("YOUR PATIENT PIN ABSENT FROM THE REQUEST")
+                    .setMessageType(HEALResponse.ERROR_MESSAGE_TYPE)
+                    .build();
         } else {
-            response = reachService.getActivityInstances(patientPin, trialId);
+            List<ActivityInstance> instances = reachService.getActivityInstances(patientPin, trialId);
+            response = builder
+                    .setData(instances)
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setMessage("SUCCESS")
+                    .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+                    .build();
         }
 
         return Response.status(response.getStatusCode())
@@ -85,7 +95,17 @@ public class ActivityInstanceResource {
     @GET
     @Path("/{id}")
     public Response fetchActivityInstance(@PathParam("id") String activityInstanceId) {
-        HEALResponse response = reachService.getActivityInstance(activityInstanceId);
+        HEALResponse response = null;
+        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+        ActivityInstance instance = reachService.getActivityInstance(activityInstanceId);
+
+        response = builder
+                .setData(instance)
+                .setStatusCode(Response.Status.OK.getStatusCode())
+                .setMessage("SUCCESS")
+                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+                .build();
+
         return Response.status(response.getStatusCode()).entity(response).build();
     }
 
@@ -123,45 +143,58 @@ public class ActivityInstanceResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createActivityInstance(ActivityInstance activityInstanceJson) {
-        HEALResponse response = reachService.createActivityInstance(activityInstanceJson);
-        if (response.getStatusCode() == Response.Status.CREATED.getStatusCode()) {
-            return Response
-                    .status(Response.Status.CREATED)
-                    .header("Location",
+        ActivityInstance instance = reachService.createActivityInstance(activityInstanceJson);
+        HEALResponse response = null;
+        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+
+        response = builder
+                .setData(instance)
+                .setStatusCode(Response.Status.CREATED.getStatusCode())
+                .setMessage("SUCCESS")
+                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+                .build();
+
+//        if (instance.getStatusCode() == Response.Status.CREATED.getStatusCode()) {
+//            return Response
+//                    .status(Response.Status.CREATED)
+//                    .header("Location",
+//                            String.format("%s/%s",_uri.getAbsolutePath().toString(),
+//                                    activityInstanceJson.getActivityInstanceId()))
+//                    .entity(instance)
+//                    .build();
+//        } else {
+//            // XXX can we improve our error handling? Why would the service return null? Can it tell us anything?
+//            // for example, what if the requestBody makes no sense? Shouldn't that be a 400?
+//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error").build();
+//        }
+        return Response.status(response.getStatusCode()).header("Location",
                             String.format("%s/%s",_uri.getAbsolutePath().toString(),
-                                    activityInstanceJson.getActivityInstanceId()))
-                    .entity(response)
-                    .build();
-        } else {
-            // XXX can we improve our error handling? Why would the service return null? Can it tell us anything?
-            // for example, what if the requestBody makes no sense? Shouldn't that be a 400?
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error").build();
-        }
+                                    instance.getActivityInstanceId())).entity(response).build();
     }
 
-    /**
-     * @api {put} activityInstance Update ActivityInstance
-     * @apiName UpdateActivityInstance
-     * @apiGroup ActivityInstance
-     * @apiParam {DateTime} StartTime Start Time of the Activity Instance
-     * @apiParam {DateTime} EndTime End Time of the Activity Instance
-     * @apiParam {DateTime} UserSubmissionTime User Submission Time of the ActivityInstance
-     * @apiParam {String} Status The status of the Activity Instance from Created | Available | In Execution (Running) | Suspended | Completed | Aborted
-     * @apiParam {String} Sequence The sequence of the activities
-     * @apiParam {String} ActivityTitle The title of the Activity Instance
-     * @apiParam {String} Description Description about the Activity Instance
-     * @apiParam (Login) {String} pass Only logged in user can get this
-     * @apiUse BadRequestError
-     * @apiUse InternalServerError
-     * @apiUse NotImplementedError
-     */
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateActivityInstance(String requestBody) {
-        // XXX No error cases possible on the call to the service? You list 4 above
-        // XXX we return OK but we should distinguish an update from a created on PUT (200 vs 201)
-        return Response.status(Response.Status.NO_CONTENT).entity(reachService.updateActivityInstance(requestBody)).build();
-    }
+//    /**
+//     * @api {put} activityInstance Update ActivityInstance
+//     * @apiName UpdateActivityInstance
+//     * @apiGroup ActivityInstance
+//     * @apiParam {DateTime} StartTime Start Time of the Activity Instance
+//     * @apiParam {DateTime} EndTime End Time of the Activity Instance
+//     * @apiParam {DateTime} UserSubmissionTime User Submission Time of the ActivityInstance
+//     * @apiParam {String} Status The status of the Activity Instance from Created | Available | In Execution (Running) | Suspended | Completed | Aborted
+//     * @apiParam {String} Sequence The sequence of the activities
+//     * @apiParam {String} ActivityTitle The title of the Activity Instance
+//     * @apiParam {String} Description Description about the Activity Instance
+//     * @apiParam (Login) {String} pass Only logged in user can get this
+//     * @apiUse BadRequestError
+//     * @apiUse InternalServerError
+//     * @apiUse NotImplementedError
+//     */
+//    @PUT
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public Response updateActivityInstance(String requestBody) {
+//        // XXX No error cases possible on the call to the service? You list 4 above
+//        // XXX we return OK but we should distinguish an update from a created on PUT (200 vs 201)
+//        return Response.status(Response.Status.NO_CONTENT).entity(reachService.updateActivityInstance(requestBody)).build();
+//    }
 
     /**
      * @api {delete} /activityInstance/:id Delete ActivityInstance
@@ -177,8 +210,19 @@ public class ActivityInstanceResource {
     @DELETE
     @Path("/{id}")
     public Response removeActivityInstance(@PathParam("id") String activityInstanceId) {
-        HEALResponse response = reachService.deleteActivityInstance(activityInstanceId);
-        return Response.status(response.getStatusCode()).entity(response).build();
+        boolean removed = reachService.deleteActivityInstance(activityInstanceId);
+
+        HEALResponse response = null;
+        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+
+        response = builder
+                .setData(null)
+                .setStatusCode(Response.Status.NO_CONTENT.getStatusCode())
+                .setMessage("SUCCESS")
+                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+                .build();
+
+        return Response.status(response.getStatusCode()).build();
 
     }
 

@@ -11,7 +11,6 @@ import com.mongodb.client.model.Projections;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOException;
 import edu.asu.heal.core.api.models.*;
-import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.types.ObjectId;
@@ -73,28 +72,28 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public Object getDomain(String id) {
+    public Domain getDomain(String id) {
         MongoDatabase database = getConnectedDatabase();
-        MongoCollection<Document> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION);
+        MongoCollection<Domain> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION, Domain.class);
 
         return domainCollection
-                .find(Filters.eq("_id", new ObjectId(id)))
+                .find(Filters.eq("_id", id))
                 .projection(Projections.excludeId())
                 .first();
     }
 
     @Override
-    public String createDomain(Domain instance) {
+    public boolean createDomain(Domain instance) {
         MongoDatabase database = getConnectedDatabase();
         MongoCollection<Domain> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION, Domain.class);
 
         domainCollection.insertOne(instance);
 
-        return "SUCCESS";
+        return true;
     }
 
     @Override
-    public Object getScheduledActivities(int patientPin, int currentDay) throws DAOException {
+    public List<ActivityInstance> getScheduledActivities(int patientPin, int currentDay) throws DAOException {
         try {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Patient> patientCollection = database.getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class);
@@ -112,7 +111,8 @@ public class MongoDBDAO implements DAO {
         } catch (NullPointerException ne) {
             System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCES FOR PATIENT PIN " + patientPin);
             ne.printStackTrace();
-            return ne;
+            // TODO Implement Null Object pattern here
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -215,7 +215,7 @@ public class MongoDBDAO implements DAO {
 
 
     @Override
-    public Object getTrials() throws DAOException {
+    public List<Trial> getTrials() throws DAOException {
         try {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
@@ -232,7 +232,7 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public Object getTrials(String domain) throws DAOException {
+    public List<Trial> getTrials(String domain) throws DAOException {
         try {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Domain> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION, Domain.class);
@@ -247,7 +247,7 @@ public class MongoDBDAO implements DAO {
         } catch (NullPointerException ne) {
             System.out.println("SOME ERROR IN GETTING DOMAIN DATA");
             ne.printStackTrace();
-            return ne;
+            return null;
         } catch (Exception e) {
             System.out.println("SOME PROBLEM IN GETTRIALS() METHOD OF MONGODBDAO");
             e.printStackTrace();
@@ -402,7 +402,7 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public Object getActivityInstance(String activityInstanceId) {
+    public ActivityInstance getActivityInstance(String activityInstanceId) {
         try{
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<ActivityInstance> activityInstanceMongoCollection =
@@ -417,7 +417,7 @@ public class MongoDBDAO implements DAO {
         }catch (NullPointerException ne){
             System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCE WITH ID " + activityInstanceId);
             ne.printStackTrace();
-            return ne;
+            return null;
         }catch (Exception e){
             System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
             e.printStackTrace();

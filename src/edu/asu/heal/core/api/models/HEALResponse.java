@@ -2,7 +2,7 @@ package edu.asu.heal.core.api.models;
 
 import java.util.List;
 
-public class HEALResponse {
+public class HEALResponse{
 
     // Message Type Captions
     public static final String INFO_MESSAGE_TYPE = "info";
@@ -15,61 +15,75 @@ public class HEALResponse {
     private String messageType;
     private Object data;
 
-    public HEALResponse(int statusCode, String message, String messageType, Object data){
-        this.statusCode = statusCode;
-        this.message = message;
-        this.messageType = messageType;
-        this.data = data;
-    }
+    private HEALResponse(){}
 
     // getters and setters
     public int getStatusCode() {
         return statusCode;
     }
 
-    public void setStatusCode(int statusCode) {
-        this.statusCode = statusCode;
-    }
-
     public String getMessage() {
         return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 
     public String getMessageType() {
         return messageType;
     }
 
-    public void setMessageType(String messageType) {
-        this.messageType = messageType;
-    }
-
     public Object getData() {
         return data;
     }
 
-    public void setData(List data) {
-        this.data = data;
-    }
-
     // custom functions
     public static HEALResponse getInfoMessage(int statusCode, String message, List data){
-        return new HEALResponse(statusCode, message, INFO_MESSAGE_TYPE, data);
+//        return new HEALResponse(statusCode, message, INFO_MESSAGE_TYPE, data);
+        return null;
     }
 
     public static HEALResponse getSuccessMessage(int statusCode, String message, List data){
-        return new HEALResponse(statusCode, message, SUCCESS_MESSAGE_TYPE, data);
+//        return new HEALResponse(statusCode, message, SUCCESS_MESSAGE_TYPE, data);
+        return null;
     }
 
     public static HEALResponse getWarningMessage(int statusCode, String message, List data){
-        return new HEALResponse(statusCode, message, WARNING_MESSAGE_TYPE, data);
+//        return new HEALResponse(statusCode, message, WARNING_MESSAGE_TYPE, data);
+        return null;
     }
 
     public static HEALResponse getErrorMessage(int statusCode, String message, List data){
-        return new HEALResponse(statusCode, message, ERROR_MESSAGE_TYPE, data);
+//        return new HEALResponse(statusCode, message, ERROR_MESSAGE_TYPE, data);
+        return null;
     }
 
+    public static class HEALResponseBuilder {
+        private HEALResponse _response;
+
+        public HEALResponseBuilder(){
+                _response = new HEALResponse();
+        }
+
+        public HEALResponseBuilder setStatusCode(int statusCode) {
+            this._response.statusCode = statusCode;
+            return this;
+        }
+
+        public HEALResponseBuilder setMessage(String message) {
+            this._response.message = message;
+            return this;
+        }
+
+        public HEALResponseBuilder setData(Object data) {
+            this._response.data = data;
+            return this;
+        }
+
+        public HEALResponseBuilder setMessageType(String messageType) {
+            this._response.messageType = messageType;
+            return this;
+        }
+
+        public HEALResponse build(){
+            return this._response;
+        }
+    }
 }

@@ -1,35 +1,35 @@
 package edu.asu.heal.core.api.service;
 
-import edu.asu.heal.core.api.models.ActivityInstance;
-import edu.asu.heal.core.api.models.HEALResponse;
-import edu.asu.heal.core.api.models.Patient;
+import edu.asu.heal.core.api.models.*;
+
+import java.util.List;
 
 public interface HealService {
 
     // methods pertaining to domain resource
 
-    HEALResponse getDomains();
+    List<Domain> getDomains();
 
-    HEALResponse getDomain(String id);
+    Domain getDomain(String id);
 
-    String addDomain(String title, String description, String state);
+    boolean addDomain(String title, String description, String state);
 
     String addTestDomain(String title, String description, String state);
 
     // methods pertaining to activityInstance resource
 
-    HEALResponse getActivityInstances(int patientPin, int trialId);
+    List<ActivityInstance> getActivityInstances(int patientPin, int trialId);
 
-    HEALResponse getActivityInstance(String activityInstanceId);
+    ActivityInstance getActivityInstance(String activityInstanceId);
 
-    HEALResponse createActivityInstance(ActivityInstance activityInstanceJson);
+    ActivityInstance createActivityInstance(ActivityInstance activityInstanceJson);
 
     String updateActivityInstance(String requestBody);
 
-    HEALResponse deleteActivityInstance(String activityInstanceId);
+    boolean deleteActivityInstance(String activityInstanceId);
 
     // methods pertaining to patient resource
-    HEALResponse getPatients(String trialId);
+    List<Patient> getPatients(String trialId);
 
     Patient getPatient(int patientPin);
 
@@ -48,13 +48,13 @@ public interface HealService {
     String getWorryHeadsInstance();
 
     // methods pertaining to Activity Resource
-    HEALResponse getActivities(String domain);
+    List<Activity> getActivities(String domain);
 
-    HEALResponse createActivity(String title, String description);
+    boolean createActivity(String title, String description);
 
     // methods pertaining to Trial Resource
-    HEALResponse getTrials(String domain);
+    List<Trial> getTrials(String domain);
 
-    HEALResponse addTrial(String domainId, String title, String description, String startDate, String endDate, int targetCount);
+    Trial addTrial(String domainId, String title, String description, String startDate, String endDate, int targetCount);
 
 }

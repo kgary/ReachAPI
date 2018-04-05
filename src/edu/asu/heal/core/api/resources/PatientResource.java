@@ -6,10 +6,15 @@ import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.util.List;
 
 @Path("/patients")
 public class PatientResource {
+    @Context
+    private UriInfo _uri;
 
     private HealService reachService =
             HealServiceFactory.getTheService();
@@ -75,7 +80,17 @@ public class PatientResource {
      */
     @GET
     public Response fetchPatients(@QueryParam("trialId") String trialId) {
-        HEALResponse response = reachService.getPatients(trialId);
+        List<Patient> patients = reachService.getPatients(trialId);
+
+        HEALResponse response = null;
+        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+
+        response = builder
+                .setData(patients)
+                .setStatusCode(Response.Status.OK.getStatusCode())
+                .setMessage("SUCCESS")
+                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+                .build();
 
         return Response.status(response.getStatusCode()).entity(response).build();
     }
@@ -91,12 +106,22 @@ public class PatientResource {
     @Path("/{patientPin}")
     public Response fetchPatient(@PathParam("patientPin") int patientPin) {
         Patient patient = reachService.getPatient(patientPin);
-        if (patient == null)
-            return Response
-                    .status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                            "Some problem with the server. Please contact administrator.")
-                    .build();
-        return Response.status(Response.Status.OK).entity(patient).build();
+//        if (patient == null)
+//            return Response
+//                    .status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                            "Some problem with the server. Please contact administrator.")
+//                    .build();
+        HEALResponse response = null;
+        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+
+        response = builder
+                .setData(patient)
+                .setStatusCode(Response.Status.OK.getStatusCode())
+                .setMessage("SUCCESS")
+                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+                .build();
+
+        return Response.status(response.getStatusCode()).entity(patient).build();
     }
 
     /**
@@ -112,9 +137,24 @@ public class PatientResource {
     @POST
     public Response createPatient(String requestBody) {
         int inserted = reachService.createPatient(requestBody);
-        if (inserted != -1)
-            return Response.status(Response.Status.CREATED).entity("{\"patient\": \"/patients/" + inserted + "\"}").build();
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+//        if (inserted != -1)
+//            return Response.status(Response.Status.CREATED).entity("{\"patient\": \"/patients/" + inserted + "\"}").build();
+//        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+
+        HEALResponse response = null;
+        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+
+        response = builder
+                .setData(String.format("%s/%s",_uri.getAbsolutePath().toString(),inserted))
+                .setStatusCode(Response.Status.CREATED.getStatusCode())
+                .setMessage("SUCCESS")
+                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+                .build();
+
+        return Response.status(response.getStatusCode()).header("Location",
+                String.format("%s/%s",_uri.getAbsolutePath().toString(),
+                        inserted)).entity(response).build();
+
     }
 
 }

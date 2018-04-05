@@ -47,8 +47,8 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
-    public String createDomain(Domain instance) {
-        return null;
+    public boolean createDomain(Domain instance) {
+        return false;
     }
 
     @Override
@@ -479,7 +479,7 @@ public abstract class JDBCDao implements DAO {
 
     // TODO implement later for MySQL database. Currently implementing just for MongoDB
     @Override
-    public Object getTrials(String domain) throws DAOException {
+    public List<Trial> getTrials(String domain) throws DAOException {
         return null;
     }
 
@@ -489,7 +489,7 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
-    public Object getDomain(String id) {
+    public Domain getDomain(String id) {
         return null;
     }
 
@@ -509,7 +509,7 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
-    public Object getTrials() throws DAOException {
+    public List<Trial> getTrials() throws DAOException {
         return null;
     }
 
@@ -524,7 +524,7 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
-    public Object getActivityInstance(String activityInstanceId) {
+    public ActivityInstance getActivityInstance(String activityInstanceId) {
         return null;
     }
 }

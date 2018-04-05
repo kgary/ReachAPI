@@ -1,16 +1,23 @@
 package edu.asu.heal.core.api.resources;
 
 import edu.asu.heal.core.api.models.HEALResponse;
+import edu.asu.heal.core.api.models.Trial;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.util.List;
 
 @Path("/trials")
 @Produces(MediaType.APPLICATION_JSON)
 public class TrialsResource {
+    @Context
+    private UriInfo _uri;
+
     private static HealService reachService =
             HealServiceFactory.getTheService();
 
@@ -46,13 +53,21 @@ public class TrialsResource {
     @GET
     @QueryParam("domain")
     public Response getTrials(@QueryParam("domain") String domain) {
-        HEALResponse response;
-
+        HEALResponse response = null;
+        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+        List<Trial> trials = null;
         if (domain == null || domain.equals("")) {
-            response = reachService.getTrials(null);
+            trials = reachService.getTrials(null);
         } else {
-            response = reachService.getTrials(domain.replace("_", " "));
+            trials = reachService.getTrials(domain.replace("_", " "));
         }
+
+        response = builder
+                .setData(trials)
+                .setStatusCode(Response.Status.OK.getStatusCode())
+                .setMessage("SUCCESS")
+                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+                .build();
 
         return Response.status(response.getStatusCode())
                 .entity(response)
@@ -90,8 +105,20 @@ public class TrialsResource {
                              @FormParam("description") String description, @FormParam("startDate") String startDate,
                              @FormParam("endDate") String endDate, @FormParam("targetCount") int targetCount) {
 
-        HEALResponse response = reachService.addTrial(domainId, title, description, startDate, endDate, targetCount);
+        Trial addedTrial = reachService.addTrial(domainId, title, description, startDate, endDate, targetCount);
+        HEALResponse response = null;
+        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
-        return Response.status(response.getStatusCode()).entity(response).build();
+        response = builder
+                .setData(addedTrial)
+                .setStatusCode(Response.Status.CREATED.getStatusCode())
+                .setMessage("SUCCESS")
+                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+                .build();
+
+
+        return Response.status(response.getStatusCode()).header("Location",
+                String.format("%s/%s",_uri.getAbsolutePath().toString(),
+                        addedTrial.getTrialId())).entity(response).build();
     }
 }

@@ -1,5 +1,6 @@
 package edu.asu.heal.core.api.resources;
 
+import edu.asu.heal.core.api.models.Activity;
 import edu.asu.heal.core.api.models.HEALResponse;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
@@ -7,6 +8,7 @@ import edu.asu.heal.core.api.service.HealServiceFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/activities")
 @Produces(MediaType.APPLICATION_JSON)
@@ -36,7 +38,18 @@ public class ActivityResource {
     @GET
     @QueryParam("domain")
     public Response getActivities(@QueryParam("domain") String domain) {
-        HEALResponse response = reachService.getActivities(domain);
+        List<Activity> activities = reachService.getActivities(domain);
+
+        HEALResponse response = null;
+        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+
+        response = builder
+                .setData(activities)
+                .setStatusCode(Response.Status.OK.getStatusCode())
+                .setMessage("SUCCESS")
+                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+                .build();
+
 
         return Response.status(response.getStatusCode()).entity(response).build();
     }
@@ -65,7 +78,18 @@ public class ActivityResource {
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response createActivity(@FormParam("title") String title, @FormParam("description") String description) {
-        HEALResponse response = reachService.createActivity(title, description);
+        boolean activity = reachService.createActivity(title, description);
+
+        HEALResponse response = null;
+        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+
+        response = builder
+                .setData(activity)
+                .setStatusCode(Response.Status.CREATED.getStatusCode())
+                .setMessage("SUCCESS")
+                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+                .build();
+
 
         return Response.status(response.getStatusCode()).entity(response).build();
     }

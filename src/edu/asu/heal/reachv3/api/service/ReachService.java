@@ -7,12 +7,10 @@ import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.reachv3.api.model.*;
-import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import javax.ws.rs.core.Response;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -22,53 +20,57 @@ public class ReachService implements HealService {
     private static final String DATE_FORMAT = "MM/dd/yyyy";
 
     @Override
-    public HEALResponse getDomains() {
+    public List<Domain> getDomains() {
         try {
             DAO dao = DAOFactory.getTheDAO();
 
             List<Domain> domains = (List<Domain>) dao.getDomains();
-            if (domains != null) {
+//            if (domains != null) {
+//
+//                return HEALResponse.getSuccessMessage(Response.Status.OK.getStatusCode(),
+//                        "Domain List", domains);
+//            }
 
-                return HEALResponse.getSuccessMessage(Response.Status.OK.getStatusCode(),
-                        "Domain List", domains);
-            }
-
-            return HEALResponse.getErrorMessage(Response.Status.NOT_FOUND.getStatusCode(),
-                    "Domains Not Found", null);
+//            return HEALResponse.getErrorMessage(Response.Status.NOT_FOUND.getStatusCode(),
+//                    "Domains Not Found", null);
+            return domains;
         } catch (Exception e) {
             e.printStackTrace();
 
-            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                    "Unhandled Exception: " + e.getMessage(), null);
+//            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                    "Unhandled Exception: " + e.getMessage(), null);
+            return null;
         }
     }
 
     @Override
-    public HEALResponse getDomain(String id) {
+    public Domain getDomain(String id) {
         try {
             DAO dao = DAOFactory.getTheDAO();
-            Document domain = (Document) dao.getDomain(id);
+            Domain domain = dao.getDomain(id);
 
-            if (domain != null) {
-                List<String> data = new ArrayList<String>();
-                data.add(domain.toJson());
-
-                return HEALResponse.getSuccessMessage(Response.Status.OK.getStatusCode(),
-                        "Domain Description", data);
-            }
-
-            return HEALResponse.getErrorMessage(Response.Status.NOT_FOUND.getStatusCode(),
-                    "Domain Not Found", null);
+//            if (domain != null) {
+//                List<String> data = new ArrayList<String>();
+//                data.add(domain.toJson());
+//
+//                return HEALResponse.getSuccessMessage(Response.Status.OK.getStatusCode(),
+//                        "Domain Description", data);
+//            }
+//
+//            return HEALResponse.getErrorMessage(Response.Status.NOT_FOUND.getStatusCode(),
+//                    "Domain Not Found", null);
+            return domain;
         } catch (Exception e) {
             e.printStackTrace();
 
-            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                    "UnHandled Exception: " + e.getMessage(), null);
+//            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                    "UnHandled Exception: " + e.getMessage(), null);
+            return null;
         }
     }
 
     @Override
-    public String addDomain(String title, String description, String state) {
+    public boolean addDomain(String title, String description, String state) {
 
         try {
             DAO dao = DAOFactory.getTheDAO();
@@ -77,7 +79,8 @@ public class ReachService implements HealService {
 
             return dao.createDomain(instance);
         } catch (Exception e) {
-            return e.getMessage();
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -87,72 +90,74 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public HEALResponse getActivityInstances(int patientPin, int trialId) {
-        HEALResponse response = null;
+    public List<ActivityInstance> getActivityInstances(int patientPin, int trialId) {
+        List<ActivityInstance> response = null;
         try {
 
             // TODO -- scope in the possibility that when queryParams(patientPin, trialId) are not present, then
             DAO dao = DAOFactory.getTheDAO();
-            Object instances = dao.getScheduledActivities(patientPin, trialId);
-            if (instances == null) {
-                response = new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                        "Some error connecting to the database", HEALResponse.ERROR_MESSAGE_TYPE, null);
-                return response;
-            }
+            List<ActivityInstance> instances = dao.getScheduledActivities(patientPin, trialId);
+//            if (instances == null) {
+//                response = new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                        "Some error connecting to the database", HEALResponse.ERROR_MESSAGE_TYPE, null);
+//                return response;
+//            }
+//
+//            if (instances instanceof NullPointerException) {
+//                response = new HEALResponse(Response.Status.BAD_REQUEST.getStatusCode(),
+//                        "Patient pin invalid or not does not exist",
+//                        HEALResponse.ERROR_MESSAGE_TYPE, null);
+//                return response;
+//            }
+//
+//            if (instances instanceof List) {
+//                response = new HEALResponse(Response.Status.OK.getStatusCode(),
+//                        "Success",
+//                        HEALResponse.SUCCESS_MESSAGE_TYPE,
+//                        (List) instances);
+//            }
 
-            if (instances instanceof NullPointerException) {
-                response = new HEALResponse(Response.Status.BAD_REQUEST.getStatusCode(),
-                        "Patient pin invalid or not does not exist",
-                        HEALResponse.ERROR_MESSAGE_TYPE, null);
-                return response;
-            }
-
-            if (instances instanceof List) {
-                response = new HEALResponse(Response.Status.OK.getStatusCode(),
-                        "Success",
-                        HEALResponse.SUCCESS_MESSAGE_TYPE,
-                        (List) instances);
-            }
-
-            return response;
+            return instances;
         } catch (Exception e) {
             System.out.println("SOME ERROR IN GETACTIVITYINSTANCES() IN REACHSERVICE");
             e.printStackTrace();
-            response = new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                    "Some error connecting to the database", HEALResponse.ERROR_MESSAGE_TYPE, null);
-            return response;
+//            response = new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                    "Some error connecting to the database", HEALResponse.ERROR_MESSAGE_TYPE, null);
+            return null;
         }
     }
 
     @Override
-    public HEALResponse getActivityInstance(String activityInstanceId) {
+    public ActivityInstance getActivityInstance(String activityInstanceId) {
         try{
             DAO dao = DAOFactory.getTheDAO();
-            Object instance = dao.getActivityInstance(activityInstanceId);
+            ActivityInstance instance = dao.getActivityInstance(activityInstanceId);
 
-            if(instance == null){
-                return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                        "Some server error. Check logs",
-                        HEALResponse.ERROR_MESSAGE_TYPE,
-                        null);
-            }else if(instance instanceof NullPointerException){
-                return new HEALResponse(Response.Status.NOT_FOUND.getStatusCode(),
-                        "Incorrect activity instance id or id does not exist",
-                        HEALResponse.ERROR_MESSAGE_TYPE,
-                        null);
-            }else{
-                return new HEALResponse(Response.Status.OK.getStatusCode(),
-                        "Success",
-                        HEALResponse.SUCCESS_MESSAGE_TYPE,
-                        instance);
-            }
+//            if(instance == null){
+//                return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                        "Some server error. Check logs",
+//                        HEALResponse.ERROR_MESSAGE_TYPE,
+//                        null);
+//            }else if(instance instanceof NullPointerException){
+//                return new HEALResponse(Response.Status.NOT_FOUND.getStatusCode(),
+//                        "Incorrect activity instance id or id does not exist",
+//                        HEALResponse.ERROR_MESSAGE_TYPE,
+//                        null);
+//            }else{
+//                return new HEALResponse(Response.Status.OK.getStatusCode(),
+//                        "Success",
+//                        HEALResponse.SUCCESS_MESSAGE_TYPE,
+//                        instance);
+//            }
+            return instance;
         }catch (Exception e){
             System.out.println("SOME ERROR IN HEAL SERVICE getActivityInstance");
             e.printStackTrace();
-            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                    "Some server error. Check logs",
-                    HEALResponse.ERROR_MESSAGE_TYPE,
-                    null);
+//            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                    "Some server error. Check logs",
+//                    HEALResponse.ERROR_MESSAGE_TYPE,
+//                    null);
+            return null;
         }
     }
 
@@ -196,25 +201,28 @@ public class ReachService implements HealService {
 
 
     @Override
-    public HEALResponse createActivityInstance(ActivityInstance activityInstance) {
+    public ActivityInstance createActivityInstance(ActivityInstance activityInstance) {
         try{
             DAO dao = DAOFactory.getTheDAO();
-            if((activityInstance = dao.createActivityInstance(activityInstance)) != null){
-                return new HEALResponse(Response.Status.CREATED.getStatusCode(),
-                        "Successfully created activity instance " + activityInstance.getActivityInstanceId(),
-                        HEALResponse.SUCCESS_MESSAGE_TYPE,
-                        null);
-            }
-
-            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                    "Some problem creating activity instance",
-                    HEALResponse.ERROR_MESSAGE_TYPE,
-                    null);
+            activityInstance = dao.createActivityInstance(activityInstance);
+//            if((activityInstance = dao.createActivityInstance(activityInstance)) != null){
+//                return new HEALResponse(Response.Status.CREATED.getStatusCode(),
+//                        "Successfully created activity instance " + activityInstance.getActivityInstanceId(),
+//                        HEALResponse.SUCCESS_MESSAGE_TYPE,
+//                        null);
+//            }
+//
+//            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                    "Some problem creating activity instance",
+//                    HEALResponse.ERROR_MESSAGE_TYPE,
+//                    null);
+            return activityInstance;
         }catch (Exception e){
-            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                    "Some problem creating activity instance",
-                    HEALResponse.ERROR_MESSAGE_TYPE,
-                    null);
+//            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                    "Some problem creating activity instance",
+//                    HEALResponse.ERROR_MESSAGE_TYPE,
+//                    null);
+            return null;
 
         }
     }
@@ -254,25 +262,27 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public HEALResponse deleteActivityInstance(String activityInstanceId) {
+    public boolean deleteActivityInstance(String activityInstanceId) {
         try{
             DAO dao = DAOFactory.getTheDAO();
-            if(dao.deleteActivityInstance(activityInstanceId)){
-                return new HEALResponse(Response.Status.NO_CONTENT.getStatusCode(),
-                        "Successfully deleted activity instance " + activityInstanceId,
-                        HEALResponse.SUCCESS_MESSAGE_TYPE,
-                        null);
-            }
-
-            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                    "Some problem in deleting activity instance " + activityInstanceId,
-                    HEALResponse.ERROR_MESSAGE_TYPE,
-                    null);
+//            if(dao.deleteActivityInstance(activityInstanceId)){
+//                return new HEALResponse(Response.Status.NO_CONTENT.getStatusCode(),
+//                        "Successfully deleted activity instance " + activityInstanceId,
+//                        HEALResponse.SUCCESS_MESSAGE_TYPE,
+//                        null);
+//            }
+//
+//            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                    "Some problem in deleting activity instance " + activityInstanceId,
+//                    HEALResponse.ERROR_MESSAGE_TYPE,
+//                    null);
+            return dao.deleteActivityInstance(activityInstanceId);
         }catch (Exception e){
-            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                    "Some problem in deleting activity instance " + activityInstanceId,
-                    HEALResponse.ERROR_MESSAGE_TYPE,
-                    null);
+//            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                    "Some problem in deleting activity instance " + activityInstanceId,
+//                    HEALResponse.ERROR_MESSAGE_TYPE,
+//                    null);
+            return false;
         }
     }
 
@@ -280,7 +290,7 @@ public class ReachService implements HealService {
 
     // patient resource method
     @Override
-    public HEALResponse getPatients(String trialId) {
+    public List<Patient> getPatients(String trialId) {
 
         System.out.println("trialId: " + trialId);
         try {
@@ -295,20 +305,23 @@ public class ReachService implements HealService {
                 result = dao.getPatients(trialId);
             }
 
-            if (result.isEmpty()) {
-                return HEALResponse.getErrorMessage(Response.Status.NOT_FOUND.getStatusCode(),
-                        "No Patients Found!!!", null);
-            }
+//            if (result.isEmpty()) {
+//                return HEALResponse.getErrorMessage(Response.Status.NOT_FOUND.getStatusCode(),
+//                        "No Patients Found!!!", null);
+//            }
 
-            return HEALResponse.getSuccessMessage(Response.Status.OK.getStatusCode(), "Success", result);
+//            return HEALResponse.getSuccessMessage(Response.Status.OK.getStatusCode(), "Success", result);
+            return result;
         } catch (DAOException e) {
 
-            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                    e.getMessage(), null);
+//            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                    e.getMessage(), null);
+            return null;
         } catch (Exception e) {
 
-            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                    "UnHandled Exception: " + e.getMessage(), null);
+//            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                    "UnHandled Exception: " + e.getMessage(), null);
+            return null;
         }
     }
 
@@ -424,102 +437,110 @@ public class ReachService implements HealService {
 
     // methods pertaining to Activity Model
     @Override
-    public HEALResponse getActivities(String domain) {
+    public List<Activity> getActivities(String domain) {
         try {
             DAO dao = DAOFactory.getTheDAO();
             List<Activity> result = dao.getActivities(domain);
 
-            if (result.isEmpty()) {
-                return HEALResponse.getErrorMessage(Response.Status.NOT_FOUND.getStatusCode(),
-                        "No Activities for domain were found!", null);
-            }
-
-            return HEALResponse.getSuccessMessage(Response.Status.OK.getStatusCode(), "Found Activities!",
-                    result);
+//            if (result.isEmpty()) {
+//                return HEALResponse.getErrorMessage(Response.Status.NOT_FOUND.getStatusCode(),
+//                        "No Activities for domain were found!", null);
+//            }
+//
+//            return HEALResponse.getSuccessMessage(Response.Status.OK.getStatusCode(), "Found Activities!",
+//                    result);
+            return result;
         } catch (Exception e) {
             System.out.println("SOME ERROR IN GETACTIVITIES() IN REACHSERVICE CLASS");
             e.printStackTrace();
 
-            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                    "UnHandled Exception: " + e.getMessage(), null);
+//            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                    "UnHandled Exception: " + e.getMessage(), null);
+            return null;
         }
     }
 
     @Override
-    public HEALResponse createActivity(String title, String description) {
+    public boolean createActivity(String title, String description) {
         try {
             DAO dao = DAOFactory.getTheDAO();
             boolean createStatus = dao.createActivity(new Activity(title, description));
 
-            if (createStatus) {
-                return HEALResponse.getSuccessMessage(Response.Status.CREATED.getStatusCode(), "Created", null);
-            }
-
-            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                    "Could not create activity", null);
+//            if (createStatus) {
+//                return HEALResponse.getSuccessMessage(Response.Status.CREATED.getStatusCode(), "Created", null);
+//            }
+//
+//            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                    "Could not create activity", null);
+            return createStatus;
         } catch (Exception e) {
             e.printStackTrace();
-            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                    "Unhandled Exception: " + e.getMessage(), null);
+//            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                    "Unhandled Exception: " + e.getMessage(), null);
+            return false;
         }
     }
 
     @Override
-    public HEALResponse getTrials(String domain) {
+    public List<Trial> getTrials(String domain) {
         HEALResponse response = null;
         try {
             DAO dao = DAOFactory.getTheDAO();
-            Object trials;
+            List<Trial> trials = null;
 
             if (domain == null)
                 trials = dao.getTrials();
             else
                 trials = dao.getTrials(domain);
 
-            if (trials == null) {
-                response = new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                        "SOME PROBLEM ON THE SERVER SIDE. CHECK LOGS",
-                        HEALResponse.ERROR_MESSAGE_TYPE,
-                        null);
-                return response;
-            }
+//            if (trials == null) {
+//                response = new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                        "SOME PROBLEM ON THE SERVER SIDE. CHECK LOGS",
+//                        HEALResponse.ERROR_MESSAGE_TYPE,
+//                        null);
+//                return response;
+//                return null;
+//            }
 
-            if (trials instanceof NullPointerException) {
-                response = new HEALResponse(Response.Status.BAD_REQUEST.getStatusCode(),
-                        "THE DOMAIN NAME YOU PASSED IN DOES NOT EXIST",
-                        HEALResponse.ERROR_MESSAGE_TYPE,
-                        null);
-                return response;
-            }
+//            if (trials instanceof NullPointerException) {
+//                response = new HEALResponse(Response.Status.BAD_REQUEST.getStatusCode(),
+//                        "THE DOMAIN NAME YOU PASSED IN DOES NOT EXIST",
+//                        HEALResponse.ERROR_MESSAGE_TYPE,
+//                        null);
+//                return response;
+//                return null;
+//            }
 
-            if (trials instanceof List) {
-                response = new HEALResponse(Response.Status.OK.getStatusCode(),
-                        "SUCCESS",
-                        HEALResponse.SUCCESS_MESSAGE_TYPE,
-                        (List) trials);
-                return response;
-            }
+//            if (trials instanceof List) {
+//                response = new HEALResponse(Response.Status.OK.getStatusCode(),
+//                        "SUCCESS",
+//                        HEALResponse.SUCCESS_MESSAGE_TYPE,
+//                        (List) trials);
+//                return response;
+//                return null;
+//            }
 
-            return response;
+            return trials;
         } catch (Exception e) {
             System.out.println("SOME ERROR IN GETTRIALS() IN REACHSERVICE CLASS");
             e.printStackTrace();
-            response = new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                    "SOME PROBLEM ON THE SERVER SIDE. CHECK LOGS",
-                    HEALResponse.ERROR_MESSAGE_TYPE,
-                    null);
-            return response;
+//            response = new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                    "SOME PROBLEM ON THE SERVER SIDE. CHECK LOGS",
+//                    HEALResponse.ERROR_MESSAGE_TYPE,
+//                    null);
+//            return response;
+            return null;
         }
     }
 
     @Override
-    public HEALResponse addTrial(String domainId, String title, String description, String startDate, String endDate,
-                                 int targetCount) {
+    public Trial addTrial(String domainId, String title, String description, String startDate, String endDate,
+                          int targetCount) {
         try {
             DAO dao = DAOFactory.getTheDAO();
 
             // check if the domain exist, if yes get the id of domain
-            Document domain = (Document) dao.getDomain(domainId);
+            Domain domain = dao.getDomain(domainId);
             if (domain != null) {
 
                 Date startDateFormat = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(startDate);
@@ -527,32 +548,36 @@ public class ReachService implements HealService {
 
                 ObjectId newId = ObjectId.get();
                 String trialId = newId.toHexString();
-                Trial trialInstance = new Trial(newId, (ObjectId) domain.get("_id"), trialId, title, description,
+                Trial trialInstance = new Trial(newId, domain.getId(), trialId, title, description,
                         startDateFormat, endDateFormat, targetCount);
 
                 if (dao.createTrial(trialInstance)) {
-                    return new HEALResponse(Response.Status.CREATED.getStatusCode(),
-                            "CREATED. TODO: add link to newly created resource",
-                            HEALResponse.SUCCESS_MESSAGE_TYPE,
-                            null);
+//                    return new HEALResponse(Response.Status.CREATED.getStatusCode(),
+//                            "CREATED. TODO: add link to newly created resource",
+//                            HEALResponse.SUCCESS_MESSAGE_TYPE,
+//                            null);
+                    return trialInstance;
                 }
-                return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                        "SOME ERROR CREATING A NEW TRIAL. CHECK LOGS.",
-                        HEALResponse.ERROR_MESSAGE_TYPE,
-                        null);
+//                return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                        "SOME ERROR CREATING A NEW TRIAL. CHECK LOGS.",
+//                        HEALResponse.ERROR_MESSAGE_TYPE,
+//                        null);
+                return null;
             } else {
-                return new HEALResponse(Response.Status.BAD_REQUEST.getStatusCode(),
-                        "INCORRECT DOMAINID",
-                        HEALResponse.ERROR_MESSAGE_TYPE,
-                        null);
+//                return new HEALResponse(Response.Status.BAD_REQUEST.getStatusCode(),
+//                        "INCORRECT DOMAINID",
+//                        HEALResponse.ERROR_MESSAGE_TYPE,
+//                        null);
+                return null;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                    "SOME ERROR CREATING A NEW TRIAL. CHECK LOGS.",
-                    HEALResponse.ERROR_MESSAGE_TYPE,
-                    null);
+//            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+//                    "SOME ERROR CREATING A NEW TRIAL. CHECK LOGS.",
+//                    HEALResponse.ERROR_MESSAGE_TYPE,
+//                    null);
+            return null;
         }
     }
 }

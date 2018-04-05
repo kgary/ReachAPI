@@ -9,11 +9,11 @@ public interface DAO {
     // methods pertaining to Domain Model
     Object getDomains();
 
-    Object getDomain(String id);
+    Domain getDomain(String id);
 
-    String createDomain(Domain instance);
+    boolean createDomain(Domain instance);
 
-    Object getScheduledActivities(int patientPin, int currentDay) throws DAOException;
+    List<ActivityInstance> getScheduledActivities(int patientPin, int currentDay) throws DAOException;
 
     boolean scheduleSTOPActivity(int day, boolean completed) throws DAOException;
 
@@ -43,9 +43,9 @@ public interface DAO {
     boolean createActivity(Activity activity) throws DAOException;
 
     // methods pertaining trial model
-    Object getTrials() throws DAOException;
+    List<Trial> getTrials() throws DAOException;
 
-    Object getTrials(String domain) throws DAOException;
+    List<Trial> getTrials(String domain) throws DAOException;
 
     boolean createTrial(Trial trialInstance) throws DAOException;
 
@@ -61,5 +61,5 @@ public interface DAO {
 
     ActivityInstance createActivityInstance(ActivityInstance instance);
 
-    Object getActivityInstance(String activityInstanceId);
+    ActivityInstance getActivityInstance(String activityInstanceId);
 }
