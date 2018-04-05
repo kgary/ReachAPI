@@ -95,20 +95,20 @@ public class ReachService implements HealService {
             DAO dao = DAOFactory.getTheDAO();
             Object instances = dao.getScheduledActivities(patientPin, trialId);
             if (instances == null) {
-                response = new HEALResponse(500,
+                response = new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                         "Some error connecting to the database", HEALResponse.ERROR_MESSAGE_TYPE, null);
                 return response;
             }
 
             if (instances instanceof NullPointerException) {
-                response = new HEALResponse(400,
+                response = new HEALResponse(Response.Status.BAD_REQUEST.getStatusCode(),
                         "Patient pin invalid or not does not exist",
                         HEALResponse.ERROR_MESSAGE_TYPE, null);
                 return response;
             }
 
             if (instances instanceof List) {
-                response = new HEALResponse(200,
+                response = new HEALResponse(Response.Status.OK.getStatusCode(),
                         "Success",
                         HEALResponse.SUCCESS_MESSAGE_TYPE,
                         (List) instances);
@@ -118,7 +118,7 @@ public class ReachService implements HealService {
         } catch (Exception e) {
             System.out.println("SOME ERROR IN GETACTIVITYINSTANCES() IN REACHSERVICE");
             e.printStackTrace();
-            response = new HEALResponse(500,
+            response = new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                     "Some error connecting to the database", HEALResponse.ERROR_MESSAGE_TYPE, null);
             return response;
         }
@@ -131,25 +131,25 @@ public class ReachService implements HealService {
             Object instance = dao.getActivityInstance(activityInstanceId);
 
             if(instance == null){
-                return new HEALResponse(500,
+                return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                         "Some server error. Check logs",
                         HEALResponse.ERROR_MESSAGE_TYPE,
                         null);
             }else if(instance instanceof NullPointerException){
-                return new HEALResponse(404,
+                return new HEALResponse(Response.Status.NOT_FOUND.getStatusCode(),
                         "Incorrect activity instance id or id does not exist",
                         HEALResponse.ERROR_MESSAGE_TYPE,
                         null);
             }else{
-                return new HEALResponse(200,
+                return new HEALResponse(Response.Status.OK.getStatusCode(),
                         "Success",
                         HEALResponse.SUCCESS_MESSAGE_TYPE,
-                        null);
+                        instance);
             }
         }catch (Exception e){
             System.out.println("SOME ERROR IN HEAL SERVICE getActivityInstance");
             e.printStackTrace();
-            return new HEALResponse(500,
+            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                     "Some server error. Check logs",
                     HEALResponse.ERROR_MESSAGE_TYPE,
                     null);
@@ -200,18 +200,18 @@ public class ReachService implements HealService {
         try{
             DAO dao = DAOFactory.getTheDAO();
             if((activityInstance = dao.createActivityInstance(activityInstance)) != null){
-                return new HEALResponse(201,
+                return new HEALResponse(Response.Status.CREATED.getStatusCode(),
                         "Successfully created activity instance " + activityInstance.getActivityInstanceId(),
                         HEALResponse.SUCCESS_MESSAGE_TYPE,
                         null);
             }
 
-            return new HEALResponse(500,
+            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                     "Some problem creating activity instance",
                     HEALResponse.ERROR_MESSAGE_TYPE,
                     null);
         }catch (Exception e){
-            return new HEALResponse(500,
+            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                     "Some problem creating activity instance",
                     HEALResponse.ERROR_MESSAGE_TYPE,
                     null);
@@ -258,18 +258,18 @@ public class ReachService implements HealService {
         try{
             DAO dao = DAOFactory.getTheDAO();
             if(dao.deleteActivityInstance(activityInstanceId)){
-                return new HEALResponse(204,
+                return new HEALResponse(Response.Status.NO_CONTENT.getStatusCode(),
                         "Successfully deleted activity instance " + activityInstanceId,
                         HEALResponse.SUCCESS_MESSAGE_TYPE,
                         null);
             }
 
-            return new HEALResponse(500,
+            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                     "Some problem in deleting activity instance " + activityInstanceId,
                     HEALResponse.ERROR_MESSAGE_TYPE,
                     null);
         }catch (Exception e){
-            return new HEALResponse(500,
+            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                     "Some problem in deleting activity instance " + activityInstanceId,
                     HEALResponse.ERROR_MESSAGE_TYPE,
                     null);
@@ -405,19 +405,19 @@ public class ReachService implements HealService {
             MakeBelieveResponse response;
             DAO dao = DAOFactory.getTheDAO();
             if (!dao.checkSituationExists(instanceId)) {
-                return 400;
+                return Response.Status.BAD_REQUEST.getStatusCode();
             }
             response = new ObjectMapper().readValue(responses, MakeBelieveResponse.class);
             if (instanceId != response.getSituationId()) {
-                return 400;
+                return Response.Status.BAD_REQUEST.getStatusCode();
             }
             if (dao.updateMakeBelieveActivityInstance(response))
-                return 204;
-            return 500;
+                return Response.Status.NO_CONTENT.getStatusCode();
+            return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Some problem in getMakeBelieveInstanceAnswer in Reach service");
-            return 500;
+            return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
         }
 
     }
@@ -477,7 +477,7 @@ public class ReachService implements HealService {
                 trials = dao.getTrials(domain);
 
             if (trials == null) {
-                response = new HEALResponse(500,
+                response = new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                         "SOME PROBLEM ON THE SERVER SIDE. CHECK LOGS",
                         HEALResponse.ERROR_MESSAGE_TYPE,
                         null);
@@ -485,7 +485,7 @@ public class ReachService implements HealService {
             }
 
             if (trials instanceof NullPointerException) {
-                response = new HEALResponse(400,
+                response = new HEALResponse(Response.Status.BAD_REQUEST.getStatusCode(),
                         "THE DOMAIN NAME YOU PASSED IN DOES NOT EXIST",
                         HEALResponse.ERROR_MESSAGE_TYPE,
                         null);
@@ -493,7 +493,7 @@ public class ReachService implements HealService {
             }
 
             if (trials instanceof List) {
-                response = new HEALResponse(200,
+                response = new HEALResponse(Response.Status.OK.getStatusCode(),
                         "SUCCESS",
                         HEALResponse.SUCCESS_MESSAGE_TYPE,
                         (List) trials);
@@ -504,7 +504,7 @@ public class ReachService implements HealService {
         } catch (Exception e) {
             System.out.println("SOME ERROR IN GETTRIALS() IN REACHSERVICE CLASS");
             e.printStackTrace();
-            response = new HEALResponse(500,
+            response = new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                     "SOME PROBLEM ON THE SERVER SIDE. CHECK LOGS",
                     HEALResponse.ERROR_MESSAGE_TYPE,
                     null);
@@ -531,17 +531,17 @@ public class ReachService implements HealService {
                         startDateFormat, endDateFormat, targetCount);
 
                 if (dao.createTrial(trialInstance)) {
-                    return new HEALResponse(201,
+                    return new HEALResponse(Response.Status.CREATED.getStatusCode(),
                             "CREATED. TODO: add link to newly created resource",
                             HEALResponse.SUCCESS_MESSAGE_TYPE,
                             null);
                 }
-                return new HEALResponse(500,
+                return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                         "SOME ERROR CREATING A NEW TRIAL. CHECK LOGS.",
                         HEALResponse.ERROR_MESSAGE_TYPE,
                         null);
             } else {
-                return new HEALResponse(400,
+                return new HEALResponse(Response.Status.BAD_REQUEST.getStatusCode(),
                         "INCORRECT DOMAINID",
                         HEALResponse.ERROR_MESSAGE_TYPE,
                         null);
@@ -549,7 +549,7 @@ public class ReachService implements HealService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new HEALResponse(500,
+            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                     "SOME ERROR CREATING A NEW TRIAL. CHECK LOGS.",
                     HEALResponse.ERROR_MESSAGE_TYPE,
                     null);

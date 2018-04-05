@@ -13,9 +13,9 @@ public class HEALResponse {
     private int statusCode;
     private String message;
     private String messageType;
-    private List data;
+    private Object data;
 
-    public HEALResponse(int statusCode, String message, String messageType, List data){
+    public HEALResponse(int statusCode, String message, String messageType, Object data){
         this.statusCode = statusCode;
         this.message = message;
         this.messageType = messageType;
@@ -47,7 +47,7 @@ public class HEALResponse {
         this.messageType = messageType;
     }
 
-    public List getData() {
+    public Object getData() {
         return data;
     }
 

@@ -7,6 +7,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOException;
 import edu.asu.heal.core.api.models.*;
@@ -68,7 +69,7 @@ public class MongoDBDAO implements DAO {
         MongoDatabase database = getConnectedDatabase();
         MongoCollection<Domain> domainCollection = database.getCollection("domains", Domain.class);
 
-        return domainCollection.find().into(new ArrayList<>());
+        return domainCollection.find().projection(Projections.excludeId()).into(new ArrayList<>());
     }
 
     @Override
@@ -76,7 +77,10 @@ public class MongoDBDAO implements DAO {
         MongoDatabase database = getConnectedDatabase();
         MongoCollection<Document> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION);
 
-        return domainCollection.find(Filters.eq("_id", new ObjectId(id))).first();
+        return domainCollection
+                .find(Filters.eq("_id", new ObjectId(id)))
+                .projection(Projections.excludeId())
+                .first();
     }
 
     @Override
@@ -103,6 +107,7 @@ public class MongoDBDAO implements DAO {
             return activityInstanceCollection
                     .find(Filters.in(ActivityInstance.ID_ATTRIBUTE,
                             patient.getActivityInstances().toArray(new ObjectId[]{})))
+                    .projection(Projections.excludeId())
                     .into(new ArrayList<>());
         } catch (NullPointerException ne) {
             System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCES FOR PATIENT PIN " + patientPin);
@@ -181,6 +186,7 @@ public class MongoDBDAO implements DAO {
 
             return activityCollection
                     .find(Filters.in(Activity.ID_ATTRIBUTE, domain1.getActivities().toArray(new ObjectId[]{})))
+                    .projection(Projections.excludeId())
                     .into(new ArrayList<>());
 
         } catch (Exception e) {
@@ -214,7 +220,10 @@ public class MongoDBDAO implements DAO {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
 
-            return trialCollection.find().into(new ArrayList<Trial>());
+            return trialCollection
+                    .find()
+                    .projection(Projections.excludeId())
+                    .into(new ArrayList<Trial>());
         } catch (Exception e) {
             System.out.println("SOME PROBLEM IN GETTRIALS() METHOD OF MONGODBDAO");
             e.printStackTrace();
@@ -231,8 +240,9 @@ public class MongoDBDAO implements DAO {
             Domain domain1 = domainCollection.find(Filters.eq(Domain.TITLE_ATTRIBUTE, domain)).first();
             MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
 
-            return trialCollection.find(
-                    Filters.in(Trial.ID_ATTRIBUTE, domain1.getTrials().toArray(new ObjectId[]{})))
+            return trialCollection
+                    .find(Filters.in(Trial.ID_ATTRIBUTE, domain1.getTrials().toArray(new ObjectId[]{})))
+                    .projection(Projections.excludeId())
                     .into(new ArrayList<Trial>());
         } catch (NullPointerException ne) {
             System.out.println("SOME ERROR IN GETTING DOMAIN DATA");
@@ -265,7 +275,10 @@ public class MongoDBDAO implements DAO {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Patient> patientCollection = database.getCollection(PATIENTS_COLLECTION, Patient.class);
 
-            return patientCollection.find().into(new ArrayList<>());
+            return patientCollection
+                    .find()
+                    .projection(Projections.excludeId())
+                    .into(new ArrayList<>());
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -285,6 +298,7 @@ public class MongoDBDAO implements DAO {
 
             return patientsCollection
                     .find(Filters.in(Patient.ID_ATTRIBUTE, trial.getPatients().toArray(new ObjectId[]{})))
+                    .projection(Projections.excludeId())
                     .into(new ArrayList<>());
         } catch (Exception e) {
             e.printStackTrace();
@@ -396,6 +410,7 @@ public class MongoDBDAO implements DAO {
 
             ActivityInstance instance = activityInstanceMongoCollection
                     .find(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId))
+                    .projection(Projections.excludeId())
                     .first();
 
             return instance;
