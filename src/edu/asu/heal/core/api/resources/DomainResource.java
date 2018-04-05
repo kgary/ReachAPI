@@ -71,8 +71,8 @@ public class DomainResource {
         response = builder
                 .setData(domains)
                 .setStatusCode(Response.Status.OK.getStatusCode())
-                .setMessage("SUCCESS")
-                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+//                .setMessage("SUCCESS")
+//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
                 .build();
 
 
@@ -106,8 +106,8 @@ public class DomainResource {
         response = builder
                 .setData(domain)
                 .setStatusCode(Response.Status.OK.getStatusCode())
-                .setMessage("SUCCESS")
-                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+//                .setMessage("SUCCESS")
+//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
                 .build();
 
         return Response.status(response.getStatusCode()).entity(response).build();
@@ -139,8 +139,8 @@ public class DomainResource {
         response = builder
                 .setData(created)
                 .setStatusCode(Response.Status.CREATED.getStatusCode())
-                .setMessage("SUCCESS")
-                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+//                .setMessage("SUCCESS")
+//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
                 .build();
 
         return Response.status(response.getStatusCode()).build();

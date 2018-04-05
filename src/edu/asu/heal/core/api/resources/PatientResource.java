@@ -88,8 +88,8 @@ public class PatientResource {
         response = builder
                 .setData(patients)
                 .setStatusCode(Response.Status.OK.getStatusCode())
-                .setMessage("SUCCESS")
-                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+//                .setMessage("SUCCESS")
+//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
                 .build();
 
         return Response.status(response.getStatusCode()).entity(response).build();
@@ -117,8 +117,8 @@ public class PatientResource {
         response = builder
                 .setData(patient)
                 .setStatusCode(Response.Status.OK.getStatusCode())
-                .setMessage("SUCCESS")
-                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+//                .setMessage("SUCCESS")
+//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
                 .build();
 
         return Response.status(response.getStatusCode()).entity(patient).build();
@@ -147,8 +147,8 @@ public class PatientResource {
         response = builder
                 .setData(String.format("%s/%s",_uri.getAbsolutePath().toString(),inserted))
                 .setStatusCode(Response.Status.CREATED.getStatusCode())
-                .setMessage("SUCCESS")
-                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+//                .setMessage("SUCCESS")
+//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
                 .build();
 
         return Response.status(response.getStatusCode()).header("Location",

@@ -5,14 +5,14 @@ import java.util.List;
 public class HEALResponse{
 
     // Message Type Captions
-    public static final String INFO_MESSAGE_TYPE = "info";
-    public static final String SUCCESS_MESSAGE_TYPE = "success";
-    public static final String WARNING_MESSAGE_TYPE = "warning";
-    public static final String ERROR_MESSAGE_TYPE = "error";
+//    public static final String INFO_MESSAGE_TYPE = "info";
+//    public static final String SUCCESS_MESSAGE_TYPE = "success";
+//    public static final String WARNING_MESSAGE_TYPE = "warning";
+//    public static final String ERROR_MESSAGE_TYPE = "error";
 
     private int statusCode;
-    private String message;
-    private String messageType;
+//    private String message;
+//    private String messageType;
     private Object data;
 
     private HEALResponse(){}
@@ -22,13 +22,13 @@ public class HEALResponse{
         return statusCode;
     }
 
-    public String getMessage() {
-        return message;
-    }
+//    public String getMessage() {
+//        return message;
+//    }
 
-    public String getMessageType() {
-        return messageType;
-    }
+//    public String getMessageType() {
+//        return messageType;
+//    }
 
     public Object getData() {
         return data;
@@ -67,20 +67,20 @@ public class HEALResponse{
             return this;
         }
 
-        public HEALResponseBuilder setMessage(String message) {
-            this._response.message = message;
-            return this;
-        }
+//        public HEALResponseBuilder setMessage(String message) {
+//            this._response.message = message;
+//            return this;
+//        }
 
         public HEALResponseBuilder setData(Object data) {
             this._response.data = data;
             return this;
         }
 
-        public HEALResponseBuilder setMessageType(String messageType) {
-            this._response.messageType = messageType;
-            return this;
-        }
+//        public HEALResponseBuilder setMessageType(String messageType) {
+//            this._response.messageType = messageType;
+//            return this;
+//        }
 
         public HEALResponse build(){
             return this._response;

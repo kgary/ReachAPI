@@ -61,18 +61,18 @@ public class ActivityInstanceResource {
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
         if (patientPin == 0 || patientPin < -1) {
             response = builder
-                    .setData(null)
+                    .setData("YOUR PATIENT PIN IS ABSENT FROM THE REQUEST")
                     .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-                    .setMessage("YOUR PATIENT PIN ABSENT FROM THE REQUEST")
-                    .setMessageType(HEALResponse.ERROR_MESSAGE_TYPE)
+//                    .setMessage("YOUR PATIENT PIN ABSENT FROM THE REQUEST")
+//                    .setMessageType(HEALResponse.ERROR_MESSAGE_TYPE)
                     .build();
         } else {
             List<ActivityInstance> instances = reachService.getActivityInstances(patientPin, trialId);
             response = builder
                     .setData(instances)
                     .setStatusCode(Response.Status.OK.getStatusCode())
-                    .setMessage("SUCCESS")
-                    .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+//                    .setMessage("SUCCESS")
+//                    .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
                     .build();
         }
 
@@ -102,8 +102,8 @@ public class ActivityInstanceResource {
         response = builder
                 .setData(instance)
                 .setStatusCode(Response.Status.OK.getStatusCode())
-                .setMessage("SUCCESS")
-                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+//                .setMessage("SUCCESS")
+//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
                 .build();
 
         return Response.status(response.getStatusCode()).entity(response).build();
@@ -150,8 +150,8 @@ public class ActivityInstanceResource {
         response = builder
                 .setData(instance)
                 .setStatusCode(Response.Status.CREATED.getStatusCode())
-                .setMessage("SUCCESS")
-                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+//                .setMessage("SUCCESS")
+//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
                 .build();
 
 //        if (instance.getStatusCode() == Response.Status.CREATED.getStatusCode()) {
@@ -218,8 +218,8 @@ public class ActivityInstanceResource {
         response = builder
                 .setData(null)
                 .setStatusCode(Response.Status.NO_CONTENT.getStatusCode())
-                .setMessage("SUCCESS")
-                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+//                .setMessage("SUCCESS")
+//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
                 .build();
 
         return Response.status(response.getStatusCode()).build();

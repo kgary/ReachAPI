@@ -65,8 +65,8 @@ public class TrialsResource {
         response = builder
                 .setData(trials)
                 .setStatusCode(Response.Status.OK.getStatusCode())
-                .setMessage("SUCCESS")
-                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+//                .setMessage("SUCCESS")
+//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
                 .build();
 
         return Response.status(response.getStatusCode())
@@ -112,8 +112,8 @@ public class TrialsResource {
         response = builder
                 .setData(addedTrial)
                 .setStatusCode(Response.Status.CREATED.getStatusCode())
-                .setMessage("SUCCESS")
-                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+//                .setMessage("SUCCESS")
+//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
                 .build();
 
 

@@ -46,8 +46,8 @@ public class ActivityResource {
         response = builder
                 .setData(activities)
                 .setStatusCode(Response.Status.OK.getStatusCode())
-                .setMessage("SUCCESS")
-                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+//                .setMessage("SUCCESS")
+//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
                 .build();
 
 
@@ -86,8 +86,8 @@ public class ActivityResource {
         response = builder
                 .setData(activity)
                 .setStatusCode(Response.Status.CREATED.getStatusCode())
-                .setMessage("SUCCESS")
-                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
+//                .setMessage("SUCCESS")
+//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
                 .build();
 
 
