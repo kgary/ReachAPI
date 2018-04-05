@@ -9,6 +9,7 @@ public class Patient {
 
     public static String ID_ATTRIBUTE = "_id";
     public static String PIN_ATTRIBUTE = "pin";
+    public static String PATIENTID_ATTRIBUTE = "patientId";
     public static String STARTDATE_ATTRIBUTE = "startDate";
     public static String ENDDATE_ATTRIBUTE = "endDate";
     public static String STATE_ATTRIBUTE = "state";
@@ -17,20 +18,22 @@ public class Patient {
     public static String ACTIVITYINSTANCES_ATTRIBUTE = "activityInstances";
 
     private ObjectId id;
+    private String patientId;
     private int pin;
     private Date startDate;
     private Date endDate;
     private String state;
     private Date createdAt;
     private Date updatedAt;
-    private ArrayList<ObjectId> activityInstances = new ArrayList<ObjectId>();
+    private ArrayList<String> activityInstances = new ArrayList<String>();
 
     public Patient(){
         // blank constructor
     }
 
-    public Patient(ObjectId id, int pin, Date startDate, Date endDate, String state, Date createdAt, Date updatedAt, ArrayList<ObjectId> activityInstances) {
+    public Patient(ObjectId id, String patientId, int pin, Date startDate, Date endDate, String state, Date createdAt, Date updatedAt, ArrayList<String> activityInstances) {
         this.id = id;
+        this.patientId = patientId;
         this.pin = pin;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -47,6 +50,14 @@ public class Patient {
 
     public void setPin(int pin) {
         this.pin = pin;
+    }
+
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
     }
 
     public Date getStartDate() {
@@ -73,11 +84,11 @@ public class Patient {
         this.state = state;
     }
 
-    public ArrayList<ObjectId> getActivityInstances() {
+    public ArrayList<String> getActivityInstances() {
         return activityInstances;
     }
 
-    public void setActivityInstances(ArrayList<ObjectId> activityInstances) {
+    public void setActivityInstances(ArrayList<String> activityInstances) {
         this.activityInstances = activityInstances;
     }
 

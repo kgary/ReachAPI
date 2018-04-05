@@ -28,9 +28,9 @@ public class Trial {
     private Date startDate;
     private Date endDate;
     private int targetCount;
-    private ArrayList<ObjectId> patients = new ArrayList<>();
-//    private Date createdAt; TODO shall we add this field too @dpurbey?
-//    private Date updatedAt;  TODO shall we add this field too @dpurbey?
+    private ArrayList<String> patients = new ArrayList<>();
+    private Date createdAt;
+    private Date updatedAt;
 
     public Trial(){
         // blank constructor
@@ -46,7 +46,7 @@ public class Trial {
         this.endDate = endDate;
         this.targetCount = targetCount;
     }
-    public Trial(ObjectId id, ObjectId domainId, String trialId, String title, String description, Date startDate, Date endDate, int targetCount, ArrayList<ObjectId> patients) {
+    public Trial(ObjectId id, ObjectId domainId, String trialId, String title, String description, Date startDate, Date endDate, int targetCount, ArrayList<String> patients) {
         this.id = id;
         this.domainId = domainId;
         this.trialId = trialId;
@@ -115,11 +115,11 @@ public class Trial {
         this.targetCount = targetCount;
     }
 
-    public ArrayList<ObjectId> getPatients() {
+    public ArrayList<String> getPatients() {
         return patients;
     }
 
-    public void setPatients(ArrayList<ObjectId> patients) {
+    public void setPatients(ArrayList<String> patients) {
         this.patients = patients;
     }
 

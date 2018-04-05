@@ -75,7 +75,9 @@ public class ReachService implements HealService {
         try {
             DAO dao = DAOFactory.getTheDAO();
             Domain instance = new Domain(title, description, state);
-            instance.setId(new ObjectId(new Date()));
+            ObjectId id = new ObjectId();
+            instance.setId(id);
+            instance.setDomainId(id.toHexString());
 
             return dao.createDomain(instance);
         } catch (Exception e) {

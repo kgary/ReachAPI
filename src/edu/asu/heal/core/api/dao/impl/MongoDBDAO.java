@@ -321,6 +321,7 @@ public class MongoDBDAO implements DAO {
 
             Patient patient = new Patient();
             patient.setId(new ObjectId());
+            patient.setPatientId(patient.getId().toHexString());
             patient.setPin(newPin);
             patient.setCreatedAt(new Date());
             patient.setEndDate(new Date());
@@ -339,7 +340,7 @@ public class MongoDBDAO implements DAO {
 
             Trial trial = trialsCollection.find(Filters.eq(Trial.TRIALID_ATTRIBUTE, patientDetails)).first();
 
-            trial.getPatients().add(patient.getId());
+            trial.getPatients().add(patient.getPatientId());
 
             trialsCollection.replaceOne(Filters.eq(Trial.TRIALID_ATTRIBUTE, patientDetails), trial);
 

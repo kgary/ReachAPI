@@ -11,12 +11,14 @@ public class Activity {
     public static String DESCRIPTION_ATTRIBUTE = "description";
     public static String CREATEDAT_ATTRIBUTE = "createdAt";
     public static String UPDATEDAT_ATTRIBUTE = "updatedAt";
+    public static String ACTIVITYID_ATTRIBUTE = "activityId";
 
     private ObjectId id;
+    private String activityId;
     private String title;
     private String description;
-    private Date createdAt; // TODO Shall we add this too @dpurbey?
-    private Date updatedAt; // TODO Shall we add this too @dpurbey?
+    private Date createdAt;
+    private Date updatedAt;
 
     public Activity(){
         // blank constructor
@@ -59,4 +61,39 @@ public class Activity {
         this.description = description;
     }
 
+    public String getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Activity{" +
+                "id=" + id +
+                ", activityId='" + activityId + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

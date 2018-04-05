@@ -30,4 +30,12 @@ public class ActivityInstanceType {
     public void setActivityId(String activityId) {
         this.activityId = activityId;
     }
+
+    @Override
+    public String toString() {
+        return "ActivityInstanceType{" +
+                "name='" + name + '\'' +
+                ", activityId='" + activityId + '\'' +
+                '}';
+    }
 }

@@ -12,13 +12,15 @@ public class Domain {
     public static String STATE_ATTRIBUTE = "state";
     public static String ACTIVITIES_ATTRIBUTE = "activities";
     public static String TRIALS_ATTRIBUTE = "trials";
+    public static String DOMAINID_ATTRIBUTE = "domainId";
 
     private ObjectId id;
+    private String domainId;
     private String title;
     private String description;
     private String state;
-    private ArrayList<ObjectId> activities;
-    private ArrayList<ObjectId> trials;
+    private ArrayList<String> activities;
+    private ArrayList<String> trials;
 
     public Domain(){
         // default constructor
@@ -64,19 +66,40 @@ public class Domain {
         this.state = state;
     }
 
-    public ArrayList<ObjectId> getActivities() {
+    public ArrayList<String> getActivities() {
         return activities;
     }
 
-    public void setActivities(ArrayList<ObjectId> activities) {
+    public void setActivities(ArrayList<String> activities) {
         this.activities = activities;
     }
 
-    public ArrayList<ObjectId> getTrials() {
+    public ArrayList<String> getTrials() {
         return trials;
     }
 
-    public void setTrials(ArrayList<ObjectId> trials) {
+    public void setTrials(ArrayList<String> trials) {
         this.trials = trials;
+    }
+
+    public String getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(String domainId) {
+        this.domainId = domainId;
+    }
+
+    @Override
+    public String toString() {
+        return "Domain{" +
+                "id=" + id +
+                ", domainId='" + domainId + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", state='" + state + '\'' +
+                ", activities=" + activities +
+                ", trials=" + trials +
+                '}';
     }
 }

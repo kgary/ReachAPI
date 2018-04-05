@@ -134,4 +134,21 @@ public class ActivityInstance {
     public void setActivityInstanceId(String activityInstanceId) {
         this.activityInstanceId = activityInstanceId;
     }
+
+    @Override
+    public String toString() {
+        return "ActivityInstance{" +
+                "id=" + id +
+                ", activityInstanceId='" + activityInstanceId + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", userSubmissionTime=" + userSubmissionTime +
+                ", actualSubmissionTime=" + actualSubmissionTime +
+                ", instanceOf=" + instanceOf +
+                ", state='" + state + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }
