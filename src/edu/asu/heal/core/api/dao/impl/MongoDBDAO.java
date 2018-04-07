@@ -101,7 +101,7 @@ public class MongoDBDAO implements DAO {
             Patient patient = patientCollection.find(Filters.eq(Patient.PIN_ATTRIBUTE, patientPin)).first();
             if(patient == null){
                 List<ActivityInstance> result = new ArrayList<>();
-                result.add(ActivityInstance.getNullActivityInstance());
+                result.add(NullObjects.getNullActivityInstance());
                 return result;
             }
 
@@ -314,12 +314,17 @@ public class MongoDBDAO implements DAO {
             MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
 
             Trial trial = trialCollection.find(Filters.eq(Trial.TRIALID_ATTRIBUTE, trialId)).first();
+            if(trial == null){
+                ArrayList<Patient> result = new ArrayList<>();
+                result.add(NullObjects.getNullPatient());
+                return result;
+            }
 
             MongoCollection<Patient> patientsCollection = database
                     .getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class);
 
             return patientsCollection
-                    .find(Filters.in(Patient.ID_ATTRIBUTE, trial.getPatients().toArray(new ObjectId[]{})))
+                    .find(Filters.in(Patient.PATIENTID_ATTRIBUTE, trial.getPatients().toArray(new String[]{})))
                     .projection(Projections.excludeId())
                     .into(new ArrayList<>());
         } catch (Exception e) {
@@ -329,8 +334,16 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public int createPatient(String patientDetails) {
+    public Patient createPatient() {
         try {
+
+//            MongoCollection<Trial> trialsCollection = getConnectedDatabase()
+//                    .getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
+//
+//            Trial trial = trialsCollection.find(Filters.eq(Trial.TRIALID_ATTRIBUTE, trialID)).first();
+//
+//            if(trial == null)
+//                return NullObjects.getNullPatient();
 
             //Temporary code to generate new pin. It just increments the largest pin number in the database by 1
             int newPin = getConnectedDatabase()
@@ -341,45 +354,26 @@ public class MongoDBDAO implements DAO {
                     .getInteger(Patient.PIN_ATTRIBUTE);
             ++newPin;
 
-            Patient patient = new Patient();
-            patient.setId(new ObjectId());
-            patient.setPatientId(patient.getId().toHexString());
-            patient.setPin(newPin);
-            patient.setCreatedAt(new Date());
-            patient.setEndDate(new Date());
-            patient.setStartDate(new Date());
-            patient.setUpdatedAt(new Date());
-            patient.setState("created");
-            patient.setActivityInstances(null);
+            Patient newPatient = new Patient();
+            newPatient.setId(new ObjectId());
+            newPatient.setPatientId(newPatient.getId().toHexString());
+            newPatient.setPin(newPin);
+            newPatient.setCreatedAt(new Date());
+            newPatient.setEndDate(new Date());
+            newPatient.setStartDate(new Date());
+            newPatient.setUpdatedAt(new Date());
+            newPatient.setState(PatientState.CREATED.status());
 
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Patient> patientCollection = database.getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class);
 
-            patientCollection.insertOne(patient);
+            patientCollection.insertOne(newPatient);
 
-            MongoCollection<Trial> trialsCollection = getConnectedDatabase()
-                    .getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
+//            trial.getPatients().add(newPatient.getPatientId());
+//
+//            trialsCollection.replaceOne(Filters.eq(Trial.TRIALID_ATTRIBUTE, trialID), trial);
 
-            Trial trial = trialsCollection.find(Filters.eq(Trial.TRIALID_ATTRIBUTE, patientDetails)).first();
-
-            trial.getPatients().add(patient.getPatientId());
-
-            trialsCollection.replaceOne(Filters.eq(Trial.TRIALID_ATTRIBUTE, patientDetails), trial);
-
-            return newPin;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    @Override
-    public Patient getPatient(int patientPin) {
-        try {
-            MongoDatabase database = getConnectedDatabase();
-            return database.getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class)
-                    .find(Filters.eq(Patient.PIN_ATTRIBUTE, patientPin))
-                    .first();
+            return newPatient;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -387,19 +381,39 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public boolean deleteActivityInstance(String activityInstanceId) {
+    public Patient getPatient(int patientPin) {
+        try {
+            MongoDatabase database = getConnectedDatabase();
+            Patient patient = database.getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class)
+                    .find(Filters.eq(Patient.PIN_ATTRIBUTE, patientPin))
+                    .first();
+
+            if(patient == null)
+                return NullObjects.getNullPatient();
+            return patient;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public ActivityInstance deleteActivityInstance(String activityInstanceId) {
         try{
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<ActivityInstance> activityInstanceMongoCollection =
                     database.getCollection(ACTIVITYINSTANCES_COLLECTION, ActivityInstance.class);
 
-            activityInstanceMongoCollection.findOneAndDelete(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE,
-                    activityInstanceId));
-            return true;
+            ActivityInstance deletedInstance = activityInstanceMongoCollection
+                    .findOneAndDelete(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId));
+
+            if(deletedInstance == null)
+                return NullObjects.getNullActivityInstance();
+            return deletedInstance;
         }catch (Exception e){
             System.out.println("SOME PROBLEM DELETING ACTIVITY INSTANCE " + activityInstanceId);
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
@@ -410,12 +424,19 @@ public class MongoDBDAO implements DAO {
             MongoCollection<ActivityInstance> activityInstanceMongoCollection =
                     database.getCollection(ACTIVITYINSTANCES_COLLECTION, ActivityInstance.class);
 
+            Patient patient = getPatient(instance.getPatientPin());
+            if(patient == null)
+                return NullObjects.getNullActivityInstance();
+
             ObjectId id = ObjectId.get();
             instance.setId(id);
             instance.setActivityInstanceId(id.toHexString());
 
             activityInstanceMongoCollection.insertOne(instance);
+            patient.getActivityInstances().add(instance.getActivityInstanceId());
+            patient.setUpdatedAt(new Date());
 
+            updatePatients(patient);
             return instance;
         }catch (Exception e){
             System.out.println("SOME ERROR INSERTING NEW ACTIVITY INSTANCE INTO DATABASE");
@@ -440,7 +461,7 @@ public class MongoDBDAO implements DAO {
         }catch (NullPointerException ne){
             System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCE WITH ID " + activityInstanceId);
             ne.printStackTrace();
-            return null;
+            return NullObjects.getNullActivityInstance();
         }catch (Exception e){
             System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
             e.printStackTrace();

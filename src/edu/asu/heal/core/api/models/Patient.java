@@ -25,7 +25,7 @@ public class Patient {
     private String state;
     private Date createdAt;
     private Date updatedAt;
-    private ArrayList<String> activityInstances = new ArrayList<String>();
+    private ArrayList<String> activityInstances = new ArrayList<>();
 
     public Patient(){
         // blank constructor
@@ -129,4 +129,32 @@ public class Patient {
                 ", activityInstances=" + activityInstances +
                 '}';
     }
+
+    @Override
+    public int hashCode() {
+        int PRIME = 31;
+        int result = 3;
+        result = PRIME * result + (this.patientId == null ? 0 :this.patientId.hashCode());
+        result = PRIME * result + (this.createdAt == null ? 0: this.createdAt.hashCode());
+        result = PRIME * result + (this.startDate == null ? 0 : this.startDate.hashCode());
+        result = PRIME * result + this.pin;
+
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if (obj == null) return false;
+        if(!(obj instanceof Patient)) return false;
+
+        Patient temp = (Patient) obj;
+        return this.patientId.equals(temp.patientId)
+                && this.createdAt.equals(temp.createdAt)
+                && this.pin == temp.pin
+                && this.startDate.equals(temp.startDate);
+
+    }
+
+
 }

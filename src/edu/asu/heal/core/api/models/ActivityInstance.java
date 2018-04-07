@@ -29,41 +29,26 @@ public class ActivityInstance {
     private Date actualSubmissionTime;
     private ActivityInstanceType instanceOf;
     private String state;
-
-    private static ActivityInstance NULL_ACTIVITY_INSTANCE;
-
-    static {
-        ActivityInstance instance = new ActivityInstance();
-        instance.setActivityInstanceId("NULL");
-        instance.setCreatedAt(new Date(0));
-        instance.setUpdatedAt(new Date(0));
-        instance.setStartTime(new Date(0));
-        instance.setEndTime(new Date(0));
-        instance.setUserSubmissionTime(new Date(0));
-        instance.setActualSubmissionTime(new Date(0));
-        instance.setInstanceOf(new ActivityInstanceType("NULL", "NULL"));
-        instance.setState("NULL");
-        instance.setDescription("NULL");
-
-        NULL_ACTIVITY_INSTANCE = instance;
-        instance = null;
-    }
-
+    private int patientPin;
 
     public ActivityInstance() {
     }
 
-    public ActivityInstance(ObjectId id, Date createdAt, Date updatedAt, Date startTime, Date endTime, Date userSubmissionTime, Date actualSubmissionTime, ActivityInstanceType instanceOf, String state, String description) {
+    public ActivityInstance(ObjectId id, String activityInstanceId, Date createdAt, Date updatedAt, String description,
+                            Date startTime, Date endTime, Date userSubmissionTime, Date actualSubmissionTime,
+                            ActivityInstanceType instanceOf, String state, int patientPin) {
         this.id = id;
+        this.activityInstanceId = activityInstanceId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.description = description;
         this.startTime = startTime;
         this.endTime = endTime;
         this.userSubmissionTime = userSubmissionTime;
         this.actualSubmissionTime = actualSubmissionTime;
         this.instanceOf = instanceOf;
         this.state = state;
-        this.description = description;
+        this.patientPin = patientPin;
     }
 
     public ObjectId getId() {
@@ -150,16 +135,16 @@ public class ActivityInstance {
         return activityInstanceId;
     }
 
-    public static ActivityInstance getNullActivityInstance() {
-        return NULL_ACTIVITY_INSTANCE;
-    }
-
-    public static void setNullActivityInstance(ActivityInstance nullActivityInstance) {
-        NULL_ACTIVITY_INSTANCE = nullActivityInstance;
-    }
-
     public void setActivityInstanceId(String activityInstanceId) {
         this.activityInstanceId = activityInstanceId;
+    }
+
+    public int getPatientPin() {
+        return patientPin;
+    }
+
+    public void setPatientPin(int patientPin) {
+        this.patientPin = patientPin;
     }
 
     @Override
@@ -176,6 +161,7 @@ public class ActivityInstance {
                 ", instanceOf=" + instanceOf +
                 ", state='" + state + '\'' +
                 ", description='" + description + '\'' +
+                ", patientPin='" + patientPin + '\'' +
                 '}';
     }
 
@@ -193,6 +179,7 @@ public class ActivityInstance {
         result = PRIME * result + (this.actualSubmissionTime == null ? 0 :this.actualSubmissionTime.hashCode());
         result = PRIME * result + (this.instanceOf == null ? 0 :this.instanceOf.hashCode());
         result = PRIME * result + (this.state == null ? 0 :this.state.hashCode());
+        result = PRIME * result + this.patientPin;
 
         return result;
     }
@@ -213,7 +200,8 @@ public class ActivityInstance {
                 && this.userSubmissionTime.equals(temp.userSubmissionTime)
                 && this.actualSubmissionTime.equals(temp.actualSubmissionTime)
                 && this.instanceOf.equals(temp.instanceOf)
-                && this.state.equals(temp.state);
+                && this.state.equals(temp.state)
+                && this.patientPin == temp.patientPin;
     }
 
 }

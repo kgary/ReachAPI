@@ -7,13 +7,6 @@ public class ActivityInstanceType {
     private String name;
     private String activityId;
 
-    private static ActivityInstanceType NULL_ACTIVITY_INSTANCE_TYPE;
-
-    static {
-        ActivityInstanceType a = new ActivityInstanceType("NULL", "NULL");
-        NULL_ACTIVITY_INSTANCE_TYPE = a;
-    }
-
     public ActivityInstanceType() {
     }
 
@@ -36,14 +29,6 @@ public class ActivityInstanceType {
 
     public void setActivityId(String activityId) {
         this.activityId = activityId;
-    }
-
-    public static ActivityInstanceType getNullActivityInstanceType() {
-        return NULL_ACTIVITY_INSTANCE_TYPE;
-    }
-
-    public static void setNullActivityInstanceType(ActivityInstanceType nullActivityInstanceType) {
-        NULL_ACTIVITY_INSTANCE_TYPE = nullActivityInstanceType;
     }
 
     @Override

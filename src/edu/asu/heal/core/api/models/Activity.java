@@ -13,20 +13,6 @@ public class Activity {
     public static String UPDATEDAT_ATTRIBUTE = "updatedAt";
     public static String ACTIVITYID_ATTRIBUTE = "activityId";
 
-    private static Activity NULL_ACTIVITY;
-
-    static {
-        Activity a = new Activity();
-        a.setTitle("NULL");
-        a.setDescription("NULL");
-        a.setActivityId("NULL");
-        a.setCreatedAt(new Date(0));
-        a.setUpdatedAt(new Date(0));
-
-        NULL_ACTIVITY = a;
-        a = null;
-    }
-
     private ObjectId id;
     private String activityId;
     private String title;
@@ -95,14 +81,6 @@ public class Activity {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public static Activity getNullActivity() {
-        return NULL_ACTIVITY;
-    }
-
-    public static void setNullActivity(Activity nullActivity) {
-        NULL_ACTIVITY = nullActivity;
     }
 
     @Override

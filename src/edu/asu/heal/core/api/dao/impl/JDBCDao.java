@@ -52,7 +52,7 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
-    public int createPatient(String patientDetails) {
+    public Patient createPatient() {
         return -1;
     }
 
@@ -514,7 +514,7 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
-    public boolean deleteActivityInstance(String activityInstanceId) {
+    public ActivityInstance deleteActivityInstance(String activityInstanceId) {
         return false;
     }
 

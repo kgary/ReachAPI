@@ -26,14 +26,14 @@ public interface HealService {
 
     String updateActivityInstance(String requestBody);
 
-    boolean deleteActivityInstance(String activityInstanceId);
+    ActivityInstance deleteActivityInstance(String activityInstanceId);
 
     // methods pertaining to patient resource
     List<Patient> getPatients(String trialId);
 
     Patient getPatient(int patientPin);
 
-    int createPatient(String requestBody);
+    Patient createPatient();
 
     String updatePatient(String requestBody);
 

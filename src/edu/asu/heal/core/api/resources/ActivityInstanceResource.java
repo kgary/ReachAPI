@@ -2,6 +2,7 @@ package edu.asu.heal.core.api.resources;
 
 import edu.asu.heal.core.api.models.ActivityInstance;
 import edu.asu.heal.core.api.models.HEALResponse;
+import edu.asu.heal.core.api.models.NullObjects;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
@@ -77,7 +78,7 @@ public class ActivityInstanceResource {
                         .setData("THERE ARE NO ACTIVITIES INSTANCES FOR THIS PATIENT")
                         .build();
             }else if(instances.size() == 1){
-                if(instances.get(0).equals(ActivityInstance.getNullActivityInstance())){
+                if(instances.get(0).equals(NullObjects.getNullActivityInstance())){
                     response = builder
                             .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                             .setData("THE PATIENT PIN YOU'VE PASSED IN IS INCORRECT OR DOES NOT EXIST")
@@ -118,13 +119,22 @@ public class ActivityInstanceResource {
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
         ActivityInstance instance = reachService.getActivityInstance(activityInstanceId);
 
-        response = builder
-                .setData(instance)
-                .setStatusCode(Response.Status.OK.getStatusCode())
-//                .setMessage("SUCCESS")
-//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
-                .build();
-
+        if(instance == null){
+            response = builder
+                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
+                    .build();
+        }else if(instance.equals(NullObjects.getNullActivityInstance())){
+            response = builder
+                    .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
+                    .setData("THE ACTIVITY INSTANCE YOU'RE REQUESTING DOES NOT EXIST")
+                    .build();
+        }else{
+            response = builder
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setData(instance)
+                    .build();
+        }
         return Response.status(response.getStatusCode()).entity(response).build();
     }
 
@@ -146,13 +156,11 @@ public class ActivityInstanceResource {
      *      "updatedAt": "2018-02-26T07:00:00.000Z",
      *      "startTime": "2018-02-26T07:00:00.000Z",
      *      "endTime": "2018-02-27T07:00:00.000Z",
-     *      "userSubmissionTime": "2000-01-01T07:00:00.000Z",
-     *      "actualSubmissionTime": "2000-01-01T07:00:00.000Z",
      *      "instanceOf": {
      *      "name": "Relaxation"
      *      "activityId": 5a9499e066684905df626003
      *          },
-     *      "state": "New",
+     *      "state": "created",
      *      "description": "Relaxation instance"
      * }
      * @apiUse BadRequestError
@@ -162,33 +170,37 @@ public class ActivityInstanceResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createActivityInstance(ActivityInstance activityInstanceJson) {
-        ActivityInstance instance = reachService.createActivityInstance(activityInstanceJson);
         HEALResponse response = null;
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
-        response = builder
-                .setData(instance)
-                .setStatusCode(Response.Status.CREATED.getStatusCode())
-//                .setMessage("SUCCESS")
-//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
-                .build();
+        if(activityInstanceJson.getPatientPin() == 0 || activityInstanceJson.getInstanceOf() == null){
+            response = builder
+                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .setData("REQUEST MUST CONTAIN AT LEAST PATIENT PIN AND INSTANCE TYPE VALUE")
+                    .build();
 
-//        if (instance.getStatusCode() == Response.Status.CREATED.getStatusCode()) {
-//            return Response
-//                    .status(Response.Status.CREATED)
-//                    .header("Location",
-//                            String.format("%s/%s",_uri.getAbsolutePath().toString(),
-//                                    activityInstanceJson.getActivityInstanceId()))
-//                    .entity(instance)
-//                    .build();
-//        } else {
-//            // XXX can we improve our error handling? Why would the service return null? Can it tell us anything?
-//            // for example, what if the requestBody makes no sense? Shouldn't that be a 400?
-//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error").build();
-//        }
-        return Response.status(response.getStatusCode()).header("Location",
-                            String.format("%s/%s",_uri.getAbsolutePath().toString(),
-                                    instance.getActivityInstanceId())).entity(response).build();
+        }else{
+            ActivityInstance instance = reachService.createActivityInstance(activityInstanceJson);
+            if(instance == null){
+                response = builder
+                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                        .setData("SOME ERROR CREATING NEW ACTIVITY INSTANCE. CONTACT ADMINISTRATOR")
+                        .build();
+            }else if(instance.equals(NullObjects.getNullActivityInstance())){
+                response = builder
+                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                        .setData("INCORRECT PATIENT PIN IN THE REQUEST PAYLOAD")
+                        .build();
+            }else{
+                response = builder
+                        .setStatusCode(Response.Status.CREATED.getStatusCode())
+                        .setData(String.format("%s/%s",_uri.getAbsolutePath().toString(),
+                                instance.getActivityInstanceId()))
+                        .build();
+            }
+        }
+
+        return Response.status(response.getStatusCode()).entity(response).build();
     }
 
 //    /**
@@ -229,18 +241,27 @@ public class ActivityInstanceResource {
     @DELETE
     @Path("/{id}")
     public Response removeActivityInstance(@PathParam("id") String activityInstanceId) {
-        boolean removed = reachService.deleteActivityInstance(activityInstanceId);
-
         HEALResponse response = null;
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
-        response = builder
-                .setData(null)
-                .setStatusCode(Response.Status.NO_CONTENT.getStatusCode())
-//                .setMessage("SUCCESS")
-//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
-                .build();
+        ActivityInstance removed = reachService.deleteActivityInstance(activityInstanceId);
 
+        if(removed.equals(NullObjects.getNullActivityInstance())){
+            response = builder
+                    .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
+                    .setData("ACTIVITY INSTANCE DOES NOT EXIST")
+                    .build();
+        }else if(removed == null){
+            response = builder
+                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .setData("SOME PROBLEM IN DELETING ACTIVITY INSTANCE. CONTACT ADMINISTRATOR")
+                    .build();
+        }else{
+            response = builder
+                    .setStatusCode(Response.Status.NO_CONTENT.getStatusCode())
+                    .setData(null)
+                    .build();
+        }
         return Response.status(response.getStatusCode()).build();
 
     }

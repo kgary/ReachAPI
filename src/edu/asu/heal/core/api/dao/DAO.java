@@ -55,9 +55,9 @@ public interface DAO {
 
     Patient getPatient(int patientPin);
 
-    int createPatient(String patientDetails);
+    Patient createPatient();
 
-    boolean deleteActivityInstance(String activityInstanceId);
+    ActivityInstance deleteActivityInstance(String activityInstanceId);
 
     ActivityInstance createActivityInstance(ActivityInstance instance);
 

@@ -1,6 +1,7 @@
 package edu.asu.heal.core.api.resources;
 
 import edu.asu.heal.core.api.models.HEALResponse;
+import edu.asu.heal.core.api.models.NullObjects;
 import edu.asu.heal.core.api.models.Patient;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
@@ -80,17 +81,39 @@ public class PatientResource {
      */
     @GET
     public Response fetchPatients(@QueryParam("trialId") String trialId) {
-        List<Patient> patients = reachService.getPatients(trialId);
-
         HEALResponse response = null;
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
-        response = builder
-                .setData(patients)
-                .setStatusCode(Response.Status.OK.getStatusCode())
-//                .setMessage("SUCCESS")
-//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
-                .build();
+        List<Patient> patients = reachService.getPatients(trialId);
+
+        if (patients == null) {
+            response = builder
+                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
+                    .build();
+        } else if (patients.isEmpty()) {
+            response = builder
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setData("NO PATIENTS FOUND")
+                    .build();
+        } else if (patients.size() == 1) {
+            if (patients.get(0).equals(NullObjects.getNullPatient())) {
+                response = builder
+                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                        .setData("THE TRIAL ID YOU'VE PASSED IN IS INCORRECT OR DOES NOT EXIST")
+                        .build();
+            } else {
+                response = builder
+                        .setStatusCode(Response.Status.OK.getStatusCode())
+                        .setData(patients)
+                        .build();
+            }
+        } else {
+            response = builder
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setData(patients)
+                    .build();
+        }
 
         return Response.status(response.getStatusCode()).entity(response).build();
     }
@@ -105,23 +128,28 @@ public class PatientResource {
     @GET
     @Path("/{patientPin}")
     public Response fetchPatient(@PathParam("patientPin") int patientPin) {
-        Patient patient = reachService.getPatient(patientPin);
-//        if (patient == null)
-//            return Response
-//                    .status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-//                            "Some problem with the server. Please contact administrator.")
-//                    .build();
         HEALResponse response = null;
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
-        response = builder
-                .setData(patient)
-                .setStatusCode(Response.Status.OK.getStatusCode())
-//                .setMessage("SUCCESS")
-//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
-                .build();
+        Patient patient = reachService.getPatient(patientPin);
+        if(patient == null){
+            response = builder
+                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
+                    .build();
+        }else if(patient.equals(NullObjects.getNullPatient())){
+            response = builder
+                    .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
+                    .setData("THE PATIENT YOU'RE REQUESTING DOES NOT EXIST")
+                    .build();
+        }else{
+            response = builder
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setData(patient)
+                    .build();
+        }
 
-        return Response.status(response.getStatusCode()).entity(patient).build();
+        return Response.status(response.getStatusCode()).entity(response).build();
     }
 
     /**
@@ -135,26 +163,33 @@ public class PatientResource {
      * @apiUse NotImplementedError
      */
     @POST
-    public Response createPatient(String requestBody) {
-        int inserted = reachService.createPatient(requestBody);
-//        if (inserted != -1)
-//            return Response.status(Response.Status.CREATED).entity("{\"patient\": \"/patients/" + inserted + "\"}").build();
-//        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-
+    public Response createPatient() {
         HEALResponse response = null;
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
-        response = builder
-                .setData(String.format("%s/%s",_uri.getAbsolutePath().toString(),inserted))
-                .setStatusCode(Response.Status.CREATED.getStatusCode())
-//                .setMessage("SUCCESS")
-//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
-                .build();
+        Patient insertedPatient = reachService.createPatient();
 
-        return Response.status(response.getStatusCode()).header("Location",
-                String.format("%s/%s",_uri.getAbsolutePath().toString(),
-                        inserted)).entity(response).build();
+        if(insertedPatient == null){
+            response = builder
+                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .setData("SOME ERROR CREATING NEW ACTIVITY INSTANCE. CONTACT ADMINISTRATOR")
+                    .build();
+        }else if(insertedPatient.equals(NullObjects.getNullPatient())){
+            response = builder
+                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .setData("INCORRECT TRIAL ID IN THE REQUEST")
+                    .build();
+        }else{
+            response = builder
+                    .setStatusCode(Response.Status.CREATED.getStatusCode())
+                    .setData(String.format("%s/%s",_uri.getAbsolutePath().toString(),
+                            insertedPatient.getPin()))
+                    .build();
+        }
 
+        return Response.status(response.getStatusCode()).entity(response).build();
     }
+
+    // TODO: PUT PENDING
 
 }

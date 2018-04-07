@@ -2,6 +2,7 @@ package edu.asu.heal.core.api.resources;
 
 import edu.asu.heal.core.api.models.Activity;
 import edu.asu.heal.core.api.models.HEALResponse;
+import edu.asu.heal.core.api.models.NullObjects;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
@@ -59,7 +60,7 @@ public class ActivityResource {
                     .setData("THERE ARE NO ACTIVITIES FOR THIS DOMAIN")
                     .build();
         }else if(activities.size() == 1){
-            if(activities.get(0).equals(Activity.getNullActivity())){
+            if(activities.get(0).equals(NullObjects.getNullActivity())){
                 response = builder
                         .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                         .setData("THE DOMAIN YOU'VE PASSED IN IS INCORRECT OR DOES NOT EXIST")

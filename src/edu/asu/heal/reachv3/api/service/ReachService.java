@@ -2,7 +2,6 @@ package edu.asu.heal.reachv3.api.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.asu.heal.core.api.dao.DAO;
-import edu.asu.heal.core.api.dao.DAOException;
 import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.core.api.service.HealService;
@@ -95,36 +94,13 @@ public class ReachService implements HealService {
     public List<ActivityInstance> getActivityInstances(int patientPin, int trialId) {
         List<ActivityInstance> response = null;
         try {
-
-            // TODO -- scope in the possibility that when queryParams(patientPin, trialId) are not present, then
             DAO dao = DAOFactory.getTheDAO();
             List<ActivityInstance> instances = dao.getScheduledActivities(patientPin, trialId);
-//            if (instances == null) {
-//                response = new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-//                        "Some error connecting to the database", HEALResponse.ERROR_MESSAGE_TYPE, null);
-//                return response;
-//            }
-//
-//            if (instances instanceof NullPointerException) {
-//                response = new HEALResponse(Response.Status.BAD_REQUEST.getStatusCode(),
-//                        "Patient pin invalid or not does not exist",
-//                        HEALResponse.ERROR_MESSAGE_TYPE, null);
-//                return response;
-//            }
-//
-//            if (instances instanceof List) {
-//                response = new HEALResponse(Response.Status.OK.getStatusCode(),
-//                        "Success",
-//                        HEALResponse.SUCCESS_MESSAGE_TYPE,
-//                        (List) instances);
-//            }
 
             return instances;
         } catch (Exception e) {
             System.out.println("SOME ERROR IN GETACTIVITYINSTANCES() IN REACHSERVICE");
             e.printStackTrace();
-//            response = new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-//                    "Some error connecting to the database", HEALResponse.ERROR_MESSAGE_TYPE, null);
             return null;
         }
     }
@@ -135,30 +111,10 @@ public class ReachService implements HealService {
             DAO dao = DAOFactory.getTheDAO();
             ActivityInstance instance = dao.getActivityInstance(activityInstanceId);
 
-//            if(instance == null){
-//                return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-//                        "Some server error. Check logs",
-//                        HEALResponse.ERROR_MESSAGE_TYPE,
-//                        null);
-//            }else if(instance instanceof NullPointerException){
-//                return new HEALResponse(Response.Status.NOT_FOUND.getStatusCode(),
-//                        "Incorrect activity instance id or id does not exist",
-//                        HEALResponse.ERROR_MESSAGE_TYPE,
-//                        null);
-//            }else{
-//                return new HEALResponse(Response.Status.OK.getStatusCode(),
-//                        "Success",
-//                        HEALResponse.SUCCESS_MESSAGE_TYPE,
-//                        instance);
-//            }
             return instance;
         }catch (Exception e){
             System.out.println("SOME ERROR IN HEAL SERVICE getActivityInstance");
             e.printStackTrace();
-//            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-//                    "Some server error. Check logs",
-//                    HEALResponse.ERROR_MESSAGE_TYPE,
-//                    null);
             return null;
         }
     }
@@ -201,29 +157,18 @@ public class ReachService implements HealService {
         return null;
     }*/
 
-
     @Override
     public ActivityInstance createActivityInstance(ActivityInstance activityInstance) {
         try{
             DAO dao = DAOFactory.getTheDAO();
-            activityInstance = dao.createActivityInstance(activityInstance);
-//            if((activityInstance = dao.createActivityInstance(activityInstance)) != null){
-//                return new HEALResponse(Response.Status.CREATED.getStatusCode(),
-//                        "Successfully created activity instance " + activityInstance.getActivityInstanceId(),
-//                        HEALResponse.SUCCESS_MESSAGE_TYPE,
-//                        null);
-//            }
-//
-//            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-//                    "Some problem creating activity instance",
-//                    HEALResponse.ERROR_MESSAGE_TYPE,
-//                    null);
-            return activityInstance;
+            if(activityInstance.getCreatedAt() == null) activityInstance.setCreatedAt(new Date());
+            if(activityInstance.getState() == null) activityInstance.setState(ActivityInstanceStatus.CREATED.status());
+            if(activityInstance.getUpdatedAt() == null) activityInstance.setUpdatedAt(new Date());
+            ActivityInstance newActivityInstance = dao.createActivityInstance(activityInstance);
+            return newActivityInstance;
         }catch (Exception e){
-//            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-//                    "Some problem creating activity instance",
-//                    HEALResponse.ERROR_MESSAGE_TYPE,
-//                    null);
+            System.out.println("SOME ERROR CREATING NE ACTIVITY INSTANCE IN REACH SERVICE - CREATEACTIVITYINSTANCE");
+            e.printStackTrace();
             return null;
 
         }
@@ -264,27 +209,14 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public boolean deleteActivityInstance(String activityInstanceId) {
+    public ActivityInstance deleteActivityInstance(String activityInstanceId) {
         try{
             DAO dao = DAOFactory.getTheDAO();
-//            if(dao.deleteActivityInstance(activityInstanceId)){
-//                return new HEALResponse(Response.Status.NO_CONTENT.getStatusCode(),
-//                        "Successfully deleted activity instance " + activityInstanceId,
-//                        HEALResponse.SUCCESS_MESSAGE_TYPE,
-//                        null);
-//            }
-//
-//            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-//                    "Some problem in deleting activity instance " + activityInstanceId,
-//                    HEALResponse.ERROR_MESSAGE_TYPE,
-//                    null);
             return dao.deleteActivityInstance(activityInstanceId);
         }catch (Exception e){
-//            return new HEALResponse(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-//                    "Some problem in deleting activity instance " + activityInstanceId,
-//                    HEALResponse.ERROR_MESSAGE_TYPE,
-//                    null);
-            return false;
+            System.out.println("SOME PROBLEM IN REACH SERVICE DELETE ACTIVITY INSTANCE");
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -293,8 +225,6 @@ public class ReachService implements HealService {
     // patient resource method
     @Override
     public List<Patient> getPatients(String trialId) {
-
-        System.out.println("trialId: " + trialId);
         try {
             DAO dao = DAOFactory.getTheDAO();
             List<Patient> result;
@@ -307,22 +237,10 @@ public class ReachService implements HealService {
                 result = dao.getPatients(trialId);
             }
 
-//            if (result.isEmpty()) {
-//                return HEALResponse.getErrorMessage(Response.Status.NOT_FOUND.getStatusCode(),
-//                        "No Patients Found!!!", null);
-//            }
-
-//            return HEALResponse.getSuccessMessage(Response.Status.OK.getStatusCode(), "Success", result);
             return result;
-        } catch (DAOException e) {
-
-//            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-//                    e.getMessage(), null);
-            return null;
         } catch (Exception e) {
-
-//            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-//                    "UnHandled Exception: " + e.getMessage(), null);
+            System.out.println("SOME PROBLEM WITH REACH SERVICE - GET PATIENTS");
+            e.printStackTrace();
             return null;
         }
     }
@@ -339,13 +257,13 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public int createPatient(String requestBody) {
+    public Patient createPatient() {
         try {
             DAO dao = DAOFactory.getTheDAO();
-            return dao.createPatient(requestBody);
+            return dao.createPatient();
         } catch (Exception e) {
             e.printStackTrace();
-            return -1;
+            return null;
         }
     }
 
@@ -444,20 +362,10 @@ public class ReachService implements HealService {
             DAO dao = DAOFactory.getTheDAO();
             List<Activity> result = dao.getActivities(domain);
 
-//            if (result.isEmpty()) {
-//                return HEALResponse.getErrorMessage(Response.Status.NOT_FOUND.getStatusCode(),
-//                        "No Activities for domain were found!", null);
-//            }
-//
-//            return HEALResponse.getSuccessMessage(Response.Status.OK.getStatusCode(), "Found Activities!",
-//                    result);
             return result;
         } catch (Exception e) {
             System.out.println("SOME ERROR IN GETACTIVITIES() IN REACHSERVICE CLASS");
             e.printStackTrace();
-
-//            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-//                    "UnHandled Exception: " + e.getMessage(), null);
             return null;
         }
     }
@@ -473,17 +381,10 @@ public class ReachService implements HealService {
             newActivity.setCreatedAt(new Date());
             Activity createdActivity = dao.createActivity(newActivity);
 
-//            if (createStatus) {
-//                return HEALResponse.getSuccessMessage(Response.Status.CREATED.getStatusCode(), "Created", null);
-//            }
-//
-//            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-//                    "Could not create activity", null);
             return createdActivity;
         } catch (Exception e) {
+            System.out.println("SOME PROBLEM IN REACH SERVICE - CREATEACTIVITY");
             e.printStackTrace();
-//            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-//                    "Unhandled Exception: " + e.getMessage(), null);
             return null;
         }
     }
