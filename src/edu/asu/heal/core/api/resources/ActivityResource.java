@@ -6,13 +6,18 @@ import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
 @Path("/activities")
 @Produces(MediaType.APPLICATION_JSON)
 public class ActivityResource {
+
+    @Context
+    private UriInfo _uri;
 
     private static HealService reachService =
             HealServiceFactory.getTheService();
@@ -43,14 +48,34 @@ public class ActivityResource {
         HEALResponse response = null;
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
-        response = builder
-                .setData(activities)
-                .setStatusCode(Response.Status.OK.getStatusCode())
-//                .setMessage("SUCCESS")
-//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
-                .build();
-
-
+        if(activities == null){
+            response = builder
+                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
+                    .build();
+        }else if(activities.isEmpty()){
+            response = builder
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setData("THERE ARE NO ACTIVITIES FOR THIS DOMAIN")
+                    .build();
+        }else if(activities.size() == 1){
+            if(activities.get(0).equals(Activity.getNullActivity())){
+                response = builder
+                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                        .setData("THE DOMAIN YOU'VE PASSED IN IS INCORRECT OR DOES NOT EXIST")
+                        .build();
+            }else{
+                response = builder
+                        .setStatusCode(Response.Status.OK.getStatusCode())
+                        .setData(activities)
+                        .build();
+            }
+        }else{
+            response = builder
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setData(activities)
+                    .build();
+        }
         return Response.status(response.getStatusCode()).entity(response).build();
     }
 
@@ -78,19 +103,29 @@ public class ActivityResource {
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response createActivity(@FormParam("title") String title, @FormParam("description") String description) {
-        boolean activity = reachService.createActivity(title, description);
-
         HEALResponse response = null;
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
-        response = builder
-                .setData(activity)
-                .setStatusCode(Response.Status.CREATED.getStatusCode())
-//                .setMessage("SUCCESS")
-//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
-                .build();
-
-
+        if(title == null || title.trim().length() == 0){
+            response = builder
+                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .setData("TITLE MISSING FROM REQUEST")
+                    .build();
+        }else {
+            Activity activity = reachService.createActivity(title, description);
+            if(activity == null){
+                response = builder
+                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                        .setData("COULD NOT CREATE ACTIVITY. CONTACT ADMINISTRATOR")
+                        .build();
+            }else{
+                response = builder
+                        .setStatusCode(Response.Status.CREATED.getStatusCode())
+                        .setData(String.format("%s/%s",_uri.getAbsolutePath().toString(),
+                                activity.getActivityId()))
+                        .build();
+            }
+        }
         return Response.status(response.getStatusCode()).entity(response).build();
     }
 }

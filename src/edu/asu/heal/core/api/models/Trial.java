@@ -130,4 +130,19 @@ public class Trial {
     public void setTrialId(String trialId) {
         this.trialId = trialId;
     }
+
+    @Override
+    public String toString() {
+        return "Trial{" +
+                "id=" + id +
+                ", domainId=" + domainId +
+                ", trialId='" + trialId + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", targetCount=" + targetCount +
+                ", patients=" + patients +
+                '}';
+    }
 }

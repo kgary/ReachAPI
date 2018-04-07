@@ -13,6 +13,20 @@ public class Activity {
     public static String UPDATEDAT_ATTRIBUTE = "updatedAt";
     public static String ACTIVITYID_ATTRIBUTE = "activityId";
 
+    private static Activity NULL_ACTIVITY;
+
+    static {
+        Activity a = new Activity();
+        a.setTitle("NULL");
+        a.setDescription("NULL");
+        a.setActivityId("NULL");
+        a.setCreatedAt(new Date(0));
+        a.setUpdatedAt(new Date(0));
+
+        NULL_ACTIVITY = a;
+        a = null;
+    }
+
     private ObjectId id;
     private String activityId;
     private String title;
@@ -24,15 +38,13 @@ public class Activity {
         // blank constructor
     }
 
-    public Activity(String title, String description){
-        this.title = title;
-        this.description = description;
-    }
-
-    public Activity(ObjectId id, String title, String description){
+    public Activity(ObjectId id, String activityId, String title, String description, Date createdAt, Date updatedAt) {
         this.id = id;
+        this.activityId = activityId;
         this.title = title;
         this.description = description;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     // getters and setters
@@ -83,6 +95,41 @@ public class Activity {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public static Activity getNullActivity() {
+        return NULL_ACTIVITY;
+    }
+
+    public static void setNullActivity(Activity nullActivity) {
+        NULL_ACTIVITY = nullActivity;
+    }
+
+    @Override
+    public int hashCode() {
+        int PRIME = 31;
+        int result = 3;
+        result = PRIME * result + (this.activityId == null ? 0 :this.activityId.hashCode());
+        result = PRIME * result + (this.title == null ? 0 :this.title.hashCode());
+        result = PRIME * result + (this.createdAt == null ? 0: this.createdAt.hashCode());
+        result = PRIME * result + (this.updatedAt == null ? 0 : this.updatedAt.hashCode());
+        result = PRIME * result + (this.description == null ? 0 : this.description.hashCode());
+
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if (obj == null) return false;
+        if(!(obj instanceof Activity)) return false;
+
+        Activity temp = (Activity) obj;
+        return this.activityId.equals(temp.activityId)
+                && this.title.equals(temp.title)
+                && this.createdAt.equals(temp.createdAt)
+                && this.updatedAt.equals(temp.updatedAt)
+                && this.description.equals(temp.description);
     }
 
     @Override

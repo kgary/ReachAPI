@@ -63,19 +63,38 @@ public class ActivityInstanceResource {
             response = builder
                     .setData("YOUR PATIENT PIN IS ABSENT FROM THE REQUEST")
                     .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-//                    .setMessage("YOUR PATIENT PIN ABSENT FROM THE REQUEST")
-//                    .setMessageType(HEALResponse.ERROR_MESSAGE_TYPE)
                     .build();
         } else {
             List<ActivityInstance> instances = reachService.getActivityInstances(patientPin, trialId);
-            response = builder
-                    .setData(instances)
-                    .setStatusCode(Response.Status.OK.getStatusCode())
-//                    .setMessage("SUCCESS")
-//                    .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
-                    .build();
+            if(instances == null){
+                response = builder
+                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                        .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
+                        .build();
+            }else if(instances.isEmpty()){
+                response = builder
+                        .setStatusCode(Response.Status.OK.getStatusCode())
+                        .setData("THERE ARE NO ACTIVITIES INSTANCES FOR THIS PATIENT")
+                        .build();
+            }else if(instances.size() == 1){
+                if(instances.get(0).equals(ActivityInstance.getNullActivityInstance())){
+                    response = builder
+                            .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                            .setData("THE PATIENT PIN YOU'VE PASSED IN IS INCORRECT OR DOES NOT EXIST")
+                            .build();
+                }else{
+                    response = builder
+                            .setStatusCode(Response.Status.OK.getStatusCode())
+                            .setData(instances)
+                            .build();
+                }
+            }else{
+                response = builder
+                        .setStatusCode(Response.Status.OK.getStatusCode())
+                        .setData(instances)
+                        .build();
+            }
         }
-
         return Response.status(response.getStatusCode())
                 .entity(response)
                 .build();

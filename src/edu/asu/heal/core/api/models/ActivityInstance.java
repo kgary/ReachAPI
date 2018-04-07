@@ -1,6 +1,5 @@
 package edu.asu.heal.core.api.models;
 
-import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.Date;
@@ -23,13 +22,33 @@ public class ActivityInstance {
     private String activityInstanceId;
     private Date createdAt;
     private Date updatedAt;
+    private String description;
     private Date startTime;
     private Date endTime;
     private Date userSubmissionTime;
     private Date actualSubmissionTime;
     private ActivityInstanceType instanceOf;
     private String state;
-    private String description;
+
+    private static ActivityInstance NULL_ACTIVITY_INSTANCE;
+
+    static {
+        ActivityInstance instance = new ActivityInstance();
+        instance.setActivityInstanceId("NULL");
+        instance.setCreatedAt(new Date(0));
+        instance.setUpdatedAt(new Date(0));
+        instance.setStartTime(new Date(0));
+        instance.setEndTime(new Date(0));
+        instance.setUserSubmissionTime(new Date(0));
+        instance.setActualSubmissionTime(new Date(0));
+        instance.setInstanceOf(new ActivityInstanceType("NULL", "NULL"));
+        instance.setState("NULL");
+        instance.setDescription("NULL");
+
+        NULL_ACTIVITY_INSTANCE = instance;
+        instance = null;
+    }
+
 
     public ActivityInstance() {
     }
@@ -131,6 +150,14 @@ public class ActivityInstance {
         return activityInstanceId;
     }
 
+    public static ActivityInstance getNullActivityInstance() {
+        return NULL_ACTIVITY_INSTANCE;
+    }
+
+    public static void setNullActivityInstance(ActivityInstance nullActivityInstance) {
+        NULL_ACTIVITY_INSTANCE = nullActivityInstance;
+    }
+
     public void setActivityInstanceId(String activityInstanceId) {
         this.activityInstanceId = activityInstanceId;
     }
@@ -151,4 +178,42 @@ public class ActivityInstance {
                 ", description='" + description + '\'' +
                 '}';
     }
+
+    @Override
+    public int hashCode() {
+        int PRIME = 31;
+        int result = 3;
+        result = PRIME * result + (this.activityInstanceId == null ? 0 :this.activityInstanceId.hashCode());
+        result = PRIME * result + (this.createdAt == null ? 0: this.createdAt.hashCode());
+        result = PRIME * result + (this.updatedAt == null ? 0 : this.updatedAt.hashCode());
+        result = PRIME * result + (this.description == null ? 0 : this.description.hashCode());
+        result = PRIME * result + (this.startTime == null ? 0 :this.startTime.hashCode());
+        result = PRIME * result + (this.endTime == null ? 0 :this.endTime.hashCode());
+        result = PRIME * result + (this.userSubmissionTime == null ? 0 :this.userSubmissionTime.hashCode());
+        result = PRIME * result + (this.actualSubmissionTime == null ? 0 :this.actualSubmissionTime.hashCode());
+        result = PRIME * result + (this.instanceOf == null ? 0 :this.instanceOf.hashCode());
+        result = PRIME * result + (this.state == null ? 0 :this.state.hashCode());
+
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if (obj == null) return false;
+        if(!(obj instanceof ActivityInstance)) return false;
+
+        ActivityInstance temp = (ActivityInstance) obj;
+        return this.activityInstanceId.equals(temp.activityInstanceId)
+                && this.createdAt.equals(temp.createdAt)
+                && this.updatedAt.equals(temp.updatedAt)
+                && this.description.equals(temp.description)
+                && this.startTime.equals(temp.startTime)
+                && this.endTime.equals(temp.endTime)
+                && this.userSubmissionTime.equals(temp.userSubmissionTime)
+                && this.actualSubmissionTime.equals(temp.actualSubmissionTime)
+                && this.instanceOf.equals(temp.instanceOf)
+                && this.state.equals(temp.state);
+    }
+
 }

@@ -115,4 +115,18 @@ public class Patient {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    @Override
+    public String toString() {
+        return "Patient{" +
+                "id=" + id +
+                ", pin=" + pin +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", state='" + state + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", activityInstances=" + activityInstances +
+                '}';
+    }
 }

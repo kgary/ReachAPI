@@ -99,21 +99,22 @@ public class MongoDBDAO implements DAO {
             MongoCollection<Patient> patientCollection = database.getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class);
 
             Patient patient = patientCollection.find(Filters.eq(Patient.PIN_ATTRIBUTE, patientPin)).first();
+            if(patient == null){
+                List<ActivityInstance> result = new ArrayList<>();
+                result.add(ActivityInstance.getNullActivityInstance());
+                return result;
+            }
 
             MongoCollection<ActivityInstance> activityInstanceCollection =
                     database.getCollection(MongoDBDAO.ACTIVITYINSTANCES_COLLECTION, ActivityInstance.class);
 
             return activityInstanceCollection
-                    .find(Filters.in(ActivityInstance.ID_ATTRIBUTE,
-                            patient.getActivityInstances().toArray(new ObjectId[]{})))
+                    .find(Filters.in(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE,
+                            patient.getActivityInstances().toArray(new String[]{})))
                     .projection(Projections.excludeId())
                     .into(new ArrayList<>());
-        } catch (NullPointerException ne) {
-            System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCES FOR PATIENT PIN " + patientPin);
-            ne.printStackTrace();
-            // TODO Implement Null Object pattern here
-            return null;
         } catch (Exception e) {
+            System.out.println("SOME ERROR IN GETSCHEDULEDACTIVITIES IN MONGODBDAO");
             e.printStackTrace();
             return null;
         }
@@ -182,32 +183,53 @@ public class MongoDBDAO implements DAO {
             MongoCollection<Domain> domainCollection = database.getCollection(DOMAINS_COLLECTION, Domain.class);
 
             Domain domain1 = domainCollection.find(Filters.eq(Domain.TITLE_ATTRIBUTE, domain)).first();
-            MongoCollection<Activity> activityCollection = database.getCollection(ACTIVITIES_COLLECTION, Activity.class);
+            if(domain1 == null){
+                List<Activity> result = new ArrayList<>();
+                Activity a = new Activity();
+                a.setId(null);
+                a.setActivityId("NULL");
+                a.setTitle("NULL");
+                a.setDescription("NULL");
+                a.setCreatedAt(new Date(0));
+                a.setUpdatedAt(new Date(0));
+                result.add(a);
+                return result;
+            }
 
+            MongoCollection<Activity> activityCollection = database.getCollection(ACTIVITIES_COLLECTION, Activity.class);
             return activityCollection
-                    .find(Filters.in(Activity.ID_ATTRIBUTE, domain1.getActivities().toArray(new ObjectId[]{})))
+                    .find(Filters.in(Activity.ACTIVITYID_ATTRIBUTE, domain1.getActivities().toArray(new String[]{})))
                     .projection(Projections.excludeId())
                     .into(new ArrayList<>());
 
+        } catch(NullPointerException ne){
+            ne.printStackTrace();
+            return new ArrayList<>();
         } catch (Exception e) {
+            System.out.println("SOME ERROR HERE **");
             e.printStackTrace();
             return null;
         }
     }
 
     @Override
-    public boolean createActivity(Activity activity) throws DAOException {
+    public Activity createActivity(Activity activity) throws DAOException {
         try {
+            ObjectId newId = ObjectId.get();
+            activity.setId(newId);
+            activity.setActivityId(newId.toHexString());
+
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Activity> activitiesCollection = database.getCollection(MongoDBDAO.ACTIVITIES_COLLECTION,
                     Activity.class);
 
+            System.out.println(activity);
             activitiesCollection.insertOne(activity);
 
-            return true;
+            return activity;
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 

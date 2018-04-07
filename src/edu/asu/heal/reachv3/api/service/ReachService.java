@@ -463,10 +463,15 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public boolean createActivity(String title, String description) {
+    public Activity createActivity(String title, String description) {
         try {
             DAO dao = DAOFactory.getTheDAO();
-            boolean createStatus = dao.createActivity(new Activity(title, description));
+            Activity newActivity = new Activity();
+            newActivity.setTitle(title);
+            newActivity.setDescription(description);
+            newActivity.setUpdatedAt(new Date());
+            newActivity.setCreatedAt(new Date());
+            Activity createdActivity = dao.createActivity(newActivity);
 
 //            if (createStatus) {
 //                return HEALResponse.getSuccessMessage(Response.Status.CREATED.getStatusCode(), "Created", null);
@@ -474,12 +479,12 @@ public class ReachService implements HealService {
 //
 //            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
 //                    "Could not create activity", null);
-            return createStatus;
+            return createdActivity;
         } catch (Exception e) {
             e.printStackTrace();
 //            return HEALResponse.getErrorMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
 //                    "Unhandled Exception: " + e.getMessage(), null);
-            return false;
+            return null;
         }
     }
 

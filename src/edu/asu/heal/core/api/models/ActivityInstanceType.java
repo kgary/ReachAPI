@@ -7,6 +7,13 @@ public class ActivityInstanceType {
     private String name;
     private String activityId;
 
+    private static ActivityInstanceType NULL_ACTIVITY_INSTANCE_TYPE;
+
+    static {
+        ActivityInstanceType a = new ActivityInstanceType("NULL", "NULL");
+        NULL_ACTIVITY_INSTANCE_TYPE = a;
+    }
+
     public ActivityInstanceType() {
     }
 
@@ -29,6 +36,35 @@ public class ActivityInstanceType {
 
     public void setActivityId(String activityId) {
         this.activityId = activityId;
+    }
+
+    public static ActivityInstanceType getNullActivityInstanceType() {
+        return NULL_ACTIVITY_INSTANCE_TYPE;
+    }
+
+    public static void setNullActivityInstanceType(ActivityInstanceType nullActivityInstanceType) {
+        NULL_ACTIVITY_INSTANCE_TYPE = nullActivityInstanceType;
+    }
+
+    @Override
+    public int hashCode() {
+        int PRIME = 31;
+        int result = 3;
+        result = PRIME * result + (this.activityId == null ? 0 :this.activityId.hashCode());
+        result = PRIME * result + (this.name == null ? 0 :this.name.hashCode());
+
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if (obj == null) return false;
+        if(!(obj instanceof ActivityInstanceType)) return false;
+
+        ActivityInstanceType temp = (ActivityInstanceType) obj;
+        return this.activityId.equals(temp.activityId)
+                && this.name.equals(temp.name);
     }
 
     @Override

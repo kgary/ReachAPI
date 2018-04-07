@@ -50,7 +50,7 @@ public interface HealService {
     // methods pertaining to Activity Resource
     List<Activity> getActivities(String domain);
 
-    boolean createActivity(String title, String description);
+    Activity createActivity(String title, String description);
 
     // methods pertaining to Trial Resource
     List<Trial> getTrials(String domain);
