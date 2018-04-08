@@ -3,6 +3,7 @@ package edu.asu.heal.core.api.models;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Domain {
 
@@ -19,6 +20,8 @@ public class Domain {
     private String title;
     private String description;
     private String state;
+    private Date createdAt;
+    private Date updatedAt;
     private ArrayList<String> activities;
     private ArrayList<String> trials;
 
@@ -90,6 +93,22 @@ public class Domain {
         this.domainId = domainId;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public String toString() {
         return "Domain{" +
@@ -102,4 +121,29 @@ public class Domain {
                 ", trials=" + trials +
                 '}';
     }
+
+    @Override
+    public int hashCode() {
+        int PRIME = 31;
+        int result = 3;
+        result = PRIME * result + (this.domainId == null ? 0 :this.domainId.hashCode());
+        result = PRIME * result + (this.createdAt == null ? 0: this.createdAt.hashCode());
+        result = PRIME * result + (this.title == null ? 0 : this.title.hashCode());
+
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if (obj == null) return false;
+        if(!(obj instanceof Domain)) return false;
+
+        Domain temp = (Domain) obj;
+        return this.domainId.equals(temp.domainId)
+                && this.title.equals(temp.title)
+                && this.createdAt.equals(temp.createdAt);
+
+    }
+
 }

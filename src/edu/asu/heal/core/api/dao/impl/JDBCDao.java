@@ -42,18 +42,23 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
-    public Object getDomains() {
+    public List<Domain> getDomains() {
         return null;
     }
 
     @Override
-    public boolean createDomain(Domain instance) {
+    public Domain createDomain(Domain instance) {
         return false;
     }
 
     @Override
     public Patient createPatient() {
-        return -1;
+        return null;
+    }
+
+    @Override
+    public Patient updatePatient(Patient patient) {
+        return null;
     }
 
     @Override
@@ -494,8 +499,8 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
-    public boolean createTrial(Trial trialInstance) throws DAOException {
-        return false;
+    public Trial createTrial(Trial trialInstance) throws DAOException {
+        return null;
     }
 
     @Override
@@ -515,7 +520,7 @@ public abstract class JDBCDao implements DAO {
 
     @Override
     public ActivityInstance deleteActivityInstance(String activityInstanceId) {
-        return false;
+        return null;
     }
 
     @Override

@@ -7,11 +7,11 @@ import java.util.List;
 public interface DAO {
 
     // methods pertaining to Domain Model
-    Object getDomains();
+    List<Domain> getDomains();
 
     Domain getDomain(String id);
 
-    boolean createDomain(Domain instance);
+    Domain createDomain(Domain instance);
 
     List<ActivityInstance> getScheduledActivities(int patientPin, int currentDay) throws DAOException;
 
@@ -47,7 +47,7 @@ public interface DAO {
 
     List<Trial> getTrials(String domain) throws DAOException;
 
-    boolean createTrial(Trial trialInstance) throws DAOException;
+    Trial createTrial(Trial trialInstance) throws DAOException;
 
     List<Patient> getPatients() throws DAOException;
 
@@ -56,6 +56,8 @@ public interface DAO {
     Patient getPatient(int patientPin);
 
     Patient createPatient();
+
+    Patient updatePatient(Patient patient);
 
     ActivityInstance deleteActivityInstance(String activityInstanceId);
 

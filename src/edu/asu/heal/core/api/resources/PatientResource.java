@@ -8,6 +8,7 @@ import edu.asu.heal.core.api.service.HealServiceFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
@@ -158,7 +159,6 @@ public class PatientResource {
      * @apiGroup Patient
      * @apiParam {String} Trial ID of the trial to which the patient needs to be added
      * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
      */
@@ -172,7 +172,7 @@ public class PatientResource {
         if(insertedPatient == null){
             response = builder
                     .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-                    .setData("SOME ERROR CREATING NEW ACTIVITY INSTANCE. CONTACT ADMINISTRATOR")
+                    .setData("SOME ERROR CREATING NEW PATIENT. CONTACT ADMINISTRATOR")
                     .build();
         }else if(insertedPatient.equals(NullObjects.getNullPatient())){
             response = builder
@@ -190,6 +190,60 @@ public class PatientResource {
         return Response.status(response.getStatusCode()).entity(response).build();
     }
 
-    // TODO: PUT PENDING
+    /**
+     * @api {put} /patients Update Patient
+     * @apiName updatePatients
+     * @apiGroup Patient
+     * @apiParam {json} Patient JSON structure
+     * @apiParamExample {json} Request-payload :
+     * {
+     *     "pin": 4010,
+     *     "startDate": "2018-01-01 13:00:00",
+     *     "endDate": "2018-03-01 13:00:00",
+     *     "state": "completed"
+     * }
+     * @apiSuccess {int} requestCode Status code indicating NO_CONTENT
+     * @apiSuccessExample {int} Success- Example : 204
+     * @apiUse BadRequestError
+     * @apiUse InternalServerError
+     * @apiUse NotImplementedError
+     */
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updatePatients(Patient patient) {
+        HEALResponse response = null;
+        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+
+        if(patient.getPin() == 0){
+            response = builder
+                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .setData("YOU NEED TO PASS IN PATIENT PIN IN REQUEST PAYLOAD")
+                    .build();
+        }else {
+
+            Patient updatedPatient = reachService.updatePatient(patient);
+
+            if (updatedPatient == null) {
+                response = builder
+                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                        .setData("SOME ERROR UPDATING THE PATIENT. CONTACT ADMINISTRATOR")
+                        .build();
+            } else if (updatedPatient.equals(NullObjects.getNullPatient())) {
+                response = builder
+                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                        .setData("PATIENT PIN YOU PASSED IN IS INCORRECT OR DOES NOT EXIST")
+                        .build();
+            } else {
+                response = builder
+                        .setStatusCode(Response.Status.NO_CONTENT.getStatusCode())
+                        .setData(null)
+                        .build();
+            }
+        }
+
+        return Response.status(response.getStatusCode()).entity(response).build();
+
+    }
 
 }

@@ -7,6 +7,8 @@ public class NullObjects {
     private static final ActivityInstance NULL_ACTIVITY_INSTANCE;
     private static final ActivityInstanceType NULL_ACTIVITY_INSTANCE_TYPE;
     private static final Patient NULL_PATIENT;
+    private static final Trial NULL_TRIAL;
+    private static final Domain NULL_DOMAIN;
 
 
     static {
@@ -49,6 +51,24 @@ public class NullObjects {
 
         NULL_PATIENT = patient;
 
+
+        Trial t = new Trial();
+        t.setTrialId("NULL");
+        t.setDomainId("NULL");
+        t.setTitle("NULL");
+        t.setCreatedAt(new Date(0));
+        t.setUpdatedAt(new Date(0));
+
+        NULL_TRIAL = t;
+
+        Domain d = new Domain();
+
+        d.setDomainId("NULL");
+        d.setTitle("NULL");
+        d.setCreatedAt(new Date(0));
+
+        NULL_DOMAIN = d;
+
     }
 
     public static Activity getNullActivity() {
@@ -65,5 +85,13 @@ public class NullObjects {
 
     public static Patient getNullPatient() {
         return NULL_PATIENT;
+    }
+
+    public static Trial getNullTrial() {
+        return NULL_TRIAL;
+    }
+
+    public static Domain getNullDomain() {
+        return NULL_DOMAIN;
     }
 }

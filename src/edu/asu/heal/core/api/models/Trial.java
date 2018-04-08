@@ -21,7 +21,7 @@ public class Trial {
     public static String UPDATEDAT_ATTRIBUTE = "updatedAt";
 
     private ObjectId id;
-    private ObjectId domainId;
+    private String domainId;
     private String trialId;
     private String title;
     private String description;
@@ -36,7 +36,8 @@ public class Trial {
         // blank constructor
     }
 
-    public Trial(ObjectId id, ObjectId domainId, String trialId, String title, String description, Date startDate, Date endDate, int targetCount){
+    public Trial(ObjectId id, String domainId, String trialId, String title, String description, Date startDate,
+                 Date endDate, int targetCount, Date createdAt, Date updatedAt) {
         this.id = id;
         this.domainId = domainId;
         this.trialId = trialId;
@@ -45,17 +46,8 @@ public class Trial {
         this.startDate = startDate;
         this.endDate = endDate;
         this.targetCount = targetCount;
-    }
-    public Trial(ObjectId id, ObjectId domainId, String trialId, String title, String description, Date startDate, Date endDate, int targetCount, ArrayList<String> patients) {
-        this.id = id;
-        this.domainId = domainId;
-        this.trialId = trialId;
-        this.title = title;
-        this.description = description;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.targetCount = targetCount;
-        this.patients = patients;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     // getters and setters
@@ -67,11 +59,11 @@ public class Trial {
         this.id = id;
     }
 
-    public ObjectId getDomainId() {
+    public String getDomainId() {
         return domainId;
     }
 
-    public void setDomainId(ObjectId domainId) {
+    public void setDomainId(String domainId) {
         this.domainId = domainId;
     }
 
@@ -131,6 +123,22 @@ public class Trial {
         this.trialId = trialId;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public String toString() {
         return "Trial{" +
@@ -144,5 +152,32 @@ public class Trial {
                 ", targetCount=" + targetCount +
                 ", patients=" + patients +
                 '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int PRIME = 31;
+        int result = 3;
+        result = PRIME * result + (this.trialId == null ? 0 :this.trialId.hashCode());
+        result = PRIME * result + (this.domainId == null ? 0 :this.domainId.hashCode());
+        result = PRIME * result + (this.title == null ? 0 :this.title.hashCode());
+        result = PRIME * result + (this.createdAt == null ? 0: this.createdAt.hashCode());
+        result = PRIME * result + this.targetCount;
+
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if (obj == null) return false;
+        if(!(obj instanceof Trial)) return false;
+
+        Trial temp = (Trial) obj;
+        return this.trialId.equals(temp.trialId)
+                && this.domainId.equals(temp.domainId)
+                && this.title.equals(temp.title)
+                && this.createdAt.equals(temp.createdAt)
+                && this.targetCount == temp.targetCount;
     }
 }

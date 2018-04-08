@@ -1,6 +1,6 @@
 package edu.asu.heal.core.api.models;
 
-public enum PatientState {
+public enum DomainState {
     CREATED("created"),
     AVAILABLE("available"),
     IN_EXECUTION("in-execution"),
@@ -12,7 +12,7 @@ public enum PatientState {
 
     private String state;
 
-    PatientState(String state){
+    DomainState(String state){
         this.state = state;
     }
 

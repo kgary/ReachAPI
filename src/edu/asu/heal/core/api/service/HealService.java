@@ -12,7 +12,7 @@ public interface HealService {
 
     Domain getDomain(String id);
 
-    boolean addDomain(String title, String description, String state);
+    Domain addDomain(String title, String description, String state);
 
     String addTestDomain(String title, String description, String state);
 
@@ -35,7 +35,7 @@ public interface HealService {
 
     Patient createPatient();
 
-    String updatePatient(String requestBody);
+    Patient updatePatient(Patient patient);
 
     String deletePatient(String patientPin);
 

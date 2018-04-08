@@ -3,17 +3,23 @@ package edu.asu.heal.core.api.resources;
 import com.sun.java.browser.plugin2.DOM;
 import edu.asu.heal.core.api.models.Domain;
 import edu.asu.heal.core.api.models.HEALResponse;
+import edu.asu.heal.core.api.models.NullObjects;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
 @Path("/domain")
 @Produces(MediaType.APPLICATION_JSON)
 public class DomainResource {
+
+    @Context
+    private UriInfo _uri;
 
     private static HealService reachService =
             HealServiceFactory.getTheService();
@@ -64,17 +70,27 @@ public class DomainResource {
      */
     @GET
     public Response fetchDomains() {
-        List<Domain> domains = reachService.getDomains();
-        HEALResponse response = null;
+
+        HEALResponse response;
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
-        response = builder
-                .setData(domains)
-                .setStatusCode(Response.Status.OK.getStatusCode())
-//                .setMessage("SUCCESS")
-//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
-                .build();
-
+        List<Domain> domains = reachService.getDomains();
+        if(domains == null){
+            response = builder
+                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
+                    .build();
+        }else if(domains.isEmpty()){
+            response = builder
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setData("THERE ARE NO DOMAINS IN THE DATABASE")
+                    .build();
+        }else{
+            response = builder
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setData(domains)
+                    .build();
+        }
 
         return Response.status(response.getStatusCode()).entity(response).build();
     }
@@ -98,17 +114,27 @@ public class DomainResource {
     @GET
     @Path("/{id}")
     public Response fetchDomain(@PathParam("id") String id) {
-        Domain domain = reachService.getDomain(id);
 
-        HEALResponse response = null;
+        HEALResponse response;
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
-        response = builder
-                .setData(domain)
-                .setStatusCode(Response.Status.OK.getStatusCode())
-//                .setMessage("SUCCESS")
-//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
-                .build();
+        Domain domain = reachService.getDomain(id);
+        if(domain == null){
+            response = builder
+                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
+                    .build();
+        }else if(domain.equals(NullObjects.getNullDomain())){
+            response = builder
+                    .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
+                    .setData("THE DOMAIN YOU'RE REQUESTING DOES NOT EXIST")
+                    .build();
+        }else{
+            response = builder
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setData(domain)
+                    .build();
+        }
 
         return Response.status(response.getStatusCode()).entity(response).build();
     }
@@ -130,20 +156,32 @@ public class DomainResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response addDomain(@FormParam("title") String title, @FormParam("description") String description,
                               @FormParam("state") String state) {
-
-        boolean created = reachService.addDomain(title, description, state);
-
-        HEALResponse response = null;
+        HEALResponse response;
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
-        response = builder
-                .setData(created)
-                .setStatusCode(Response.Status.CREATED.getStatusCode())
-//                .setMessage("SUCCESS")
-//                .setMessageType(HEALResponse.SUCCESS_MESSAGE_TYPE)
-                .build();
+        if(title.length() == 0){
+            response = builder
+                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .setData("TITLE SHOULD NOT BE MISSING FROM THE REQUEST")
+                    .build();
 
-        return Response.status(response.getStatusCode()).build();
+        }else {
+            Domain createdDomain = reachService.addDomain(title, description, state);
+            if(createdDomain == null){
+                response = builder
+                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                        .setData("SOME ERROR CREATING NEW DOMAIN. CONTACT ADMINISTRATOR")
+                        .build();
+            }else{
+                response = builder
+                        .setStatusCode(Response.Status.CREATED.getStatusCode())
+                        .setData(String.format("%s/%s",_uri.getAbsolutePath().toString(),
+                                createdDomain.getDomainId()))
+                        .build();
+            }
+        }
+
+        return Response.status(response.getStatusCode()).entity(response).build();
 
 
     }
