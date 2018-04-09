@@ -519,4 +519,70 @@ public class MongoDBDAO implements DAO {
             return null;
         }
     }
+
+    @Override
+    public Activity getActivity(String activityId) {
+        try{
+            MongoDatabase database = getConnectedDatabase();
+            MongoCollection<Activity> activityMongoCollection =
+                    database.getCollection(ACTIVITIES_COLLECTION, Activity.class);
+
+            Activity instance = activityMongoCollection
+                    .find(Filters.eq(Activity.ACTIVITYID_ATTRIBUTE, activityId))
+                    .projection(Projections.excludeId())
+                    .first();
+
+            return instance;
+        }catch (NullPointerException ne){
+            System.out.println("SOME PROBLEM IN GETTING ACTIVITY WITH ID " + activityId);
+            ne.printStackTrace();
+            return NullObjects.getNullActivity();
+        }catch (Exception e){
+            System.out.println("SOME SERVER PROBLEM IN GETACTIVITY");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Activity updateActivity(Activity activity) {
+        try{
+            MongoDatabase database = getConnectedDatabase();
+            MongoCollection<Activity> activityMongoCollection =
+                    database.getCollection(ACTIVITIES_COLLECTION, Activity.class);
+
+            return activityMongoCollection
+                    .findOneAndReplace(Filters.eq(Activity.ACTIVITYID_ATTRIBUTE, activity.getActivityId()), activity);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Activity deleteActivity(String activityId) {
+        try{
+            MongoDatabase database = getConnectedDatabase();
+            MongoCollection<Activity> activityMongoCollection =
+                    database.getCollection(ACTIVITIES_COLLECTION, Activity.class);
+
+            Activity deletedActivity = activityMongoCollection
+                    .findOneAndDelete(Filters.eq(Activity.ACTIVITYID_ATTRIBUTE, activityId));
+
+            if(deletedActivity == null)
+                return NullObjects.getNullActivity();
+
+            // What are the possible ramification of deleting an Activity?
+            // Delete all activity instances related to it
+            // Delete the activity from the domain
+            // Need to consider this before deleting
+
+            return deletedActivity;
+        }catch (Exception e){
+            System.out.println("SOME PROBLEM DELETING ACTIVITY " + activityId);
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

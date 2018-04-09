@@ -532,4 +532,19 @@ public abstract class JDBCDao implements DAO {
     public ActivityInstance getActivityInstance(String activityInstanceId) {
         return null;
     }
+
+    @Override
+    public Activity getActivity(String activityId) {
+        return null;
+    }
+
+    @Override
+    public Activity updateActivity(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public Activity deleteActivity(String activityId) {
+        return null;
+    }
 }

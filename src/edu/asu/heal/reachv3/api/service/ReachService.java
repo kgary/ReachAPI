@@ -430,4 +430,49 @@ public class ReachService implements HealService {
             return null;
         }
     }
+
+    @Override
+    public Activity getActivity(String activityId) {
+        try{
+            DAO dao = DAOFactory.getTheDAO();
+            return dao.getActivity(activityId);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Activity updateActivity(Activity activity) {
+        try{
+            DAO dao = DAOFactory.getTheDAO();
+            Activity activityInDatabase = dao.getActivity(activity.getActivityId());
+            if(activityInDatabase == null || activityInDatabase.equals(NullObjects.getNullActivity()))
+                return activityInDatabase;
+
+            activityInDatabase.setTitle(
+                    activity.getTitle() != null ? activity.getTitle() : activityInDatabase.getTitle());
+            activityInDatabase.setDescription(
+                    activity.getDescription() != null ? activity.getDescription() : activityInDatabase.getDescription());
+            activityInDatabase.setUpdatedAt(new Date());
+
+            return dao.updateActivity(activityInDatabase);
+        }catch (Exception e){
+            System.out.println("SOME PROBLEM IN UPDATE ACTIVITY IN REACHSERVICE");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Activity deleteActivity(String activityId) {
+        try{
+            DAO dao = DAOFactory.getTheDAO();
+            return dao.deleteActivity(activityId);
+        }catch (Exception e){
+            System.out.println("SOME PROBLEM IN REACH SERVICE DELETE ACTIVITY INSTANCE");
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

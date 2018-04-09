@@ -52,9 +52,15 @@ public interface HealService {
 
     Activity createActivity(String title, String description);
 
+    Activity getActivity(String activityId);
+
     // methods pertaining to Trial Resource
     List<Trial> getTrials(String domain);
 
     Trial addTrial(Trial trialInstance);
+
+    Activity updateActivity(Activity activity);
+
+    Activity deleteActivity(String activityId);
 
 }

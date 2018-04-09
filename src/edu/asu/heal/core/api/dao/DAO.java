@@ -64,4 +64,10 @@ public interface DAO {
     ActivityInstance createActivityInstance(ActivityInstance instance);
 
     ActivityInstance getActivityInstance(String activityInstanceId);
+
+    Activity getActivity(String activityId);
+
+    Activity updateActivity(Activity activity);
+
+    Activity deleteActivity(String activityId);
 }
