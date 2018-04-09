@@ -403,27 +403,22 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public Trial addTrial(String domainId, String title, String description, String startDate, String endDate,
-                          int targetCount) {
+    public Trial addTrial(Trial trialInstance) {
         try {
             DAO dao = DAOFactory.getTheDAO();
 
             // check if the domain exist, if yes get the id of domain
-            Domain domain = dao.getDomain(domainId);
+            Domain domain = dao.getDomain(trialInstance.getDomainId());
             if (domain != null) {
 
-                Date startDateFormat = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(startDate);
-                Date endDateFormat = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(endDate);
+                Date startDateFormat = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(trialInstance.getStartDate().toString());
+                Date endDateFormat = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(trialInstance.getEndDate().toString());
 
-                Trial trialInstance = new Trial();
-                trialInstance.setTitle(title);
                 trialInstance.setUpdatedAt(new Date());
                 trialInstance.setCreatedAt(new Date());
-                trialInstance.setDescription(description);
                 trialInstance.setStartDate(startDateFormat);
                 trialInstance.setEndDate(endDateFormat);
                 trialInstance.setDomainId(domain.getId().toHexString());
-                trialInstance.setTargetCount(targetCount);
 
                 return dao.createTrial(trialInstance);
             } else {

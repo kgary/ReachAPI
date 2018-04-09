@@ -64,41 +64,42 @@ public class ActivityInstanceResource {
             response = builder
                     .setData("YOUR PATIENT PIN IS ABSENT FROM THE REQUEST")
                     .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .setServerURI(_uri.getBaseUri().toString())
                     .build();
         } else {
             List<ActivityInstance> instances = reachService.getActivityInstances(patientPin, trialId);
-            if(instances == null){
+            if (instances == null) {
                 response = builder
                         .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
                         .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
                         .build();
-            }else if(instances.isEmpty()){
+            } else if (instances.isEmpty()) {
                 response = builder
                         .setStatusCode(Response.Status.OK.getStatusCode())
                         .setData("THERE ARE NO ACTIVITIES INSTANCES FOR THIS PATIENT")
                         .build();
-            }else if(instances.size() == 1){
-                if(instances.get(0).equals(NullObjects.getNullActivityInstance())){
+            } else if (instances.size() == 1) {
+                if (instances.get(0).equals(NullObjects.getNullActivityInstance())) {
                     response = builder
                             .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                             .setData("THE PATIENT PIN YOU'VE PASSED IN IS INCORRECT OR DOES NOT EXIST")
                             .build();
-                }else{
+                } else {
                     response = builder
                             .setStatusCode(Response.Status.OK.getStatusCode())
                             .setData(instances)
+                            .setServerURI(_uri.getBaseUri().toString())
                             .build();
                 }
-            }else{
+            } else {
                 response = builder
                         .setStatusCode(Response.Status.OK.getStatusCode())
                         .setData(instances)
+                        .setServerURI(_uri.getBaseUri().toString())
                         .build();
             }
         }
-        return Response.status(response.getStatusCode())
-                .entity(response)
-                .build();
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
     }
 
     /**
@@ -119,23 +120,24 @@ public class ActivityInstanceResource {
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
         ActivityInstance instance = reachService.getActivityInstance(activityInstanceId);
 
-        if(instance == null){
+        if (instance == null) {
             response = builder
                     .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
                     .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
                     .build();
-        }else if(instance.equals(NullObjects.getNullActivityInstance())){
+        } else if (instance.equals(NullObjects.getNullActivityInstance())) {
             response = builder
                     .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
                     .setData("THE ACTIVITY INSTANCE YOU'RE REQUESTING DOES NOT EXIST")
                     .build();
-        }else{
+        } else {
             response = builder
                     .setStatusCode(Response.Status.OK.getStatusCode())
                     .setData(instance)
+                    .setServerURI(_uri.getBaseUri().toString())
                     .build();
         }
-        return Response.status(response.getStatusCode()).entity(response).build();
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
     }
 
     /**
@@ -152,16 +154,16 @@ public class ActivityInstanceResource {
      * @apiParam (Login) {String} pass Only logged in user can get this
      * @apiParamExample {json} Activity Instance Example:
      * {
-     *      "createdAt": "2018-02-26T07:00:00.000Z",
-     *      "updatedAt": "2018-02-26T07:00:00.000Z",
-     *      "startTime": "2018-02-26T07:00:00.000Z",
-     *      "endTime": "2018-02-27T07:00:00.000Z",
-     *      "instanceOf": {
-     *      "name": "Relaxation"
-     *      "activityId": 5a9499e066684905df626003
-     *          },
-     *      "state": "created",
-     *      "description": "Relaxation instance"
+     * "createdAt": "2018-02-26T07:00:00.000Z",
+     * "updatedAt": "2018-02-26T07:00:00.000Z",
+     * "startTime": "2018-02-26T07:00:00.000Z",
+     * "endTime": "2018-02-27T07:00:00.000Z",
+     * "instanceOf": {
+     * "name": "Relaxation"
+     * "activityId": 5a9499e066684905df626003
+     * },
+     * "state": "created",
+     * "description": "Relaxation instance"
      * }
      * @apiUse BadRequestError
      * @apiUse InternalServerError
@@ -173,29 +175,28 @@ public class ActivityInstanceResource {
         HEALResponse response = null;
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
-        if(activityInstanceJson.getPatientPin() == 0 || activityInstanceJson.getInstanceOf() == null){
+        if (activityInstanceJson.getPatientPin() == 0 || activityInstanceJson.getInstanceOf() == null) {
             response = builder
                     .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                     .setData("REQUEST MUST CONTAIN AT LEAST PATIENT PIN AND INSTANCE TYPE VALUE")
                     .build();
 
-        }else{
+        } else {
             ActivityInstance instance = reachService.createActivityInstance(activityInstanceJson);
-            if(instance == null){
+            if (instance == null) {
                 response = builder
                         .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
                         .setData("SOME ERROR CREATING NEW ACTIVITY INSTANCE. CONTACT ADMINISTRATOR")
                         .build();
-            }else if(instance.equals(NullObjects.getNullActivityInstance())){
+            } else if (instance.equals(NullObjects.getNullActivityInstance())) {
                 response = builder
                         .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                         .setData("INCORRECT PATIENT PIN IN THE REQUEST PAYLOAD")
                         .build();
-            }else{
+            } else {
                 response = builder
                         .setStatusCode(Response.Status.CREATED.getStatusCode())
-                        .setData(String.format("%s/%s",_uri.getAbsolutePath().toString(),
-                                instance.getActivityInstanceId()))
+                        .setData(instance)
                         .build();
             }
         }
@@ -246,17 +247,17 @@ public class ActivityInstanceResource {
 
         ActivityInstance removed = reachService.deleteActivityInstance(activityInstanceId);
 
-        if(removed.equals(NullObjects.getNullActivityInstance())){
+        if (removed.equals(NullObjects.getNullActivityInstance())) {
             response = builder
                     .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
                     .setData("ACTIVITY INSTANCE DOES NOT EXIST")
                     .build();
-        }else if(removed == null){
+        } else if (removed == null) {
             response = builder
                     .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
                     .setData("SOME PROBLEM IN DELETING ACTIVITY INSTANCE. CONTACT ADMINISTRATOR")
                     .build();
-        }else{
+        } else {
             response = builder
                     .setStatusCode(Response.Status.NO_CONTENT.getStatusCode())
                     .setData(null)

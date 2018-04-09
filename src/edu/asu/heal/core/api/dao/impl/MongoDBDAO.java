@@ -77,14 +77,14 @@ public class MongoDBDAO implements DAO {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Domain> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION, Domain.class);
 
-            return domainCollection
-                    .find(Filters.eq("_id", id))
+            Domain domain = domainCollection
+                    .find(Filters.eq(Domain.DOMAINID_ATTRIBUTE, id))
                     .projection(Projections.excludeId())
                     .first();
-        }catch(NullPointerException ne){
-            System.out.println("SOME ERROR IN GETTING DOMAIN FROM DAO");
-            ne.printStackTrace();
-            return NullObjects.getNullDomain();
+            if(domain == null)
+                return NullObjects.getNullDomain();
+
+            return domain;
         }catch (Exception e){
             e.printStackTrace();
             return null;

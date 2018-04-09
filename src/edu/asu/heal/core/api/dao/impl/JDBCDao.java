@@ -48,7 +48,7 @@ public abstract class JDBCDao implements DAO {
 
     @Override
     public Domain createDomain(Domain instance) {
-        return false;
+        return null;
     }
 
     @Override

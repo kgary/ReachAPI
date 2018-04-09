@@ -22,8 +22,8 @@ public class Domain {
     private String state;
     private Date createdAt;
     private Date updatedAt;
-    private ArrayList<String> activities;
-    private ArrayList<String> trials;
+    private ArrayList<String> activities = new ArrayList<>();
+    private ArrayList<String> trials = new ArrayList<>();
 
     public Domain(){
         // default constructor

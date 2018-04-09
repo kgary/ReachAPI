@@ -49,35 +49,37 @@ public class ActivityResource {
         HEALResponse response = null;
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
-        if(activities == null){
+        if (activities == null) {
             response = builder
                     .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
                     .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
                     .build();
-        }else if(activities.isEmpty()){
+        } else if (activities.isEmpty()) {
             response = builder
                     .setStatusCode(Response.Status.OK.getStatusCode())
                     .setData("THERE ARE NO ACTIVITIES FOR THIS DOMAIN")
                     .build();
-        }else if(activities.size() == 1){
-            if(activities.get(0).equals(NullObjects.getNullActivity())){
+        } else if (activities.size() == 1) {
+            if (activities.get(0).equals(NullObjects.getNullActivity())) {
                 response = builder
                         .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                         .setData("THE DOMAIN YOU'VE PASSED IN IS INCORRECT OR DOES NOT EXIST")
                         .build();
-            }else{
+            } else {
                 response = builder
                         .setStatusCode(Response.Status.OK.getStatusCode())
                         .setData(activities)
+                        .setServerURI(_uri.getBaseUri().toString())
                         .build();
             }
-        }else{
+        } else {
             response = builder
                     .setStatusCode(Response.Status.OK.getStatusCode())
                     .setData(activities)
+                    .setServerURI(_uri.getBaseUri().toString())
                     .build();
         }
-        return Response.status(response.getStatusCode()).entity(response).build();
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
     }
 
     /**
@@ -102,28 +104,28 @@ public class ActivityResource {
      * @apiUse InternalServerError
      */
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response createActivity(@FormParam("title") String title, @FormParam("description") String description) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createActivity(Activity activityJSON) {
         HEALResponse response = null;
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
-        if(title == null || title.trim().length() == 0){
+        if (activityJSON.getTitle() == null || activityJSON.getTitle().trim().length() == 0) {
             response = builder
                     .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                     .setData("TITLE MISSING FROM REQUEST")
                     .build();
-        }else {
-            Activity activity = reachService.createActivity(title, description);
-            if(activity == null){
+        } else {
+            Activity activity = reachService.createActivity(activityJSON.getTitle(), activityJSON.getDescription());
+            if (activity == null) {
                 response = builder
                         .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
                         .setData("COULD NOT CREATE ACTIVITY. CONTACT ADMINISTRATOR")
                         .build();
-            }else{
+            } else {
                 response = builder
                         .setStatusCode(Response.Status.CREATED.getStatusCode())
-                        .setData(String.format("%s/%s",_uri.getAbsolutePath().toString(),
-                                activity.getActivityId()))
+                        .setData(activity)
+                        .setServerURI(_uri.getBaseUri().toString())
                         .build();
             }
         }

@@ -14,7 +14,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
-@Path("/domain")
+@Path("/domains")
 @Produces(MediaType.APPLICATION_JSON)
 public class DomainResource {
 
@@ -75,24 +75,25 @@ public class DomainResource {
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
         List<Domain> domains = reachService.getDomains();
-        if(domains == null){
+        if (domains == null) {
             response = builder
                     .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
                     .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
                     .build();
-        }else if(domains.isEmpty()){
+        } else if (domains.isEmpty()) {
             response = builder
                     .setStatusCode(Response.Status.OK.getStatusCode())
                     .setData("THERE ARE NO DOMAINS IN THE DATABASE")
                     .build();
-        }else{
+        } else {
             response = builder
                     .setStatusCode(Response.Status.OK.getStatusCode())
                     .setData(domains)
+                    .setServerURI(_uri.getBaseUri().toString())
                     .build();
         }
 
-        return Response.status(response.getStatusCode()).entity(response).build();
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
     }
 
     /**
@@ -119,24 +120,25 @@ public class DomainResource {
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
         Domain domain = reachService.getDomain(id);
-        if(domain == null){
+        if (domain == null) {
             response = builder
                     .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
                     .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
                     .build();
-        }else if(domain.equals(NullObjects.getNullDomain())){
+        } else if (domain.equals(NullObjects.getNullDomain())) {
             response = builder
                     .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
                     .setData("THE DOMAIN YOU'RE REQUESTING DOES NOT EXIST")
                     .build();
-        }else{
+        } else {
             response = builder
                     .setStatusCode(Response.Status.OK.getStatusCode())
                     .setData(domain)
+                    .setServerURI(_uri.getBaseUri().toString())
                     .build();
         }
 
-        return Response.status(response.getStatusCode()).entity(response).build();
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
     }
 
 
@@ -153,30 +155,28 @@ public class DomainResource {
      * @apiUse InternalServerError
      */
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response addDomain(@FormParam("title") String title, @FormParam("description") String description,
-                              @FormParam("state") String state) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addDomain(Domain domain) {
         HEALResponse response;
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
-        if(title.length() == 0){
+        if (domain.getTitle().length() == 0) {
             response = builder
                     .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                     .setData("TITLE SHOULD NOT BE MISSING FROM THE REQUEST")
                     .build();
 
-        }else {
-            Domain createdDomain = reachService.addDomain(title, description, state);
-            if(createdDomain == null){
+        } else {
+            Domain createdDomain = reachService.addDomain(domain.getTitle(), domain.getDescription(), domain.getState());
+            if (createdDomain == null) {
                 response = builder
                         .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
                         .setData("SOME ERROR CREATING NEW DOMAIN. CONTACT ADMINISTRATOR")
                         .build();
-            }else{
+            } else {
                 response = builder
                         .setStatusCode(Response.Status.CREATED.getStatusCode())
-                        .setData(String.format("%s/%s",_uri.getAbsolutePath().toString(),
-                                createdDomain.getDomainId()))
+                        .setData(createdDomain)
                         .build();
             }
         }

@@ -81,6 +81,7 @@ public class PatientResource {
      * @apiUse PatientsNotFoundError
      */
     @GET
+    @Produces("application/hal+json")
     public Response fetchPatients(@QueryParam("trialId") String trialId) {
         HEALResponse response = null;
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
@@ -107,16 +108,18 @@ public class PatientResource {
                 response = builder
                         .setStatusCode(Response.Status.OK.getStatusCode())
                         .setData(patients)
+                        .setServerURI(_uri.getBaseUri().toString())
                         .build();
             }
         } else {
             response = builder
                     .setStatusCode(Response.Status.OK.getStatusCode())
                     .setData(patients)
+                    .setServerURI(_uri.getBaseUri().toString())
                     .build();
         }
 
-        return Response.status(response.getStatusCode()).entity(response).build();
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
     }
 
     /**
@@ -133,24 +136,25 @@ public class PatientResource {
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
         Patient patient = reachService.getPatient(patientPin);
-        if(patient == null){
+        if (patient == null) {
             response = builder
                     .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
                     .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
                     .build();
-        }else if(patient.equals(NullObjects.getNullPatient())){
+        } else if (patient.equals(NullObjects.getNullPatient())) {
             response = builder
                     .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
                     .setData("THE PATIENT YOU'RE REQUESTING DOES NOT EXIST")
                     .build();
-        }else{
+        } else {
             response = builder
                     .setStatusCode(Response.Status.OK.getStatusCode())
                     .setData(patient)
+                    .setServerURI(_uri.getBaseUri().toString())
                     .build();
         }
 
-        return Response.status(response.getStatusCode()).entity(response).build();
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
     }
 
     /**
@@ -169,25 +173,25 @@ public class PatientResource {
 
         Patient insertedPatient = reachService.createPatient();
 
-        if(insertedPatient == null){
+        if (insertedPatient == null) {
             response = builder
                     .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
                     .setData("SOME ERROR CREATING NEW PATIENT. CONTACT ADMINISTRATOR")
                     .build();
-        }else if(insertedPatient.equals(NullObjects.getNullPatient())){
+        } else if (insertedPatient.equals(NullObjects.getNullPatient())) {
             response = builder
                     .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                     .setData("INCORRECT TRIAL ID IN THE REQUEST")
                     .build();
-        }else{
+        } else {
             response = builder
                     .setStatusCode(Response.Status.CREATED.getStatusCode())
-                    .setData(String.format("%s/%s",_uri.getAbsolutePath().toString(),
-                            insertedPatient.getPin()))
+                    .setData(insertedPatient)
+                    .setServerURI(_uri.getBaseUri().toString())
                     .build();
         }
 
-        return Response.status(response.getStatusCode()).entity(response).build();
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
     }
 
     /**
@@ -197,10 +201,10 @@ public class PatientResource {
      * @apiParam {json} Patient JSON structure
      * @apiParamExample {json} Request-payload :
      * {
-     *     "pin": 4010,
-     *     "startDate": "2018-01-01 13:00:00",
-     *     "endDate": "2018-03-01 13:00:00",
-     *     "state": "completed"
+     * "pin": 4010,
+     * "startDate": "2018-01-01 13:00:00",
+     * "endDate": "2018-03-01 13:00:00",
+     * "state": "completed"
      * }
      * @apiSuccess {int} requestCode Status code indicating NO_CONTENT
      * @apiSuccessExample {int} Success- Example : 204
@@ -215,12 +219,12 @@ public class PatientResource {
         HEALResponse response = null;
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
 
-        if(patient.getPin() == 0){
+        if (patient.getPin() == 0) {
             response = builder
                     .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                     .setData("YOU NEED TO PASS IN PATIENT PIN IN REQUEST PAYLOAD")
                     .build();
-        }else {
+        } else {
 
             Patient updatedPatient = reachService.updatePatient(patient);
 
@@ -238,11 +242,12 @@ public class PatientResource {
                 response = builder
                         .setStatusCode(Response.Status.NO_CONTENT.getStatusCode())
                         .setData(null)
+                        .setServerURI(_uri.getBaseUri().toString())
                         .build();
             }
         }
 
-        return Response.status(response.getStatusCode()).entity(response).build();
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
 
     }
 
