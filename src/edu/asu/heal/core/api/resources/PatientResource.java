@@ -131,6 +131,7 @@ public class PatientResource {
      */
     @GET
     @Path("/{patientPin}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response fetchPatient(@PathParam("patientPin") int patientPin) {
         HEALResponse response = null;
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
