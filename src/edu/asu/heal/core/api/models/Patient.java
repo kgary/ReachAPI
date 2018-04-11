@@ -1,13 +1,10 @@
 package edu.asu.heal.core.api.models;
 
-import org.bson.types.ObjectId;
-
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Patient {
 
-    public static String ID_ATTRIBUTE = "_id";
     public static String PIN_ATTRIBUTE = "pin";
     public static String PATIENTID_ATTRIBUTE = "patientId";
     public static String STARTDATE_ATTRIBUTE = "startDate";
@@ -17,7 +14,6 @@ public class Patient {
     public static String UPDATEDAT_ATTRIBUTE = "updatedAt";
     public static String ACTIVITYINSTANCES_ATTRIBUTE = "activityInstances";
 
-    private ObjectId id;
     private String patientId;
     private int pin;
     private Date startDate;
@@ -31,8 +27,7 @@ public class Patient {
         // blank constructor
     }
 
-    public Patient(ObjectId id, String patientId, int pin, Date startDate, Date endDate, String state, Date createdAt, Date updatedAt, ArrayList<String> activityInstances) {
-        this.id = id;
+    public Patient(String patientId, int pin, Date startDate, Date endDate, String state, Date createdAt, Date updatedAt, ArrayList<String> activityInstances) {
         this.patientId = patientId;
         this.pin = pin;
         this.startDate = startDate;
@@ -92,14 +87,6 @@ public class Patient {
         this.activityInstances = activityInstances;
     }
 
-    public ObjectId getId() {
-        return id;
-    }
-
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
-
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -119,7 +106,6 @@ public class Patient {
     @Override
     public String toString() {
         return "Patient{" +
-                "id=" + id +
                 ", pin=" + pin +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +

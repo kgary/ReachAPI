@@ -6,14 +6,55 @@ import java.util.List;
 
 public interface DAO {
 
-    // methods pertaining to Domain Model
+
+    /****************************************  Domain DAO methods *****************************************************/
     List<Domain> getDomains();
 
     Domain getDomain(String id);
 
     Domain createDomain(Domain instance);
 
+    /****************************************  Activity DAO methods ***************************************************/
+    List<Activity> getActivities(String domain) throws DAOException;
+
+    Activity createActivity(Activity activity) throws DAOException;
+
+    Activity getActivity(String activityId);
+
+    Activity updateActivity(Activity activity);
+
+    Activity deleteActivity(String activityId);
+
+
+    /****************************************  ActivityInstance DAO methods *******************************************/
     List<ActivityInstance> getScheduledActivities(int patientPin, int currentDay) throws DAOException;
+
+    ActivityInstance deleteActivityInstance(String activityInstanceId);
+
+    ActivityInstance createActivityInstance(ActivityInstance instance);
+
+    ActivityInstance getActivityInstance(String activityInstanceId);
+
+
+    /****************************************  Patient DAO methods ****************************************************/
+    List<Patient> getPatients() throws DAOException;
+
+    List<Patient> getPatients(String trialId) throws DAOException;
+
+    Patient getPatient(int patientPin);
+
+    Patient createPatient();
+
+    Patient updatePatient(Patient patient);
+
+    /****************************************  Trial DAO methods ******************************************************/
+    List<Trial> getTrials() throws DAOException;
+
+    List<Trial> getTrials(String domain) throws DAOException;
+
+    Trial createTrial(Trial trialInstance) throws DAOException;
+
+    /****************************************  Other DAO methods ******************************************************/
 
     boolean scheduleSTOPActivity(int day, boolean completed) throws DAOException;
 
@@ -37,37 +78,4 @@ public interface DAO {
 
     boolean updateMakeBelieveActivityInstance(Object makeBelieveResponse) throws DAOException;
 
-    // methods pertaining to Activity (activities) collection
-    List<Activity> getActivities(String domain) throws DAOException;
-
-    Activity createActivity(Activity activity) throws DAOException;
-
-    // methods pertaining trial model
-    List<Trial> getTrials() throws DAOException;
-
-    List<Trial> getTrials(String domain) throws DAOException;
-
-    Trial createTrial(Trial trialInstance) throws DAOException;
-
-    List<Patient> getPatients() throws DAOException;
-
-    List<Patient> getPatients(String trialId) throws DAOException;
-
-    Patient getPatient(int patientPin);
-
-    Patient createPatient();
-
-    Patient updatePatient(Patient patient);
-
-    ActivityInstance deleteActivityInstance(String activityInstanceId);
-
-    ActivityInstance createActivityInstance(ActivityInstance instance);
-
-    ActivityInstance getActivityInstance(String activityInstanceId);
-
-    Activity getActivity(String activityId);
-
-    Activity updateActivity(Activity activity);
-
-    Activity deleteActivity(String activityId);
 }

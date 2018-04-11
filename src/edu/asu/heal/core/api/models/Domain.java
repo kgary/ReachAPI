@@ -1,13 +1,10 @@
 package edu.asu.heal.core.api.models;
 
-import org.bson.types.ObjectId;
-
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Domain {
 
-    public static String ID_ATTRIBUTE = "_id";
     public static String TITLE_ATTRIBUTE = "title";
     public static String DESCRIPTION_ATTRIBUTE = "description";
     public static String STATE_ATTRIBUTE = "state";
@@ -15,7 +12,6 @@ public class Domain {
     public static String TRIALS_ATTRIBUTE = "trials";
     public static String DOMAINID_ATTRIBUTE = "domainId";
 
-    private ObjectId id;
     private String domainId;
     private String title;
     private String description;
@@ -36,14 +32,6 @@ public class Domain {
     }
 
     // getters and setters
-
-    public ObjectId getId() {
-        return id;
-    }
-
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;
@@ -112,7 +100,6 @@ public class Domain {
     @Override
     public String toString() {
         return "Domain{" +
-                "id=" + id +
                 ", domainId='" + domainId + '\'' +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +

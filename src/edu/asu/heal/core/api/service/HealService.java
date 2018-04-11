@@ -6,8 +6,30 @@ import java.util.List;
 
 public interface HealService {
 
-    // methods pertaining to domain resource
 
+    /****************************************  Service methods for Activity  ******************************************/
+    List<Activity> getActivities(String domain);
+
+    Activity createActivity(String title, String description);
+
+    Activity getActivity(String activityId);
+
+    Activity updateActivity(Activity activity);
+
+    Activity deleteActivity(String activityId);
+
+    /****************************************  Service methods for ActivityInstance  **********************************/
+    List<ActivityInstance> getActivityInstances(int patientPin, int trialId);
+
+    ActivityInstance getActivityInstance(String activityInstanceId);
+
+    ActivityInstance createActivityInstance(ActivityInstance activityInstanceJson);
+
+    ActivityInstance deleteActivityInstance(String activityInstanceId);
+
+    String updateActivityInstance(String requestBody);
+
+    /****************************************  Service methods for Domain  ********************************************/
     List<Domain> getDomains();
 
     Domain getDomain(String id);
@@ -16,19 +38,7 @@ public interface HealService {
 
     String addTestDomain(String title, String description, String state);
 
-    // methods pertaining to activityInstance resource
-
-    List<ActivityInstance> getActivityInstances(int patientPin, int trialId);
-
-    ActivityInstance getActivityInstance(String activityInstanceId);
-
-    ActivityInstance createActivityInstance(ActivityInstance activityInstanceJson);
-
-    String updateActivityInstance(String requestBody);
-
-    ActivityInstance deleteActivityInstance(String activityInstanceId);
-
-    // methods pertaining to patient resource
+    /****************************************  Service methods for Patient  *******************************************/
     List<Patient> getPatients(String trialId);
 
     Patient getPatient(int patientPin);
@@ -39,6 +49,13 @@ public interface HealService {
 
     String deletePatient(String patientPin);
 
+    /****************************************  Service methods for Trial  *********************************************/
+    List<Trial> getTrials(String domain);
+
+    Trial addTrial(Trial trialInstance);
+
+    /****************************************  Other Service methods  *************************************************/
+
     String getMakeBelieveInstance();
 
     String getMakeBelieveInstanceAnswer(int instanceId);
@@ -46,21 +63,4 @@ public interface HealService {
     int updateMakeBelieveInstance(int instanceId, String responses);
 
     String getWorryHeadsInstance();
-
-    // methods pertaining to Activity Resource
-    List<Activity> getActivities(String domain);
-
-    Activity createActivity(String title, String description);
-
-    Activity getActivity(String activityId);
-
-    // methods pertaining to Trial Resource
-    List<Trial> getTrials(String domain);
-
-    Trial addTrial(Trial trialInstance);
-
-    Activity updateActivity(Activity activity);
-
-    Activity deleteActivity(String activityId);
-
 }

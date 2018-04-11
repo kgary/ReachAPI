@@ -1,7 +1,5 @@
 package edu.asu.heal.core.api.models;
 
-import org.bson.types.ObjectId;
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -9,7 +7,6 @@ public class Trial {
 
 
     public static String NAME_ATTRIBUTE = "name";
-    public static String ID_ATTRIBUTE = "_id";
     public static String TRIALID_ATTRIBUTE = "trialId";
     public static String TITLE_ATTRIBUTE = "title";
     public static String DESCRIPTION_ATTRIBUTE = "description";
@@ -20,7 +17,6 @@ public class Trial {
     public static String CREATEDAT_ATTRIBUTE = "createdAt";
     public static String UPDATEDAT_ATTRIBUTE = "updatedAt";
 
-    private ObjectId id;
     private String domainId;
     private String trialId;
     private String title;
@@ -36,9 +32,8 @@ public class Trial {
         // blank constructor
     }
 
-    public Trial(ObjectId id, String domainId, String trialId, String title, String description, Date startDate,
+    public Trial(String domainId, String trialId, String title, String description, Date startDate,
                  Date endDate, int targetCount, Date createdAt, Date updatedAt) {
-        this.id = id;
         this.domainId = domainId;
         this.trialId = trialId;
         this.title = title;
@@ -51,13 +46,6 @@ public class Trial {
     }
 
     // getters and setters
-    public ObjectId getId() {
-        return id;
-    }
-
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
 
     public String getDomainId() {
         return domainId;
@@ -142,7 +130,6 @@ public class Trial {
     @Override
     public String toString() {
         return "Trial{" +
-                "id=" + id +
                 ", domainId=" + domainId +
                 ", trialId='" + trialId + '\'' +
                 ", title='" + title + '\'' +

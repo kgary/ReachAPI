@@ -1,11 +1,8 @@
 package edu.asu.heal.core.api.models;
 
-import org.bson.types.ObjectId;
-
 import java.util.Date;
 
 public class ActivityInstance {
-    public static String ID_ATTRIBUTE = "_id";
     public static String CREATEDAT_ATTRIBUTE = "createdAt";
     public static String UPDATEDAT_ATTRIBUTE = "updatedAt";
     public static String STARTTIME_ATTRIBUTE = "startTime";
@@ -18,7 +15,6 @@ public class ActivityInstance {
     public static String ACTIVITYINSTANCEID_ATTRIBUTE = "activityInstanceId";
 
 
-    private ObjectId id;
     private String activityInstanceId;
     private Date createdAt;
     private Date updatedAt;
@@ -34,10 +30,9 @@ public class ActivityInstance {
     public ActivityInstance() {
     }
 
-    public ActivityInstance(ObjectId id, String activityInstanceId, Date createdAt, Date updatedAt, String description,
+    public ActivityInstance(String activityInstanceId, Date createdAt, Date updatedAt, String description,
                             Date startTime, Date endTime, Date userSubmissionTime, Date actualSubmissionTime,
                             ActivityInstanceType instanceOf, String state, int patientPin) {
-        this.id = id;
         this.activityInstanceId = activityInstanceId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -49,14 +44,6 @@ public class ActivityInstance {
         this.instanceOf = instanceOf;
         this.state = state;
         this.patientPin = patientPin;
-    }
-
-    public ObjectId getId() {
-        return id;
-    }
-
-    public void setId(ObjectId id) {
-        this.id = id;
     }
 
     public Date getCreatedAt() {
@@ -150,7 +137,6 @@ public class ActivityInstance {
     @Override
     public String toString() {
         return "ActivityInstance{" +
-                "id=" + id +
                 ", activityInstanceId='" + activityInstanceId + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
