@@ -1,8 +1,6 @@
 package edu.asu.heal.core.api.resources;
 
-import edu.asu.heal.core.api.models.HEALResponse;
-import edu.asu.heal.core.api.models.NullObjects;
-import edu.asu.heal.core.api.models.Patient;
+import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
@@ -83,9 +81,15 @@ public class PatientResource {
     @GET
     @Produces("application/hal+json")
     public Response fetchPatients(@QueryParam("trialId") String trialId) {
-        HEALResponse response = null;
-        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-
+        HEALResponse1 response = null;
+        HEALResponseBuilder builder;
+        try{
+            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            System.out.println("Problem in HEAL Response builder");
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
         List<Patient> patients = reachService.getPatients(trialId);
 
         if (patients == null) {
@@ -133,9 +137,15 @@ public class PatientResource {
     @Path("/{patientPin}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response fetchPatient(@PathParam("patientPin") int patientPin) {
-        HEALResponse response = null;
-        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-
+        HEALResponse1 response = null;
+        HEALResponseBuilder builder;
+        try {
+            builder = new HEALResponseBuilder(PatientResponse.class);
+        }catch (IllegalAccessException | InstantiationException ie){
+            System.out.println("Some server error");
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
         Patient patient = reachService.getPatient(patientPin);
         if (patient == null) {
             response = builder
@@ -167,33 +177,33 @@ public class PatientResource {
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
      */
-    @POST
-    public Response createPatient() {
-        HEALResponse response = null;
-        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-
-        Patient insertedPatient = reachService.createPatient();
-
-        if (insertedPatient == null) {
-            response = builder
-                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-                    .setData("SOME ERROR CREATING NEW PATIENT. CONTACT ADMINISTRATOR")
-                    .build();
-        } else if (insertedPatient.equals(NullObjects.getNullPatient())) {
-            response = builder
-                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-                    .setData("INCORRECT TRIAL ID IN THE REQUEST")
-                    .build();
-        } else {
-            response = builder
-                    .setStatusCode(Response.Status.CREATED.getStatusCode())
-                    .setData(insertedPatient)
-                    .setServerURI(_uri.getBaseUri().toString())
-                    .build();
-        }
-
-        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
-    }
+//    @POST
+//    public Response createPatient() {
+//        HEALResponse response = null;
+//        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+//
+//        Patient insertedPatient = reachService.createPatient();
+//
+//        if (insertedPatient == null) {
+//            response = builder
+//                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+//                    .setData("SOME ERROR CREATING NEW PATIENT. CONTACT ADMINISTRATOR")
+//                    .build();
+//        } else if (insertedPatient.equals(NullObjects.getNullPatient())) {
+//            response = builder
+//                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+//                    .setData("INCORRECT TRIAL ID IN THE REQUEST")
+//                    .build();
+//        } else {
+//            response = builder
+//                    .setStatusCode(Response.Status.CREATED.getStatusCode())
+//                    .setData(insertedPatient)
+//                    .setServerURI(_uri.getBaseUri().toString())
+//                    .build();
+//        }
+//
+//        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
+//    }
 
     /**
      * @api {put} /patients Update Patient
@@ -214,42 +224,42 @@ public class PatientResource {
      * @apiUse NotImplementedError
      */
 
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response updatePatients(Patient patient) {
-        HEALResponse response = null;
-        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-
-        if (patient.getPin() == 0) {
-            response = builder
-                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-                    .setData("YOU NEED TO PASS IN PATIENT PIN IN REQUEST PAYLOAD")
-                    .build();
-        } else {
-
-            Patient updatedPatient = reachService.updatePatient(patient);
-
-            if (updatedPatient == null) {
-                response = builder
-                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-                        .setData("SOME ERROR UPDATING THE PATIENT. CONTACT ADMINISTRATOR")
-                        .build();
-            } else if (updatedPatient.equals(NullObjects.getNullPatient())) {
-                response = builder
-                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-                        .setData("PATIENT PIN YOU PASSED IN IS INCORRECT OR DOES NOT EXIST")
-                        .build();
-            } else {
-                response = builder
-                        .setStatusCode(Response.Status.NO_CONTENT.getStatusCode())
-                        .setData(null)
-                        .setServerURI(_uri.getBaseUri().toString())
-                        .build();
-            }
-        }
-
-        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
-
-    }
+//    @PUT
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public Response updatePatients(Patient patient) {
+//        HEALResponse response = null;
+//        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+//
+//        if (patient.getPin() == 0) {
+//            response = builder
+//                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+//                    .setData("YOU NEED TO PASS IN PATIENT PIN IN REQUEST PAYLOAD")
+//                    .build();
+//        } else {
+//
+//            Patient updatedPatient = reachService.updatePatient(patient);
+//
+//            if (updatedPatient == null) {
+//                response = builder
+//                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+//                        .setData("SOME ERROR UPDATING THE PATIENT. CONTACT ADMINISTRATOR")
+//                        .build();
+//            } else if (updatedPatient.equals(NullObjects.getNullPatient())) {
+//                response = builder
+//                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+//                        .setData("PATIENT PIN YOU PASSED IN IS INCORRECT OR DOES NOT EXIST")
+//                        .build();
+//            } else {
+//                response = builder
+//                        .setStatusCode(Response.Status.NO_CONTENT.getStatusCode())
+//                        .setData(null)
+//                        .setServerURI(_uri.getBaseUri().toString())
+//                        .build();
+//            }
+//        }
+//
+//        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
+//
+//    }
 
 }
