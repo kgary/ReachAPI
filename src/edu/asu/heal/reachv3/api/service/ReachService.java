@@ -113,12 +113,16 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public ActivityInstance getActivityInstance(String activityInstanceId) {
+    public ActivityInstance getActivityInstance(String activityInstanceId, String activityInstanceType) {
         try {
             DAO dao = DAOFactory.getTheDAO();
-            ActivityInstance instance = dao.getActivityInstance(activityInstanceId);
+            if(activityInstanceType == null || activityInstanceType.length() == 0)
+                return dao.getActivityInstance(activityInstanceId, ActivityInstance.class);
 
-            return instance;
+            if(activityInstanceType.equals("make_believe"))
+                return dao.getActivityInstance(activityInstanceId, MakeBelieveActivityInstance.class);
+
+            return NullObjects.getNullActivityInstance();
         } catch (Exception e) {
             System.out.println("SOME ERROR IN HEAL SERVICE getActivityInstance");
             e.printStackTrace();

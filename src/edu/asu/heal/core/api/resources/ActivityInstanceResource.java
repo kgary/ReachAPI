@@ -11,7 +11,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Path("/activityinstances/")
 @Produces(MediaType.APPLICATION_JSON)
@@ -115,10 +118,21 @@ public class ActivityInstanceResource {
      */
     @GET
     @Path("/{id}")
-    public Response fetchActivityInstance(@PathParam("id") String activityInstanceId) {
+    public Response fetchActivityInstance(@PathParam("id") String activityInstanceId, @QueryParam("type") String type) {
         HEALResponse response = null;
         HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-        ActivityInstance instance = reachService.getActivityInstance(activityInstanceId);
+
+        String[] temp = {"makebelieve", "stop", "worryheads", "stic"};
+        Set<String> activityInstanceTypes = new HashSet<>(Arrays.asList(temp));
+
+        if(type != null && !activityInstanceTypes.contains(type)){
+            response = builder
+                    .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
+                    .setData("THE ACTIVITY INSTANCE TYPE PARAM YOU'VE INCLUDED IS INCORRECT")
+                    .build();
+        }
+
+        ActivityInstance instance = reachService.getActivityInstance(activityInstanceId, type);
 
         if (instance == null) {
             response = builder

@@ -33,7 +33,7 @@ public interface DAO {
 
     ActivityInstance createActivityInstance(ActivityInstance instance);
 
-    ActivityInstance getActivityInstance(String activityInstanceId);
+    <T> ActivityInstance getActivityInstance(String activityInstanceId, Class<T> type);
 
 
     /****************************************  Patient DAO methods ****************************************************/

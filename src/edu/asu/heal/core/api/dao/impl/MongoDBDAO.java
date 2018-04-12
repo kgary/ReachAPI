@@ -304,13 +304,13 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public ActivityInstance getActivityInstance(String activityInstanceId) {
-        try {
+    public <T> ActivityInstance getActivityInstance(String activityInstanceId, Class<T> type) {
+                try {
             MongoDatabase database = getConnectedDatabase();
-            MongoCollection<ActivityInstance> activityInstanceMongoCollection =
-                    database.getCollection(ACTIVITYINSTANCES_COLLECTION, ActivityInstance.class);
+            MongoCollection<T> activityInstanceMongoCollection =
+                    database.getCollection(ACTIVITYINSTANCES_COLLECTION, type);
 
-            return activityInstanceMongoCollection
+            return (ActivityInstance) activityInstanceMongoCollection
                     .find(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId))
                     .projection(Projections.excludeId())
                     .first();
@@ -324,7 +324,6 @@ public class MongoDBDAO implements DAO {
             return null;
         }
     }
-
 
     /****************************************  Patient DAO methods ****************************************************/
     @Override
