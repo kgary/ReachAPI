@@ -5,6 +5,8 @@ public class MakeBelieveAnswers {
     private int howResponseId;
     private int whenResponseId;
 
+    public MakeBelieveAnswers() {}
+
     public int getSituationId() {
         return situationId;
     }

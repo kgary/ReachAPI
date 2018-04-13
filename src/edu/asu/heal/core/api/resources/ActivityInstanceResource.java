@@ -281,18 +281,6 @@ public class ActivityInstanceResource {
 
     }
 
-    // XXX Why not use a query param like type=makebelieve instead of making a new endpoint?
-    // when we extend our endpoint we think of it as a path param usually, whereas this is a subtype
-    @GET
-    @Path("/makebelieve/")
-    public Response fetchMakeBelieveInstance() {
-        String makeBelieveInstanceString = reachService.getMakeBelieveInstance();
-        if (makeBelieveInstanceString == null)
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Some server error. Please contact " +
-                    "administrator").build();
-        return Response.status(Response.Status.OK).entity(makeBelieveInstanceString).build();
-    }
-
     // XXX I am pretty confused why we need a new endpoint at all. Why can't the service distinguish the special case
     // of a MB AI?
     @GET

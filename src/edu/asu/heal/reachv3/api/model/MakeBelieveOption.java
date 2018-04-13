@@ -4,6 +4,8 @@ public class MakeBelieveOption {
     private int id;
     private String title;
 
+    public MakeBelieveOption() {}
+
     public MakeBelieveOption(int id, String title) {
         this.id = id;
         this.title = title;
