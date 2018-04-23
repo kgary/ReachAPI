@@ -1,4 +1,4 @@
-package edu.asu.heal.reachv3.api.model;
+package edu.asu.heal.reachv3.api.models;
 
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOException;

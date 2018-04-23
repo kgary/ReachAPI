@@ -9,18 +9,18 @@ import java.util.List;
 
 public class ActivityResponse extends HEALResponse1 {
     @Override
-    protected Object toEntity(String data) {
-        return this;
+    protected String toEntity(String data) {
+        return data;
     }
 
     @Override
-    protected Object toEntity(List data) {
+    protected String toEntity(List<IHealModelType> data) {
         RepresentationFactory factory = new StandardRepresentationFactory();
         Representation finalRepresentation, representation;
 
         finalRepresentation = factory.newRepresentation(this.getServerURI() + ACTIVITY_RESOURCE_PATH);
 
-        List<Activity> activities = (List<Activity>) data;
+        List<Activity> activities = (List<Activity>)(List<?>) data;
         for (Activity a : activities) {
             representation = factory.newRepresentation()
                     .withProperty("activity", a)
@@ -32,7 +32,7 @@ public class ActivityResponse extends HEALResponse1 {
     }
 
     @Override
-    protected <T> Object toEntity(T data) {
+    protected String toEntity(IHealModelType data) {
         RepresentationFactory factory = new StandardRepresentationFactory();
         Representation representation;
 

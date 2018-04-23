@@ -3,7 +3,7 @@ package edu.asu.heal.core.api.models;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Patient {
+public class Patient implements IHealModelType {
 
     public static String PIN_ATTRIBUTE = "pin";
     public static String PATIENTID_ATTRIBUTE = "patientId";

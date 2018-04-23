@@ -5,7 +5,7 @@ import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.core.api.service.HealService;
-import edu.asu.heal.reachv3.api.model.*;
+import edu.asu.heal.reachv3.api.models.*;
 
 import javax.ws.rs.core.Response;
 import java.text.SimpleDateFormat;

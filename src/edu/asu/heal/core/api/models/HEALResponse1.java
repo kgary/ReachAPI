@@ -16,15 +16,22 @@ public abstract class HEALResponse1 {
     private Object data;
     private String serverURI;
 
-    public final Object toEntity(){
-        return toEntity(this.data);
+    public final String toEntity(){
+        if(this.data instanceof String)
+            return toEntity((String) this.data);
+        else if(this.data instanceof List)
+            return toEntity((List<IHealModelType>) this.data);
+        else if(this.data instanceof IHealModelType)
+            return toEntity((IHealModelType) this.data);
+
+        return null;
     }
 
     protected abstract String toEntity(String data);
 
-    protected abstract String toEntity(List<?> data);
+    protected abstract String toEntity(List<IHealModelType> data);
 
-    protected abstract <T> String toEntity(T data);
+    protected abstract String toEntity(IHealModelType data);
 
     public final int getStatusCode() {
         return this.statusCode;

@@ -15,12 +15,12 @@ public class ActivityInstanceResponse extends HEALResponse1 {
     }
 
     @Override
-    protected String toEntity(List<?> data) {
+    protected String toEntity(List<IHealModelType> data) {
         RepresentationFactory factory = new StandardRepresentationFactory();
         Representation finalRepresentation, representation;
 
         finalRepresentation = factory.newRepresentation(this.getServerURI() + ACTIVITY_INSTANCE_RESOURCE_PATH);
-        List<ActivityInstance> activityInstances = (List<ActivityInstance>) data;
+        List<ActivityInstance> activityInstances = (List<ActivityInstance>)(List<?>) data;
         for (ActivityInstance a : activityInstances) {
             representation = factory.newRepresentation()
                     .withProperty("activity_instance", a)
@@ -34,7 +34,8 @@ public class ActivityInstanceResponse extends HEALResponse1 {
     }
 
     @Override
-    protected String toEntity(ActivityInstance activityInstance) {
+    protected String toEntity(IHealModelType instance) {
+        ActivityInstance activityInstance = (ActivityInstance) instance;
         RepresentationFactory factory = new StandardRepresentationFactory();
         Representation representation;
 

@@ -14,12 +14,12 @@ public class PatientResponse extends HEALResponse1 {
     }
 
     @Override
-    protected String toEntity(List<?> data) {
+    protected String toEntity(List<IHealModelType> data) {
         RepresentationFactory factory = new StandardRepresentationFactory();
         Representation finalRepresentation, representation;
 
         finalRepresentation = factory.newRepresentation(this.getServerURI() + PATIENT_RESOURCE_PATH);
-        List<Patient> patients = (List<Patient>) data;
+        List<Patient> patients = (List<Patient>)(List<?>) data;
         for (Patient a : patients) {
             representation = factory.newRepresentation()
                     .withProperty("patient", a)
@@ -33,7 +33,7 @@ public class PatientResponse extends HEALResponse1 {
     }
 
     @Override
-    protected <T> String toEntity(Patient data) {
+    protected String toEntity(IHealModelType data) {
         RepresentationFactory factory = new StandardRepresentationFactory();
         Representation representation;
 

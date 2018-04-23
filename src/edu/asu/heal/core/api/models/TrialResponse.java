@@ -9,17 +9,17 @@ import java.util.List;
 
 public class TrialResponse extends HEALResponse1 {
     @Override
-    protected Object toEntity(String data) {
+    protected String toEntity(String data) {
         return null;
     }
 
     @Override
-    protected Object toEntity(List data) {
+    protected String toEntity(List<IHealModelType> data) {
         RepresentationFactory factory = new StandardRepresentationFactory();
         Representation finalRepresentation, representation;
 
         finalRepresentation = factory.newRepresentation(this.getServerURI() + TRIAL_RESOURCE_PATH);
-        List<Trial> trials = (List<Trial>) data;
+        List<Trial> trials = (List<Trial>)(List<?>) data;
         for (Trial a : trials) {
             representation = factory.newRepresentation()
                     .withProperty("trial", a)
@@ -34,7 +34,7 @@ public class TrialResponse extends HEALResponse1 {
     }
 
     @Override
-    protected <T> Object toEntity(T data) {
+    protected String toEntity(IHealModelType data) {
         RepresentationFactory factory = new StandardRepresentationFactory();
         Representation representation;
         Trial a = (Trial) data;

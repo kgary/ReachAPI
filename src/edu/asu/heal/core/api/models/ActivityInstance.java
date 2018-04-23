@@ -2,7 +2,7 @@ package edu.asu.heal.core.api.models;
 
 import java.util.Date;
 
-public class ActivityInstance {
+public class ActivityInstance implements IHealModelType {
     public static String CREATEDAT_ATTRIBUTE = "createdAt";
     public static String UPDATEDAT_ATTRIBUTE = "updatedAt";
     public static String STARTTIME_ATTRIBUTE = "startTime";

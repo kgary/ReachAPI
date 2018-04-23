@@ -61,7 +61,6 @@ public class ActivityInstanceResource {
         // set of query string parameters that could cut across these. Candidate for shortcut endpoint
         HEALResponse1 response = null;
         HEALResponseBuilder builder;
-//        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
         try{
             builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
         }catch (InstantiationException | IllegalAccessException ie){

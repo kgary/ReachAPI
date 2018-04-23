@@ -1,6 +1,5 @@
-package edu.asu.heal.reachv3.api.model;
+package edu.asu.heal.reachv3.api.models;
 
-import java.util.Date;
 import java.util.HashMap;
 
 public class MakeBelieveResponse {

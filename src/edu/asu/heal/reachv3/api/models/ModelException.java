@@ -1,4 +1,4 @@
-package edu.asu.heal.reachv3.api.model;
+package edu.asu.heal.reachv3.api.models;
 
 public class ModelException extends Exception {
     public ModelException() {

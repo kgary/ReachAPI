@@ -9,17 +9,17 @@ import java.util.List;
 
 public class DomainResponse extends HEALResponse1{
     @Override
-    protected Object toEntity(String data) {
-        return this;
+    protected String toEntity(String data) {
+        return data;
     }
 
     @Override
-    protected Object toEntity(List data) {
+    protected String toEntity(List<IHealModelType> data) {
         RepresentationFactory factory = new StandardRepresentationFactory();
         Representation finalRepresentation, representation;
 
         finalRepresentation = factory.newRepresentation(this.getServerURI() + DOMAIN_RESOURCE_PATH);
-        List<Domain> domains = (List<Domain>) data;
+        List<Domain> domains = (List<Domain>)(List<?>) data;
         for (Domain a : domains) {
             representation = factory.newRepresentation()
                     .withProperty("domain", a)
@@ -34,7 +34,7 @@ public class DomainResponse extends HEALResponse1{
         return finalRepresentation.toString(RepresentationFactory.HAL_JSON);    }
 
     @Override
-    protected <T> Object toEntity(T data) {
+    protected String toEntity(IHealModelType data) {
         RepresentationFactory factory = new StandardRepresentationFactory();
         Representation representation;
         Domain a = (Domain) data;
