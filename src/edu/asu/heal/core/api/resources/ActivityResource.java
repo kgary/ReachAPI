@@ -42,46 +42,46 @@ public class ActivityResource {
      * @apiUse ActivityNotFoundError
      * @apiUse InternalServerError
      */
-    @GET
-    @QueryParam("domain")
-    public Response getActivities(@QueryParam("domain") String domain) {
-        List<Activity> activities = reachService.getActivities(domain);
-
-        HEALResponse response;
-        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-
-        if (activities == null) {
-            response = builder
-                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-                    .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
-                    .build();
-        } else if (activities.isEmpty()) {
-            response = builder
-                    .setStatusCode(Response.Status.OK.getStatusCode())
-                    .setData("THERE ARE NO ACTIVITIES FOR THIS DOMAIN")
-                    .build();
-        } else if (activities.size() == 1) {
-            if (activities.get(0).equals(NullObjects.getNullActivity())) {
-                response = builder
-                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-                        .setData("THE DOMAIN YOU'VE PASSED IN IS INCORRECT OR DOES NOT EXIST")
-                        .build();
-            } else {
-                response = builder
-                        .setStatusCode(Response.Status.OK.getStatusCode())
-                        .setData(activities)
-                        .setServerURI(_uri.getBaseUri().toString())
-                        .build();
-            }
-        } else {
-            response = builder
-                    .setStatusCode(Response.Status.OK.getStatusCode())
-                    .setData(activities)
-                    .setServerURI(_uri.getBaseUri().toString())
-                    .build();
-        }
-        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
-    }
+//    @GET
+//    @QueryParam("domain")
+//    public Response getActivities(@QueryParam("domain") String domain) {
+//        List<Activity> activities = reachService.getActivities(domain);
+//
+//        HEALResponse response;
+//        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+//
+//        if (activities == null) {
+//            response = builder
+//                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+//                    .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
+//                    .build();
+//        } else if (activities.isEmpty()) {
+//            response = builder
+//                    .setStatusCode(Response.Status.OK.getStatusCode())
+//                    .setData("THERE ARE NO ACTIVITIES FOR THIS DOMAIN")
+//                    .build();
+//        } else if (activities.size() == 1) {
+//            if (activities.get(0).equals(NullObjects.getNullActivity())) {
+//                response = builder
+//                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+//                        .setData("THE DOMAIN YOU'VE PASSED IN IS INCORRECT OR DOES NOT EXIST")
+//                        .build();
+//            } else {
+//                response = builder
+//                        .setStatusCode(Response.Status.OK.getStatusCode())
+//                        .setData(activities)
+//                        .setServerURI(_uri.getBaseUri().toString())
+//                        .build();
+//            }
+//        } else {
+//            response = builder
+//                    .setStatusCode(Response.Status.OK.getStatusCode())
+//                    .setData(activities)
+//                    .setServerURI(_uri.getBaseUri().toString())
+//                    .build();
+//        }
+//        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
+//    }
 
     /**
      * @api {get} /activities/:id Activity Detail
@@ -93,32 +93,32 @@ public class ActivityResource {
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
      */
-    @GET
-    @Path("/{activityId}")
-    public Response getActivity(@PathParam("activityId") String activityId){
-        HEALResponse response;
-        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-        Activity activity = reachService.getActivity(activityId);
-
-        if (activity == null) {
-            response = builder
-                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-                    .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
-                    .build();
-        } else if (activity.equals(NullObjects.getNullActivity())) {
-            response = builder
-                    .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
-                    .setData("THE ACTIVITY YOU'RE REQUESTING DOES NOT EXIST")
-                    .build();
-        } else {
-            response = builder
-                    .setStatusCode(Response.Status.OK.getStatusCode())
-                    .setData(activity)
-                    .setServerURI(_uri.getBaseUri().toString())
-                    .build();
-        }
-        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
-    }
+//    @GET
+//    @Path("/{activityId}")
+//    public Response getActivity(@PathParam("activityId") String activityId){
+//        HEALResponse response;
+//        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+//        Activity activity = reachService.getActivity(activityId);
+//
+//        if (activity == null) {
+//            response = builder
+//                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+//                    .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
+//                    .build();
+//        } else if (activity.equals(NullObjects.getNullActivity())) {
+//            response = builder
+//                    .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
+//                    .setData("THE ACTIVITY YOU'RE REQUESTING DOES NOT EXIST")
+//                    .build();
+//        } else {
+//            response = builder
+//                    .setStatusCode(Response.Status.OK.getStatusCode())
+//                    .setData(activity)
+//                    .setServerURI(_uri.getBaseUri().toString())
+//                    .build();
+//        }
+//        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
+//    }
 
     /**
      * @api {post} /activities Create Activity
@@ -141,93 +141,93 @@ public class ActivityResource {
      * }
      * @apiUse InternalServerError
      */
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response createActivity(Activity activityJSON) {
-        HEALResponse response;
-        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+//    @POST
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public Response createActivity(Activity activityJSON) {
+//        HEALResponse response;
+//        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+//
+//        if (activityJSON.getTitle() == null || activityJSON.getTitle().trim().length() == 0) {
+//            response = builder
+//                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+//                    .setData("TITLE MISSING FROM REQUEST")
+//                    .build();
+//        } else {
+//            Activity activity = reachService.createActivity(activityJSON.getTitle(), activityJSON.getDescription());
+//            if (activity == null) {
+//                response = builder
+//                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+//                        .setData("COULD NOT CREATE ACTIVITY. CONTACT ADMINISTRATOR")
+//                        .build();
+//            } else {
+//                response = builder
+//                        .setStatusCode(Response.Status.CREATED.getStatusCode())
+//                        .setData(activity)
+//                        .setServerURI(_uri.getBaseUri().toString())
+//                        .build();
+//            }
+//        }
+//        return Response.status(response.getStatusCode()).entity(response).build();
+//    }
 
-        if (activityJSON.getTitle() == null || activityJSON.getTitle().trim().length() == 0) {
-            response = builder
-                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-                    .setData("TITLE MISSING FROM REQUEST")
-                    .build();
-        } else {
-            Activity activity = reachService.createActivity(activityJSON.getTitle(), activityJSON.getDescription());
-            if (activity == null) {
-                response = builder
-                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-                        .setData("COULD NOT CREATE ACTIVITY. CONTACT ADMINISTRATOR")
-                        .build();
-            } else {
-                response = builder
-                        .setStatusCode(Response.Status.CREATED.getStatusCode())
-                        .setData(activity)
-                        .setServerURI(_uri.getBaseUri().toString())
-                        .build();
-            }
-        }
-        return Response.status(response.getStatusCode()).entity(response).build();
-    }
+//    @PUT
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public Response updateActivity(Activity activityJSON){
+//        HEALResponse response;
+//        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+//
+//        if (activityJSON.getActivityId() == null || activityJSON.getActivityId().length() == 0) {
+//            response = builder
+//                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+//                    .setData("ACTIVITYID MISSING FROM REQUEST")
+//                    .build();
+//        } else {
+//            Activity updatedActivity = reachService.updateActivity(activityJSON);
+//            if (updatedActivity == null) {
+//                response = builder
+//                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+//                        .setData("COULD NOT UPDATE ACTIVITY. CONTACT ADMINISTRATOR")
+//                        .build();
+//            } else if(updatedActivity.equals(NullObjects.getNullActivity())){
+//                response = builder
+//                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+//                        .setData("ACTIVITY ID YOU PASSED IN IS INCORRECT OR DOES NOT EXIST")
+//                        .build();
+//            } else {
+//                response = builder
+//                        .setStatusCode(Response.Status.OK.getStatusCode())
+//                        .setData(updatedActivity)
+//                        .setServerURI(_uri.getBaseUri().toString())
+//                        .build();
+//            }
+//        }
+//        return Response.status(response.getStatusCode()).entity(response).build();
+//    }
 
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateActivity(Activity activityJSON){
-        HEALResponse response;
-        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-
-        if (activityJSON.getActivityId() == null || activityJSON.getActivityId().length() == 0) {
-            response = builder
-                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-                    .setData("ACTIVITYID MISSING FROM REQUEST")
-                    .build();
-        } else {
-            Activity updatedActivity = reachService.updateActivity(activityJSON);
-            if (updatedActivity == null) {
-                response = builder
-                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-                        .setData("COULD NOT UPDATE ACTIVITY. CONTACT ADMINISTRATOR")
-                        .build();
-            } else if(updatedActivity.equals(NullObjects.getNullActivity())){
-                response = builder
-                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-                        .setData("ACTIVITY ID YOU PASSED IN IS INCORRECT OR DOES NOT EXIST")
-                        .build();
-            } else {
-                response = builder
-                        .setStatusCode(Response.Status.OK.getStatusCode())
-                        .setData(updatedActivity)
-                        .setServerURI(_uri.getBaseUri().toString())
-                        .build();
-            }
-        }
-        return Response.status(response.getStatusCode()).entity(response).build();
-    }
-
-    @DELETE
-    @Path("/{id}")
-    public Response removeActivity(@PathParam("id") String activityId) {
-        HEALResponse response;
-        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-
-        Activity removedActivity = reachService.deleteActivity(activityId);
-
-        if (removedActivity.equals(NullObjects.getNullActivity())) {
-            response = builder
-                    .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
-                    .setData("ACTIVITY DOES NOT EXIST")
-                    .build();
-        } else if (removedActivity == null) {
-            response = builder
-                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-                    .setData("SOME PROBLEM IN DELETING ACTIVITY. CONTACT ADMINISTRATOR")
-                    .build();
-        } else {
-            response = builder
-                    .setStatusCode(Response.Status.NO_CONTENT.getStatusCode())
-                    .setData(null)
-                    .build();
-        }
-        return Response.status(response.getStatusCode()).build();
-    }
+//    @DELETE
+//    @Path("/{id}")
+//    public Response removeActivity(@PathParam("id") String activityId) {
+//        HEALResponse response;
+//        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+//
+//        Activity removedActivity = reachService.deleteActivity(activityId);
+//
+//        if (removedActivity.equals(NullObjects.getNullActivity())) {
+//            response = builder
+//                    .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
+//                    .setData("ACTIVITY DOES NOT EXIST")
+//                    .build();
+//        } else if (removedActivity == null) {
+//            response = builder
+//                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+//                    .setData("SOME PROBLEM IN DELETING ACTIVITY. CONTACT ADMINISTRATOR")
+//                    .build();
+//        } else {
+//            response = builder
+//                    .setStatusCode(Response.Status.NO_CONTENT.getStatusCode())
+//                    .setData(null)
+//                    .build();
+//        }
+//        return Response.status(response.getStatusCode()).build();
+//    }
 }

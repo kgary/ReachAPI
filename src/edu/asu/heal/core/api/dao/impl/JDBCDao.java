@@ -5,7 +5,7 @@ import edu.asu.heal.core.api.dao.DAOException;
 import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.core.api.dao.ValueObject;
 import edu.asu.heal.core.api.models.*;
-import edu.asu.heal.reachv3.api.model.*;
+import edu.asu.heal.reachv3.api.models.*;
 
 import java.sql.*;
 import java.sql.Date;

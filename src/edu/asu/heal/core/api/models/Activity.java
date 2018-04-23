@@ -2,7 +2,7 @@ package edu.asu.heal.core.api.models;
 
 import java.util.Date;
 
-public class Activity {
+public class Activity implements IHealModelType{
 
     public static String TITLE_ATTRIBUTE = "title";
     public static String DESCRIPTION_ATTRIBUTE = "description";

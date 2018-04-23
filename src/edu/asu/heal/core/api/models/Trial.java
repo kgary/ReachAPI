@@ -3,7 +3,7 @@ package edu.asu.heal.core.api.models;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Trial {
+public class Trial implements IHealModelType{
 
 
     public static String NAME_ATTRIBUTE = "name";

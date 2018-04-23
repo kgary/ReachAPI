@@ -1,8 +1,6 @@
 package edu.asu.heal.core.api.resources;
 
-import edu.asu.heal.core.api.models.ActivityInstance;
-import edu.asu.heal.core.api.models.HEALResponse;
-import edu.asu.heal.core.api.models.NullObjects;
+import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
@@ -61,8 +59,14 @@ public class ActivityInstanceResource {
                                            @QueryParam("trialId") int trialId) {
         // XXX are the query string params required? I would think there would be a more general
         // set of query string parameters that could cut across these. Candidate for shortcut endpoint
-        HEALResponse response = null;
-        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+        HEALResponse1 response = null;
+        HEALResponseBuilder builder;
+        try{
+            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
         if (patientPin == 0 || patientPin < -1) {
             response = builder
                     .setData("YOUR PATIENT PIN IS ABSENT FROM THE REQUEST")
@@ -119,17 +123,13 @@ public class ActivityInstanceResource {
     @GET
     @Path("/{id}")
     public Response fetchActivityInstance(@PathParam("id") String activityInstanceId, @QueryParam("type") String type) {
-        HEALResponse response = null;
-        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-
-        String[] temp = {"makebelieve", "stop", "worryheads", "stic"};
-        Set<String> activityInstanceTypes = new HashSet<>(Arrays.asList(temp));
-
-        if(type != null && !activityInstanceTypes.contains(type)){
-            response = builder
-                    .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
-                    .setData("THE ACTIVITY INSTANCE TYPE PARAM YOU'VE INCLUDED IS INCORRECT")
-                    .build();
+        HEALResponse1 response = null;
+        HEALResponseBuilder builder;
+        try{
+            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
         ActivityInstance instance = reachService.getActivityInstance(activityInstanceId, type);
@@ -183,40 +183,40 @@ public class ActivityInstanceResource {
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
      */
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response createActivityInstance(ActivityInstance activityInstanceJson) {
-        HEALResponse response = null;
-        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-
-        if (activityInstanceJson.getPatientPin() == 0 || activityInstanceJson.getInstanceOf() == null) {
-            response = builder
-                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-                    .setData("REQUEST MUST CONTAIN AT LEAST PATIENT PIN AND INSTANCE TYPE VALUE")
-                    .build();
-
-        } else {
-            ActivityInstance instance = reachService.createActivityInstance(activityInstanceJson);
-            if (instance == null) {
-                response = builder
-                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-                        .setData("SOME ERROR CREATING NEW ACTIVITY INSTANCE. CONTACT ADMINISTRATOR")
-                        .build();
-            } else if (instance.equals(NullObjects.getNullActivityInstance())) {
-                response = builder
-                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-                        .setData("INCORRECT PATIENT PIN IN THE REQUEST PAYLOAD")
-                        .build();
-            } else {
-                response = builder
-                        .setStatusCode(Response.Status.CREATED.getStatusCode())
-                        .setData(instance)
-                        .build();
-            }
-        }
-
-        return Response.status(response.getStatusCode()).entity(response).build();
-    }
+//    @POST
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public Response createActivityInstance(ActivityInstance activityInstanceJson) {
+//        HEALResponse response = null;
+//        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+//
+//        if (activityInstanceJson.getPatientPin() == 0 || activityInstanceJson.getInstanceOf() == null) {
+//            response = builder
+//                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+//                    .setData("REQUEST MUST CONTAIN AT LEAST PATIENT PIN AND INSTANCE TYPE VALUE")
+//                    .build();
+//
+//        } else {
+//            ActivityInstance instance = reachService.createActivityInstance(activityInstanceJson);
+//            if (instance == null) {
+//                response = builder
+//                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+//                        .setData("SOME ERROR CREATING NEW ACTIVITY INSTANCE. CONTACT ADMINISTRATOR")
+//                        .build();
+//            } else if (instance.equals(NullObjects.getNullActivityInstance())) {
+//                response = builder
+//                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+//                        .setData("INCORRECT PATIENT PIN IN THE REQUEST PAYLOAD")
+//                        .build();
+//            } else {
+//                response = builder
+//                        .setStatusCode(Response.Status.CREATED.getStatusCode())
+//                        .setData(instance)
+//                        .build();
+//            }
+//        }
+//
+//        return Response.status(response.getStatusCode()).entity(response).build();
+//    }
 
 //    /**
 //     * @api {put} activityInstance Update ActivityInstance
@@ -253,33 +253,33 @@ public class ActivityInstanceResource {
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
      */
-    @DELETE
-    @Path("/{id}")
-    public Response removeActivityInstance(@PathParam("id") String activityInstanceId) {
-        HEALResponse response = null;
-        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-
-        ActivityInstance removed = reachService.deleteActivityInstance(activityInstanceId);
-
-        if (removed.equals(NullObjects.getNullActivityInstance())) {
-            response = builder
-                    .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
-                    .setData("ACTIVITY INSTANCE DOES NOT EXIST")
-                    .build();
-        } else if (removed == null) {
-            response = builder
-                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-                    .setData("SOME PROBLEM IN DELETING ACTIVITY INSTANCE. CONTACT ADMINISTRATOR")
-                    .build();
-        } else {
-            response = builder
-                    .setStatusCode(Response.Status.NO_CONTENT.getStatusCode())
-                    .setData(null)
-                    .build();
-        }
-        return Response.status(response.getStatusCode()).build();
-
-    }
+//    @DELETE
+//    @Path("/{id}")
+//    public Response removeActivityInstance(@PathParam("id") String activityInstanceId) {
+//        HEALResponse response = null;
+//        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
+//
+//        ActivityInstance removed = reachService.deleteActivityInstance(activityInstanceId);
+//
+//        if (removed.equals(NullObjects.getNullActivityInstance())) {
+//            response = builder
+//                    .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
+//                    .setData("ACTIVITY INSTANCE DOES NOT EXIST")
+//                    .build();
+//        } else if (removed == null) {
+//            response = builder
+//                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+//                    .setData("SOME PROBLEM IN DELETING ACTIVITY INSTANCE. CONTACT ADMINISTRATOR")
+//                    .build();
+//        } else {
+//            response = builder
+//                    .setStatusCode(Response.Status.NO_CONTENT.getStatusCode())
+//                    .setData(null)
+//                    .build();
+//        }
+//        return Response.status(response.getStatusCode()).build();
+//
+//    }
 
     // XXX I am pretty confused why we need a new endpoint at all. Why can't the service distinguish the special case
     // of a MB AI?
