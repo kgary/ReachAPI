@@ -1,10 +1,10 @@
 package edu.asu.heal.core.api.models;
 
 public class HEALResponseBuilder {
-    private HEALResponse1 _response;
+    private HEALResponse _response;
 
     public HEALResponseBuilder(Class modelClass) throws InstantiationException, IllegalAccessException {
-        _response = (HEALResponse1) modelClass.newInstance();
+        _response = (HEALResponse) modelClass.newInstance();
     }
 
     public HEALResponseBuilder setStatusCode(int statusCode) {
@@ -22,7 +22,7 @@ public class HEALResponseBuilder {
         return this;
     }
 
-    public HEALResponse1 build() {
+    public HEALResponse build() {
         return this._response;
     }
 }

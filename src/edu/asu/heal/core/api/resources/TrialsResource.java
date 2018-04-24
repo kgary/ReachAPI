@@ -1,8 +1,6 @@
 package edu.asu.heal.core.api.resources;
 
-import edu.asu.heal.core.api.models.HEALResponse;
-import edu.asu.heal.core.api.models.NullObjects;
-import edu.asu.heal.core.api.models.Trial;
+import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
@@ -51,51 +49,56 @@ public class TrialsResource {
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
      */
-//    @GET
-//    @QueryParam("domain")
-//    public Response getTrials(@QueryParam("domain") String domain) {
-//        HEALResponse response = null;
-//        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-//
-//        List<Trial> trials = null;
-//        if (domain == null || domain.equals("")) {
-//            trials = reachService.getTrials(null);
-//        } else {
-//            trials = reachService.getTrials(domain.replace("_", " "));
-//        }
-//
-//        if (trials == null) {
-//            response = builder
-//                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-//                    .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
-//                    .build();
-//        } else if (trials.isEmpty()) {
-//            response = builder
-//                    .setStatusCode(Response.Status.OK.getStatusCode())
-//                    .setData("THERE ARE NO TRIALS IN THE DATABASE")
-//                    .build();
-//        } else if (trials.size() == 1) {
-//            if (trials.get(0).equals(NullObjects.getNullActivityInstance())) {
-//                response = builder
-//                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-//                        .setData("THE DOMAIN YOU'VE PASSED IN IS INCORRECT OR DOES NOT EXIST")
-//                        .build();
-//            } else {
-//                response = builder
-//                        .setStatusCode(Response.Status.OK.getStatusCode())
-//                        .setData(trials)
-//                        .build();
-//            }
-//        } else {
-//            response = builder
-//                    .setStatusCode(Response.Status.OK.getStatusCode())
-//                    .setData(trials)
-//                    .setServerURI(_uri.getBaseUri().toString())
-//                    .build();
-//        }
-//
-//        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
-//    }
+    @GET
+    @QueryParam("domain")
+    public Response getTrials(@QueryParam("domain") String domain) {
+        HEALResponse response;
+        HEALResponseBuilder builder;
+        try{
+            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        List<Trial> trials;
+        if (domain == null || domain.equals("")) {
+            trials = reachService.getTrials(null);
+        } else {
+            trials = reachService.getTrials(domain.replace("_", " "));
+        }
+
+        if (trials == null) {
+            response = builder
+                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
+                    .build();
+        } else if (trials.isEmpty()) {
+            response = builder
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setData("THERE ARE NO TRIALS IN THE DATABASE")
+                    .build();
+        } else if (trials.size() == 1) {
+            if (trials.get(0).equals(NullObjects.getNullActivityInstance())) {
+                response = builder
+                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                        .setData("THE DOMAIN YOU'VE PASSED IN IS INCORRECT OR DOES NOT EXIST")
+                        .build();
+            } else {
+                response = builder
+                        .setStatusCode(Response.Status.OK.getStatusCode())
+                        .setData(trials)
+                        .build();
+            }
+        } else {
+            response = builder
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setData(trials)
+                    .setServerURI(_uri.getBaseUri().toString())
+                    .build();
+        }
+
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
+    }
 
     /**
      * @api {post} /trials Create Trial
@@ -120,44 +123,49 @@ public class TrialsResource {
      * @apiuse TrialNotFoundError
      * @apiUse NotImplementedError
      */
-//    @POST
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response addTrial(Trial trial) {
-//
-//        HEALResponse response = null;
-//        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-//
-//        if (trial.getDomainId().length() <= 0) {
-//            response = builder
-//                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-//                    .setData("DOMAIN CANNOT BE EMPTY")
-//                    .build();
-//        } else if (trial.getTitle().length() <= 0) {
-//            response = builder
-//                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-//                    .setData("TITLE CANNOT BE EMPTY")
-//                    .build();
-//        } else {
-//            Trial addedTrial = reachService.addTrial(trial);
-//            if (addedTrial.equals(NullObjects.getNullTrial())) {
-//                response = builder
-//                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-//                        .setData("DOMAIN IS INCORRECT OR DOES NOT EXIST")
-//                        .build();
-//            } else if (addedTrial == null) {
-//                response = builder
-//                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-//                        .setData("SOME ERROR CREATING NEW TRIAL. CONTACT ADMINISTRATOR")
-//                        .build();
-//            } else {
-//                response = builder
-//                        .setStatusCode(Response.Status.CREATED.getStatusCode())
-//                        .setData(addedTrial)
-//                        .setServerURI(_uri.getBaseUri().toString())
-//                        .build();
-//            }
-//        }
-//        return Response.status(response.getStatusCode()).entity(response).build();
-//    }
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addTrial(Trial trial) {
+
+        HEALResponse response;
+        HEALResponseBuilder builder;
+        try{
+            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        if (trial.getDomainId().length() <= 0) {
+            response = builder
+                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .setData("DOMAIN CANNOT BE EMPTY")
+                    .build();
+        } else if (trial.getTitle().length() <= 0) {
+            response = builder
+                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .setData("TITLE CANNOT BE EMPTY")
+                    .build();
+        } else {
+            Trial addedTrial = reachService.addTrial(trial);
+            if (addedTrial.equals(NullObjects.getNullTrial())) {
+                response = builder
+                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                        .setData("DOMAIN IS INCORRECT OR DOES NOT EXIST")
+                        .build();
+            } else if (addedTrial == null) {
+                response = builder
+                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                        .setData("SOME ERROR CREATING NEW TRIAL. CONTACT ADMINISTRATOR")
+                        .build();
+            } else {
+                response = builder
+                        .setStatusCode(Response.Status.CREATED.getStatusCode())
+                        .setData(addedTrial)
+                        .setServerURI(_uri.getBaseUri().toString())
+                        .build();
+            }
+        }
+        return Response.status(response.getStatusCode()).entity(response).build();
+    }
 }

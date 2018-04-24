@@ -9,10 +9,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Path("/activityinstances/")
 @Produces(MediaType.APPLICATION_JSON)
@@ -59,7 +56,7 @@ public class ActivityInstanceResource {
                                            @QueryParam("trialId") int trialId) {
         // XXX are the query string params required? I would think there would be a more general
         // set of query string parameters that could cut across these. Candidate for shortcut endpoint
-        HEALResponse1 response = null;
+        HEALResponse response = null;
         HEALResponseBuilder builder;
         try{
             builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
@@ -123,7 +120,7 @@ public class ActivityInstanceResource {
     @GET
     @Path("/{id}")
     public Response fetchActivityInstance(@PathParam("id") String activityInstanceId, @QueryParam("type") String type) {
-        HEALResponse1 response = null;
+        HEALResponse response = null;
         HEALResponseBuilder builder;
         try{
             builder = new HEALResponseBuilder(ActivityInstanceResponse.class);

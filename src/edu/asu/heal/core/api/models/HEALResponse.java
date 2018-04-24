@@ -1,49 +1,59 @@
 package edu.asu.heal.core.api.models;
 
-import com.theoryinpractise.halbuilder.api.Representation;
-import com.theoryinpractise.halbuilder.api.RepresentationFactory;
-import com.theoryinpractise.halbuilder.impl.api.Support;
-import com.theoryinpractise.halbuilder.standard.StandardRepresentationFactory;
 import edu.asu.heal.core.api.resources.*;
 import org.glassfish.jersey.uri.internal.JerseyUriBuilder;
 
 import java.util.List;
 
-public class HEALResponse {
-
-    private static final String ACTIVITY_RESOURCE_PATH;
-    private static final String ACTIVITY_INSTANCE_RESOURCE_PATH;
-    private static final String DOMAIN_RESOURCE_PATH;
-    private static final String PATIENT_RESOURCE_PATH;
-    private static final String TRIAL_RESOURCE_PATH;
-
-    static{
-
-        ACTIVITY_RESOURCE_PATH = new JerseyUriBuilder().path(ActivityResource.class).toTemplate().replace("/", "");
-        ACTIVITY_INSTANCE_RESOURCE_PATH = new JerseyUriBuilder().path(ActivityInstanceResource.class).toTemplate().replace("/", "");
-        DOMAIN_RESOURCE_PATH = new JerseyUriBuilder().path(DomainResource.class).toTemplate().replace("/", "");
-        PATIENT_RESOURCE_PATH = new JerseyUriBuilder().path(PatientResource.class).toTemplate().replace("/", "");
-        TRIAL_RESOURCE_PATH = new JerseyUriBuilder().path(TrialsResource.class).toTemplate().replace("/", "");
-    }
+public abstract class HEALResponse {
+    public static final String ACTIVITY_RESOURCE_PATH = new JerseyUriBuilder().path(ActivityResource.class).toTemplate().replace("/", "");
+    public static final String ACTIVITY_INSTANCE_RESOURCE_PATH = new JerseyUriBuilder().path(ActivityInstanceResource.class).toTemplate().replace("/", "");
+    public static final String DOMAIN_RESOURCE_PATH = new JerseyUriBuilder().path(DomainResource.class).toTemplate().replace("/", "");
+    public static final String PATIENT_RESOURCE_PATH = new JerseyUriBuilder().path(PatientResource.class).toTemplate().replace("/", "");
+    public static final String TRIAL_RESOURCE_PATH = new JerseyUriBuilder().path(TrialsResource.class).toTemplate().replace("/", "");
 
     private int statusCode;
     private Object data;
     private String serverURI;
 
-    private HEALResponse() {
+    public final String toEntity(){
+        if(this.data instanceof String)
+            return toEntity((String) this.data);
+        else if(this.data instanceof List)
+            return toEntity((List<IHealModelType>) this.data);
+        else if(this.data instanceof IHealModelType)
+            return toEntity((IHealModelType) this.data);
+
+        return null;
     }
 
-    // getters and setters
-    public int getStatusCode() {
-        return statusCode;
+    protected abstract String toEntity(String data);
+
+    protected abstract String toEntity(List<IHealModelType> data);
+
+    protected abstract String toEntity(IHealModelType data);
+
+    public final int getStatusCode() {
+        return this.statusCode;
     }
 
-    public Object getData() {
-        return data;
+    public final Object getData() {
+        return this.data;
     }
 
-    public String getServerURI() {
-        return serverURI;
+    public final String getServerURI() {
+        return this.serverURI;
     }
 
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public final void setData(Object data) {
+        this.data = data;
+    }
+
+    public final void setServerURI(String serverURI) {
+        this.serverURI = serverURI;
+    }
 }

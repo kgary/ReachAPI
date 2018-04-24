@@ -1,9 +1,6 @@
 package edu.asu.heal.core.api.resources;
 
-import com.sun.java.browser.plugin2.DOM;
-import edu.asu.heal.core.api.models.Domain;
-import edu.asu.heal.core.api.models.HEALResponse;
-import edu.asu.heal.core.api.models.NullObjects;
+import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
@@ -68,33 +65,39 @@ public class DomainResource {
      * @apiUse DomainNotFoundError
      * @apiUse InternalServerError
      */
-//    @GET
-//    public Response fetchDomains() {
-//
-//        HEALResponse response;
-//        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-//
-//        List<Domain> domains = reachService.getDomains();
-//        if (domains == null) {
-//            response = builder
-//                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-//                    .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
-//                    .build();
-//        } else if (domains.isEmpty()) {
-//            response = builder
-//                    .setStatusCode(Response.Status.OK.getStatusCode())
-//                    .setData("THERE ARE NO DOMAINS IN THE DATABASE")
-//                    .build();
-//        } else {
-//            response = builder
-//                    .setStatusCode(Response.Status.OK.getStatusCode())
-//                    .setData(domains)
-//                    .setServerURI(_uri.getBaseUri().toString())
-//                    .build();
-//        }
-//
-//        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
-//    }
+    @GET
+    public Response fetchDomains() {
+
+        HEALResponse response;
+        HEALResponseBuilder builder;
+        try{
+            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+
+        List<Domain> domains = reachService.getDomains();
+        if (domains == null) {
+            response = builder
+                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
+                    .build();
+        } else if (domains.isEmpty()) {
+            response = builder
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setData("THERE ARE NO DOMAINS IN THE DATABASE")
+                    .build();
+        } else {
+            response = builder
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setData(domains)
+                    .setServerURI(_uri.getBaseUri().toString())
+                    .build();
+        }
+
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
+    }
 
     /**
      * @api {get} /domain/:id Domain Detail
@@ -112,34 +115,39 @@ public class DomainResource {
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
      */
-//    @GET
-//    @Path("/{id}")
-//    public Response fetchDomain(@PathParam("id") String id) {
-//
-//        HEALResponse response;
-//        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-//
-//        Domain domain = reachService.getDomain(id);
-//        if (domain == null) {
-//            response = builder
-//                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-//                    .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
-//                    .build();
-//        } else if (domain.equals(NullObjects.getNullDomain())) {
-//            response = builder
-//                    .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
-//                    .setData("THE DOMAIN YOU'RE REQUESTING DOES NOT EXIST")
-//                    .build();
-//        } else {
-//            response = builder
-//                    .setStatusCode(Response.Status.OK.getStatusCode())
-//                    .setData(domain)
-//                    .setServerURI(_uri.getBaseUri().toString())
-//                    .build();
-//        }
-//
-//        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
-//    }
+    @GET
+    @Path("/{id}")
+    public Response fetchDomain(@PathParam("id") String id) {
+
+        HEALResponse response;
+        HEALResponseBuilder builder;
+        try{
+            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        Domain domain = reachService.getDomain(id);
+        if (domain == null) {
+            response = builder
+                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
+                    .build();
+        } else if (domain.equals(NullObjects.getNullDomain())) {
+            response = builder
+                    .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
+                    .setData("THE DOMAIN YOU'RE REQUESTING DOES NOT EXIST")
+                    .build();
+        } else {
+            response = builder
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setData(domain)
+                    .setServerURI(_uri.getBaseUri().toString())
+                    .build();
+        }
+
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
+    }
 
 
     /**
@@ -154,36 +162,42 @@ public class DomainResource {
      * @apiUse DomainNotFoundError
      * @apiUse InternalServerError
      */
-//    @POST
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public Response addDomain(Domain domain) {
-//        HEALResponse response;
-//        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-//
-//        if (domain.getTitle().length() == 0) {
-//            response = builder
-//                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-//                    .setData("TITLE SHOULD NOT BE MISSING FROM THE REQUEST")
-//                    .build();
-//
-//        } else {
-//            Domain createdDomain = reachService.addDomain(domain.getTitle(), domain.getDescription(), domain.getState());
-//            if (createdDomain == null) {
-//                response = builder
-//                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-//                        .setData("SOME ERROR CREATING NEW DOMAIN. CONTACT ADMINISTRATOR")
-//                        .build();
-//            } else {
-//                response = builder
-//                        .setStatusCode(Response.Status.CREATED.getStatusCode())
-//                        .setData(createdDomain)
-//                        .build();
-//            }
-//        }
-//
-//        return Response.status(response.getStatusCode()).entity(response).build();
-//
-//
-//    }
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addDomain(Domain domain) {
+        HEALResponse response;
+        HEALResponseBuilder builder;
+        try{
+            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+
+        if (domain.getTitle().length() == 0) {
+            response = builder
+                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .setData("TITLE SHOULD NOT BE MISSING FROM THE REQUEST")
+                    .build();
+
+        } else {
+            Domain createdDomain = reachService.addDomain(domain.getTitle(), domain.getDescription(), domain.getState());
+            if (createdDomain == null) {
+                response = builder
+                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                        .setData("SOME ERROR CREATING NEW DOMAIN. CONTACT ADMINISTRATOR")
+                        .build();
+            } else {
+                response = builder
+                        .setStatusCode(Response.Status.CREATED.getStatusCode())
+                        .setData(createdDomain)
+                        .build();
+            }
+        }
+
+        return Response.status(response.getStatusCode()).entity(response).build();
+
+
+    }
 
 }

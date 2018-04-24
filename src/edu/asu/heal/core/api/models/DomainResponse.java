@@ -7,7 +7,7 @@ import com.theoryinpractise.halbuilder.standard.StandardRepresentationFactory;
 
 import java.util.List;
 
-public class DomainResponse extends HEALResponse1{
+public class DomainResponse extends HEALResponse {
     @Override
     protected String toEntity(String data) {
         return data;
