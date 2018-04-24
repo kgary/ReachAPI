@@ -71,7 +71,7 @@ public class DomainResource {
         HEALResponse response;
         HEALResponseBuilder builder;
         try{
-            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+            builder = new HEALResponseBuilder(DomainResponse.class);
         }catch (InstantiationException | IllegalAccessException ie){
             ie.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -122,7 +122,7 @@ public class DomainResource {
         HEALResponse response;
         HEALResponseBuilder builder;
         try{
-            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+            builder = new HEALResponseBuilder(DomainResponse.class);
         }catch (InstantiationException | IllegalAccessException ie){
             ie.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -168,7 +168,7 @@ public class DomainResource {
         HEALResponse response;
         HEALResponseBuilder builder;
         try{
-            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+            builder = new HEALResponseBuilder(DomainResponse.class);
         }catch (InstantiationException | IllegalAccessException ie){
             ie.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

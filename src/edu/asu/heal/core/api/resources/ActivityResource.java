@@ -47,7 +47,7 @@ public class ActivityResource {
         HEALResponse response;
         HEALResponseBuilder builder;
         try{
-            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+            builder = new HEALResponseBuilder(ActivityResponse.class);
         }catch (InstantiationException | IllegalAccessException ie){
             ie.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -102,7 +102,7 @@ public class ActivityResource {
         HEALResponse response;
         HEALResponseBuilder builder;
         try{
-            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+            builder = new HEALResponseBuilder(ActivityResponse.class);
         }catch (InstantiationException | IllegalAccessException ie){
             ie.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -156,7 +156,7 @@ public class ActivityResource {
         HEALResponse response;
         HEALResponseBuilder builder;
         try{
-            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+            builder = new HEALResponseBuilder(ActivityResponse.class);
         }catch (InstantiationException | IllegalAccessException ie){
             ie.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -191,7 +191,7 @@ public class ActivityResource {
         HEALResponse response;
         HEALResponseBuilder builder;
         try{
-            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+            builder = new HEALResponseBuilder(ActivityResponse.class);
         }catch (InstantiationException | IllegalAccessException ie){
             ie.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -231,7 +231,7 @@ public class ActivityResource {
         HEALResponse response;
         HEALResponseBuilder builder;
         try{
-            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+            builder = new HEALResponseBuilder(ActivityResponse.class);
         }catch (InstantiationException | IllegalAccessException ie){
             ie.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

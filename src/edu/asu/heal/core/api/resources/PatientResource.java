@@ -84,7 +84,7 @@ public class PatientResource {
         HEALResponse response = null;
         HEALResponseBuilder builder;
         try{
-            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+            builder = new HEALResponseBuilder(PatientResponse.class);
         }catch (InstantiationException | IllegalAccessException ie){
             System.out.println("Problem in HEAL Response builder");
             ie.printStackTrace();
@@ -182,7 +182,7 @@ public class PatientResource {
         HEALResponse response;
         HEALResponseBuilder builder;
         try{
-            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+            builder = new HEALResponseBuilder(PatientResponse.class);
         }catch (InstantiationException | IllegalAccessException ie){
             ie.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -236,7 +236,7 @@ public class PatientResource {
         HEALResponse response;
         HEALResponseBuilder builder;
         try{
-            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+            builder = new HEALResponseBuilder(PatientResponse.class);
         }catch (InstantiationException | IllegalAccessException ie){
             ie.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

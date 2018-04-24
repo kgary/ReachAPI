@@ -55,7 +55,7 @@ public class TrialsResource {
         HEALResponse response;
         HEALResponseBuilder builder;
         try{
-            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+            builder = new HEALResponseBuilder(TrialResponse.class);
         }catch (InstantiationException | IllegalAccessException ie){
             ie.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -87,6 +87,7 @@ public class TrialsResource {
                 response = builder
                         .setStatusCode(Response.Status.OK.getStatusCode())
                         .setData(trials)
+                        .setServerURI(_uri.getBaseUri().toString())
                         .build();
             }
         } else {
@@ -131,7 +132,7 @@ public class TrialsResource {
         HEALResponse response;
         HEALResponseBuilder builder;
         try{
-            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+            builder = new HEALResponseBuilder(TrialResponse.class);
         }catch (InstantiationException | IllegalAccessException ie){
             ie.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
