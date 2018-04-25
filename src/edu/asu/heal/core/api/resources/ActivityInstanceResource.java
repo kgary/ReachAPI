@@ -119,8 +119,8 @@ public class ActivityInstanceResource {
      */
     @GET
     @Path("/{id}")
-    public Response fetchActivityInstance(@PathParam("id") String activityInstanceId, @QueryParam("type") String type) {
-        HEALResponse response = null;
+    public Response fetchActivityInstance(@PathParam("id") String activityInstanceId) {
+        HEALResponse response;
         HEALResponseBuilder builder;
         try{
             builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
@@ -129,7 +129,7 @@ public class ActivityInstanceResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
-        ActivityInstance instance = reachService.getActivityInstance(activityInstanceId, type);
+        ActivityInstance instance = reachService.getActivityInstance(activityInstanceId);
 
         if (instance == null) {
             response = builder

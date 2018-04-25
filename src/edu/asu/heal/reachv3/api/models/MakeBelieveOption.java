@@ -1,23 +1,23 @@
 package edu.asu.heal.reachv3.api.models;
 
 public class MakeBelieveOption {
-    private int id;
+    private int optionId;
     private String title;
 
     public MakeBelieveOption() {}
 
-    public MakeBelieveOption(int id, String title) {
-        this.id = id;
+    public MakeBelieveOption(int optionId, String title) {
+        this.optionId = optionId;
         this.title = title;
     }
 
-    public int getId() {
+    public int getOptionId() {
 
-        return id;
+        return optionId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setOptionId(int optionId) {
+        this.optionId = optionId;
     }
 
     public String getTitle() {

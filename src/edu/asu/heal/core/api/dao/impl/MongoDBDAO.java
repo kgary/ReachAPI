@@ -11,6 +11,7 @@ import com.mongodb.client.model.Projections;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOException;
 import edu.asu.heal.core.api.models.*;
+import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.types.ObjectId;
@@ -304,16 +305,25 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public <T> ActivityInstance getActivityInstance(String activityInstanceId, Class<T> type) {
-                try {
+    public ActivityInstance getActivityInstance(String activityInstanceId) {
+        try {
             MongoDatabase database = getConnectedDatabase();
-            MongoCollection<T> activityInstanceMongoCollection =
-                    database.getCollection(ACTIVITYINSTANCES_COLLECTION, type);
+            MongoCollection<ActivityInstance> activityInstanceMongoCollection =
+                    database.getCollection(ACTIVITYINSTANCES_COLLECTION, ActivityInstance.class);
 
-            return (ActivityInstance) activityInstanceMongoCollection
+            ActivityInstance instance = activityInstanceMongoCollection
                     .find(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId))
                     .projection(Projections.excludeId())
                     .first();
+
+            if(instance.getInstanceOf().getName().equals("MakeBelieve")) //todo document this
+                instance = database
+                        .getCollection(ACTIVITYINSTANCES_COLLECTION, MakeBelieveActivityInstance.class)
+                        .find(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId))
+                        .projection(Projections.excludeId())
+                        .first();
+
+            return instance ;
         } catch (NullPointerException ne) {
             System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCE WITH ID " + activityInstanceId);
             ne.printStackTrace();

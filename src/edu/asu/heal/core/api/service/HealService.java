@@ -21,7 +21,7 @@ public interface HealService {
     /****************************************  Service methods for ActivityInstance  **********************************/
     List<ActivityInstance> getActivityInstances(int patientPin, int trialId);
 
-    ActivityInstance getActivityInstance(String activityInstanceId, String activityInstanceType);
+    ActivityInstance getActivityInstance(String activityInstanceId);
 
     ActivityInstance createActivityInstance(ActivityInstance activityInstanceJson);
 
