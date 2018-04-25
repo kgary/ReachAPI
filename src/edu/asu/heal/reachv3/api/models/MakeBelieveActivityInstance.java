@@ -1,45 +1,28 @@
 package edu.asu.heal.reachv3.api.models;
 
 import edu.asu.heal.core.api.models.ActivityInstance;
+import edu.asu.heal.core.api.models.ActivityInstanceType;
 
-import java.util.List;
+import java.util.Date;
 
 public class MakeBelieveActivityInstance extends ActivityInstance{
-    private String name;
-    private int situationId;
-    private String situationTitle;
-    private List<MakeBelieveQuestion> questions;
+    private MakeBelieveSituation situation;
 
-    public int getSituationId() {
-        return situationId;
+    public MakeBelieveActivityInstance(MakeBelieveSituation situation) {
+        this.situation = situation;
     }
 
-    public void setSituationId(int situationId) {
-        this.situationId = situationId;
+    public MakeBelieveActivityInstance(String activityInstanceId, Date createdAt, Date updatedAt, String description, Date startTime, Date endTime, Date userSubmissionTime, Date actualSubmissionTime, ActivityInstanceType instanceOf, String state, int patientPin, MakeBelieveSituation situation) {
+        super(activityInstanceId, createdAt, updatedAt, description, startTime, endTime, userSubmissionTime, actualSubmissionTime, instanceOf, state, patientPin);
+        this.situation = situation;
     }
 
-    public String getName() {
-        return name;
+
+    public MakeBelieveSituation getSituation() {
+        return situation;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSituation(MakeBelieveSituation situation) {
+        this.situation = situation;
     }
-
-    public String getSituationTitle() {
-        return situationTitle;
-    }
-
-    public void setSituationTitle(String situationTitle) {
-        this.situationTitle = situationTitle;
-    }
-
-    public List<MakeBelieveQuestion> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(List<MakeBelieveQuestion> questions) {
-        this.questions = questions;
-    }
-
 }

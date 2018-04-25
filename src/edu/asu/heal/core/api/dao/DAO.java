@@ -1,6 +1,7 @@
 package edu.asu.heal.core.api.dao;
 
 import edu.asu.heal.core.api.models.*;
+import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
 
 import java.util.List;
 
@@ -70,7 +71,7 @@ public interface DAO {
 
     boolean scheduleSAFEACtivity(int day, boolean completed) throws DAOException;
 
-    Object getMakeBelieveActivityInstance() throws DAOException;
+    MakeBelieveSituation getMakeBelieveSituation() throws DAOException;
 
     boolean checkSituationExists(int situationId) throws DAOException;
 

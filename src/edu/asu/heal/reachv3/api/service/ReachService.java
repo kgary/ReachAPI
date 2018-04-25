@@ -168,6 +168,18 @@ public class ReachService implements HealService {
             if (activityInstance.getCreatedAt() == null) activityInstance.setCreatedAt(new Date());
             if (activityInstance.getState() == null) activityInstance.setState(ActivityInstanceStatus.CREATED.status());
             if (activityInstance.getUpdatedAt() == null) activityInstance.setUpdatedAt(new Date());
+
+            if(activityInstance.getInstanceOf().getName().equals("MakeBelieve")){ //todo need a more elegant way of making the check whether it is of type make believe
+                System.out.println("THIS IS CALLED");
+                activityInstance =
+                        new MakeBelieveActivityInstance(activityInstance.getActivityInstanceId(),
+                        activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
+                        activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
+                        activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
+                        activityInstance.getInstanceOf(), activityInstance.getState(),
+                        activityInstance.getPatientPin(), getMakeBelieveSituation());
+            }
+
             ActivityInstance newActivityInstance = dao.createActivityInstance(activityInstance);
             return newActivityInstance;
         } catch (Exception e) {
@@ -426,11 +438,11 @@ public class ReachService implements HealService {
         }
     }
 
-    public String getMakeBelieveInstance() {
+    @Override
+    public MakeBelieveSituation getMakeBelieveSituation() {
         try {
             DAO dao = DAOFactory.getTheDAO();
-            MakeBelieveSituation situation = (MakeBelieveSituation) dao.getMakeBelieveActivityInstance();
-            return new ObjectMapper().writeValueAsString(situation);
+            return dao.getMakeBelieveSituation();
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Some problem in getMakeBelieveInstance in Reach Service");

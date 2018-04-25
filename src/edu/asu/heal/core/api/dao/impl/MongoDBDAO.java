@@ -2,6 +2,7 @@ package edu.asu.heal.core.api.dao.impl;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Accumulators;
@@ -12,6 +13,8 @@ import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOException;
 import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
+import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
+import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.types.ObjectId;
@@ -29,6 +32,8 @@ public class MongoDBDAO implements DAO {
     private static final String ACTIVITIES_COLLECTION = "activities";
     private static final String PATIENTS_COLLECTION = "patients";
     private static final String ACTIVITYINSTANCES_COLLECTION = "activityInstances";
+    private static final String MAKEBELIEVESITUATIONS_COLLECTION = "makeBelieveSituations";
+    private static final String MAKEBELIEVESITUATIONNAMES_COLLECTION = "makeBelieveSituationNames";
 
     private String __mongoDBName;
     private String __mongoURI;
@@ -147,7 +152,6 @@ public class MongoDBDAO implements DAO {
             MongoCollection<Activity> activitiesCollection = database.getCollection(MongoDBDAO.ACTIVITIES_COLLECTION,
                     Activity.class);
 
-            System.out.println(activity);
             activitiesCollection.insertOne(activity);
 
             return activity;
@@ -559,8 +563,40 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public Object getMakeBelieveActivityInstance() throws DAOException {
-        return null;
+    public MakeBelieveSituation getMakeBelieveSituation() throws DAOException {
+        try{
+            MongoDatabase database = getConnectedDatabase();
+            MongoCollection<MakeBelieveSituation> situationMongoCollection =
+                    database.getCollection(MongoDBDAO.MAKEBELIEVESITUATIONS_COLLECTION, MakeBelieveSituation.class);
+
+            AggregateIterable<MakeBelieveSituation> situations = situationMongoCollection
+                    .aggregate(Arrays.asList(Aggregates.sample(1)));
+
+            MakeBelieveSituation situation = null;
+            for(MakeBelieveSituation temp : situations){
+                situation = temp;
+            }
+
+            MongoCollection<Document> namesCollection =
+                    database.getCollection(MongoDBDAO.MAKEBELIEVESITUATIONNAMES_COLLECTION);
+            AggregateIterable<Document> names = namesCollection.aggregate(Arrays.asList(Aggregates.sample(1)));
+
+            String name = null;
+            for(Document temp : names){
+                name = temp.getString("name");
+            }
+
+            situation.setName(name);
+            return situation;
+        }catch (NullPointerException ne){
+            System.out.println("Could not get random make believe situation");
+            ne.printStackTrace();
+            return null;
+        }catch (Exception e){
+            System.out.println("Some problem in getting Make believe situation");
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package edu.asu.heal.core.api.service;
 
 import edu.asu.heal.core.api.models.*;
+import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
 
 import java.util.List;
 
@@ -56,7 +57,7 @@ public interface HealService {
 
     /****************************************  Other Service methods  *************************************************/
 
-    String getMakeBelieveInstance();
+    MakeBelieveSituation getMakeBelieveSituation();
 
     String getMakeBelieveInstanceAnswer(int instanceId);
 

@@ -180,40 +180,45 @@ public class ActivityInstanceResource {
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
      */
-//    @POST
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public Response createActivityInstance(ActivityInstance activityInstanceJson) {
-//        HEALResponse response = null;
-//        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-//
-//        if (activityInstanceJson.getPatientPin() == 0 || activityInstanceJson.getInstanceOf() == null) {
-//            response = builder
-//                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-//                    .setData("REQUEST MUST CONTAIN AT LEAST PATIENT PIN AND INSTANCE TYPE VALUE")
-//                    .build();
-//
-//        } else {
-//            ActivityInstance instance = reachService.createActivityInstance(activityInstanceJson);
-//            if (instance == null) {
-//                response = builder
-//                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-//                        .setData("SOME ERROR CREATING NEW ACTIVITY INSTANCE. CONTACT ADMINISTRATOR")
-//                        .build();
-//            } else if (instance.equals(NullObjects.getNullActivityInstance())) {
-//                response = builder
-//                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-//                        .setData("INCORRECT PATIENT PIN IN THE REQUEST PAYLOAD")
-//                        .build();
-//            } else {
-//                response = builder
-//                        .setStatusCode(Response.Status.CREATED.getStatusCode())
-//                        .setData(instance)
-//                        .build();
-//            }
-//        }
-//
-//        return Response.status(response.getStatusCode()).entity(response).build();
-//    }
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createActivityInstance(ActivityInstance activityInstanceJson) {
+        HEALResponse response;
+        HEALResponseBuilder builder;
+        try{
+            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        if (activityInstanceJson.getPatientPin() == 0 || activityInstanceJson.getInstanceOf() == null) {
+            response = builder
+                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .setData("REQUEST MUST CONTAIN AT LEAST PATIENT PIN AND INSTANCE TYPE VALUE")
+                    .build();
+
+        } else {
+            ActivityInstance instance = reachService.createActivityInstance(activityInstanceJson);
+            if (instance == null) {
+                response = builder
+                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                        .setData("SOME ERROR CREATING NEW ACTIVITY INSTANCE. CONTACT ADMINISTRATOR")
+                        .build();
+            } else if (instance.equals(NullObjects.getNullActivityInstance())) {
+                response = builder
+                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                        .setData("INCORRECT PATIENT PIN IN THE REQUEST PAYLOAD")
+                        .build();
+            } else {
+                response = builder
+                        .setStatusCode(Response.Status.CREATED.getStatusCode())
+                        .setData(instance)
+                        .build();
+            }
+        }
+
+        return Response.status(response.getStatusCode()).entity(response).build();
+    }
 
 //    /**
 //     * @api {put} activityInstance Update ActivityInstance

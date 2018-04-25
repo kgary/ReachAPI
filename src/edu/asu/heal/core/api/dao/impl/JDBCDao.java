@@ -286,7 +286,7 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
-    public Object getMakeBelieveActivityInstance() throws DAOException {
+    public MakeBelieveSituation getMakeBelieveSituation() throws DAOException {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
         PreparedStatement preparedStatement1 = null;
