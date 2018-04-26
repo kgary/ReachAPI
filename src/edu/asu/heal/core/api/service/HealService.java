@@ -28,7 +28,7 @@ public interface HealService {
 
     ActivityInstance deleteActivityInstance(String activityInstanceId);
 
-    String updateActivityInstance(String requestBody);
+    ActivityInstance updateActivityInstance(String requestBody);
 
     /****************************************  Service methods for Domain  ********************************************/
     List<Domain> getDomains();

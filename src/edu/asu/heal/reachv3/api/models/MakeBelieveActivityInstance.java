@@ -8,6 +8,7 @@ import java.util.Date;
 public class MakeBelieveActivityInstance extends ActivityInstance{
     private MakeBelieveSituation situation;
 
+    public MakeBelieveActivityInstance(){}
     public MakeBelieveActivityInstance(MakeBelieveSituation situation) {
         this.situation = situation;
     }

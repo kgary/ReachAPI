@@ -217,32 +217,56 @@ public class ActivityInstanceResource {
             }
         }
 
-        return Response.status(response.getStatusCode()).entity(response).build();
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
     }
 
-//    /**
-//     * @api {put} activityInstance Update ActivityInstance
-//     * @apiName UpdateActivityInstance
-//     * @apiGroup ActivityInstance
-//     * @apiParam {DateTime} StartTime Start Time of the Activity Instance
-//     * @apiParam {DateTime} EndTime End Time of the Activity Instance
-//     * @apiParam {DateTime} UserSubmissionTime User Submission Time of the ActivityInstance
-//     * @apiParam {String} Status The status of the Activity Instance from Created | Available | In Execution (Running) | Suspended | Completed | Aborted
-//     * @apiParam {String} Sequence The sequence of the activities
-//     * @apiParam {String} ActivityTitle The title of the Activity Instance
-//     * @apiParam {String} Description Description about the Activity Instance
-//     * @apiParam (Login) {String} pass Only logged in user can get this
-//     * @apiUse BadRequestError
-//     * @apiUse InternalServerError
-//     * @apiUse NotImplementedError
-//     */
-//    @PUT
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public Response updateActivityInstance(String requestBody) {
-//        // XXX No error cases possible on the call to the service? You list 4 above
-//        // XXX we return OK but we should distinguish an update from a created on PUT (200 vs 201)
-//        return Response.status(Response.Status.NO_CONTENT).entity(reachService.updateActivityInstance(requestBody)).build();
-//    }
+    /**
+     * @api {put} activityInstance Update ActivityInstance
+     * @apiName UpdateActivityInstance
+     * @apiGroup ActivityInstance
+     * @apiParam {DateTime} StartTime Start Time of the Activity Instance
+     * @apiParam {DateTime} EndTime End Time of the Activity Instance
+     * @apiParam {DateTime} UserSubmissionTime User Submission Time of the ActivityInstance
+     * @apiParam {String} Status The status of the Activity Instance from Created | Available | In Execution (Running) | Suspended | Completed | Aborted
+     * @apiParam {String} Sequence The sequence of the activities
+     * @apiParam {String} ActivityTitle The title of the Activity Instance
+     * @apiParam {String} Description Description about the Activity Instance
+     * @apiParam (Login) {String} pass Only logged in user can get this
+     * @apiUse BadRequestError
+     * @apiUse InternalServerError
+     * @apiUse NotImplementedError
+     */
+    @PUT
+    @Path("/{activityInstanceId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateActivityInstance(@PathParam("activityInstanceId") String activityInstanceId, String payload) {
+        // XXX No error cases possible on the call to the service? You list 4 above
+        // XXX we return OK but we should distinguish an update from a created on PUT (200 vs 201)
+        ActivityInstance instance = reachService.updateActivityInstance(payload);
+        HEALResponse response;
+        HEALResponseBuilder builder;
+        try{
+            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        if(instance == null){
+            response = builder
+                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .setData("Some error on the server side")
+                    .build();
+            return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
+        }else if(instance == NullObjects.getNullActivityInstance()){
+            response = builder
+                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .setData("Incorrect request format or activity instance not found")
+                    .build();
+            return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
+        }else{
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+    }
 
     /**
      * @api {delete} /activityInstance/:id Delete ActivityInstance

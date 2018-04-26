@@ -1,5 +1,6 @@
 package edu.asu.heal.reachv3.api.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOFactory;
@@ -7,7 +8,6 @@ import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.reachv3.api.models.*;
 
-import javax.ws.rs.core.Response;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -124,6 +124,8 @@ public class ReachService implements HealService {
         }
     }
 
+
+
     // First version of createActivityInstance when it was a whole schedule. Revised to the one below this.
     // need to integrate schedule into that
 
@@ -191,37 +193,33 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public String updateActivityInstance(String requestBody) {
+    public ActivityInstance updateActivityInstance(String requestBody) {
         try {
-            //Mock data as of now
             DAO dao = DAOFactory.getTheDAO();
             ObjectMapper mapper = new ObjectMapper();
-            ScheduleModel model = mapper.readValue(requestBody, ScheduleModel.class);
-            boolean COMPLETED = true;
+            JsonNode activityInstanceAsTree = mapper.readTree(requestBody);
+            String activityInstanceType = activityInstanceAsTree.get("instanceOf").get("name").asText();
 
-            int day = model.getDay();
-
-            if (model.isSafe()) {
-                dao.scheduleSAFEACtivity(day, COMPLETED);
+            ActivityInstance instance;
+            if(activityInstanceType.equals("MakeBelieve")){ // todo Need to find a more elegant way to do this
+                instance = mapper.readValue(requestBody, MakeBelieveActivityInstance.class);
+                instance.setUpdatedAt(new Date());
+            }else{
+                instance  = mapper.readValue(requestBody, ActivityInstance.class);
+                instance.setUpdatedAt(new Date());
             }
-            if (model.isRelaxation()) {
-                dao.scheduleRelaxationActivity(day, COMPLETED);
+            if(dao.updateActivityInstance(instance)){
+                return instance;
             }
-            if (model.isStop()) {
-                dao.scheduleSTOPActivity(day, COMPLETED);
-            }
-            if (model.isAbmt()) {
-                dao.scheduleABMTActivity(day, COMPLETED);
-            }
-            if (model.getStic() == 0) {
-                dao.scheduleSTICActivity(day, 0);
-            }
-            return "OK";
-        } catch (Exception e) {
-            System.out.println("Error from createActivityInstance() in ReachService");
+            return NullObjects.getNullActivityInstance();
+        } catch (NullPointerException ne){
+            return NullObjects.getNullActivityInstance();
+        }catch (Exception e) {
+            System.out.println("Error from updateActivityInstance() in ReachService");
             e.printStackTrace();
+            return null;
         }
-        return null;
+
     }
 
     @Override
@@ -469,24 +467,25 @@ public class ReachService implements HealService {
     }
 
     public int updateMakeBelieveInstance(int instanceId, String responses) {
-        try {
-            MakeBelieveResponse response;
-            DAO dao = DAOFactory.getTheDAO();
-            if (!dao.checkSituationExists(instanceId)) {
-                return Response.Status.BAD_REQUEST.getStatusCode();
-            }
-            response = new ObjectMapper().readValue(responses, MakeBelieveResponse.class);
-            if (instanceId != response.getSituationId()) {
-                return Response.Status.BAD_REQUEST.getStatusCode();
-            }
-            if (dao.updateMakeBelieveActivityInstance(response))
-                return Response.Status.NO_CONTENT.getStatusCode();
-            return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Some problem in getMakeBelieveInstanceAnswer in Reach service");
-            return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
-        }
+//        try {
+//            MakeBelieveResponse response;
+//            DAO dao = DAOFactory.getTheDAO();
+//            if (!dao.checkSituationExists(instanceId)) {
+//                return Response.Status.BAD_REQUEST.getStatusCode();
+//            }
+//            response = new ObjectMapper().readValue(responses, MakeBelieveResponse.class);
+//            if (instanceId != response.getSituationId()) {
+//                return Response.Status.BAD_REQUEST.getStatusCode();
+//            }
+//            if (dao.updateMakeBelieveActivityInstance(response))
+//                return Response.Status.NO_CONTENT.getStatusCode();
+//            return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println("Some problem in getMakeBelieveInstanceAnswer in Reach service");
+//            return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
+//        }
+        return 0;
 
     }
 }

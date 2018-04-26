@@ -449,26 +449,27 @@ public abstract class JDBCDao implements DAO {
 
     @Override
     public boolean updateMakeBelieveActivityInstance(Object makeBelieveResponse) throws DAOException {
-        MakeBelieveResponse response = (MakeBelieveResponse) makeBelieveResponse;
-        Connection connection = getConnection();
-        PreparedStatement preparedStatement = null;
-        try {
-            String query = DAOFactory.getDAOProperties().getProperty("sql.insertMakeBelieveInstanceResponse");
-            preparedStatement = connection.prepareStatement(query);
-            HashMap<Long, Integer> responseMap = response.getUserAnswers();
-            Set<Long> timestamps = responseMap.keySet();
-            for (Long timestamp : timestamps) {
-                preparedStatement.setInt(1, response.getSituationId());
-                preparedStatement.setDate(2, new Date(timestamp));
-                preparedStatement.setInt(3, responseMap.get(timestamp));
-                preparedStatement.execute();
-            }
-            connection.close();
-            return true;
-        } catch (Throwable t) {
-            t.printStackTrace();
-            return false;
-        }
+//        MakeBelieveResponse response = (MakeBelieveResponse) makeBelieveResponse;
+//        Connection connection = getConnection();
+//        PreparedStatement preparedStatement = null;
+//        try {
+//            String query = DAOFactory.getDAOProperties().getProperty("sql.insertMakeBelieveInstanceResponse");
+//            preparedStatement = connection.prepareStatement(query);
+//            HashMap<Long, Integer> responseMap = response.getUserAnswers();
+//            Set<Long> timestamps = responseMap.keySet();
+//            for (Long timestamp : timestamps) {
+//                preparedStatement.setInt(1, response.getSituationId());
+//                preparedStatement.setDate(2, new Date(timestamp));
+//                preparedStatement.setInt(3, responseMap.get(timestamp));
+//                preparedStatement.execute();
+//            }
+//            connection.close();
+//            return true;
+//        } catch (Throwable t) {
+//            t.printStackTrace();
+//            return false;
+//        }
+        return false;
     }
 
     // TODO implement later for MySQL database. Currently implementing just for MongoDB
@@ -529,7 +530,7 @@ public abstract class JDBCDao implements DAO {
     }
 
     @Override
-    public <T> ActivityInstance getActivityInstance(String activityInstanceId) {
+    public ActivityInstance getActivityInstance(String activityInstanceId) {
         return null;
     }
 
@@ -546,5 +547,10 @@ public abstract class JDBCDao implements DAO {
     @Override
     public Activity deleteActivity(String activityId) {
         return null;
+    }
+
+    @Override
+    public boolean updateActivityInstance(ActivityInstance instance) {
+        return false;
     }
 }

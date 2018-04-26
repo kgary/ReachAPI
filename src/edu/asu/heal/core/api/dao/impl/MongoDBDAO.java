@@ -339,6 +339,26 @@ public class MongoDBDAO implements DAO {
         }
     }
 
+    @Override
+    public boolean updateActivityInstance(ActivityInstance instance) {
+        try {
+            MongoDatabase database = getConnectedDatabase();
+            MongoCollection<ActivityInstance> activityInstanceMongoCollection =
+                    database.getCollection(ACTIVITYINSTANCES_COLLECTION, ActivityInstance.class);
+
+            ActivityInstance updatedInstance = activityInstanceMongoCollection
+                    .findOneAndReplace(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, instance.getActivityInstanceId()), instance);
+
+            if(updatedInstance != null){
+                return true;
+            }
+            return false;
+        }catch (Exception e){
+            System.out.println("Some problem in updateActivityInstance() in MongoDBDao");
+            return false;
+        }
+    }
+
     /****************************************  Patient DAO methods ****************************************************/
     @Override
     public List<Patient> getPatients() throws DAOException {
@@ -569,6 +589,8 @@ public class MongoDBDAO implements DAO {
             MongoCollection<MakeBelieveSituation> situationMongoCollection =
                     database.getCollection(MongoDBDAO.MAKEBELIEVESITUATIONS_COLLECTION, MakeBelieveSituation.class);
 
+
+            //Code to randomly get a situation from the database
             AggregateIterable<MakeBelieveSituation> situations = situationMongoCollection
                     .aggregate(Arrays.asList(Aggregates.sample(1)));
 
@@ -577,6 +599,8 @@ public class MongoDBDAO implements DAO {
                 situation = temp;
             }
 
+
+            // Code to randomly get a name from the database
             MongoCollection<Document> namesCollection =
                     database.getCollection(MongoDBDAO.MAKEBELIEVESITUATIONNAMES_COLLECTION);
             AggregateIterable<Document> names = namesCollection.aggregate(Arrays.asList(Aggregates.sample(1)));

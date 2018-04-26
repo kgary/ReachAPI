@@ -38,6 +38,7 @@ public class HALBuilderApiHALHelperImpl implements HALHelper{
 
             finalRepresentation.withRepresentation("activity_instances", representation);
         }
+        finalRepresentation.withLink("patient_pin", patientResourcePath);
         return finalRepresentation.toString(RepresentationFactory.HAL_JSON);
     }
 

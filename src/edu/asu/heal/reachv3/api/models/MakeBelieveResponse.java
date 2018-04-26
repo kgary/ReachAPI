@@ -1,24 +1,32 @@
 package edu.asu.heal.reachv3.api.models;
 
+import java.util.Date;
 import java.util.HashMap;
 
 public class MakeBelieveResponse {
-    private int situationId;
-    private HashMap<Long, Integer> userAnswers;
+    private Date timeStamp;
+    private int optionId;
 
-    public int getSituationId() {
-        return situationId;
+    public MakeBelieveResponse() {}
+
+    public MakeBelieveResponse(Date timeStamp, int optionId) {
+        this.timeStamp = timeStamp;
+        this.optionId = optionId;
     }
 
-    public void setSituationId(int situationId) {
-        this.situationId = situationId;
+    public Date getTimeStamp() {
+        return timeStamp;
     }
 
-    public HashMap<Long, Integer> getUserAnswers() {
-        return userAnswers;
+    public void setTimeStamp(Date timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
-    public void setUserAnswers(HashMap<Long, Integer> userAnswers) {
-        this.userAnswers = userAnswers;
+    public int getOptionId() {
+        return optionId;
+    }
+
+    public void setOptionId(int optionId) {
+        this.optionId = optionId;
     }
 }

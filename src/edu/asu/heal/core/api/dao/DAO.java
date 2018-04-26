@@ -34,7 +34,9 @@ public interface DAO {
 
     ActivityInstance createActivityInstance(ActivityInstance instance);
 
-    <T> ActivityInstance getActivityInstance(String activityInstanceId);
+    ActivityInstance getActivityInstance(String activityInstanceId);
+
+    boolean updateActivityInstance(ActivityInstance instance);
 
 
     /****************************************  Patient DAO methods ****************************************************/
