@@ -197,6 +197,9 @@ public class ReachService implements HealService {
         try {
             DAO dao = DAOFactory.getTheDAO();
             ObjectMapper mapper = new ObjectMapper();
+            SimpleDateFormat format = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss");
+            mapper.setDateFormat(format);
+
             JsonNode activityInstanceAsTree = mapper.readTree(requestBody);
             String activityInstanceType = activityInstanceAsTree.get("instanceOf").get("name").asText();
 

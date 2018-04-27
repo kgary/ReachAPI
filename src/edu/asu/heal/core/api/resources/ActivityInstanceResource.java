@@ -130,6 +130,8 @@ public class ActivityInstanceResource {
         }
 
         ActivityInstance instance = reachService.getActivityInstance(activityInstanceId);
+        System.out.println("ACTIVITY INSTANCE GOT FROM SERVICE");
+        System.out.println(instance);
 
         if (instance == null) {
             response = builder
@@ -148,6 +150,9 @@ public class ActivityInstanceResource {
                     .setServerURI(_uri.getBaseUri().toString())
                     .build();
         }
+
+        System.out.println("HAL STRING HERE");
+        System.out.println(response.toEntity());
         return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
     }
 
@@ -242,6 +247,8 @@ public class ActivityInstanceResource {
     public Response updateActivityInstance(@PathParam("activityInstanceId") String activityInstanceId, String payload) {
         // XXX No error cases possible on the call to the service? You list 4 above
         // XXX we return OK but we should distinguish an update from a created on PUT (200 vs 201)
+        System.out.println("PAYLOAD HERE");
+        System.out.println(payload);
         ActivityInstance instance = reachService.updateActivityInstance(payload);
         HEALResponse response;
         HEALResponseBuilder builder;

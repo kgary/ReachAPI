@@ -22,6 +22,8 @@ public class ActivityInstanceResponse extends HEALResponse {
     @Override
     protected String toEntity(IHealModelType instance) {
         ActivityInstance activityInstance = (ActivityInstance) instance;
+        System.out.println("ACTIVITY INSTANCE INSIDE HAL BUILDER");
+        System.out.println(activityInstance);
         return new HALBuilderApiHALHelperImpl()
                 .getActivityInstancesJSON(activityInstance,
                         this.getServerURI() + ACTIVITY_INSTANCE_RESOURCE_PATH,

@@ -243,9 +243,11 @@ public class MongoDBDAO implements DAO {
             MongoCollection<ActivityInstance> activityInstanceCollection =
                     database.getCollection(MongoDBDAO.ACTIVITYINSTANCES_COLLECTION, ActivityInstance.class);
 
+
             return activityInstanceCollection
-                    .find(Filters.in(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE,
-                            patient.getActivityInstances().toArray(new String[]{})))
+                    .find(Filters.and(Filters.in(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE,
+                            patient.getActivityInstances().toArray(new String[]{})),
+                            Filters.eq(ActivityInstance.STATE_ATTRIBUTE, ActivityInstanceStatus.CREATED.status()))) // todo Need to confirm this. It could be other states from the enum as well
                     .projection(Projections.excludeId())
                     .into(new ArrayList<>());
         } catch (Exception e) {
@@ -327,6 +329,9 @@ public class MongoDBDAO implements DAO {
                         .projection(Projections.excludeId())
                         .first();
 
+
+            System.out.println("ACTIVITY INSTANCE GOT FROM DB");
+            System.out.println(instance);
             return instance ;
         } catch (NullPointerException ne) {
             System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCE WITH ID " + activityInstanceId);
