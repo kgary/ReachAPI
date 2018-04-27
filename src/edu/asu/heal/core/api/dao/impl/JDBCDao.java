@@ -43,8 +43,8 @@ public abstract class JDBCDao implements DAO {
                     new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.happy").split(","))));
             emotionsMap.put(Emotions.sad.toString(),
                     new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.sad").split(","))));
-            emotionsMap.put(Emotions.ill.toString(),
-                    new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.ill").split(","))));
+            emotionsMap.put(Emotions.sick.toString(),
+                    new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.sick").split(","))));
             emotionsMap.put(Emotions.angry.toString(),
                     new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.angry").split(","))));
             emotionsMap.put(Emotions.scared.toString(),
@@ -532,5 +532,5 @@ public abstract class JDBCDao implements DAO {
 }
 
 enum Emotions{
-    happy, sad, ill, scared, worried, angry
+    happy, sad, sick, scared, worried, angry
 }
