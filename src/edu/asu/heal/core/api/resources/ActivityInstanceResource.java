@@ -130,8 +130,6 @@ public class ActivityInstanceResource {
         }
 
         ActivityInstance instance = reachService.getActivityInstance(activityInstanceId);
-        System.out.println("ACTIVITY INSTANCE GOT FROM SERVICE");
-        System.out.println(instance);
 
         if (instance == null) {
             response = builder
@@ -151,8 +149,6 @@ public class ActivityInstanceResource {
                     .build();
         }
 
-        System.out.println("HAL STRING HERE");
-        System.out.println(response.toEntity());
         return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
     }
 
@@ -245,10 +241,6 @@ public class ActivityInstanceResource {
     @Path("/{activityInstanceId}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateActivityInstance(@PathParam("activityInstanceId") String activityInstanceId, String payload) {
-        // XXX No error cases possible on the call to the service? You list 4 above
-        // XXX we return OK but we should distinguish an update from a created on PUT (200 vs 201)
-        System.out.println("PAYLOAD HERE");
-        System.out.println(payload);
         ActivityInstance instance = reachService.updateActivityInstance(payload);
         HEALResponse response;
         HEALResponseBuilder builder;
@@ -286,54 +278,39 @@ public class ActivityInstanceResource {
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
      */
-//    @DELETE
-//    @Path("/{id}")
-//    public Response removeActivityInstance(@PathParam("id") String activityInstanceId) {
-//        HEALResponse response = null;
-//        HEALResponse.HEALResponseBuilder builder = new HEALResponse.HEALResponseBuilder();
-//
-//        ActivityInstance removed = reachService.deleteActivityInstance(activityInstanceId);
-//
-//        if (removed.equals(NullObjects.getNullActivityInstance())) {
-//            response = builder
-//                    .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
-//                    .setData("ACTIVITY INSTANCE DOES NOT EXIST")
-//                    .build();
-//        } else if (removed == null) {
-//            response = builder
-//                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-//                    .setData("SOME PROBLEM IN DELETING ACTIVITY INSTANCE. CONTACT ADMINISTRATOR")
-//                    .build();
-//        } else {
-//            response = builder
-//                    .setStatusCode(Response.Status.NO_CONTENT.getStatusCode())
-//                    .setData(null)
-//                    .build();
-//        }
-//        return Response.status(response.getStatusCode()).build();
-//
-//    }
+    @DELETE
+    @Path("/{id}")
+    public Response removeActivityInstance(@PathParam("id") String activityInstanceId) {
+        HEALResponse response;
+        HEALResponseBuilder builder;
 
-    // XXX I am pretty confused why we need a new endpoint at all. Why can't the service distinguish the special case
-    // of a MB AI?
-    @GET
-    @Path("/makebelieveanswers/")  // XXX this would be /makebelieve/answers?situation_id=...
-    public Response fetchMakeBelieveInstanceAnswers(@QueryParam("situation_id") int situationId) {
-        String makeBelieveInstanceAnswerString = reachService.getMakeBelieveInstanceAnswer(situationId);
-        if (makeBelieveInstanceAnswerString == null)
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Some server error. Please contact " +
-                    "administrator").build();
-        if (makeBelieveInstanceAnswerString.equals("Bad Request"))
-            return Response.status(400).build();
-        return Response.status(Response.Status.OK).entity(makeBelieveInstanceAnswerString).build();
-    }
+        try{
+            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
 
-    // XXX if we do keep a /makebelieve endpoint then you PUT on that, not on a separate one here
-    @PUT
-    @Path("/makebelieveinstance/")
-    public Response updateMakeBelieveInstance(@QueryParam("situation_id") int situationId, String requestBody) {
-        int response = reachService.updateMakeBelieveInstance(situationId, requestBody);
-        return Response.status(response).build();
+        ActivityInstance removed = reachService.deleteActivityInstance(activityInstanceId);
+
+        if (removed.equals(NullObjects.getNullActivityInstance())) {
+            response = builder
+                    .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
+                    .setData("ACTIVITY INSTANCE DOES NOT EXIST")
+                    .build();
+        } else if (removed == null) {
+            response = builder
+                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .setData("SOME PROBLEM IN DELETING ACTIVITY INSTANCE. CONTACT ADMINISTRATOR")
+                    .build();
+        } else {
+            response = builder
+                    .setStatusCode(Response.Status.NO_CONTENT.getStatusCode())
+                    .setData(null)
+                    .build();
+        }
+        return Response.status(response.getStatusCode()).build();
+
     }
 
     // XXX again why a new endpoint? WorryHeads is just an acivityinstance from the API perspective. Yes, we

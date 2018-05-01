@@ -10,7 +10,6 @@ import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import edu.asu.heal.core.api.dao.DAO;
-import edu.asu.heal.core.api.dao.DAOException;
 import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
@@ -114,7 +113,7 @@ public class MongoDBDAO implements DAO {
 
     /****************************************  Activity DAO methods ***************************************************/
     @Override
-    public List<Activity> getActivities(String domain) throws DAOException {
+    public List<Activity> getActivities(String domain)  {
         try {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Domain> domainCollection = database.getCollection(DOMAINS_COLLECTION, Domain.class);
@@ -143,7 +142,7 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public Activity createActivity(Activity activity) throws DAOException {
+    public Activity createActivity(Activity activity)  {
         try {
             ObjectId newId = ObjectId.get();
             activity.setActivityId(newId.toHexString());
@@ -228,7 +227,7 @@ public class MongoDBDAO implements DAO {
 
     /****************************************  ActivityInstance DAO methods *******************************************/
     @Override
-    public List<ActivityInstance> getScheduledActivities(int patientPin, int currentDay) throws DAOException {
+    public List<ActivityInstance> getScheduledActivities(int patientPin, int currentDay)  {
         try {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Patient> patientCollection = database.getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class);
@@ -366,7 +365,7 @@ public class MongoDBDAO implements DAO {
 
     /****************************************  Patient DAO methods ****************************************************/
     @Override
-    public List<Patient> getPatients() throws DAOException {
+    public List<Patient> getPatients()  {
         try {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Patient> patientCollection = database.getCollection(PATIENTS_COLLECTION, Patient.class);
@@ -382,7 +381,7 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public List<Patient> getPatients(String trialId) throws DAOException {
+    public List<Patient> getPatients(String trialId)  {
         try {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
@@ -490,7 +489,7 @@ public class MongoDBDAO implements DAO {
     /****************************************  Trial DAO methods ******************************************************/
 
     @Override
-    public List<Trial> getTrials() throws DAOException {
+    public List<Trial> getTrials()  {
         try {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
@@ -507,7 +506,7 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public List<Trial> getTrials(String domain) throws DAOException {
+    public List<Trial> getTrials(String domain)  {
         try {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Domain> domainCollection = database.getCollection(MongoDBDAO.DOMAINS_COLLECTION, Domain.class);
@@ -533,7 +532,7 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public Trial createTrial(Trial trialInstance) throws DAOException {
+    public Trial createTrial(Trial trialInstance)  {
         try {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
@@ -553,42 +552,7 @@ public class MongoDBDAO implements DAO {
     /****************************************  Other DAO methods ******************************************************/
 
     @Override
-    public boolean scheduleSTOPActivity(int day, boolean completed) throws DAOException {
-        return false;
-    }
-
-    @Override
-    public boolean scheduleSTICActivity(int day, int sticVariable) throws DAOException {
-        return false;
-    }
-
-    @Override
-    public boolean scheduleRelaxationActivity(int day, boolean completed) throws DAOException {
-        return false;
-    }
-
-    @Override
-    public boolean scheduleDailyDiaryActivity(String dailyDiaryWeeklySchedule) {
-        return false;
-    }
-
-    @Override
-    public boolean scheduleABMTActivity(int day, boolean completed) throws DAOException {
-        return false;
-    }
-
-    @Override
-    public boolean scheduleWorryHeadsActivity(String worryHeadsWeeklySchedule) {
-        return false;
-    }
-
-    @Override
-    public boolean scheduleSAFEACtivity(int day, boolean completed) throws DAOException {
-        return false;
-    }
-
-    @Override
-    public MakeBelieveSituation getMakeBelieveSituation() throws DAOException {
+    public MakeBelieveSituation getMakeBelieveSituation() {
         try{
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<MakeBelieveSituation> situationMongoCollection =
@@ -627,21 +591,5 @@ public class MongoDBDAO implements DAO {
             return null;
         }
     }
-
-    @Override
-    public boolean checkSituationExists(int situationId) throws DAOException {
-        return false;
-    }
-
-    @Override
-    public Object getMakeBelieveActivityAnswers(int situationId) throws DAOException {
-        return null;
-    }
-
-    @Override
-    public boolean updateMakeBelieveActivityInstance(Object makeBelieveResponse) throws DAOException {
-        return false;
-    }
-
 
 }

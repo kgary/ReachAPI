@@ -1,7 +1,6 @@
 package edu.asu.heal.core.api.service;
 
 import edu.asu.heal.core.api.models.*;
-import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
 
 import java.util.List;
 
@@ -56,12 +55,6 @@ public interface HealService {
     Trial addTrial(Trial trialInstance);
 
     /****************************************  Other Service methods  *************************************************/
-
-    MakeBelieveSituation getMakeBelieveSituation();
-
-    String getMakeBelieveInstanceAnswer(int instanceId);
-
-    int updateMakeBelieveInstance(int instanceId, String responses);
 
     String getWorryHeadsInstance();
 }

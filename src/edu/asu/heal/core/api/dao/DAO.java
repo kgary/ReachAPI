@@ -16,9 +16,9 @@ public interface DAO {
     Domain createDomain(Domain instance);
 
     /****************************************  Activity DAO methods ***************************************************/
-    List<Activity> getActivities(String domain) throws DAOException;
+    List<Activity> getActivities(String domain);
 
-    Activity createActivity(Activity activity) throws DAOException;
+    Activity createActivity(Activity activity);
 
     Activity getActivity(String activityId);
 
@@ -28,7 +28,7 @@ public interface DAO {
 
 
     /****************************************  ActivityInstance DAO methods *******************************************/
-    List<ActivityInstance> getScheduledActivities(int patientPin, int currentDay) throws DAOException;
+    List<ActivityInstance> getScheduledActivities(int patientPin, int currentDay);
 
     ActivityInstance deleteActivityInstance(String activityInstanceId);
 
@@ -40,9 +40,9 @@ public interface DAO {
 
 
     /****************************************  Patient DAO methods ****************************************************/
-    List<Patient> getPatients() throws DAOException;
+    List<Patient> getPatients();
 
-    List<Patient> getPatients(String trialId) throws DAOException;
+    List<Patient> getPatients(String trialId);
 
     Patient getPatient(int patientPin);
 
@@ -51,34 +51,14 @@ public interface DAO {
     Patient updatePatient(Patient patient);
 
     /****************************************  Trial DAO methods ******************************************************/
-    List<Trial> getTrials() throws DAOException;
+    List<Trial> getTrials();
 
-    List<Trial> getTrials(String domain) throws DAOException;
+    List<Trial> getTrials(String domain);
 
-    Trial createTrial(Trial trialInstance) throws DAOException;
+    Trial createTrial(Trial trialInstance);
 
     /****************************************  Other DAO methods ******************************************************/
 
-    boolean scheduleSTOPActivity(int day, boolean completed) throws DAOException;
-
-    boolean scheduleSTICActivity(int day, int sticVariable) throws DAOException;
-
-    boolean scheduleRelaxationActivity(int day, boolean completed) throws DAOException;
-
-    boolean scheduleDailyDiaryActivity(String dailyDiaryWeeklySchedule);
-
-    boolean scheduleABMTActivity(int day, boolean completed) throws DAOException;
-
-    boolean scheduleWorryHeadsActivity(String worryHeadsWeeklySchedule);
-
-    boolean scheduleSAFEACtivity(int day, boolean completed) throws DAOException;
-
-    MakeBelieveSituation getMakeBelieveSituation() throws DAOException;
-
-    boolean checkSituationExists(int situationId) throws DAOException;
-
-    Object getMakeBelieveActivityAnswers(int situationId) throws DAOException;
-
-    boolean updateMakeBelieveActivityInstance(Object makeBelieveResponse) throws DAOException;
+    MakeBelieveSituation getMakeBelieveSituation();
 
 }

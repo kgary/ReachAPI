@@ -3,6 +3,8 @@ package edu.asu.heal.core.api.models;
 import java.util.Date;
 
 public class NullObjects {
+    // Class used to implement the Null Object pattern for error handling
+
     private static final Activity NULL_ACTIVITY;
     private static final ActivityInstance NULL_ACTIVITY_INSTANCE;
     private static final ActivityInstanceType NULL_ACTIVITY_INSTANCE_TYPE;

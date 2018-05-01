@@ -64,7 +64,7 @@ public class TrialsResource {
         if (domain == null || domain.equals("")) {
             trials = reachService.getTrials(null);
         } else {
-            trials = reachService.getTrials(domain.replace("_", " "));
+            trials = reachService.getTrials(domain);
         }
 
         if (trials == null) {

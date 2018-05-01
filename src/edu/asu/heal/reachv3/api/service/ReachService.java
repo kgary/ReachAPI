@@ -6,7 +6,9 @@ import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.core.api.service.HealService;
-import edu.asu.heal.reachv3.api.models.*;
+import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
+import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
+import edu.asu.heal.reachv3.api.models.WorryHeadsModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -123,45 +125,6 @@ public class ReachService implements HealService {
             return null;
         }
     }
-
-
-
-    // First version of createActivityInstance when it was a whole schedule. Revised to the one below this.
-    // need to integrate schedule into that
-
-    /*@Override
-    public String createActivityInstance(String requestPayload) {
-        try {
-            //Mock data as of now
-            DAO dao = DAOFactory.getTheDAO();
-            ObjectMapper mapper = new ObjectMapper();
-            ScheduleModel model = mapper.readValue(requestPayload, ScheduleModel.class);
-
-            int day = model.getDay();
-            boolean COMPLETED = false;
-
-            if (model.isSafe()) {
-                dao.scheduleSAFEACtivity(day, COMPLETED);
-            }
-            if (model.isRelaxation()) {
-                dao.scheduleRelaxationActivity(day, COMPLETED);
-            }
-            if (model.isStop()) {
-                dao.scheduleSTOPActivity(day, COMPLETED);
-            }
-            if (model.isAbmt()) {
-                dao.scheduleABMTActivity(day, COMPLETED);
-            }
-            if (model.getStic() > 0) {
-                dao.scheduleSTICActivity(day, model.getStic());
-            }
-            return "OK";
-        } catch (Exception e) {
-            System.out.println("Error from createActivityInstance() in ReachService");
-            e.printStackTrace();
-        }
-        return null;
-    }*/
 
     @Override
     public ActivityInstance createActivityInstance(ActivityInstance activityInstance) {
@@ -439,8 +402,7 @@ public class ReachService implements HealService {
         }
     }
 
-    @Override
-    public MakeBelieveSituation getMakeBelieveSituation() {
+    private MakeBelieveSituation getMakeBelieveSituation() {
         try {
             DAO dao = DAOFactory.getTheDAO();
             return dao.getMakeBelieveSituation();
@@ -451,44 +413,4 @@ public class ReachService implements HealService {
         return null;
     }
 
-    public String getMakeBelieveInstanceAnswer(int instanceId) {
-        try {
-            DAO dao = DAOFactory.getTheDAO();
-            if (!dao.checkSituationExists(instanceId)) {
-                return "Bad Request";
-            }
-
-            MakeBelieveAnswers answers = (MakeBelieveAnswers) dao.getMakeBelieveActivityAnswers(instanceId);
-            if (answers != null)
-                return new ObjectMapper().writeValueAsString(answers);
-            return null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Some problem in getMakeBelieveInstanceAnswer in Reach service");
-            return null;
-        }
-    }
-
-    public int updateMakeBelieveInstance(int instanceId, String responses) {
-//        try {
-//            MakeBelieveResponse response;
-//            DAO dao = DAOFactory.getTheDAO();
-//            if (!dao.checkSituationExists(instanceId)) {
-//                return Response.Status.BAD_REQUEST.getStatusCode();
-//            }
-//            response = new ObjectMapper().readValue(responses, MakeBelieveResponse.class);
-//            if (instanceId != response.getSituationId()) {
-//                return Response.Status.BAD_REQUEST.getStatusCode();
-//            }
-//            if (dao.updateMakeBelieveActivityInstance(response))
-//                return Response.Status.NO_CONTENT.getStatusCode();
-//            return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.out.println("Some problem in getMakeBelieveInstanceAnswer in Reach service");
-//            return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
-//        }
-        return 0;
-
-    }
 }
