@@ -18,6 +18,7 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.types.ObjectId;
 
+import java.io.IOException;
 import java.util.*;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -36,10 +37,32 @@ public class MongoDBDAO implements DAO {
 
     private String __mongoDBName;
     private String __mongoURI;
+    private Map<String, List<String>> emotionsMap = new HashMap<>();
+
 
     public MongoDBDAO(Properties properties) {
         __mongoURI = properties.getProperty("mongo.uri");
         __mongoDBName = properties.getProperty("mongo.dbname");
+
+        try {
+            Properties properties1 = new Properties();
+            properties1.load(MongoDBDAO.class.getResourceAsStream("emotions.properties"));
+
+            emotionsMap.put(Emotions.happy.toString(),
+                    new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.happy").split(","))));
+            emotionsMap.put(Emotions.sad.toString(),
+                    new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.sad").split(","))));
+            emotionsMap.put(Emotions.sick.toString(),
+                    new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.sick").split(","))));
+            emotionsMap.put(Emotions.angry.toString(),
+                    new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.angry").split(","))));
+            emotionsMap.put(Emotions.scared.toString(),
+                    new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.scared").split(","))));
+            emotionsMap.put(Emotions.worried.toString(),
+                    new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.worried").split(","))));
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     private MongoDatabase getConnectedDatabase() {
@@ -592,4 +615,27 @@ public class MongoDBDAO implements DAO {
         }
     }
 
+    @Override
+    public List<String> getEmotionsActivityInstance(String emotion, int intensity) {
+        try {
+            if (emotion.equals(Emotions.worried.toString())) {
+                if (intensity >= 6) {
+                    List<String> temp = emotionsMap.get(emotion);
+                    temp.remove("faceIt");
+                    return temp;
+                }
+            }
+
+            return emotionsMap.get(emotion);
+        }catch (NullPointerException npe){
+            npe.printStackTrace();
+            return null;
+        }
+
+    }
+
+}
+
+enum Emotions{
+    happy, sad, sick, scared, worried, angry
 }
