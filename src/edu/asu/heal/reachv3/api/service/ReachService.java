@@ -51,6 +51,33 @@ public class ReachService implements HealService {
             e.printStackTrace();
             return null;
         }
+    public String getActivityInstance(String activityInstanceId, String emotion, int intensity){
+        try{
+            DAO dao = DAOFactory.getTheDAO();
+            String EMOTION_ACTIVITY = "emotions";
+            if(activityInstanceId.toLowerCase().equals(EMOTION_ACTIVITY)) {
+                List<String> results = dao.getEmotionsActivityInstance(emotion.toLowerCase(), intensity);
+                if(results == null)
+                    return "400";
+
+                StringWriter writer = new StringWriter();
+                JsonGenerator generator = new JsonFactory().createGenerator(writer);
+                generator.setCodec(new ObjectMapper());
+                generator.writeStartObject();
+                generator.writeObjectField("activities", results);
+                generator.writeEndObject();
+
+                generator.close();
+                String emotionsActivities = writer.toString();
+                writer.close();
+                return emotionsActivities;
+            }
+            return "400";
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

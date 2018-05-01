@@ -61,4 +61,6 @@ public interface DAO {
 
     MakeBelieveSituation getMakeBelieveSituation();
 
+    List<String> getEmotionsActivityInstance(String emotion, int intensity) throws DAOException;
+
 }
