@@ -19,7 +19,7 @@ public interface HealService {
     Activity deleteActivity(String activityId);
 
     /****************************************  Service methods for ActivityInstance  **********************************/
-    List<ActivityInstance> getActivityInstances(int patientPin, int trialId);
+    List<ActivityInstance> getActivityInstances(int patientPin);
 
     ActivityInstance getActivityInstance(String activityInstanceId);
 
@@ -57,4 +57,6 @@ public interface HealService {
     /****************************************  Other Service methods  *************************************************/
 
     String getWorryHeadsInstance();
+
+    String getEmotionsActivityInstance(int patientPin, String emotion, int intensity);
 }

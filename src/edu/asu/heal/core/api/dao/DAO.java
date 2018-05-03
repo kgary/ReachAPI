@@ -28,7 +28,7 @@ public interface DAO {
 
 
     /****************************************  ActivityInstance DAO methods *******************************************/
-    List<ActivityInstance> getScheduledActivities(int patientPin, int currentDay);
+    List<ActivityInstance> getScheduledActivities(int patientPin);
 
     ActivityInstance deleteActivityInstance(String activityInstanceId);
 

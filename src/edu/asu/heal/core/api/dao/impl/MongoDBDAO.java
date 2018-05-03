@@ -250,7 +250,7 @@ public class MongoDBDAO implements DAO {
 
     /****************************************  ActivityInstance DAO methods *******************************************/
     @Override
-    public List<ActivityInstance> getScheduledActivities(int patientPin, int currentDay)  {
+    public List<ActivityInstance> getScheduledActivities(int patientPin)  {
         try {
             MongoDatabase database = getConnectedDatabase();
             MongoCollection<Patient> patientCollection = database.getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class);

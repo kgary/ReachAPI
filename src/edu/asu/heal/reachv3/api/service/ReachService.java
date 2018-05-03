@@ -103,11 +103,11 @@ public class ReachService implements HealService {
 
     /****************************************  Service methods for ActivityInstance  **********************************/
     @Override
-    public List<ActivityInstance> getActivityInstances(int patientPin, int trialId) {
+    public List<ActivityInstance> getActivityInstances(int patientPin) {
         List<ActivityInstance> response = null;
         try {
             DAO dao = DAOFactory.getTheDAO();
-            List<ActivityInstance> instances = dao.getScheduledActivities(patientPin, trialId);
+            List<ActivityInstance> instances = dao.getScheduledActivities(patientPin);
 
             return instances;
         } catch (Exception e) {
@@ -117,30 +117,25 @@ public class ReachService implements HealService {
         }
     }
 
-
-    // todo Need to sort this out
-    public String getActivityInstance(String activityInstanceId, String emotion, int intensity){
+    @Override
+    public String getEmotionsActivityInstance(int patientPin, String emotion, int intensity){
         try{
             DAO dao = DAOFactory.getTheDAO();
-            String EMOTION_ACTIVITY = "emotions";
-            if(activityInstanceId.toLowerCase().equals(EMOTION_ACTIVITY)) {
-                List<String> results = dao.getEmotionsActivityInstance(emotion.toLowerCase(), intensity);
-                if(results == null)
-                    return "400";
+            List<String> results = dao.getEmotionsActivityInstance(emotion.toLowerCase(), intensity);
+            if(results == null)
+                return "";
 
-                StringWriter writer = new StringWriter();
-                JsonGenerator generator = new JsonFactory().createGenerator(writer);
-                generator.setCodec(new ObjectMapper());
-                generator.writeStartObject();
-                generator.writeObjectField("activities", results);
-                generator.writeEndObject();
+            StringWriter writer = new StringWriter();
+            JsonGenerator generator = new JsonFactory().createGenerator(writer);
+            generator.setCodec(new ObjectMapper());
+            generator.writeStartObject();
+            generator.writeObjectField("activities", results);
+            generator.writeEndObject();
 
-                generator.close();
-                String emotionsActivities = writer.toString();
-                writer.close();
-                return emotionsActivities;
-            }
-            return "400";
+            generator.close();
+            String emotionsActivities = writer.toString();
+            writer.close();
+            return emotionsActivities;
 
         } catch (Exception e){
             e.printStackTrace();
