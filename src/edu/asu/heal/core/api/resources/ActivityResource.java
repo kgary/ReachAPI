@@ -1,6 +1,9 @@
 package edu.asu.heal.core.api.resources;
 
 import edu.asu.heal.core.api.models.*;
+import edu.asu.heal.core.api.responses.ActivityResponse;
+import edu.asu.heal.core.api.responses.HEALResponse;
+import edu.asu.heal.core.api.responses.HEALResponseBuilder;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 

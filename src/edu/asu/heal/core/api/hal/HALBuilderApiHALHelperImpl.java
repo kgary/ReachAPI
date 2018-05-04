@@ -1,9 +1,10 @@
-package edu.asu.heal.core.api.models;
+package edu.asu.heal.core.api.hal;
 
 import com.theoryinpractise.halbuilder.api.Representation;
 import com.theoryinpractise.halbuilder.api.RepresentationFactory;
 import com.theoryinpractise.halbuilder.impl.api.Support;
 import com.theoryinpractise.halbuilder.standard.StandardRepresentationFactory;
+import edu.asu.heal.core.api.models.*;
 
 import java.util.List;
 

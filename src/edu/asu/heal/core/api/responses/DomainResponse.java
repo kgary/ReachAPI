@@ -1,4 +1,8 @@
-package edu.asu.heal.core.api.models;
+package edu.asu.heal.core.api.responses;
+
+import edu.asu.heal.core.api.models.Domain;
+import edu.asu.heal.core.api.hal.HALHelperFactory;
+import edu.asu.heal.core.api.models.IHealModelType;
 
 import java.util.List;
 

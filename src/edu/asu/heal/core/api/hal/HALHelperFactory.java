@@ -1,4 +1,4 @@
-package edu.asu.heal.core.api.models;
+package edu.asu.heal.core.api.hal;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +12,7 @@ public class HALHelperFactory {
 
     static {
         try{
-            InputStream temp = HALHelperFactory.class.getResourceAsStream("model.properties");
+            InputStream temp = HALHelperFactory.class.getResourceAsStream("hal.properties");
             properties = new Properties();
             properties.load(temp);
         }catch (IOException ie){

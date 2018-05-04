@@ -1,4 +1,6 @@
-package edu.asu.heal.core.api.models;
+package edu.asu.heal.core.api.hal;
+
+import edu.asu.heal.core.api.models.*;
 
 import java.util.List;
 

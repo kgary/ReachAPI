@@ -1,4 +1,4 @@
-package edu.asu.heal.core.api.models;
+package edu.asu.heal.core.api.responses;
 
 public class HEALResponseBuilder {
     private HEALResponse _response;

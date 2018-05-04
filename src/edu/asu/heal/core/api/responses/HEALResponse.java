@@ -1,4 +1,4 @@
-package edu.asu.heal.core.api.models;
+package edu.asu.heal.core.api.responses;
 
 import edu.asu.heal.core.api.resources.*;
 import org.glassfish.jersey.uri.internal.JerseyUriBuilder;
