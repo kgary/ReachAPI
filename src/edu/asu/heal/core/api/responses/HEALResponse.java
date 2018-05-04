@@ -1,5 +1,6 @@
 package edu.asu.heal.core.api.responses;
 
+import edu.asu.heal.core.api.models.IHealModelType;
 import edu.asu.heal.core.api.resources.*;
 import org.glassfish.jersey.uri.internal.JerseyUriBuilder;
 
