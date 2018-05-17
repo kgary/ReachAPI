@@ -1,18 +1,20 @@
 package edu.asu.heal.reachv3.api.service;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import edu.asu.heal.core.api.models.*;
-import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOFactory;
-import edu.asu.heal.reachv3.api.model.*;
-import org.bson.Document;
-import org.bson.types.ObjectId;
+import edu.asu.heal.core.api.models.*;
+import edu.asu.heal.core.api.responses.HEALResponse;
+import edu.asu.heal.core.api.service.HealService;
+import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
+import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
+import edu.asu.heal.reachv3.api.models.WorryHeadsModel;
 
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -21,51 +23,251 @@ public class ReachService implements HealService {
 
     private static final String DATE_FORMAT = "MM/dd/yyyy";
 
+    /****************************************  Service methods for Activity  ******************************************/
     @Override
-    public String getDomains(){
+    public List<Activity> getActivities(String domain) {
         try {
             DAO dao = DAOFactory.getTheDAO();
+            List<Activity> result = dao.getActivities(domain);
 
-            List<Domain> domains = (List<Domain>) dao.getDomains();
-            if (domains != null){
-                return new ObjectMapper().writeValueAsString(domains);
-            } else {
-                return null;
-            }
-        } catch(Exception e){
-            e.printStackTrace();
-            return e.getMessage();
-        }
-    }
-
-    @Override
-    public String getDomain(String id){
-        try {
-            DAO dao = DAOFactory.getTheDAO();
-            Document domain = (Document) dao.getDomain(id);
-
-            if (domain != null) {
-                return domain.toJson();
-            }
-
-            return null;
-        } catch (Exception e ){
+            return result;
+        } catch (Exception e) {
+            System.out.println("SOME ERROR IN GETACTIVITIES() IN REACHSERVICE CLASS");
             e.printStackTrace();
             return null;
         }
     }
 
     @Override
-    public String addDomain(String title, String description, String state) {
+    public Activity createActivity(String title, String description) {
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+            Activity newActivity = new Activity();
+            newActivity.setTitle(title);
+            newActivity.setDescription(description);
+            newActivity.setUpdatedAt(new Date());
+            newActivity.setCreatedAt(new Date());
+            Activity createdActivity = dao.createActivity(newActivity);
+
+            return createdActivity;
+        } catch (Exception e) {
+            System.out.println("SOME PROBLEM IN REACH SERVICE - CREATEACTIVITY");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Activity getActivity(String activityId) {
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+            return dao.getActivity(activityId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Activity updateActivity(Activity activity) {
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+            Activity activityInDatabase = dao.getActivity(activity.getActivityId());
+            if (activityInDatabase == null || activityInDatabase.equals(NullObjects.getNullActivity()))
+                return activityInDatabase;
+
+            activityInDatabase.setTitle(
+                    activity.getTitle() != null ? activity.getTitle() : activityInDatabase.getTitle());
+            activityInDatabase.setDescription(
+                    activity.getDescription() != null ? activity.getDescription() : activityInDatabase.getDescription());
+            activityInDatabase.setUpdatedAt(new Date());
+
+            return dao.updateActivity(activityInDatabase);
+        } catch (Exception e) {
+            System.out.println("SOME PROBLEM IN UPDATE ACTIVITY IN REACHSERVICE");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Activity deleteActivity(String activityId) {
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+            return dao.deleteActivity(activityId);
+        } catch (Exception e) {
+            System.out.println("SOME PROBLEM IN REACH SERVICE DELETE ACTIVITY INSTANCE");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /****************************************  Service methods for ActivityInstance  **********************************/
+    @Override
+    public List<ActivityInstance> getActivityInstances(int patientPin) {
+        List<ActivityInstance> response = null;
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+            List<ActivityInstance> instances = dao.getScheduledActivities(patientPin);
+
+            return instances;
+        } catch (Exception e) {
+            System.out.println("SOME ERROR IN GETACTIVITYINSTANCES() IN REACHSERVICE");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public String getEmotionsActivityInstance(int patientPin, String emotion, int intensity){
+        try{
+            DAO dao = DAOFactory.getTheDAO();
+            List<String> results = dao.getEmotionsActivityInstance(emotion.toLowerCase(), intensity);
+            if(results == null)
+                return "";
+
+            StringWriter writer = new StringWriter();
+            JsonGenerator generator = new JsonFactory().createGenerator(writer);
+            generator.setCodec(new ObjectMapper());
+            generator.writeStartObject();
+            generator.writeObjectField("activities", results);
+            generator.writeEndObject();
+
+            generator.close();
+            String emotionsActivities = writer.toString();
+            writer.close();
+            return emotionsActivities;
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public ActivityInstance getActivityInstance(String activityInstanceId) {
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+            return dao.getActivityInstance(activityInstanceId);
+        } catch (Exception e) {
+            System.out.println("SOME ERROR IN HEAL SERVICE getActivityInstance");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public ActivityInstance createActivityInstance(ActivityInstance activityInstance) {
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+            if (activityInstance.getCreatedAt() == null) activityInstance.setCreatedAt(new Date());
+            if (activityInstance.getState() == null) activityInstance.setState(ActivityInstanceStatus.CREATED.status());
+            if (activityInstance.getUpdatedAt() == null) activityInstance.setUpdatedAt(new Date());
+
+            if(activityInstance.getInstanceOf().getName().equals("MakeBelieve")){ //todo need a more elegant way of making the check whether it is of type make believe
+                activityInstance =
+                        new MakeBelieveActivityInstance(activityInstance.getActivityInstanceId(),
+                        activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
+                        activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
+                        activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
+                        activityInstance.getInstanceOf(), activityInstance.getState(),
+                        activityInstance.getPatientPin(), getMakeBelieveSituation());
+            }
+
+            ActivityInstance newActivityInstance = dao.createActivityInstance(activityInstance);
+            return newActivityInstance;
+        } catch (Exception e) {
+            System.out.println("SOME ERROR CREATING NE ACTIVITY INSTANCE IN REACH SERVICE - CREATEACTIVITYINSTANCE");
+            e.printStackTrace();
+            return null;
+
+        }
+    }
+
+    @Override
+    public ActivityInstance updateActivityInstance(String requestBody) {
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+            ObjectMapper mapper = new ObjectMapper();
+            SimpleDateFormat format = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss");
+            mapper.setDateFormat(format);
+
+            JsonNode activityInstanceAsTree = mapper.readTree(requestBody);
+            String activityInstanceType = activityInstanceAsTree.get("instanceOf").get("name").asText();
+
+            ActivityInstance instance;
+            if(activityInstanceType.equals("MakeBelieve")){ // todo Need to find a more elegant way to do this
+                instance = mapper.readValue(requestBody, MakeBelieveActivityInstance.class);
+                instance.setUpdatedAt(new Date());
+            }else{
+                instance  = mapper.readValue(requestBody, ActivityInstance.class);
+                instance.setUpdatedAt(new Date());
+            }
+            if(dao.updateActivityInstance(instance)){
+                return instance;
+            }
+            return NullObjects.getNullActivityInstance();
+        } catch (NullPointerException ne){
+            return NullObjects.getNullActivityInstance();
+        }catch (Exception e) {
+            System.out.println("Error from updateActivityInstance() in ReachService");
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    @Override
+    public ActivityInstance deleteActivityInstance(String activityInstanceId) {
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+            return dao.deleteActivityInstance(activityInstanceId);
+        } catch (Exception e) {
+            System.out.println("SOME PROBLEM IN REACH SERVICE DELETE ACTIVITY INSTANCE");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    /****************************************  Service methods for Domain  ********************************************/
+    @Override
+    public List<Domain> getDomains() {
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+
+            return dao.getDomains();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Domain getDomain(String id) {
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+
+            return dao.getDomain(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Domain addDomain(String title, String description, String state) {
 
         try {
             DAO dao = DAOFactory.getTheDAO();
             Domain instance = new Domain(title, description, state);
-            instance.setId(new ObjectId(new Date()));
+            instance.setCreatedAt(new Date());
+            if (instance.getState() == null) instance.setState(DomainState.CREATED.state());
 
             return dao.createDomain(instance);
-        } catch (Exception e){
-            return e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -74,195 +276,24 @@ public class ReachService implements HealService {
         return null;
     }
 
-    /* public String addTestDomain(String title, String description, String state){
-        try{
-
-            // NOTE - please note that this record consist of fabricated data just to test the queries
-            ActivityInstance sticWeek1 = new ActivityInstance("STIC", new Date("02/05/2018"),
-                    new Date("02/11/2018"), "", ActivityInstanceStatus.CREATED, null);
-            ActivityInstance stopWeek1 = new ActivityInstance("STOP", new Date("02/05/2018"),
-                    new Date("02/11/2018"), "", ActivityInstanceStatus.CREATED, null);
-            ActivityInstance whWeek1 = new ActivityInstance("WorryHeads", new Date("02/05/2018"),
-                    new Date("02/11/2018"), "", ActivityInstanceStatus.CREATED, null);
-
-
-            ActivityInstance sticWeek2 = new ActivityInstance("STIC", new Date("02/12/2018"),
-                    new Date("02/18/2018"), "", ActivityInstanceStatus.CREATED, null);
-            ActivityInstance stopWeek2 = new ActivityInstance("STOP", new Date("02/12/2018"),
-                    new Date("02/18/2018"), "", ActivityInstanceStatus.CREATED, null);
-            ActivityInstance whWeek2 = new ActivityInstance("WorryHeads", new Date("02/12/2018"),
-                    new Date("02/18/2018"), "", ActivityInstanceStatus.CREATED, null);
-
-
-            ActivityInstance sticWeek3 = new ActivityInstance("STIC", new Date("02/19/2018"),
-                    new Date("02/25/2018"), "", ActivityInstanceStatus.CREATED, null);
-            ActivityInstance stopWeek3 = new ActivityInstance("STOP", new Date("02/19/2018"),
-                    new Date("02/25/2018"), "", ActivityInstanceStatus.CREATED, null);
-            ActivityInstance whWeek3 = new ActivityInstance("WorryHeads", new Date("02/19/2018"),
-                    new Date("02/25/2018"), "", ActivityInstanceStatus.CREATED, null);
-
-            ArrayList<ActivityInstance> instances = new ArrayList<ActivityInstance>();
-            instances.add(sticWeek1);
-            instances.add(stopWeek1);
-            instances.add(whWeek1);
-            instances.add(sticWeek2);
-            instances.add(stopWeek2);
-            instances.add(whWeek2);
-            instances.add(sticWeek3);
-            instances.add(stopWeek3);
-            instances.add(whWeek3);
-
-            Patient patient = new Patient(4010, new Date("02/05/2018"), new Date("04/01/2018"), "active", instances);
-            Patient myPatient = new Patient(4011, new Date("02/05/2018"), new Date("04/01/2018"), "active", instances);
-
-            ArrayList<Patient> patients = new ArrayList<Patient>();
-            patients.add(patient);
-            patients.add(myPatient);
-
-            ArrayList<Activity> activities = new ArrayList<Activity>();
-            activities.add(new Activity("STIC", "STIC Activity"));
-            activities.add(new Activity("STOP", "STOP Activity"));
-            activities.add(new Activity("WorryHeads", "WorryHeads Activity"));
-
-            ArrayList<Trial> trials = new ArrayList<Trial>();
-//            trials.add(new Trial("Compass", "Compass for courage", new Date("02/05/2018"),
-//                    new Date("04/01/2018"), 100, patients));
-
-            Domain domainInstance = new Domain("REACH", "REACH BASED DOMAIN", "ACTIVE");
-//            domainInstance.setTrials(trials);
-//            domainInstance.setActivities(activities);
-
-            DAO dao = DAOFactory.getTheDAO();
-
-            return dao.createDomain(domainInstance);
-        } catch (Exception e){
-            e.printStackTrace();
-            return e.getMessage();
-        }
-    } */
-
+    /****************************************  Service methods for Patient  *******************************************/
     @Override
-    public List<ActivityInstance> getActivityInstances(int patientPin, int trialId) {
+    public List<Patient> getPatients(String trialId) {
         try {
-
-            // TODO -- scope in the possibility that when queryParams(patientPin, trialId) are not present, then
             DAO dao = DAOFactory.getTheDAO();
-//            ScheduleModel instance = (ScheduleModel)dao.getScheduledActivities( 2);
-//
-//            ObjectMapper mapper = new ObjectMapper();
-//            return mapper.writeValueAsString(instance);
+            List<Patient> result;
 
-//            String instances = (String) dao.getScheduledActivities(patientPin, 0);
-            List<ActivityInstance> instances = dao.getScheduledActivities(patientPin, trialId);
-            if(instances == null)
-                return null;
-
-            return instances;
-        } catch(Exception e){
-            //TODO String JsonErrorMessage = mapper.writeValueAsString(new ErrorMessage("Invalid survey instance ID"));
-            //TODO throw new NotFoundException(Response.Status.BAD_REQUEST, JsonErrorMessage);
-            System.out.println("SOME ERROR IN GETACTIVITYINSTANCES() IN REACHSERVICE");
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public String getActivityInstance(String activityInstanceId){
-        return "ActivityInstance: "+activityInstanceId;
-    }
-
-    @Override
-    public String createActivityInstance(String requestPayload) {
-        try {
-            //Mock data as of now
-            DAO dao = DAOFactory.getTheDAO();
-            ObjectMapper mapper = new ObjectMapper();
-            ScheduleModel model = mapper.readValue(requestPayload, ScheduleModel.class);
-
-            int day = model.getDay();
-            boolean COMPLETED = false;
-
-            if(model.isSafe()){
-                dao.scheduleSAFEACtivity(day, COMPLETED);
+            if (trialId == null) {
+                // return list of all patients present
+                result = dao.getPatients();
+            } else {
+                // return list of patients for given trialId
+                result = dao.getPatients(trialId);
             }
-            if(model.isRelaxation()){
-                dao.scheduleRelaxationActivity(day, COMPLETED);
-            }
-            if(model.isStop()){
-                dao.scheduleSTOPActivity(day, COMPLETED);
-            }
-            if(model.isAbmt()){
-                dao.scheduleABMTActivity(day, COMPLETED);
-            }
-            if(model.getStic() > 0){
-                dao.scheduleSTICActivity(day, model.getStic());
-            }
-            return "OK";
-        }catch (Exception e){
-            System.out.println("Error from createActivityInstance() in ReachService");
-            e.printStackTrace();
-        }
-        return null;
-    }
 
-    @Override
-    public String updateActivityInstance(String requestBody) {
-        try {
-            //Mock data as of now
-            DAO dao = DAOFactory.getTheDAO();
-            ObjectMapper mapper = new ObjectMapper();
-            ScheduleModel model = mapper.readValue(requestBody, ScheduleModel.class);
-            boolean COMPLETED = true;
-
-            int day = model.getDay();
-
-            if(model.isSafe()){
-                dao.scheduleSAFEACtivity(day, COMPLETED);
-            }
-            if(model.isRelaxation()){
-                dao.scheduleRelaxationActivity(day, COMPLETED);
-            }
-            if(model.isStop()){
-                dao.scheduleSTOPActivity(day, COMPLETED);
-            }
-            if(model.isAbmt()){
-                dao.scheduleABMTActivity(day, COMPLETED);
-            }
-            if(model.getStic() == 0){
-                dao.scheduleSTICActivity(day, 0);
-            }
-            return "OK";
-        }catch (Exception e){
-            System.out.println("Error from createActivityInstance() in ReachService");
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public String deleteActivityInstance(String activityInstanceId){
-        return "DELETE AI: "+activityInstanceId;
-    }
-
-    // methods pertaining to activity resource
-    @Override
-    public String createActivity(String requestBody){
-        return "Create activity for patient";
-    }
-
-    // patient resource method
-    @Override
-    public List<Patient> getPatients(String trialId){
-        // explore the option - if trialId is not present then return patients collections
-//        return "GET ALL PATIENTS";
-
-        try{
-            DAO dao = DAOFactory.getTheDAO();
-            return dao.getPatients(trialId);
-
-        }catch (Exception e){
-            System.out.println("SOME ERROR IN GETPATIENTS() IN REACHSERVICE CLASS");
+            return result;
+        } catch (Exception e) {
+            System.out.println("SOME PROBLEM WITH REACH SERVICE - GET PATIENTS");
             e.printStackTrace();
             return null;
         }
@@ -270,35 +301,109 @@ public class ReachService implements HealService {
 
     @Override
     public Patient getPatient(int patientPin) {
-        try{
+        try {
             DAO dao = DAOFactory.getTheDAO();
             return dao.getPatient(patientPin);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
     @Override
-    public int createPatient(String requestBody) {
-        try{
+    public Patient createPatient(String trialId) {
+        try {
             DAO dao = DAOFactory.getTheDAO();
-            return dao.createPatient(requestBody);
-        }catch (Exception e){
+            return dao.createPatient(trialId);
+        } catch (Exception e) {
             e.printStackTrace();
-            return -1;
+            return null;
         }
     }
 
     @Override
-    public String updatePatient(String requestBody) {
-        return null;
+    public Patient updatePatient(Patient patient) {
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+            Patient patientInDatabase = dao.getPatient(patient.getPin());
+            if (patientInDatabase == null || patientInDatabase.equals(NullObjects.getNullPatient()))
+                return patientInDatabase;
+
+            patientInDatabase.setStartDate(
+                    patient.getStartDate() != null ? patient.getStartDate() : patientInDatabase.getStartDate());
+            patientInDatabase.setEndDate(
+                    patient.getEndDate() != null ? patient.getEndDate() : patientInDatabase.getEndDate());
+            patientInDatabase.setState(
+                    patient.getState() != null ? patient.getState() : patientInDatabase.getState());
+            patientInDatabase.setCreatedAt(
+                    patient.getCreatedAt() != null ? patient.getCreatedAt() : patientInDatabase.getCreatedAt());
+            patientInDatabase.setUpdatedAt(new Date());
+
+            return dao.updatePatient(patientInDatabase);
+        } catch (Exception e) {
+            System.out.println("SOME PROBLEM IN UPDATE PATIENT IN REACHSERVICE");
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
-    public String deletePatient(String patientPin){
+    public String deletePatient(String patientPin) {
         return "DELETE PATIENT";
     }
+
+    /****************************************  Service methods for Trial  *********************************************/
+
+    @Override
+    public List<Trial> getTrials(String domain) {
+        HEALResponse response = null;
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+            List<Trial> trials = null;
+
+            if (domain == null)
+                trials = dao.getTrials();
+            else
+                trials = dao.getTrials(domain);
+
+            return trials;
+        } catch (Exception e) {
+            System.out.println("SOME ERROR IN GETTRIALS() IN REACHSERVICE CLASS");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Trial addTrial(Trial trialInstance) {
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+
+            // check if the domain exist, if yes get the id of domain
+            Domain domain = dao.getDomain(trialInstance.getDomainId());
+            if (domain != null) {
+
+                Date startDateFormat = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(trialInstance.getStartDate().toString());
+                Date endDateFormat = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(trialInstance.getEndDate().toString());
+
+                trialInstance.setUpdatedAt(new Date());
+                trialInstance.setCreatedAt(new Date());
+                trialInstance.setStartDate(startDateFormat);
+                trialInstance.setEndDate(endDateFormat);
+                trialInstance.setDomainId(domain.getDomainId());
+
+                return dao.createTrial(trialInstance);
+            } else {
+                return NullObjects.getNullTrial();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /****************************************  Other Service methods  *************************************************/
 
     @Override
     public String getWorryHeadsInstance() {
@@ -320,128 +425,21 @@ public class ReachService implements HealService {
                     o_options);
 
             return new ObjectMapper().writeValueAsString(whm);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public String getMakeBelieveInstance() {
+    private MakeBelieveSituation getMakeBelieveSituation() {
         try {
             DAO dao = DAOFactory.getTheDAO();
-            MakeBelieveSituation situation = (MakeBelieveSituation) dao.getMakeBelieveActivityInstance();
-            return new ObjectMapper().writeValueAsString(situation);
-        } catch (Exception e){
+            return dao.getMakeBelieveSituation();
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Some problem in getMakeBelieveInstance in Reach Service");
         }
         return null;
     }
 
-    public String getMakeBelieveInstanceAnswer(int instanceId){
-        try{
-            DAO dao = DAOFactory.getTheDAO();
-            if(!dao.checkSituationExists(instanceId)){
-                return "Bad Request";
-            }
-
-            MakeBelieveAnswers answers = (MakeBelieveAnswers) dao.getMakeBelieveActivityAnswers(instanceId);
-            if(answers != null)
-                return new ObjectMapper().writeValueAsString(answers);
-            return null;
-        }catch (Exception e){
-            e.printStackTrace();
-            System.out.println("Some problem in getMakeBelieveInstanceAnswer in Reach service");
-            return null;
-        }
-    }
-
-    public int updateMakeBelieveInstance(int instanceId, String responses){
-        try{
-            MakeBelieveResponse response;
-            DAO dao = DAOFactory.getTheDAO();
-            if(!dao.checkSituationExists(instanceId)){
-                return 400;
-            }
-            response = new ObjectMapper().readValue(responses, MakeBelieveResponse.class);
-            if(instanceId != response.getSituationId()){
-                return 400;
-            }
-            if(dao.updateMakeBelieveActivityInstance(response))
-                return 204;
-            return 500;
-        }catch (Exception e){
-            e.printStackTrace();
-            System.out.println("Some problem in getMakeBelieveInstanceAnswer in Reach service");
-            return 500;
-        }
-
-    }
-
-    // methods pertaining to Activity Model
-    @Override
-    public List<Activity> getActivities(String domain) {
-        try{
-            DAO dao = DAOFactory.getTheDAO();
-             return dao.getActivities(domain);
-        }catch (Exception e){
-            System.out.println("SOME ERROR IN GETACTIVITIES() IN REACHSERVICE CLASS");
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public String addActivity(String title, String description){
-        try {
-            DAO dao = DAOFactory.getTheDAO();
-
-            return dao.createActivity(new Activity(title, description));
-        } catch (Exception e){
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public List<Trial> getTrials(String domain) {
-        try{
-            DAO dao = DAOFactory.getTheDAO();
-            return dao.getTrials(domain);
-        }catch (Exception e){
-            System.out.println("SOME ERROR IN GETTRIALS() IN REACHSERVICE CLASS");
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public String addTrial(String domainId, String title, String description, String startDate, String endDate,
-                           int targetCount) {
-        try {
-            DAO dao = DAOFactory.getTheDAO();
-
-            // check if the domain exist, if yes get the id of domain
-            Document domain = (Document) dao.getDomain(domainId);
-            if (domain != null) {
-
-                Date startDateFormat = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(startDate);
-                Date endDateFormat = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(endDate);
-
-                ObjectId newId = ObjectId.get();
-                String trialId = newId.toHexString();
-                Trial trialInstance = new Trial(newId, (ObjectId) domain.get("_id"), trialId, title, description,
-                        startDateFormat, endDateFormat, targetCount);
-
-                dao.createTrial(trialInstance);
-
-                return "OK";
-            }
-
-            return null;
-        } catch (Exception e){
-            e.printStackTrace();
-            return null;
-        }
-    }
 }

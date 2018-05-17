@@ -1,70 +1,66 @@
 package edu.asu.heal.core.api.dao;
 
 import edu.asu.heal.core.api.models.*;
-import org.bson.types.ObjectId;
+import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
 
 import java.util.List;
 
 public interface DAO {
 
-    // methods pertaining to Domain Model
-    Object getDomains();
 
-    Object getDomain(String id);
+    /****************************************  Domain DAO methods *****************************************************/
+    List<Domain> getDomains();
 
-    String createDomain(Domain instance);
+    Domain getDomain(String id);
 
-    List<ActivityInstance> getScheduledActivities(int patientPin, int currentDay) throws DAOException;
+    Domain createDomain(Domain instance);
 
-//    boolean scheduleSTOPActivity(String STOPWeeklySchedule) throws DAOException;
-//
-//    boolean scheduleSTICActivity(int STICWeeklySchedule);
-//
-//    boolean scheduleRelaxationActivity(String relaxationWeeklySchedule);
-//
-//    boolean scheduleDailyDiaryActivity(String dailyDiaryWeeklySchedule);
-//
-//    boolean scheduleABMTActivity(String ABMTWeeklySchedule);
-//
-//    boolean scheduleWorryHeadsActivity(String worryHeadsWeeklySchedule);
-//
-//    boolean scheduleSAFEACtivity(String SAFEWeeklySchedule);
+    /****************************************  Activity DAO methods ***************************************************/
+    List<Activity> getActivities(String domain);
 
-    boolean scheduleSTOPActivity(int day, boolean completed) throws DAOException;
+    Activity createActivity(Activity activity);
 
-    boolean scheduleSTICActivity(int day, int sticVariable) throws DAOException;
+    Activity getActivity(String activityId);
 
-    boolean scheduleRelaxationActivity(int day, boolean completed) throws DAOException;
+    Activity updateActivity(Activity activity);
 
-    boolean scheduleDailyDiaryActivity(String dailyDiaryWeeklySchedule);
+    Activity deleteActivity(String activityId);
 
-    boolean scheduleABMTActivity(int day, boolean completed) throws DAOException;
 
-    boolean scheduleWorryHeadsActivity(String worryHeadsWeeklySchedule);
+    /****************************************  ActivityInstance DAO methods *******************************************/
+    List<ActivityInstance> getScheduledActivities(int patientPin);
 
-    boolean scheduleSAFEACtivity(int day, boolean completed) throws DAOException;
+    ActivityInstance deleteActivityInstance(String activityInstanceId);
 
-    Object getMakeBelieveActivityInstance() throws DAOException;
+    ActivityInstance createActivityInstance(ActivityInstance instance);
 
-    boolean checkSituationExists(int situationId) throws DAOException;
+    ActivityInstance getActivityInstance(String activityInstanceId);
 
-    Object getMakeBelieveActivityAnswers(int situationId) throws DAOException;
+    boolean updateActivityInstance(ActivityInstance instance);
 
-    boolean updateMakeBelieveActivityInstance(Object makeBelieveResponse) throws DAOException;
 
-    // methods pertaining to Activity (activities) collection
-    List<Activity> getActivities(String domain) throws DAOException;
+    /****************************************  Patient DAO methods ****************************************************/
+    List<Patient> getPatients();
 
-    String createActivity(Activity activity) throws DAOException;
-
-    // methods pertaining trail model
-    List<Trial> getTrials(String domain) throws DAOException;
-
-    String createTrial(Trial trialInstance) throws DAOException;
-
-    List<Patient> getPatients(String trialId) throws DAOException;
+    List<Patient> getPatients(String trialId);
 
     Patient getPatient(int patientPin);
 
-    int createPatient(String patientDetails);
+    Patient createPatient(String trialId);
+
+    Patient updatePatient(Patient patient);
+
+    /****************************************  Trial DAO methods ******************************************************/
+    List<Trial> getTrials();
+
+    List<Trial> getTrials(String domain);
+
+    Trial createTrial(Trial trialInstance);
+
+    /****************************************  Other DAO methods ******************************************************/
+
+    MakeBelieveSituation getMakeBelieveSituation();
+
+    List<String> getEmotionsActivityInstance(String emotion, int intensity);
+
 }

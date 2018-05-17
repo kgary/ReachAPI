@@ -1,6 +1,8 @@
 package edu.asu.heal.core.api.service;
 
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.util.Properties;
 
 public class HealServiceFactory {
 
@@ -17,24 +19,37 @@ public class HealServiceFactory {
     // service bound to HealService should be instantiated
     private static HealService _theService;
 
-    public static HealService getTheService(String serviceClassName){
-        if(_theService == null){
-            return HealServiceFactory.initializeService(serviceClassName);
+    private static Properties properties;
+
+    static {
+        try {
+            InputStream temp = HealServiceFactory.class.getResourceAsStream("service.properties");
+            properties = new Properties();
+            properties.load(temp);
+        } catch (Exception e) {
+            System.out.println("SOME ERROR IN LOADING SERVICE PROPERTIES");
+            e.printStackTrace();
+        }
+    }
+
+    public static HealService getTheService() {
+        if (_theService == null) {
+            return HealServiceFactory.initializeService(properties.getProperty("healservice.classname"));
         }
 
         return _theService;
     }
 
-    private static HealService initializeService(String serviceClassName){
+    private static HealService initializeService(String serviceClassName) {
         try {
 
             Class<?> serviceClass = Class.forName(serviceClassName);
             Constructor<?> serviceClassConstructor = serviceClass.getConstructor();
             _theService = (HealService) serviceClassConstructor.newInstance();
 
-        } catch (ClassNotFoundException ce){
+        } catch (ClassNotFoundException ce) {
             System.out.println(ce.getMessage());
-        } catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println("Exception occurred: " + ex.getMessage());
         }
 

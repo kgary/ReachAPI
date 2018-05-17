@@ -1,12 +1,8 @@
 package edu.asu.heal.core.api.models;
 
-import org.bson.Document;
-import org.bson.types.ObjectId;
-
 import java.util.Date;
 
-public class ActivityInstance {
-    public static String ID_ATTRIBUTE = "_id";
+public class ActivityInstance implements IHealModelType {
     public static String CREATEDAT_ATTRIBUTE = "createdAt";
     public static String UPDATEDAT_ATTRIBUTE = "updatedAt";
     public static String STARTTIME_ATTRIBUTE = "startTime";
@@ -16,41 +12,38 @@ public class ActivityInstance {
     public static String INSTANCEOF_ATTRIBUTE = "instanceOf";
     public static String STATE_ATTRIBUTE = "state";
     public static String DESCRIPTION_ATTRIBUTE = "description";
+    public static String ACTIVITYINSTANCEID_ATTRIBUTE = "activityInstanceId";
 
 
-    private ObjectId id;
+    private String activityInstanceId;
     private Date createdAt;
     private Date updatedAt;
+    private String description;
     private Date startTime;
     private Date endTime;
     private Date userSubmissionTime;
     private Date actualSubmissionTime;
     private ActivityInstanceType instanceOf;
     private String state;
-    private String description;
+    private int patientPin;
 
     public ActivityInstance() {
     }
 
-    public ActivityInstance(ObjectId id, Date createdAt, Date updatedAt, Date startTime, Date endTime, Date userSubmissionTime, Date actualSubmissionTime, ActivityInstanceType instanceOf, String state, String description) {
-        this.id = id;
+    public ActivityInstance(String activityInstanceId, Date createdAt, Date updatedAt, String description,
+                            Date startTime, Date endTime, Date userSubmissionTime, Date actualSubmissionTime,
+                            ActivityInstanceType instanceOf, String state, int patientPin) {
+        this.activityInstanceId = activityInstanceId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.description = description;
         this.startTime = startTime;
         this.endTime = endTime;
         this.userSubmissionTime = userSubmissionTime;
         this.actualSubmissionTime = actualSubmissionTime;
         this.instanceOf = instanceOf;
         this.state = state;
-        this.description = description;
-    }
-
-    public ObjectId getId() {
-        return id;
-    }
-
-    public void setId(ObjectId id) {
-        this.id = id;
+        this.patientPin = patientPin;
     }
 
     public Date getCreatedAt() {
@@ -124,4 +117,77 @@ public class ActivityInstance {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getActivityInstanceId() {
+        return activityInstanceId;
+    }
+
+    public void setActivityInstanceId(String activityInstanceId) {
+        this.activityInstanceId = activityInstanceId;
+    }
+
+    public int getPatientPin() {
+        return patientPin;
+    }
+
+    public void setPatientPin(int patientPin) {
+        this.patientPin = patientPin;
+    }
+
+    @Override
+    public String toString() {
+        return "ActivityInstance{" +
+                ", activityInstanceId='" + activityInstanceId + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", userSubmissionTime=" + userSubmissionTime +
+                ", actualSubmissionTime=" + actualSubmissionTime +
+                ", instanceOf=" + instanceOf +
+                ", state='" + state + '\'' +
+                ", description='" + description + '\'' +
+                ", patientPin='" + patientPin + '\'' +
+                '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int PRIME = 31;
+        int result = 3;
+        result = PRIME * result + (this.activityInstanceId == null ? 0 :this.activityInstanceId.hashCode());
+        result = PRIME * result + (this.createdAt == null ? 0: this.createdAt.hashCode());
+        result = PRIME * result + (this.updatedAt == null ? 0 : this.updatedAt.hashCode());
+        result = PRIME * result + (this.description == null ? 0 : this.description.hashCode());
+        result = PRIME * result + (this.startTime == null ? 0 :this.startTime.hashCode());
+        result = PRIME * result + (this.endTime == null ? 0 :this.endTime.hashCode());
+        result = PRIME * result + (this.userSubmissionTime == null ? 0 :this.userSubmissionTime.hashCode());
+        result = PRIME * result + (this.actualSubmissionTime == null ? 0 :this.actualSubmissionTime.hashCode());
+        result = PRIME * result + (this.instanceOf == null ? 0 :this.instanceOf.hashCode());
+        result = PRIME * result + (this.state == null ? 0 :this.state.hashCode());
+        result = PRIME * result + this.patientPin;
+
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if (obj == null) return false;
+        if(!(obj instanceof ActivityInstance)) return false;
+
+        ActivityInstance temp = (ActivityInstance) obj;
+        return this.activityInstanceId.equals(temp.activityInstanceId)
+                && this.createdAt.equals(temp.createdAt)
+                && this.updatedAt.equals(temp.updatedAt)
+                && this.description.equals(temp.description)
+                && this.startTime.equals(temp.startTime)
+                && this.endTime.equals(temp.endTime)
+                && this.userSubmissionTime.equals(temp.userSubmissionTime)
+                && this.actualSubmissionTime.equals(temp.actualSubmissionTime)
+                && this.instanceOf.equals(temp.instanceOf)
+                && this.state.equals(temp.state)
+                && this.patientPin == temp.patientPin;
+    }
+
 }

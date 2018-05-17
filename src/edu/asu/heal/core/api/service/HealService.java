@@ -1,65 +1,62 @@
 package edu.asu.heal.core.api.service;
 
 import edu.asu.heal.core.api.models.*;
-import org.bson.types.ObjectId;
 
-import java.util.Date;
 import java.util.List;
 
 public interface HealService {
 
-    // methods pertaining to domain resource
 
-    String getDomains();
+    /****************************************  Service methods for Activity  ******************************************/
+    List<Activity> getActivities(String domain);
 
-    String getDomain(String id);
+    Activity createActivity(String title, String description);
 
-    String addDomain(String title, String description, String state);
+    Activity getActivity(String activityId);
+
+    Activity updateActivity(Activity activity);
+
+    Activity deleteActivity(String activityId);
+
+    /****************************************  Service methods for ActivityInstance  **********************************/
+    List<ActivityInstance> getActivityInstances(int patientPin);
+
+    ActivityInstance getActivityInstance(String activityInstanceId);
+
+    ActivityInstance createActivityInstance(ActivityInstance activityInstanceJson);
+
+    ActivityInstance deleteActivityInstance(String activityInstanceId);
+
+    ActivityInstance updateActivityInstance(String requestBody);
+
+    /****************************************  Service methods for Domain  ********************************************/
+    List<Domain> getDomains();
+
+    Domain getDomain(String id);
+
+    Domain addDomain(String title, String description, String state);
 
     String addTestDomain(String title, String description, String state);
 
-    // methods pertaining to activityInstance resource
-
-    List<ActivityInstance> getActivityInstances(int patientPin, int trialId);
-
-    String getActivityInstance(String activityInstanceId);
-
-    String createActivityInstance(String requestPayload);
-
-    String updateActivityInstance(String requestBody);
-
-    String deleteActivityInstance(String activityInstanceId);
-
-    // methods pertaining to patient resource
+    /****************************************  Service methods for Patient  *******************************************/
     List<Patient> getPatients(String trialId);
 
     Patient getPatient(int patientPin);
 
-    int createPatient(String requestBody);
+    Patient createPatient(String trialId);
 
-    String updatePatient(String requestBody);
+    Patient updatePatient(Patient patient);
 
     String deletePatient(String patientPin);
 
-    String getMakeBelieveInstance();
+    /****************************************  Service methods for Trial  *********************************************/
+    List<Trial> getTrials(String domain);
 
-    String getMakeBelieveInstanceAnswer(int instanceId);
+    Trial addTrial(Trial trialInstance);
 
-    int updateMakeBelieveInstance(int instanceId, String responses);
+    /****************************************  Other Service methods  *************************************************/
 
     String getWorryHeadsInstance();
 
-    // methods pertaining to Activity Resource
-    List<Activity> getActivities(String domain);
-
-    String createActivity(String requestBody);
-
-
-    String addActivity(String title, String description);
-
-    // methods pertaining to Trial Resource
-    List<Trial> getTrials(String domain);
-
-    String addTrial(String domainId, String title, String description, String startDate, String endDate, int targetCount);
-
+    String getEmotionsActivityInstance(int patientPin, String emotion, int intensity);
 }

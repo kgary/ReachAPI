@@ -5,6 +5,7 @@
   "title": "HEAL API",
   "order":[
     "Patient",
+    "GetPatients",
     "GetPatientsOfTrial",
     "GetPatientDetail",
     "AddPatient",

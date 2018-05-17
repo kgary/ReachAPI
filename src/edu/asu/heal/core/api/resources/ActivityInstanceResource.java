@@ -1,32 +1,31 @@
 package edu.asu.heal.core.api.resources;
 
-import edu.asu.heal.core.api.models.ActivityInstance;
+import edu.asu.heal.core.api.models.*;
+import edu.asu.heal.core.api.responses.ActivityInstanceResponse;
+import edu.asu.heal.core.api.responses.HEALResponse;
+import edu.asu.heal.core.api.responses.HEALResponseBuilder;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
 @Path("/activityinstances/")
 @Produces(MediaType.APPLICATION_JSON)
 public class ActivityInstanceResource {
 
-	// XXX the classname should not be hardcoded
-    private static HealService reachService =
-            HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
+    @Context
+    private UriInfo _uri;
 
-    // XXX does apidoc let you put the definitions after references, like at the bottom of the class?
-    // are these definitions repeated in every resource class? Seems like there would be a shortcut,
-    // and they are in the way here. Finally, the apidoc needs to give JSON examples.
+    private static HealService reachService = HealServiceFactory.getTheService();
+
     /**
      * @apiDefine BadRequestError
      * @apiError (Error 4xx) {400} BadRequest Bad Request Encountered
-     * */
-
-    /** @apiDefine UnAuthorizedError
-     * @apiError (Error 4xx) {401} UnAuthorized The Client must be authorized to access the resource
      * */
 
     /** @apiDefine ActivityInstanceNotFoundError
@@ -47,60 +46,138 @@ public class ActivityInstanceResource {
      * @api {get} /activityInstance?patientPin={patientPin}&trialId={trialId} ActivityInstances
      * @apiName GetActivityInstances
      * @apiGroup ActivityInstance
-     *
      * @apiParam {Number} patientPin Patient's Unique Id
      * @apiParam {Number} trialId Trial's Unique Id
-     *
      * @apiParam (Login) {String} pass Only logged in user can get this
-     *
      * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
      * @apiUse ActivityInstanceNotFoundError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
-     * */
-    @GET  
+     */
+    @GET
     public Response fetchActivityInstances(@QueryParam("patientPin") int patientPin,
-                                           @QueryParam("trialId") int trialId){
-    	// XXX are the query string params required? I would think there would be a more general
-    	// set of query string parameters that could cut across these. Candidate for shortcut endpoint
-        List<ActivityInstance> instances = reachService.getActivityInstances(patientPin, trialId);
-        if(instances == null)
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-            .entity("SOME PROBLEM IN SERVER. CHECK LOGS")  // XXX add more info, you have patientPin and trialId
-            .build();
-
-        return Response.status(Response.Status.OK)
-                .entity(instances)  // XXX need to talk JSON payload
-                .build();
+                                           @QueryParam("emotion") String emotion,
+                                           @QueryParam("intensity") int intensity) {
+        HEALResponse response = null;
+        HEALResponseBuilder builder;
+        try{
+            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        if (patientPin == 0 || patientPin < -1) {
+            response = builder
+                    .setData("YOUR PATIENT PIN IS ABSENT FROM THE REQUEST")
+                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .setServerURI(_uri.getBaseUri().toString())
+                    .build();
+        } else {
+            if(emotion != null){
+                String emotionsActivityResponse = reachService.getEmotionsActivityInstance(patientPin, emotion, intensity);
+                if(emotionsActivityResponse == null){
+                    response = builder
+                            .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                            .setData("SOME ERROR ON THE SERVER. CONTACT ADMINISTRATOR")
+                            .build();
+                }else if(emotionsActivityResponse.length() == 0){
+                    response = builder
+                            .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                            .setData("THE EMOTION YOU PASSED IN IS INCORRECT")
+                            .build();
+                }else{
+                    response = builder
+                            .setStatusCode(Response.Status.OK.getStatusCode())
+                            .setData(emotionsActivityResponse)
+                            .build();
+                }
+            }else{
+                List<ActivityInstance> instances = reachService.getActivityInstances(patientPin);
+                if (instances == null) {
+                    response = builder
+                            .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                            .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
+                            .build();
+                } else if (instances.isEmpty()) {
+                    response = builder
+                            .setStatusCode(Response.Status.OK.getStatusCode())
+                            .setData("THERE ARE NO ACTIVITIES INSTANCES FOR THIS PATIENT")
+                            .build();
+                } else if (instances.size() == 1) {
+                    if (instances.get(0).equals(NullObjects.getNullActivityInstance())) {
+                        response = builder
+                                .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                                .setData("THE PATIENT PIN YOU'VE PASSED IN IS INCORRECT OR DOES NOT EXIST")
+                                .build();
+                    } else {
+                        response = builder
+                                .setStatusCode(Response.Status.OK.getStatusCode())
+                                .setData(instances)
+                                .setServerURI(_uri.getBaseUri().toString())
+                                .build();
+                    }
+                } else {
+                    response = builder
+                            .setStatusCode(Response.Status.OK.getStatusCode())
+                            .setData(instances)
+                            .setServerURI(_uri.getBaseUri().toString())
+                            .build();
+                }
+            }
+        }
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
     }
 
     /**
      * @api {get} /activityInstance/:id ActivityInstance Detail
      * @apiName ActivityInstanceDetail
      * @apiGroup ActivityInstance
-     *
      * @apiParam {Number} id ActivityInstance's Unique Id
-     *
-     * @apiParam (Login) {String} pass Only logged in user can get this
-     *
+     * @apiParamExample http://localhost:8080/ReachAPI/rest/activityinstances/5abd71b82e027e29ca2353a0
      * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
      * @apiUse ActivityInstanceNotFoundError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
-     * */
+     */
     @GET
-    @Path("/{id}/")  // XXX why the / at the end?
-    public Response fetchActivityInstance(@PathParam("id") String activityInstanceId){
-        return Response.status(Response.Status.OK).entity(reachService.getActivityInstance(activityInstanceId)).build();
+    @Path("/{id}")
+    public Response fetchActivityInstance(@PathParam("id") String activityInstanceId) {
+        HEALResponse response;
+        HEALResponseBuilder builder;
+        try{
+            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+
+        ActivityInstance instance = reachService.getActivityInstance(activityInstanceId);
+
+        if (instance == null) {
+            response = builder
+                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
+                    .build();
+        } else if (instance.equals(NullObjects.getNullActivityInstance())) {
+            response = builder
+                    .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
+                    .setData("THE ACTIVITY INSTANCE YOU'RE REQUESTING DOES NOT EXIST")
+                    .build();
+        } else {
+            response = builder
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setData(instance)
+                    .setServerURI(_uri.getBaseUri().toString())
+                    .build();
+        }
+
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
     }
 
     /**
      * @api {post} /activityInstance Create ActivityInstance
      * @apiName CreateActivityInstance
      * @apiGroup ActivityInstance
-     *
      * @apiParam {DateTime} StartTime Start Time of the Activity Instance
      * @apiParam {DateTime} EndTime End Time of the Activity Instance
      * @apiParam {DateTime} UserSubmissionTime User Submission Time of the ActivityInstance
@@ -108,35 +185,68 @@ public class ActivityInstanceResource {
      * @apiParam {String} Sequence The sequence of the activities
      * @apiParam {String} ActivityTitle The title of the Activity Instance
      * @apiParam {String} Description Description about the Activity Instance
-     *
      * @apiParam (Login) {String} pass Only logged in user can get this
-     *
+     * @apiParamExample {json} Activity Instance Example:
+     * {
+     * "createdAt": "2018-02-26T07:00:00.000Z",
+     * "updatedAt": "2018-02-26T07:00:00.000Z",
+     * "startTime": "2018-02-26T07:00:00.000Z",
+     * "endTime": "2018-02-27T07:00:00.000Z",
+     * "instanceOf": {
+     * "name": "Relaxation"
+     * "activityId": 5a9499e066684905df626003
+     * },
+     * "state": "created",
+     * "description": "Relaxation instance"
+     * }
      * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
-     * */
+     */
     @POST
-    public Response addActivityInstance(String requestBody){  // XXX I prefer "create" over "add"
-        String response = reachService.createActivityInstance(requestBody);
-        // XXX why are we using String and not an @Consumes of JSON?
-        if(response != null) {
-        		// XXX we should add the Location header here, or at the least decide if we are going to link in the JSON
-        		// But the new resource link should be in the response somewhere
-        		// XXX We HAVE to get away from wrapped responses like "Success" and "Error". Return the resource representation
-            return Response.status(Response.Status.CREATED).entity("Success").build();
-        } else {
-        		// XXX can we improve our error handling? Why would the service return null? Can it tell us anything?
-        		// for example, what if the requestBody makes no sense? Shouldn't that be a 400?
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error").build();
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createActivityInstance(ActivityInstance activityInstanceJson) {
+        HEALResponse response;
+        HEALResponseBuilder builder;
+        try{
+            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+        if (activityInstanceJson.getPatientPin() == 0 || activityInstanceJson.getInstanceOf() == null) {
+            response = builder
+                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .setData("REQUEST MUST CONTAIN AT LEAST PATIENT PIN AND INSTANCE TYPE VALUE")
+                    .build();
+
+        } else {
+            ActivityInstance instance = reachService.createActivityInstance(activityInstanceJson);
+            if (instance == null) {
+                response = builder
+                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                        .setData("SOME ERROR CREATING NEW ACTIVITY INSTANCE. CONTACT ADMINISTRATOR")
+                        .build();
+            } else if (instance.equals(NullObjects.getNullActivityInstance())) {
+                response = builder
+                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                        .setData("INCORRECT PATIENT PIN IN THE REQUEST PAYLOAD")
+                        .build();
+            } else {
+                response = builder
+                        .setStatusCode(Response.Status.CREATED.getStatusCode())
+                        .setData(instance)
+                        .build();
+            }
+        }
+
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
     }
 
     /**
      * @api {put} activityInstance Update ActivityInstance
      * @apiName UpdateActivityInstance
      * @apiGroup ActivityInstance
-     *
      * @apiParam {DateTime} StartTime Start Time of the Activity Instance
      * @apiParam {DateTime} EndTime End Time of the Activity Instance
      * @apiParam {DateTime} UserSubmissionTime User Submission Time of the ActivityInstance
@@ -144,76 +254,85 @@ public class ActivityInstanceResource {
      * @apiParam {String} Sequence The sequence of the activities
      * @apiParam {String} ActivityTitle The title of the Activity Instance
      * @apiParam {String} Description Description about the Activity Instance
-     *
      * @apiParam (Login) {String} pass Only logged in user can get this
-     *
      * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
-     * */
+     */
     @PUT
-    public Response updateActivityInstance(String requestBody){ // XXX see comment above regarding use of String
-    		// XXX No error cases possible on the call to the service? You list 4 above
-    		// XXX we return OK but we should distinguish an update from a created on PUT (200 vs 201)
-        return Response.status(Response.Status.OK).entity(reachService.updateActivityInstance(requestBody)).build();
+    @Path("/{activityInstanceId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateActivityInstance(@PathParam("activityInstanceId") String activityInstanceId, String payload) {
+        ActivityInstance instance = reachService.updateActivityInstance(payload);
+        HEALResponse response;
+        HEALResponseBuilder builder;
+        try{
+            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        if(instance == null){
+            response = builder
+                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .setData("Some error on the server side")
+                    .build();
+            return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
+        }else if(instance == NullObjects.getNullActivityInstance()){
+            response = builder
+                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .setData("Incorrect request format or activity instance not found")
+                    .build();
+            return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
+        }else{
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
     }
 
     /**
      * @api {delete} /activityInstance/:id Delete ActivityInstance
      * @apiName DeleteActivityInstance
      * @apiGroup ActivityInstance
-     *
-     * @apiParam {Number} id ActivityInstance's unique id
-     *
-     * @apiParam (Login) {String} pass Only logged in user can get this
-     *
+     * @apiParam {String} id ActivityInstance's unique id
+     * @apiParamExample http://localhost:8080/ReachAPI/rest/activityinstances/5abd71b82e027e29ca2353a0
      * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
      * @apiUse ActivityInstanceNotFoundError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
-     * */
+     */
     @DELETE
     @Path("/{id}")
-    public Response removeActivityInstance(@PathParam("id") String activityInstanceId){
-        return Response.status(Response.Status.OK).entity(
-                reachService.deleteActivityInstance(activityInstanceId)).build();
-        // XXX proper response code is 204. Again, no error handling?
-    }
+    public Response removeActivityInstance(@PathParam("id") String activityInstanceId) {
+        HEALResponse response;
+        HEALResponseBuilder builder;
 
-    // XXX Why not use a query param like type=makebelieve instead of making a new endpoint?
-    // when we extend our endpoint we think of it as a path param usually, whereas this is a subtype
-    @GET
-    @Path("/makebelieve/")
-    public Response fetchMakeBelieveInstance(){
-        String makeBelieveInstanceString = reachService.getMakeBelieveInstance();
-        if(makeBelieveInstanceString == null)
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Some server error. Please contact " +
-                    "administrator").build();
-        return Response.status(Response.Status.OK).entity(makeBelieveInstanceString).build();
-    }
+        try{
+            builder = new HEALResponseBuilder(ActivityInstanceResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
 
-    // XXX I am pretty confused why we need a new endpoint at all. Why can't the service distinguish the special case
-    // of a MB AI?
-    @GET
-    @Path("/makebelieveanswers/")  // XXX this would be /makebelieve/answers?situation_id=...
-    public Response fetchMakeBelieveInstanceAnswers(@QueryParam("situation_id") int situationId){
-        String makeBelieveInstanceAnswerString = reachService.getMakeBelieveInstanceAnswer(situationId);
-        if(makeBelieveInstanceAnswerString == null)
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Some server error. Please contact " +
-                    "administrator").build();
-        if(makeBelieveInstanceAnswerString.equals("Bad Request"))
-            return Response.status(400).build();
-        return Response.status(Response.Status.OK).entity(makeBelieveInstanceAnswerString).build();
-    }
+        ActivityInstance removed = reachService.deleteActivityInstance(activityInstanceId);
 
-    // XXX if we do keep a /makebelieve endpoint then you PUT on that, not on a separate one here
-    @PUT()
-    @Path("/makebelieveinstance/")
-    public Response updateMakeBelieveInstance(@QueryParam("situation_id") int situationId, String requestBody){
-        int response = reachService.updateMakeBelieveInstance(situationId, requestBody);
-        return Response.status(response).build();
+        if (removed.equals(NullObjects.getNullActivityInstance())) {
+            response = builder
+                    .setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
+                    .setData("ACTIVITY INSTANCE DOES NOT EXIST")
+                    .build();
+        } else if (removed == null) {
+            response = builder
+                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .setData("SOME PROBLEM IN DELETING ACTIVITY INSTANCE. CONTACT ADMINISTRATOR")
+                    .build();
+        } else {
+            response = builder
+                    .setStatusCode(Response.Status.NO_CONTENT.getStatusCode())
+                    .setData(null)
+                    .build();
+        }
+        return Response.status(response.getStatusCode()).build();
+
     }
 
     // XXX again why a new endpoint? WorryHeads is just an acivityinstance from the API perspective. Yes, we
@@ -221,14 +340,14 @@ public class ActivityInstanceResource {
     // the subtype we are looking for (WH, MB, etc.) is a query filter
     @GET
     @Path("/worryheads")
-    public Response fetchWorryHeadsInstance(){
-    		// XXX what WH instance would this even return? A single or a collection? How would it be scoped?
+    public Response fetchWorryHeadsInstance() {
+        // XXX what WH instance would this even return? A single or a collection? How would it be scoped?
         String worryHeadsInstanceString = reachService.getWorryHeadsInstance();
-        if(worryHeadsInstanceString == null)
+        if (worryHeadsInstanceString == null)
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Some server error. Please contact "
-            + "administrator").build();
+                    + "administrator").build();
 
-        if(worryHeadsInstanceString.equals("Bad Request"))
+        if (worryHeadsInstanceString.equals("Bad Request"))
             return Response.status(Response.Status.BAD_REQUEST).build();
 
         return Response.status(Response.Status.OK).entity(worryHeadsInstanceString).build();

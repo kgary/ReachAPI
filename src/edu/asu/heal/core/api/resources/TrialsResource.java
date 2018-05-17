@@ -1,29 +1,31 @@
 package edu.asu.heal.core.api.resources;
 
-import edu.asu.heal.core.api.models.Trial;
+import edu.asu.heal.core.api.models.*;
+import edu.asu.heal.core.api.responses.HEALResponse;
+import edu.asu.heal.core.api.responses.HEALResponseBuilder;
+import edu.asu.heal.core.api.responses.TrialResponse;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
 @Path("/trials")
 @Produces(MediaType.APPLICATION_JSON)
 public class TrialsResource {
+    @Context
+    private UriInfo _uri;
+
     private static HealService reachService =
-            HealServiceFactory.getTheService("edu.asu.heal.reachv3.api.service.ReachService");
+            HealServiceFactory.getTheService();
 
     /**
      * @apiDefine BadRequestError
      * @apiError (Error 4xx) {400} BadRequest Bad Request Encountered
-     * */
-
-    /** @apiDefine UnAuthorizedError
-     * @apiError (Error 4xx) {401} UnAuthorized The Client must be authorized to access the resource
      * */
 
     /** @apiDefine TrialNotFoundError
@@ -41,67 +43,133 @@ public class TrialsResource {
      * */
 
     /**
-     * @api {get} /trials?domain=domainName Get list of trials for a given domain
+     * @api {get} /trials?domain={domainName} Get list of trials for a given domain
      * @apiName getTrials
      * @apiGroup Trials
-     *
      * @apiParam {String} domain Domain name for which trials are to be fetched. Use "_" in place of space character. Case sensitive.
-     *
+     * @apiParamExample Request example: http://localhost:8080/ReachAPI/rest/trials?domain=Anxiety_Prevention
      * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
      * @apiUse InternalServerError
      * @apiUse NotImplementedError
-     * */
+     */
     @GET
     @QueryParam("domain")
-    public Response getTrials(@QueryParam("domain") String domain){
-        List<Trial> trials = reachService.getTrials(domain.replace("_", " "));
-        if(trials == null)
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Some problem on server. See logs.")
-                    .build();
+    public Response getTrials(@QueryParam("domain") String domain) {
+        HEALResponse response;
+        HEALResponseBuilder builder;
+        try{
+            builder = new HEALResponseBuilder(TrialResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        List<Trial> trials;
+        if (domain == null || domain.equals("")) {
+            trials = reachService.getTrials(null);
+        } else {
+            trials = reachService.getTrials(domain);
+        }
 
-        return Response.status(Response.Status.OK)
-                .entity(trials)
-                .build();
+        if (trials == null) {
+            response = builder
+                    .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
+                    .build();
+        } else if (trials.isEmpty()) {
+            response = builder
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setData("THERE ARE NO TRIALS IN THE DATABASE")
+                    .build();
+        } else if (trials.size() == 1) {
+            if (trials.get(0).equals(NullObjects.getNullActivityInstance())) {
+                response = builder
+                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                        .setData("THE DOMAIN YOU'VE PASSED IN IS INCORRECT OR DOES NOT EXIST")
+                        .build();
+            } else {
+                response = builder
+                        .setStatusCode(Response.Status.OK.getStatusCode())
+                        .setData(trials)
+                        .setServerURI(_uri.getBaseUri().toString())
+                        .build();
+            }
+        } else {
+            response = builder
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setData(trials)
+                    .setServerURI(_uri.getBaseUri().toString())
+                    .build();
+        }
+
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
     }
 
     /**
-     * @api {post} /trails Create Trial
+     * @api {post} /trials Create Trial
      * @apiName CreateTrial
      * @apiGroup Trial
-     *
      * @apiParam {String} domainId DomainId for which the trial is being created
-     * @apiParam {String} Title Title of the Trial
-     * @apiParam {String} Description Description of the Trial
+     * @apiParam {String} title Title of the Trial
+     * @apiParam {String} description Description of the Trial
      * @apiParam {String} startDate Start Date for the Trial
      * @apiParam {String} endDate End Date for the Trial
      * @apiParam {Number} targetCount Target Count of the Trial
-     *
-     *
-     * @apiParam (Login) {String} pass Only logged in user can get this
-     *
+     * @apiParamExample {form-data} Request Example:
+     * domainId="Preventive Anxiety
+     * title="Compass"
+     * description="Compass trial for Preventive Anxiety domain
+     * startDate="2018-02-18 09:00:00"
+     * endDate="2018-03-17 09:00:00"
+     * targetCount=100
      * @apiSuccess {String} text SUCCESS
-     *
      * @apiUse BadRequestError
-     * @apiUse UnAuthorizedError
      * @apiUse InternalServerError
      * @apiuse TrialNotFoundError
      * @apiUse NotImplementedError
-     * */
+     */
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addTrial(@FormParam("domainId") String domainId, @FormParam("title") String title,
-                             @FormParam("description") String description, @FormParam("startDate") String startDate,
-                             @FormParam("endDate") String endDate, @FormParam("targetCount") int targetCount){
+    public Response addTrial(Trial trial) {
 
-        String trial = reachService.addTrial(domainId, title, description, startDate, endDate, targetCount);
-
-        if (trial != null) {
-            return Response.status(Response.Status.OK).entity("Successfully Created").build();
+        HEALResponse response;
+        HEALResponseBuilder builder;
+        try{
+            builder = new HEALResponseBuilder(TrialResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Trial Could not be created").build();
+        if (trial.getDomainId().length() <= 0) {
+            response = builder
+                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .setData("DOMAIN CANNOT BE EMPTY")
+                    .build();
+        } else if (trial.getTitle().length() <= 0) {
+            response = builder
+                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .setData("TITLE CANNOT BE EMPTY")
+                    .build();
+        } else {
+            Trial addedTrial = reachService.addTrial(trial);
+            if (addedTrial.equals(NullObjects.getNullTrial())) {
+                response = builder
+                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                        .setData("DOMAIN IS INCORRECT OR DOES NOT EXIST")
+                        .build();
+            } else if (addedTrial == null) {
+                response = builder
+                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                        .setData("SOME ERROR CREATING NEW TRIAL. CONTACT ADMINISTRATOR")
+                        .build();
+            } else {
+                response = builder
+                        .setStatusCode(Response.Status.CREATED.getStatusCode())
+                        .setData(addedTrial)
+                        .setServerURI(_uri.getBaseUri().toString())
+                        .build();
+            }
+        }
+        return Response.status(response.getStatusCode()).entity(response).build();
     }
 }

@@ -11,9 +11,9 @@ public class DAOFactory {
 
     private DAOFactory() {}
 
-    public static DAO getTheDAO() throws DAOException {
+    public static DAO getTheDAO() throws Exception{
         if (_theDAO == null) {
-            throw new DAOException("DAO not properly initialized");
+            throw new Exception("DAO not properly initialized");
         }
         return _theDAO;
     }
@@ -39,8 +39,8 @@ public class DAOFactory {
         } catch (Throwable t) {
             t.printStackTrace();
             try {
-                throw new DAOException(t);
-            } catch (DAOException e) {
+                throw new Exception(t);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
