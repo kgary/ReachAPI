@@ -165,7 +165,6 @@ public class ReachService implements HealService {
             if (activityInstance.getUpdatedAt() == null) activityInstance.setUpdatedAt(new Date());
 
             if(activityInstance.getInstanceOf().getName().equals("MakeBelieve")){ //todo need a more elegant way of making the check whether it is of type make believe
-                System.out.println("THIS IS CALLED");
                 activityInstance =
                         new MakeBelieveActivityInstance(activityInstance.getActivityInstanceId(),
                         activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
@@ -312,10 +311,10 @@ public class ReachService implements HealService {
     }
 
     @Override
-    public Patient createPatient() {
+    public Patient createPatient(String trialId) {
         try {
             DAO dao = DAOFactory.getTheDAO();
-            return dao.createPatient();
+            return dao.createPatient(trialId);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

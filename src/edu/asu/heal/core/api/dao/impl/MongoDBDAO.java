@@ -344,7 +344,7 @@ public class MongoDBDAO implements DAO {
                     .projection(Projections.excludeId())
                     .first();
 
-            if(instance.getInstanceOf().getName().equals("MakeBelieve")) //todo document this
+            if(instance.getInstanceOf().getName().equals("MakeBelieve")) //todo need to do this more elegantly
                 instance = database
                         .getCollection(ACTIVITYINSTANCES_COLLECTION, MakeBelieveActivityInstance.class)
                         .find(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId))
@@ -430,16 +430,16 @@ public class MongoDBDAO implements DAO {
     }
 
     @Override
-    public Patient createPatient() {
+    public Patient createPatient(String trialId) {
         try {
 
-//TODO             MongoCollection<Trial> trialsCollection = getConnectedDatabase()
-//TODO                    .getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
-//
-//TODO            Trial trial = trialsCollection.find(Filters.eq(Trial.TRIALID_ATTRIBUTE, trialID)).first();
-//TODO
-//TODO            if(trial == null)
-//TODO                return NullObjects.getNullPatient();
+            MongoCollection<Trial> trialsCollection = getConnectedDatabase()
+                    .getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
+
+            Trial trial = trialsCollection.find(Filters.eq(Trial.TRIALID_ATTRIBUTE, trialId)).first();
+
+            if(trial == null)
+                return NullObjects.getNullPatient();
 
             //Temporary code to generate new pin. It just increments the largest pin number in the database by 1
             int newPin = getConnectedDatabase()
@@ -465,9 +465,9 @@ public class MongoDBDAO implements DAO {
 
             patientCollection.insertOne(newPatient);
 
-//TODO            trial.getPatients().add(newPatient.getPatientId());
-//TODO
-//TODO            trialsCollection.replaceOne(Filters.eq(Trial.TRIALID_ATTRIBUTE, trialID), trial);
+            trial.getPatients().add(newPatient.getPatientId());
+
+            trialsCollection.replaceOne(Filters.eq(Trial.TRIALID_ATTRIBUTE, trialId), trial);
 
             return newPatient;
         } catch (Exception e) {

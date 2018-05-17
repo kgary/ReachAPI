@@ -181,7 +181,7 @@ public class PatientResource {
      * @apiUse NotImplementedError
      */
     @POST
-    public Response createPatient() {
+    public Response createPatient(String trialId) {
         HEALResponse response;
         HEALResponseBuilder builder;
         try{
@@ -191,7 +191,7 @@ public class PatientResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
-        Patient insertedPatient = reachService.createPatient();
+        Patient insertedPatient = reachService.createPatient(trialId);
 
         if (insertedPatient == null) {
             response = builder

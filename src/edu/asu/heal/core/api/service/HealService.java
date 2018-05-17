@@ -43,7 +43,7 @@ public interface HealService {
 
     Patient getPatient(int patientPin);
 
-    Patient createPatient();
+    Patient createPatient(String trialId);
 
     Patient updatePatient(Patient patient);
 

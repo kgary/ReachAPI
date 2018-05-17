@@ -46,7 +46,7 @@ public interface DAO {
 
     Patient getPatient(int patientPin);
 
-    Patient createPatient();
+    Patient createPatient(String trialId);
 
     Patient updatePatient(Patient patient);
 
