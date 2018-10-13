@@ -1,6 +1,7 @@
 package edu.asu.heal.core.api.service;
 
 import edu.asu.heal.core.api.models.*;
+import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 
 import java.util.List;
 
@@ -59,4 +60,6 @@ public interface HealService {
     String getWorryHeadsInstance();
 
     String getEmotionsActivityInstance(int patientPin, String emotion, int intensity);
+    
+    MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId);
 }
