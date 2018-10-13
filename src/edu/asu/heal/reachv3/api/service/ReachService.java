@@ -442,4 +442,18 @@ public class ReachService implements HealService {
         return null;
     }
 
+    // Added for makeBelieve ... By Abhishek
+    
+	@Override
+	public MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId) {
+		try {
+            DAO dao = DAOFactory.getTheDAO();
+            return dao.getActivityMakeBelieveInstanceDAO(activityInstanceId);
+        } catch (Exception e) {
+            System.out.println("SOME ERROR IN HEAL SERVICE getActivityInstance");
+            e.printStackTrace();
+            return null;
+        }
+	}
+
 }
