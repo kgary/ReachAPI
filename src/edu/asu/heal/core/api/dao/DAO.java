@@ -58,6 +58,9 @@ public interface DAO {
 
     Trial createTrial(Trial trialInstance);
 
+    /****************************************  Logger DAO methods *****************************************************/
+    Logger[] logMessage (Logger[] loggerInstance);
+
     /****************************************  Other DAO methods ******************************************************/
 
     MakeBelieveSituation getMakeBelieveSituation();
