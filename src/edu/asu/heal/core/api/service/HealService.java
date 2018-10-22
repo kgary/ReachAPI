@@ -55,11 +55,14 @@ public interface HealService {
 
     Trial addTrial(Trial trialInstance);
 
+    /****************************************  Service methods for Logger  ********************************************/
+    Logger[] logMessage (Logger[] loggerInstance);
+
     /****************************************  Other Service methods  *************************************************/
 
     String getWorryHeadsInstance();
 
     String getEmotionsActivityInstance(int patientPin, String emotion, int intensity);
-    
+
     MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId);
 }

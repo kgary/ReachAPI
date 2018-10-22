@@ -34,6 +34,7 @@ public class MongoDBDAO implements DAO {
 	private static final String ACTIVITYINSTANCES_COLLECTION = "activityInstances";
 	private static final String MAKEBELIEVESITUATIONS_COLLECTION = "makeBelieveSituations";
 	private static final String MAKEBELIEVESITUATIONNAMES_COLLECTION = "makeBelieveSituationNames";
+	private static final String LOGGER_COLLECTION = "logger";
 
 	private static String __mongoDBName;
 	private static String __mongoURI;
@@ -613,6 +614,37 @@ public class MongoDBDAO implements DAO {
 
 			return trialInstance;
 		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/****************************************  Logger DAO methods *****************************************************/
+
+	@Override
+	public Logger[] logMessage (Logger[] loggerInstance) {
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<Trial> trialsCollection = MongoDBDAO.getConnectedDatabase()
+					.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
+
+			MongoCollection<Logger> loggerCollection = database.getCollection(MongoDBDAO.LOGGER_COLLECTION,
+					Logger.class);
+			for (Logger log: loggerInstance) {
+				String trialId = log.getTrialId();
+
+				Trial trial = trialsCollection.find(Filters.eq(Trial.TRIALID_ATTRIBUTE, trialId)).first();
+
+				if(trial != null) {
+					loggerCollection.insertOne(log);
+				}
+			}
+
+
+
+			return loggerInstance;
+		} catch (Exception e){
+			System.out.println("Some problem in storing logs");
 			e.printStackTrace();
 			return null;
 		}

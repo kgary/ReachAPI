@@ -403,6 +403,20 @@ public class ReachService implements HealService {
         }
     }
 
+    /****************************************  Service methods for Logger *********************************************/
+    @Override
+    public Logger[] logMessage (Logger[] loggerInstance) {
+        try {
+            DAO dao = DAOFactory.getTheDAO();
+
+            Logger[] logger = dao.logMessage(loggerInstance);
+            return logger;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     /****************************************  Other Service methods  *************************************************/
 
     @Override
