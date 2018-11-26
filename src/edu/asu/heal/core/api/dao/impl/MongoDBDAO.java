@@ -1,5 +1,9 @@
 package edu.asu.heal.core.api.dao.impl;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.AggregateIterable;
@@ -11,6 +15,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.models.*;
+import edu.asu.heal.reachv3.api.models.Emotions;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
 import org.bson.Document;
@@ -35,9 +40,11 @@ public class MongoDBDAO implements DAO {
 	private static final String MAKEBELIEVESITUATIONS_COLLECTION = "makeBelieveSituations";
 	private static final String MAKEBELIEVESITUATIONNAMES_COLLECTION = "makeBelieveSituationNames";
 	private static final String LOGGER_COLLECTION = "logger";
-
+	private static final String EMOTIONS_COLLECTION = "emotions";
+	
 	private static String __mongoDBName;
 	private static String __mongoURI;
+	private Properties properties1 = new Properties();
 	private Map<String, List<String>> emotionsMap = new HashMap<>();
 
 
@@ -46,24 +53,24 @@ public class MongoDBDAO implements DAO {
 		__mongoDBName = properties.getProperty("mongo.dbname");
 
 		try {
-			Properties properties1 = new Properties();
+		//	Properties properties1 = new Properties();
 			properties1.load(MongoDBDAO.class.getResourceAsStream("emotions.properties"));
-
-			emotionsMap.put(Emotions.happy.toString(),
-					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.happy").split(","))));
-			emotionsMap.put(Emotions.sad.toString(),
-					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.sad").split(","))));
-			emotionsMap.put(Emotions.sick.toString(),
-					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.sick").split(","))));
-			emotionsMap.put(Emotions.angry.toString(),
-					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.angry").split(","))));
-			emotionsMap.put(Emotions.scared.toString(),
-					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.scared").split(","))));
-			emotionsMap.put(Emotions.worried.toString(),
-					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.worried").split(","))));
-		}catch (IOException e){
-			e.printStackTrace();
-		}
+//
+//			emotionsMap.put(Emotions.happy.toString(),
+//					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.happy").split(","))));
+//			emotionsMap.put(Emotions.sad.toString(),
+//					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.sad").split(","))));
+//			emotionsMap.put(Emotions.sick.toString(),
+//					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.sick").split(","))));
+//			emotionsMap.put(Emotions.angry.toString(),
+//					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.angry").split(","))));
+//			emotionsMap.put(Emotions.scared.toString(),
+//					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.scared").split(","))));
+//			emotionsMap.put(Emotions.worried.toString(),
+//					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.worried").split(","))));
+//		}catch (IOException e){
+//			e.printStackTrace();
+//		}
 	}
 
 	private static MongoClient mongoClient  = null;
@@ -694,6 +701,57 @@ public class MongoDBDAO implements DAO {
 	@Override
 	public List<String> getEmotionsActivityInstance(String emotion, int intensity) {
 		try {
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<Emotions> emotionMongoCollection =
+					database.getCollection(MongoDBDAO.EMOTIONS_COLLECTION, Emotions.class);
+			
+//			DB db = (DB) mongoClient.getDatabase(__mongoDBName);
+//			DBCollection emotionMongoCollection = db.getCollection("emotions");
+			String intensityValue = "";
+			
+			if(		( intensity >= (Integer.parseInt(properties1.getProperty("easy.low")) ) ) &&
+					( intensity <= (Integer.parseInt(properties1.getProperty("easy.high")))) 
+			){
+				intensityValue="easy";
+			} else if(		( intensity >= (Integer.parseInt(properties1.getProperty("medium.low")) ) ) &&
+							( intensity <= (Integer.parseInt(properties1.getProperty("medium.high")))) 
+						){
+				intensityValue="medium";
+			}else if(		( intensity >= (Integer.parseInt(properties1.getProperty("hard.low")) ) ) &&
+							( intensity <= (Integer.parseInt(properties1.getProperty("hard.high")))) 
+					){
+				intensityValue="hard";
+			}
+			
+			
+			BasicDBObject q = new BasicDBObject();
+			q.put(Emotions.EMOTION_NAME, emotion);
+			q.put(Emotions.SUGGESTED_ACTIVITIES, 1);
+			q.put(Emotions.INTENSITY, 1);
+			
+			List<Emotions>
+			String in = emotionMongoCollection.find(Filters.eq(value).eq(Emotions.EMOTION_NAME,emotion))
+//			DBCursor cursor = emotionMongoCollection.find(q);
+//			
+//			while(cursor.hasNext()) {
+//				
+//			}
+					
+					return activityInstanceCollection
+							.find(Filters.and(Filters.in(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE,
+									patient.getActivityInstances().toArray(new String[]{})),
+									Filters.eq(ActivityInstance.STATE_ATTRIBUTE, ActivityInstanceStatus.CREATED.status()))) // todo Need to confirm this. It could be other states from the enum as well
+							.projection(Projections.excludeId())
+							.into(new ArrayList<>());
+			
+			
+			
+			 emotionMongoCollection
+					.find(Filters.and(Filters.eq(Emotions.EMOTION_NAME,emotion)),
+							Filters.eq(Emotions.INTENSITY, intensityValue)) // todo Need to confirm this. It could be other states from the enum as well
+					.projection(Projections.excludeId())
+					.into(new ArrayList<>());
+			
 			if (emotion.equals(Emotions.worried.toString())) {
 				if (intensity >= 6) {
 					List<String> temp = emotionsMap.get(emotion);
@@ -712,6 +770,6 @@ public class MongoDBDAO implements DAO {
 
 }
 
-enum Emotions{
-	happy, sad, sick, scared, worried, angry
-}
+//enum Emotions{
+//	happy, sad, sick, scared, worried, angry
+//}
