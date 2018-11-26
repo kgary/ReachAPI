@@ -171,7 +171,7 @@ public class ReachService implements HealService {
                         activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
                         activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
                         activityInstance.getInstanceOf(), activityInstance.getState(),
-                        activityInstance.getPatientPin(), getMakeBelieveSituation());
+                        activityInstance.getPatientPin(), dao.getMakeBelieveSituation());
             }
 
             ActivityInstance newActivityInstance = dao.createActivityInstance(activityInstance);
@@ -445,6 +445,8 @@ public class ReachService implements HealService {
         }
     }
 
+    
+ /************ Task #378 **********************
     private MakeBelieveSituation getMakeBelieveSituation() {
         try {
             DAO dao = DAOFactory.getTheDAO();
@@ -456,6 +458,8 @@ public class ReachService implements HealService {
         return null;
     }
 
+    
+    
     // Added for makeBelieve ... By Abhishek
     
 	@Override
@@ -469,5 +473,7 @@ public class ReachService implements HealService {
             return null;
         }
 	}
+	
+	*/
 
 }

@@ -64,5 +64,6 @@ public interface HealService {
 
     String getEmotionsActivityInstance(int patientPin, String emotion, int intensity);
 
-    MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId);
+    // Task #378
+//    MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId);
 }
