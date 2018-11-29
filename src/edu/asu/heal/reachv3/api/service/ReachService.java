@@ -444,36 +444,4 @@ public class ReachService implements HealService {
             return null;
         }
     }
-
-    
- /************ Task #378 **********************
-    private MakeBelieveSituation getMakeBelieveSituation() {
-        try {
-            DAO dao = DAOFactory.getTheDAO();
-            return dao.getMakeBelieveSituation();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Some problem in getMakeBelieveInstance in Reach Service");
-        }
-        return null;
-    }
-
-    
-    
-    // Added for makeBelieve ... By Abhishek
-    
-	@Override
-	public MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId) {
-		try {
-            DAO dao = DAOFactory.getTheDAO();
-            return dao.getActivityMakeBelieveInstanceDAO(activityInstanceId);
-        } catch (Exception e) {
-            System.out.println("SOME ERROR IN HEAL SERVICE getActivityInstance");
-            e.printStackTrace();
-            return null;
-        }
-	}
-	
-	*/
-
 }

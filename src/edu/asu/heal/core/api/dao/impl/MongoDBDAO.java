@@ -374,8 +374,6 @@ public class MongoDBDAO implements DAO {
 		}
 	}
 
-
-	// ****************** Task #378 ****************************
 	@Override
 	public MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId) {
 		try {
