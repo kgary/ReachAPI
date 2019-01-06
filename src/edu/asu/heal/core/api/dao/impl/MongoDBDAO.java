@@ -9,10 +9,13 @@ import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.FindIterable;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
+import edu.asu.heal.reachv3.api.models.FaceitActivityInstance;
+import edu.asu.heal.reachv3.api.models.FaceItModel;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -34,6 +37,7 @@ public class MongoDBDAO implements DAO {
 	private static final String ACTIVITYINSTANCES_COLLECTION = "activityInstances";
 	private static final String MAKEBELIEVESITUATIONS_COLLECTION = "makeBelieveSituations";
 	private static final String MAKEBELIEVESITUATIONNAMES_COLLECTION = "makeBelieveSituationNames";
+	private static final String FACEITCHALLENGES_COLLECTION = "faceItChallenges";
 	private static final String LOGGER_COLLECTION = "logger";
 
 	private static String __mongoDBName;
@@ -263,7 +267,8 @@ public class MongoDBDAO implements DAO {
 	public List<ActivityInstance> getScheduledActivities(int patientPin)  {
 		try {
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
-			MongoCollection<Patient> patientCollection = database.getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class);
+			MongoCollection<Patient> patientCollection = database.getCollection(MongoDBDAO.PATIENTS_COLLECTION,
+					Patient.class);
 
 			Patient patient = patientCollection.find(Filters.eq(Patient.PIN_ATTRIBUTE, patientPin)).first();
 			if (patient == null) {
@@ -328,7 +333,6 @@ public class MongoDBDAO implements DAO {
 
 			ObjectId newId = ObjectId.get();
 			instance.setActivityInstanceId(newId.toHexString());
-
 			activityInstanceMongoCollection.insertOne(instance);
 			patient.getActivityInstances().add(instance.getActivityInstanceId());
 			patient.setUpdatedAt(new Date());
@@ -358,6 +362,8 @@ public class MongoDBDAO implements DAO {
 
 			if(instance.getInstanceOf().getName().equals("MakeBelieve")) //todo need to do this more elegantly
 				instance = getActivityMakeBelieveInstanceDAO(activityInstanceId);
+			else if(instance.getInstanceOf().getName().equals("FaceIt"))
+				instance = getActivityFaceItInstanceDAO(activityInstanceId);
 
 
 			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
@@ -398,6 +404,34 @@ public class MongoDBDAO implements DAO {
 			System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCE WITH ID " + activityInstanceId);
 			ne.printStackTrace();
 			return (MakeBelieveActivityInstance) NullObjects.getNullActivityInstance();
+		} catch (Exception e) {
+			System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public FaceitActivityInstance getActivityFaceItInstanceDAO (String activityInstanceId) {
+		try {
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<FaceitActivityInstance> activityInstanceMongoCollection =
+					database.getCollection(ACTIVITYINSTANCES_COLLECTION, FaceitActivityInstance.class);
+
+			FaceitActivityInstance faceitActivityInstance =  new FaceitActivityInstance();
+			FaceitActivityInstance instance = activityInstanceMongoCollection
+					.find(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId))
+					.projection(Projections.excludeId())
+					.first();
+
+			//Call the method here
+			
+			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
+			return instance ;
+		} catch (NullPointerException ne) {
+			System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCE WITH ID " + activityInstanceId);
+			ne.printStackTrace();
+			return (FaceitActivityInstance) NullObjects.getNullActivityInstance();
 		} catch (Exception e) {
 			System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
 			e.printStackTrace();
@@ -700,6 +734,30 @@ public class MongoDBDAO implements DAO {
 			return null;
 		}
 
+	}
+
+	@Override
+	public List<FaceItModel> getFaceItChallenges() {
+		try {
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<FaceItModel> faceItMongoCollection =
+					database.getCollection(MongoDBDAO.FACEITCHALLENGES_COLLECTION, FaceItModel.class);
+
+			FindIterable<FaceItModel> challenges = faceItMongoCollection
+					.find();
+
+			List<FaceItModel> faceItchallenges = new ArrayList<>();
+			for (FaceItModel temp : challenges) {
+				System.out.println(temp.getQuestionText());
+				faceItchallenges.add(temp);
+			}
+
+			Collections.shuffle(faceItchallenges);
+			return faceItchallenges;
+		} catch (java.lang.Exception exception) {
+			exception.printStackTrace();
+			return null;
+		}
 	}
 
 }
