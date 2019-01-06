@@ -425,6 +425,8 @@ public class MongoDBDAO implements DAO {
 					.first();
 
 			//Call the method here
+			instance.setFaceItChallenge();
+			
 			
 			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
 			return instance ;

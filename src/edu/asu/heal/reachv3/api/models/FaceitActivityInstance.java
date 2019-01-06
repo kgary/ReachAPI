@@ -31,4 +31,19 @@ public class FaceitActivityInstance extends ActivityInstance {
     public void setFaceItChallenges(List<FaceItModel> faceItChallenges) {
         this.faceItChallenges = faceItChallenges;
     }
+    
+    public void setFaceItChallenge() {
+    	
+    	FaceItModel tmp=new FaceItModel();
+    	System.out.println("Iterating face it");
+    	for(FaceItModel faceItModel:faceItChallenges) {
+    		System.out.println(faceItModel.getQuestionId());
+    		if(faceItModel.getAnswerId()==0) {
+    			tmp=faceItModel;
+    			break;
+    		}
+    	}
+    	faceItChallenges.clear();
+    	faceItChallenges.add(tmp);
+    }
 }
