@@ -434,6 +434,8 @@ public class ReachService implements HealService {
     }
 
     /****************************************  Notification methods  *************************************************/
+    // Reference 1: http://developine.com/how-to-send-firebase-push-notifications-from-app-server-tutorial/
+    // Reference 2: https://firebase.google.com/docs/cloud-messaging/send-message
     public void sendNotification(NotificationData data, int patientPin) {
 
         try {
