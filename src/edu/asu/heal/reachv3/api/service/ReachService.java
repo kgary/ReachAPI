@@ -4,6 +4,12 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.core.api.models.*;
@@ -424,6 +430,56 @@ public class ReachService implements HealService {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    /****************************************  Notification methods  *************************************************/
+    public void sendNotification(NotificationData data, int patientPin) {
+
+        try {
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpPost postRequest = new HttpPost(
+                    "https://fcm.googleapis.com/fcm/send");
+
+            NotificationRequestModel notificationRequestModel = new NotificationRequestModel();
+            notificationRequestModel.setData(data);
+            //TODO: get token from db for pin
+            notificationRequestModel.setTo("eHp6V2Wtr4I:APA91bFLHRuScumQB0lnNRmeirxu5kV2lUPDZ8SbZKz");
+
+            StringWriter writer = new StringWriter();
+            JsonGenerator generator = new JsonFactory().createGenerator(writer);
+            generator.setCodec(new ObjectMapper());
+            generator.writeStartObject();
+            generator.writeObject(notificationRequestModel);
+            generator.writeEndObject();
+
+            generator.close();
+            String notificationJson = writer.toString();
+            writer.close();
+
+            StringEntity input = new StringEntity(notificationJson);
+            input.setContentType("application/json");
+
+            //TODO: server key of your firebase project goes here in header field.
+            // You can get it from firebase console.
+            postRequest.addHeader("Authorization", "key=AAAA7-UgB34:APA91bFhpZ1-MYyFfQd2gof0vUAFKNcQCmmf_10acMn-HS_0iBBvP");
+            postRequest.setEntity(input);
+
+            System.out.println("reques:" + notificationJson);
+
+            HttpResponse response = httpClient.execute(postRequest);
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : "
+                        + response.getStatusLine().getStatusCode());
+            } else if (response.getStatusLine().getStatusCode() == 200) {
+
+                System.out.println("response:" + EntityUtils.toString(response.getEntity()));
+
+            }
+        } catch (RuntimeException runtimeException) {
+            runtimeException.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
     }
 
