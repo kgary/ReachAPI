@@ -75,4 +75,6 @@ public interface DAO {
 
     public FaceitActivityInstance getActivityFaceItInstanceDAO (String activityInstanceId);
 
+	boolean updateFaceitActivityInstance(FaceitActivityInstance instance);
+
 }

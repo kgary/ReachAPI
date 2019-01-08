@@ -11,6 +11,7 @@ import edu.asu.heal.core.api.responses.HEALResponse;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
+import edu.asu.heal.reachv3.api.models.FaceItModel;
 import edu.asu.heal.reachv3.api.models.FaceitActivityInstance;
 import edu.asu.heal.reachv3.api.models.WorryHeadsModel;
 
@@ -205,10 +206,21 @@ public class ReachService implements HealService {
             JsonNode activityInstanceAsTree = mapper.readTree(requestBody);
             String activityInstanceType = activityInstanceAsTree.get("instanceOf").get("name").asText();
 
-            ActivityInstance instance;
+            ActivityInstance instance=new ActivityInstance();
             if(activityInstanceType.equals("MakeBelieve")){ // todo Need to find a more elegant way to do this
                 instance = mapper.readValue(requestBody, MakeBelieveActivityInstance.class);
                 instance.setUpdatedAt(new Date());
+            }else if(activityInstanceType.equals("FaceIt")){
+				FaceitActivityInstance faceItInstance=new FaceitActivityInstance();
+            	faceItInstance = mapper.readValue(requestBody, FaceitActivityInstance.class);            	
+            	
+            	//List<FaceItModel> faceItList=faceItInstance.getFaceItChallenges();
+            	//if the size of the faceItList is more than one then that means the payload is improper 
+            	//and the error needs to be handled
+            	if(dao.updateFaceitActivityInstance(faceItInstance)) {
+            		return faceItInstance;
+            	}
+            	return NullObjects.getNullActivityInstance();
             }else{
                 instance  = mapper.readValue(requestBody, ActivityInstance.class);
                 instance.setUpdatedAt(new Date());
@@ -238,7 +250,6 @@ public class ReachService implements HealService {
             return null;
         }
     }
-
 
     /****************************************  Service methods for Domain  ********************************************/
     @Override

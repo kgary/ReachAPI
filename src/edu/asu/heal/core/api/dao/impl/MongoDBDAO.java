@@ -1,5 +1,6 @@
 package edu.asu.heal.core.api.dao.impl;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.AggregateIterable;
@@ -457,6 +458,42 @@ public class MongoDBDAO implements DAO {
 			return false;
 		}catch (Exception e){
 			System.out.println("Some problem in updateActivityInstance() in MongoDBDao");
+			return false;
+		}
+	}
+	
+	@Override
+	public boolean updateFaceitActivityInstance(FaceitActivityInstance instance) {
+		try {
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<FaceitActivityInstance> activityInstanceMongoCollection =
+					database.getCollection(ACTIVITYINSTANCES_COLLECTION, FaceitActivityInstance.class);
+			
+			//code to update the answerId and status based on the questionId passed
+			ObjectId _id = new ObjectId(instance.getActivityInstanceId());
+		    int questionId = instance.getFaceItChallenges().get(0).getQuestionId();
+		    String status= instance.getFaceItChallenges().get(0).getStatus();
+		    int answerId= instance.getFaceItChallenges().get(0).getAnswerId();
+		    
+		    BasicDBObject query = new BasicDBObject();
+		    query.put("_id", _id);
+		    query.put("faceItChallenges.questionId", questionId);
+
+		    BasicDBObject data = new BasicDBObject();
+		    data.put("faceItChallenges.$.status", status);
+		    data.put("faceItChallenges.$.answerId", answerId);
+
+		    BasicDBObject command = new BasicDBObject();
+		    command.put("$set", data);
+
+		    FaceitActivityInstance myUpdatedInstance=activityInstanceMongoCollection.findOneAndUpdate(query, command);
+			
+			if(myUpdatedInstance != null){
+				return true;
+			}
+			return false;
+		}catch (Exception e){
+			System.out.println("Some problem in updateFaceitActivityInstance() in MongoDBDao");
 			return false;
 		}
 	}
