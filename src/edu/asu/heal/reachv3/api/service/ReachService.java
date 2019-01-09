@@ -446,35 +446,32 @@ public class ReachService implements HealService {
             NotificationRequestModel notificationRequestModel = new NotificationRequestModel();
             notificationRequestModel.setData(data);
             //TODO: get token from db for pin
-            notificationRequestModel.setTo("eHp6V2Wtr4I:APA91bFLHRuScumQB0lnNRmeirxu5kV2lUPDZ8SbZKz");
+            notificationRequestModel.setTo("fxxJWeK-Fo8:APA91bG_-82urLmUgfZwGfY1QA4REuXZzzQojqu9Q4FzUVo3PScT-" +
+                    "UFAEK9PSBeb2X6sRQvu6pZYfqRFeY5p3Zv2t0fqFOzFmcMBPx5nRq9GMRFzb-LuselMuS97bbmuVOzlk76_VJVu");
 
-            StringWriter writer = new StringWriter();
-            JsonGenerator generator = new JsonFactory().createGenerator(writer);
-            generator.setCodec(new ObjectMapper());
-            generator.writeStartObject();
-            generator.writeObject(notificationRequestModel);
-            generator.writeEndObject();
 
-            generator.close();
-            String notificationJson = writer.toString();
-            writer.close();
+            ObjectMapper mapper = new ObjectMapper();
+            String notificationJson = mapper.writeValueAsString(notificationRequestModel);
 
             StringEntity input = new StringEntity(notificationJson);
             input.setContentType("application/json");
+            System.out.println(input);
 
             //TODO: server key of your firebase project goes here in header field.
             // You can get it from firebase console.
-            postRequest.addHeader("Authorization", "key=AAAA7-UgB34:APA91bFhpZ1-MYyFfQd2gof0vUAFKNcQCmmf_10acMn-HS_0iBBvP");
+            postRequest.addHeader("Authorization", "key=AAAAX5CbDOM:APA91bGd_AzSXfn64BsrxT1KEfCnh_yy99lXKPFo7l" +
+                    "QUbGqM7tK0YU_YOUUO0X2lpJmMSmVkxZC6JPFkFeC6TimZFg0BsXsutnVhsGM-Ydp2ZFCVswMMnhHrzKbMZpTwKDyZU2XllSZn");
             postRequest.setEntity(input);
 
             System.out.println("reques:" + notificationJson);
 
             HttpResponse response = httpClient.execute(postRequest);
             if (response.getStatusLine().getStatusCode() != 200) {
+                System.out.println("Unsuccessful");
                 throw new RuntimeException("Failed : HTTP error code : "
                         + response.getStatusLine().getStatusCode());
             } else if (response.getStatusLine().getStatusCode() == 200) {
-
+                System.out.println("Successful");
                 System.out.println("response:" + EntityUtils.toString(response.getEntity()));
 
             }

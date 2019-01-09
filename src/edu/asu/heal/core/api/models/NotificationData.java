@@ -6,8 +6,20 @@ import javax.annotation.Generated;
 public class NotificationData implements IHealModelType {
 
     private String detail;
-
+    private int id;
     private String title;
+
+    public NotificationData() {
+        super();
+        id = 555;
+    }
+
+    public NotificationData(String detail, String title) {
+        super();
+        id = 555;
+        this.detail = detail;
+        this.title = title;
+    }
 
     public String getDetail() {
         return detail;
