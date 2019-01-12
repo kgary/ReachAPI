@@ -355,11 +355,6 @@ public class MongoDBDAO implements DAO {
 					.projection(Projections.excludeId())
 					.first();
 
-
-			if(instance.getInstanceOf().getName().equals("MakeBelieve")) //todo need to do this more elegantly
-				instance = getActivityMakeBelieveInstanceDAO(activityInstanceId);
-
-
 			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
 			System.out.println(instance);
 			return instance ;

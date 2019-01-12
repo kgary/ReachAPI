@@ -148,7 +148,13 @@ public class ReachService implements HealService {
     public ActivityInstance getActivityInstance(String activityInstanceId) {
         try {
             DAO dao = DAOFactory.getTheDAO();
-            return dao.getActivityInstance(activityInstanceId);
+            ActivityInstance rval;
+            rval =  dao.getActivityInstance(activityInstanceId);
+
+            if(rval!=null && rval.getInstanceOf().getName().equals("MakeBelieve")) //todo need to do this more elegantly
+                rval = dao.getActivityMakeBelieveInstanceDAO(activityInstanceId);
+
+            return rval;
         } catch (Exception e) {
             System.out.println("SOME ERROR IN HEAL SERVICE getActivityInstance");
             e.printStackTrace();
