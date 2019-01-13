@@ -11,6 +11,8 @@ import edu.asu.heal.core.api.responses.HEALResponse;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
+import edu.asu.heal.reachv3.api.models.FaceItModel;
+import edu.asu.heal.reachv3.api.models.FaceitActivityInstance;
 import edu.asu.heal.reachv3.api.models.WorryHeadsModel;
 
 import java.io.StringWriter;
@@ -172,6 +174,15 @@ public class ReachService implements HealService {
                         activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
                         activityInstance.getInstanceOf(), activityInstance.getState(),
                         activityInstance.getPatientPin(), dao.getMakeBelieveSituation());
+            } else if(activityInstance.getInstanceOf().getName().equals("FaceIt")) {
+                activityInstance = new FaceitActivityInstance(
+                        activityInstance.getActivityInstanceId(),
+                        activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
+                        activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
+                        activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
+                        activityInstance.getInstanceOf(), activityInstance.getState(),
+                        activityInstance.getPatientPin(), dao.getFaceItChallenges()
+                );
             }
 
             ActivityInstance newActivityInstance = dao.createActivityInstance(activityInstance);
@@ -199,6 +210,16 @@ public class ReachService implements HealService {
             if(activityInstanceType.equals("MakeBelieve")){ // todo Need to find a more elegant way to do this
                 instance = mapper.readValue(requestBody, MakeBelieveActivityInstance.class);
                 instance.setUpdatedAt(new Date());
+            }else if(activityInstanceType.equals("FaceIt")){
+                instance = mapper.readValue(requestBody, FaceitActivityInstance.class);
+            	
+            	//List<FaceItModel> faceItList=faceItInstance.getFaceItChallenges();
+            	//if the size of the faceItList is more than one then that means the payload is improper 
+            	//and the error needs to be handled
+            	if(dao.updateFaceitActivityInstance(instance)) {
+            		return instance;
+            	}
+            	return NullObjects.getNullActivityInstance();
             }else{
                 instance  = mapper.readValue(requestBody, ActivityInstance.class);
                 instance.setUpdatedAt(new Date());
@@ -228,7 +249,6 @@ public class ReachService implements HealService {
             return null;
         }
     }
-
 
     /****************************************  Service methods for Domain  ********************************************/
     @Override
