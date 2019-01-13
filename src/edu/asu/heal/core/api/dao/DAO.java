@@ -73,8 +73,8 @@ public interface DAO {
 
 	List<FaceItModel> getFaceItChallenges();
 
-    public FaceitActivityInstance getActivityFaceItInstanceDAO (String activityInstanceId);
+	FaceitActivityInstance getActivityFaceItInstanceDAO (String activityInstanceId);
 
-	boolean updateFaceitActivityInstance(FaceitActivityInstance instance);
+	boolean updateFaceitActivityInstance(ActivityInstance instance);
 
 }

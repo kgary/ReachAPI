@@ -463,20 +463,19 @@ public class MongoDBDAO implements DAO {
 	}
 	
 	@Override
-	public boolean updateFaceitActivityInstance(FaceitActivityInstance instance) {
+	public boolean updateFaceitActivityInstance(ActivityInstance instance) {
 		try {
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
 			MongoCollection<FaceitActivityInstance> activityInstanceMongoCollection =
 					database.getCollection(ACTIVITYINSTANCES_COLLECTION, FaceitActivityInstance.class);
 			
 			//code to update the answerId and status based on the questionId passed
-			ObjectId _id = new ObjectId(instance.getActivityInstanceId());
-		    int questionId = instance.getFaceItChallenges().get(0).getQuestionId();
-		    String status= instance.getFaceItChallenges().get(0).getStatus();
-		    int answerId= instance.getFaceItChallenges().get(0).getAnswerId();
-		    
+			FaceitActivityInstance faceItActivityInstance = (FaceitActivityInstance) instance;
+		    int questionId = faceItActivityInstance.getFaceItChallenges().get(0).getQuestionId();
+		    String status= faceItActivityInstance.getFaceItChallenges().get(0).getStatus();
+		    int answerId= faceItActivityInstance.getFaceItChallenges().get(0).getAnswerId();
 		    BasicDBObject query = new BasicDBObject();
-		    query.put("_id", _id);
+		    query.put("activityInstanceId", faceItActivityInstance.getActivityInstanceId());
 		    query.put("faceItChallenges.questionId", questionId);
 
 		    BasicDBObject data = new BasicDBObject();
@@ -487,7 +486,7 @@ public class MongoDBDAO implements DAO {
 		    command.put("$set", data);
 
 		    FaceitActivityInstance myUpdatedInstance=activityInstanceMongoCollection.findOneAndUpdate(query, command);
-			
+
 			if(myUpdatedInstance != null){
 				return true;
 			}

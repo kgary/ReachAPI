@@ -206,19 +206,18 @@ public class ReachService implements HealService {
             JsonNode activityInstanceAsTree = mapper.readTree(requestBody);
             String activityInstanceType = activityInstanceAsTree.get("instanceOf").get("name").asText();
 
-            ActivityInstance instance=new ActivityInstance();
+            ActivityInstance instance;
             if(activityInstanceType.equals("MakeBelieve")){ // todo Need to find a more elegant way to do this
                 instance = mapper.readValue(requestBody, MakeBelieveActivityInstance.class);
                 instance.setUpdatedAt(new Date());
             }else if(activityInstanceType.equals("FaceIt")){
-				FaceitActivityInstance faceItInstance=new FaceitActivityInstance();
-            	faceItInstance = mapper.readValue(requestBody, FaceitActivityInstance.class);            	
+                instance = mapper.readValue(requestBody, FaceitActivityInstance.class);
             	
             	//List<FaceItModel> faceItList=faceItInstance.getFaceItChallenges();
             	//if the size of the faceItList is more than one then that means the payload is improper 
             	//and the error needs to be handled
-            	if(dao.updateFaceitActivityInstance(faceItInstance)) {
-            		return faceItInstance;
+            	if(dao.updateFaceitActivityInstance(instance)) {
+            		return instance;
             	}
             	return NullObjects.getNullActivityInstance();
             }else{
