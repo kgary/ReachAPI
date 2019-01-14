@@ -15,6 +15,9 @@ import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
+import edu.asu.heal.reachv3.api.models.StandUpActivityInstance;
+import edu.asu.heal.reachv3.api.models.StandUpResponse;
+import edu.asu.heal.reachv3.api.models.StandUpSituation;
 import edu.asu.heal.reachv3.api.models.FaceitActivityInstance;
 import edu.asu.heal.reachv3.api.models.FaceItModel;
 import org.bson.Document;
@@ -39,6 +42,7 @@ public class MongoDBDAO implements DAO {
 	private static final String MAKEBELIEVESITUATIONS_COLLECTION = "makeBelieveSituations";
 	private static final String MAKEBELIEVESITUATIONNAMES_COLLECTION = "makeBelieveSituationNames";
 	private static final String FACEITCHALLENGES_COLLECTION = "faceItChallenges";
+	private static final String STANDUPSITUATIONS_COLLECTION = "standUpSituations";
 	private static final String LOGGER_COLLECTION = "logger";
 
 	private static String __mongoDBName;
@@ -365,6 +369,8 @@ public class MongoDBDAO implements DAO {
 				instance = getActivityMakeBelieveInstanceDAO(activityInstanceId);
 			else if(instance.getInstanceOf().getName().equals("FaceIt"))
 				instance = getActivityFaceItInstanceDAO(activityInstanceId);
+			else if(instance.getInstanceOf().getName().equals("StandUp"))
+				instance = getActivityStandUpInstanceDAO(activityInstanceId);
 
 
 			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
@@ -381,37 +387,7 @@ public class MongoDBDAO implements DAO {
 		}
 	}
 
-	@Override
-	public MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId) {
-		try {
-			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
-			MongoCollection<MakeBelieveActivityInstance> activityInstanceMongoCollection =
-					database.getCollection(ACTIVITYINSTANCES_COLLECTION, MakeBelieveActivityInstance.class);
-
-			MakeBelieveActivityInstance makeBelieveIns =  new MakeBelieveActivityInstance();
-			MakeBelieveActivityInstance instance = activityInstanceMongoCollection
-					.find(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId))
-					.projection(Projections.excludeId())
-					.first();
-
-			MakeBelieveSituation situation = getMakeBelieveSituation();
-
-			instance.setSituation(situation);
-
-			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
-			System.out.println(instance);
-			return instance ;
-		} catch (NullPointerException ne) {
-			System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCE WITH ID " + activityInstanceId);
-			ne.printStackTrace();
-			return (MakeBelieveActivityInstance) NullObjects.getNullActivityInstance();
-		} catch (Exception e) {
-			System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
-			e.printStackTrace();
-			return null;
-		}
-	}
-
+	
 	@Override
 	public FaceitActivityInstance getActivityFaceItInstanceDAO (String activityInstanceId) {
 		try {
@@ -717,6 +693,36 @@ public class MongoDBDAO implements DAO {
 	/****************************************  Other DAO methods ******************************************************/
 
 	@Override
+	public MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId) {
+		try {
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<MakeBelieveActivityInstance> activityInstanceMongoCollection =
+					database.getCollection(ACTIVITYINSTANCES_COLLECTION, MakeBelieveActivityInstance.class);
+
+			MakeBelieveActivityInstance instance = activityInstanceMongoCollection
+					.find(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId))
+					.projection(Projections.excludeId())
+					.first();
+
+			MakeBelieveSituation situation = getMakeBelieveSituation();
+
+			instance.setSituation(situation);
+
+			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
+			System.out.println(instance);
+			return instance ;
+		} catch (NullPointerException ne) {
+			System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCE WITH ID " + activityInstanceId);
+			ne.printStackTrace();
+			return (MakeBelieveActivityInstance) NullObjects.getNullActivityInstance();
+		} catch (Exception e) {
+			System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
 	public MakeBelieveSituation getMakeBelieveSituation() {
 		try{
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
@@ -797,6 +803,105 @@ public class MongoDBDAO implements DAO {
 			return null;
 		}
 	}
+
+	@Override
+	public StandUpActivityInstance getActivityStandUpInstanceDAO(String activityInstanceId) {
+		try {
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<StandUpActivityInstance> activityInstanceMongoCollection =
+					database.getCollection(ACTIVITYINSTANCES_COLLECTION, StandUpActivityInstance.class);
+
+			StandUpActivityInstance instance = activityInstanceMongoCollection
+					.find(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId))
+					.projection(Projections.excludeId())
+					.first();
+
+			instance.setSituation();
+
+			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
+			System.out.println(instance);
+			return instance ;
+		} catch (NullPointerException ne) {
+			System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCE WITH ID " + activityInstanceId);
+			ne.printStackTrace();
+			return (StandUpActivityInstance) NullObjects.getNullActivityInstance();
+		} catch (Exception e) {
+			System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
+	@Override
+	public List<StandUpSituation> getStandUpSituations() {
+		try {
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<StandUpSituation> standUpMongoCollection =
+					database.getCollection(MongoDBDAO.STANDUPSITUATIONS_COLLECTION, StandUpSituation.class);
+
+			FindIterable<StandUpSituation> situations = standUpMongoCollection
+					.find();
+
+			List<StandUpSituation> standUpSituations = new ArrayList<>();
+			for (StandUpSituation temp : situations) {
+				standUpSituations.add(temp);
+			}
+
+			Collections.shuffle(standUpSituations);
+			return standUpSituations;
+		} catch (java.lang.Exception exception) {
+			exception.printStackTrace();
+			return null;
+		}
+
+	}
+
+	@Override
+	public boolean updateStandUpActivityInstance(ActivityInstance instance) {
+		try {
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<StandUpActivityInstance> activityInstanceMongoCollection =
+					database.getCollection(ACTIVITYINSTANCES_COLLECTION, StandUpActivityInstance.class);
+			
+			//code to update the answerId and status based on the questionId passed
+			StandUpActivityInstance standUpActivityInstance = (StandUpActivityInstance) instance;
+			int userAnswerId = standUpActivityInstance.getSituations().get(0).getUserAnswerId();
+			StandUpResponse response = standUpActivityInstance.getSituations().get(0).getResponses();
+			
+		    int situationId = standUpActivityInstance.getSituations().get(0).getSituationId();
+		    
+		    //String status= faceItActivityInstance.getFaceItChallenges().get(0).getStatus();
+		    //int answerId= faceItActivityInstance.getFaceItChallenges().get(0).getAnswerId();
+		    BasicDBObject query = new BasicDBObject();
+		    query.put("activityInstanceId", standUpActivityInstance.getActivityInstanceId());
+		    query.put("standUpSituations.situationId", situationId);
+
+		    BasicDBObject data = new BasicDBObject();
+		    data.put("standUpSituations.$.responses", response);
+		    data.put("standUpSituations.$.userAnswerId", userAnswerId);
+		    data.put("activityInstances.$.userSubmissionTime", new Date());
+		    if(!standUpActivityInstance.getState().equals("completed")) {
+		    	data.put("activityInstances.$.state", "in-execution");
+		    }
+
+		    BasicDBObject command = new BasicDBObject();
+		    command.put("$set", data);
+
+		    StandUpActivityInstance myUpdatedInstance=activityInstanceMongoCollection.findOneAndUpdate(query, command);
+
+			if(myUpdatedInstance != null){
+				return true;
+			}
+			return false;
+		}catch (Exception e){
+			System.out.println("Some problem in updateStandUpActivityInstance() in MongoDBDAO");
+			return false;
+		}
+
+	}
+	
+	
 
 }
 
