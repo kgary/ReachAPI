@@ -13,7 +13,8 @@ import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
 import edu.asu.heal.reachv3.api.models.FaceItModel;
 import edu.asu.heal.reachv3.api.models.FaceitActivityInstance;
-import edu.asu.heal.reachv3.api.models.WorryHeadsModel;
+import edu.asu.heal.reachv3.api.models.WorryHeadsActivityInstance;
+import edu.asu.heal.reachv3.api.models.WorryHeadsSituation;
 
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
@@ -183,6 +184,14 @@ public class ReachService implements HealService {
                         activityInstance.getInstanceOf(), activityInstance.getState(),
                         activityInstance.getPatientPin(), dao.getFaceItChallenges()
                 );
+            } else if(activityInstance.getInstanceOf().getName().equals("WorryHeads")){
+                activityInstance = new WorryHeadsActivityInstance(
+                        activityInstance.getActivityInstanceId(),
+                        activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
+                        activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
+                        activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
+                        activityInstance.getInstanceOf(), activityInstance.getState(),
+                        activityInstance.getPatientPin(), dao.getAllWorryHeadsSituations());
             }
 
             ActivityInstance newActivityInstance = dao.createActivityInstance(activityInstance);
@@ -436,32 +445,32 @@ public class ReachService implements HealService {
             return null;
         }
     }
-
-    /****************************************  Other Service methods  *************************************************/
-
-    @Override
-    public String getWorryHeadsInstance() {
-        try {
-            Random r = new Random();
-            String[] o_options = {"The goalie isn't the only player on the team," +
-                    " so it couldn't have been only my fault that we lost",
-                    "Even though we didn't win, we tied the game, so we still did pretty well",
-                    "I've practiced and I feel that I did the best I could and sometimes losing just happens",
-                    "I should have practice harder."};
-
-            WorryHeadsModel whm = new WorryHeadsModel(0,
-                    "WorryHeads",
-                    "You think, \"She thinks it's my fault we didn't win.\"",
-                    "You are the goalie for your soccer team and today's game ended in a tie. " +
-                            "After the game, you hear a teammate say that your team should have won",
-                    "P text",
-                    r.nextInt(4),
-                    o_options);
-
-            return new ObjectMapper().writeValueAsString(whm);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+//
+//    /****************************************  Other Service methods  *************************************************/
+//
+//    @Override
+//    public String getWorryHeadsInstance() {
+//        try {
+//            Random r = new Random();
+//            String[] o_options = {"The goalie isn't the only player on the team," +
+//                    " so it couldn't have been only my fault that we lost",
+//                    "Even though we didn't win, we tied the game, so we still did pretty well",
+//                    "I've practiced and I feel that I did the best I could and sometimes losing just happens",
+//                    "I should have practice harder."};
+//
+//            WorryHeadsModel whm = new WorryHeadsModel(0,
+//                    "WorryHeads",
+//                    "You think, \"She thinks it's my fault we didn't win.\"",
+//                    "You are the goalie for your soccer team and today's game ended in a tie. " +
+//                            "After the game, you hear a teammate say that your team should have won",
+//                    "P text",
+//                    r.nextInt(4),
+//                    o_options);
+//
+//            return new ObjectMapper().writeValueAsString(whm);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 }

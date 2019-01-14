@@ -13,10 +13,7 @@ import com.mongodb.client.model.Projections;
 import com.mongodb.client.FindIterable;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.models.*;
-import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
-import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
-import edu.asu.heal.reachv3.api.models.FaceitActivityInstance;
-import edu.asu.heal.reachv3.api.models.FaceItModel;
+import edu.asu.heal.reachv3.api.models.*;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -39,6 +36,7 @@ public class MongoDBDAO implements DAO {
 	private static final String MAKEBELIEVESITUATIONS_COLLECTION = "makeBelieveSituations";
 	private static final String MAKEBELIEVESITUATIONNAMES_COLLECTION = "makeBelieveSituationNames";
 	private static final String FACEITCHALLENGES_COLLECTION = "faceItChallenges";
+	private static final String WORRYHEADSSITUATIONS_COLLECTION = "worryHeadsSituations";
 	private static final String LOGGER_COLLECTION = "logger";
 
 	private static String __mongoDBName;
@@ -365,7 +363,8 @@ public class MongoDBDAO implements DAO {
 				instance = getActivityMakeBelieveInstanceDAO(activityInstanceId);
 			else if(instance.getInstanceOf().getName().equals("FaceIt"))
 				instance = getActivityFaceItInstanceDAO(activityInstanceId);
-
+			else if(instance.getInstanceOf().getName().equals("WorryHeads"))
+				instance = getActivityWorryHeadsInstanceDAO(activityInstanceId);
 
 			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
 			System.out.println(instance);
@@ -494,6 +493,84 @@ public class MongoDBDAO implements DAO {
 		}catch (Exception e){
 			System.out.println("Some problem in updateFaceitActivityInstance() in MongoDBDao");
 			return false;
+		}
+	}
+
+	@Override
+	public WorryHeadsSituation getWorryHeadsSituation() {
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<WorryHeadsSituation> situationMongoCollection =
+					database.getCollection(MongoDBDAO.WORRYHEADSSITUATIONS_COLLECTION, WorryHeadsSituation.class);
+
+			//Code to randomly get a situation from the database
+			AggregateIterable<WorryHeadsSituation> situations = situationMongoCollection
+					.aggregate(Arrays.asList(Aggregates.sample(1)));
+
+			WorryHeadsSituation situation = null;
+			for(WorryHeadsSituation temp : situations){
+				situation = temp;
+			}
+
+			return situation;
+		}catch (NullPointerException ne){
+			System.out.println("Could not get random make believe situation");
+			ne.printStackTrace();
+			return null;
+		}catch (Exception e){
+			System.out.println("Some problem in getting Make believe situation");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public WorryHeadsActivityInstance getActivityWorryHeadsInstanceDAO(String activityInstanceId) {
+		try {
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<WorryHeadsActivityInstance> activityInstanceMongoCollection =
+					database.getCollection(ACTIVITYINSTANCES_COLLECTION, WorryHeadsActivityInstance.class);
+
+			WorryHeadsActivityInstance instance = activityInstanceMongoCollection
+					.find(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId))
+					.projection(Projections.excludeId())
+					.first();
+
+			instance.setWorryHeadsSituation();
+
+			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
+			return instance ;
+		} catch (NullPointerException ne) {
+			System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCE WITH ID " + activityInstanceId);
+			ne.printStackTrace();
+			return (WorryHeadsActivityInstance) NullObjects.getNullActivityInstance();
+		} catch (Exception e) {
+			System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public List<WorryHeadsSituation> getAllWorryHeadsSituations() {
+		try {
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<WorryHeadsSituation> worryHeadsMongoCollection =
+					database.getCollection(MongoDBDAO.WORRYHEADSSITUATIONS_COLLECTION, WorryHeadsSituation.class);
+
+			FindIterable<WorryHeadsSituation> challenges = worryHeadsMongoCollection
+					.find();
+
+			List<WorryHeadsSituation> worryHeadsChallenges = new ArrayList<>();
+			for (WorryHeadsSituation temp : challenges) {
+				worryHeadsChallenges.add(temp);
+			}
+
+			Collections.shuffle(worryHeadsChallenges);
+			return worryHeadsChallenges;
+		} catch (java.lang.Exception exception) {
+			exception.printStackTrace();
+			return null;
 		}
 	}
 
