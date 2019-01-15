@@ -229,7 +229,10 @@ public class ReachService implements HealService {
             		return instance;
             	}
             	return NullObjects.getNullActivityInstance();
-            }else{
+            }else if(activityInstanceType.equals("WorryHeads")){
+                instance = mapper.readValue(requestBody, WorryHeadsActivityInstance.class);
+                instance.setUpdatedAt(new Date());
+            } else{
                 instance  = mapper.readValue(requestBody, ActivityInstance.class);
                 instance.setUpdatedAt(new Date());
             }

@@ -76,8 +76,6 @@ public interface DAO {
 
     List<WorryHeadsSituation> getAllWorryHeadsSituations();
 
-	WorryHeadsSituation getWorryHeadsSituation();
-
 	WorryHeadsActivityInstance getActivityWorryHeadsInstanceDAO(String activityInstanceId);
 
 }

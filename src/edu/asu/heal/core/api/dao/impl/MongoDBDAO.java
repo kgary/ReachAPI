@@ -497,34 +497,6 @@ public class MongoDBDAO implements DAO {
 	}
 
 	@Override
-	public WorryHeadsSituation getWorryHeadsSituation() {
-		try{
-			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
-			MongoCollection<WorryHeadsSituation> situationMongoCollection =
-					database.getCollection(MongoDBDAO.WORRYHEADSSITUATIONS_COLLECTION, WorryHeadsSituation.class);
-
-			//Code to randomly get a situation from the database
-			AggregateIterable<WorryHeadsSituation> situations = situationMongoCollection
-					.aggregate(Arrays.asList(Aggregates.sample(1)));
-
-			WorryHeadsSituation situation = null;
-			for(WorryHeadsSituation temp : situations){
-				situation = temp;
-			}
-
-			return situation;
-		}catch (NullPointerException ne){
-			System.out.println("Could not get random make believe situation");
-			ne.printStackTrace();
-			return null;
-		}catch (Exception e){
-			System.out.println("Some problem in getting Make believe situation");
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	@Override
 	public WorryHeadsActivityInstance getActivityWorryHeadsInstanceDAO(String activityInstanceId) {
 		try {
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
@@ -553,23 +525,31 @@ public class MongoDBDAO implements DAO {
 
 	@Override
 	public List<WorryHeadsSituation> getAllWorryHeadsSituations() {
-		try {
+		try{
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
-			MongoCollection<WorryHeadsSituation> worryHeadsMongoCollection =
+			MongoCollection<WorryHeadsSituation> situationMongoCollection =
 					database.getCollection(MongoDBDAO.WORRYHEADSSITUATIONS_COLLECTION, WorryHeadsSituation.class);
 
-			FindIterable<WorryHeadsSituation> challenges = worryHeadsMongoCollection
-					.find();
+			//Code to randomly get a situation from the database
+			AggregateIterable<WorryHeadsSituation> situations = situationMongoCollection
+					.aggregate(Arrays.asList(Aggregates.sample(1)));
 
-			List<WorryHeadsSituation> worryHeadsChallenges = new ArrayList<>();
-			for (WorryHeadsSituation temp : challenges) {
-				worryHeadsChallenges.add(temp);
+			WorryHeadsSituation situation = null;
+			for(WorryHeadsSituation temp : situations){
+				situation = temp;
 			}
 
-			Collections.shuffle(worryHeadsChallenges);
-			return worryHeadsChallenges;
-		} catch (java.lang.Exception exception) {
-			exception.printStackTrace();
+			List<WorryHeadsSituation> worryHeadsSituations = new ArrayList();
+			worryHeadsSituations.add(situation);
+
+			return worryHeadsSituations;
+		}catch (NullPointerException ne){
+			System.out.println("Could not get random make believe situation");
+			ne.printStackTrace();
+			return null;
+		}catch (Exception e){
+			System.out.println("Some problem in getting Make believe situation");
+			e.printStackTrace();
 			return null;
 		}
 	}

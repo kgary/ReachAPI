@@ -8,6 +8,7 @@ public class WorryHeadsSituation {
     private String worryTitle;
     private List<WorryHeadsQuestion> questions;
     private int userAnswerId;
+    private List<WorryHeadsResponse> responses;
 
     public int getSituationId() {
         return situationId;
@@ -40,4 +41,12 @@ public class WorryHeadsSituation {
     public int getUserAnswerId() { return userAnswerId; }
 
     public void setUserAnswerId(int userAnswerId) { this.userAnswerId = userAnswerId; }
+
+    public List<WorryHeadsResponse> getResponses() {
+        return responses;
+    }
+
+    public void setResponses(List<WorryHeadsResponse> responses) {
+        this.responses = responses;
+    }
 }
