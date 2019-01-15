@@ -83,7 +83,5 @@ public interface DAO {
 
 	boolean updateFaceitActivityInstance(ActivityInstance instance);
 	
-	boolean updateStandUpActivityInstance(ActivityInstance instance);
-
 
 }

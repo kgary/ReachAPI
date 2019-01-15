@@ -8,14 +8,15 @@ public class StandUpSituation {
 	private int userAnswerId;
 	private String situationTitle;
 	private List<StandUpQuestion> questions;
-	private StandUpResponse responses;
+	private List<StandUpResponse> responses;
 
 	
-	public StandUpResponse getResponses() {
+
+	public List<StandUpResponse> getResponses() {
 		return responses;
 	}
 
-	public void setResponses(StandUpResponse responses) {
+	public void setResponses(List<StandUpResponse> responses) {
 		this.responses = responses;
 	}
 

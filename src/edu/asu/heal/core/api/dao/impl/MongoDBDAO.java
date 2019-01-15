@@ -835,72 +835,34 @@ public class MongoDBDAO implements DAO {
 
 	@Override
 	public List<StandUpSituation> getStandUpSituations() {
-		try {
+		try{
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
-			MongoCollection<StandUpSituation> standUpMongoCollection =
+			MongoCollection<StandUpSituation> situationMongoCollection =
 					database.getCollection(MongoDBDAO.STANDUPSITUATIONS_COLLECTION, StandUpSituation.class);
 
-			FindIterable<StandUpSituation> situations = standUpMongoCollection
-					.find();
+			//Code to randomly get a situation from the database
+			AggregateIterable<StandUpSituation> situations = situationMongoCollection
+					.aggregate(Arrays.asList(Aggregates.sample(1)));
 
-			List<StandUpSituation> standUpSituations = new ArrayList<>();
-			for (StandUpSituation temp : situations) {
-				standUpSituations.add(temp);
+			StandUpSituation situation = null;
+			for(StandUpSituation temp : situations){
+				situation = temp;
 			}
+			
+			List<StandUpSituation> standUpSituations = new ArrayList<>();
+			standUpSituations.add(situation);
 
-			Collections.shuffle(standUpSituations);
 			return standUpSituations;
-		} catch (java.lang.Exception exception) {
-			exception.printStackTrace();
+		}catch (NullPointerException ne){
+			System.out.println("Could not get random make believe situation");
+			ne.printStackTrace();
+			return null;
+		}catch (Exception e){
+			System.out.println("Some problem in getting Make believe situation");
+			e.printStackTrace();
 			return null;
 		}
-
 	}
-
-	@Override
-	public boolean updateStandUpActivityInstance(ActivityInstance instance) {
-		try {
-			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
-			MongoCollection<StandUpActivityInstance> activityInstanceMongoCollection =
-					database.getCollection(ACTIVITYINSTANCES_COLLECTION, StandUpActivityInstance.class);
-			
-			//code to update the answerId and status based on the questionId passed
-			StandUpActivityInstance standUpActivityInstance = (StandUpActivityInstance) instance;
-			int userAnswerId = standUpActivityInstance.getSituations().get(0).getUserAnswerId();
-			StandUpResponse response = standUpActivityInstance.getSituations().get(0).getResponses();
-			
-		    int situationId = standUpActivityInstance.getSituations().get(0).getSituationId();
-		    
-		    //String status= faceItActivityInstance.getFaceItChallenges().get(0).getStatus();
-		    //int answerId= faceItActivityInstance.getFaceItChallenges().get(0).getAnswerId();
-		    BasicDBObject query = new BasicDBObject();
-		    query.put("activityInstanceId", standUpActivityInstance.getActivityInstanceId());
-		    query.put("standUpSituations.situationId", situationId);
-
-		    BasicDBObject data = new BasicDBObject();
-		    data.put("standUpSituations.$.responses", response);
-		    data.put("standUpSituations.$.userAnswerId", userAnswerId);
-		    data.put("activityInstances.$.userSubmissionTime", new Date());
-		    if(!standUpActivityInstance.getState().equals("completed")) {
-		    	data.put("activityInstances.$.state", "in-execution");
-		    }
-
-		    BasicDBObject command = new BasicDBObject();
-		    command.put("$set", data);
-
-		    StandUpActivityInstance myUpdatedInstance=activityInstanceMongoCollection.findOneAndUpdate(query, command);
-
-			if(myUpdatedInstance != null){
-				return true;
-			}
-			return false;
-		}catch (Exception e){
-			System.out.println("Some problem in updateStandUpActivityInstance() in MongoDBDAO");
-			return false;
-		}
-
-	}
-	
 	
 
 }

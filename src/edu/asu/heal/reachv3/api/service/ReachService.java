@@ -219,11 +219,7 @@ public class ReachService implements HealService {
             if(activityInstanceType.equals("MakeBelieve")){ // todo Need to find a more elegant way to do this
                 instance = mapper.readValue(requestBody, MakeBelieveActivityInstance.class);
                 instance.setUpdatedAt(new Date());
-                instance.setUserSubmissionTime(new Date());
-                if(instance.getState().equals("created") || instance.getState().equals("suspended")) {
-                	instance.setState("in-execution");
-                }
-               
+                
             }else if(activityInstanceType.equals("FaceIt")){
                 instance = mapper.readValue(requestBody, FaceitActivityInstance.class);
             	
@@ -235,23 +231,17 @@ public class ReachService implements HealService {
             	}
             	return NullObjects.getNullActivityInstance();
             }else if(activityInstanceType.equals("StandUp")){
-                instance = mapper.readValue(requestBody, StandUpActivityInstance.class);
-            	
-            	//List<FaceItModel> faceItList=faceItInstance.getFaceItChallenges();
-            	//if the size of the faceItList is more than one then that means the payload is improper 
-            	//and the error needs to be handled
-                if(dao.updateStandUpActivityInstance(instance)) {
-            		return instance;
-            	}
-            	return NullObjects.getNullActivityInstance();
+            	 instance = mapper.readValue(requestBody, StandUpActivityInstance.class);
+                 instance.setUpdatedAt(new Date());
+                
             }else{
                 instance  = mapper.readValue(requestBody, ActivityInstance.class);
                 instance.setUpdatedAt(new Date());
-                instance.setUserSubmissionTime(new Date());
-                if(instance.getState().equals("created") || instance.getState().equals("suspended")) {
-                	instance.setState("in-execution");
-                }
                 
+            }
+            instance.setUserSubmissionTime(new Date());
+            if(instance.getState().equals("created") || instance.getState().equals("suspended")) {
+            	instance.setState("in-execution");
             }
             if(dao.updateActivityInstance(instance)){
                 return instance;
