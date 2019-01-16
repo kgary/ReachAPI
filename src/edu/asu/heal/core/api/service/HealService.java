@@ -62,7 +62,7 @@ public interface HealService {
 
     String getWorryHeadsInstance();
 
-    String getEmotionsActivityInstance(int patientPin, String emotion, int intensity);
+ //   String getEmotionsActivityInstance(int patientPin, String emotion, int intensity);
 
     MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId);
 }

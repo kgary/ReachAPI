@@ -6,7 +6,7 @@ public class Emotions {
 	public static String INTENSITY="intensity";
 	public static String SUGGESTED_ACTIVITIES="suggestedActivities";
 	public static String SESSION ="session";
-	
+	//public static String ID=""
 	private String emotionName;
 	private String intensity;
 	private String suggestedActivities;
