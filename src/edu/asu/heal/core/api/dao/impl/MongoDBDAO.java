@@ -816,7 +816,8 @@ public class MongoDBDAO implements DAO {
 					.projection(Projections.excludeId())
 					.first();
 
-			instance.setSituation();
+			List<StandUpSituation> situations = getStandUpSituations();
+			instance.setSituations(situations);
 
 			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
 			System.out.println(instance);

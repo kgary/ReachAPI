@@ -29,19 +29,19 @@ public class StandUpActivityInstance extends ActivityInstance{
 		this.situations = situation;
 	}
 	
-	/**
-	 * Method to set first situation with userAnswer Id to 0 (not answered) in the list of situations
-	 */
-	public void setSituation() {
-		StandUpSituation tempSituation = new StandUpSituation();
-		for(StandUpSituation s : situations) {
-			if(s.getUserAnswerId() == 0) {
-				tempSituation = s;
-				break;
-			}
-		}
-		situations.clear();
-		situations.add(tempSituation);
-	}
+//	/**
+//	 * Method to set first situation with userAnswer Id to 0 (not answered) in the list of situations
+//	 */
+//	public void setSituation() {
+//		StandUpSituation tempSituation = new StandUpSituation();
+//		for(StandUpSituation s : situations) {
+//			if(s.getUserAnswerId() == 0) {
+//				tempSituation = s;
+//				break;
+//			}
+//		}
+//		situations.clear();
+//		situations.add(tempSituation);
+//	}
 	
 }
