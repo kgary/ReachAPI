@@ -35,17 +35,17 @@ public class WorryHeadsActivityInstance extends ActivityInstance {
         this.situation = situation;
     }
 
-    public void setWorryHeadsSituation() {
-
-        WorryHeadsSituation tmp = new WorryHeadsSituation();
-        System.out.println(situation.size());
-        for(WorryHeadsSituation worryHeadsSituation:situation) {
-            if(worryHeadsSituation.getUserAnswerId()==0) {
-                tmp=worryHeadsSituation;
-                break;
-            }
-        }
-        situation.clear();
-        situation.add(tmp);
-    }
+//    public void setWorryHeadsSituation() {
+//
+//        WorryHeadsSituation tmp = new WorryHeadsSituation();
+//
+//        for(WorryHeadsSituation worryHeadsSituation:situation) {
+//            if(worryHeadsSituation.getUserAnswerId()==0) {
+//                tmp=worryHeadsSituation;
+//                break;
+//            }
+//        }
+//        situation.clear();
+//        situation.add(tmp);
+//    }
 }
