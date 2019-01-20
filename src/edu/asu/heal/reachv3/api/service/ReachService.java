@@ -175,7 +175,7 @@ public class ReachService implements HealService {
                         activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
                         activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
                         activityInstance.getInstanceOf(), activityInstance.getState(),
-                        activityInstance.getPatientPin(), dao.getMakeBelieveSituation());
+                        activityInstance.getPatientPin(), dao.getMakeBelieveSituation(),activityInstance.isActivityGlowing());
             } else if(activityInstance.getInstanceOf().getName().equals("FaceIt")) {
                 activityInstance = new FaceitActivityInstance(
                         activityInstance.getActivityInstanceId(),
@@ -183,7 +183,7 @@ public class ReachService implements HealService {
                         activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
                         activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
                         activityInstance.getInstanceOf(), activityInstance.getState(),
-                        activityInstance.getPatientPin(), dao.getFaceItChallenges()
+                        activityInstance.getPatientPin(), dao.getFaceItChallenges(), activityInstance.isActivityGlowing()
                 );
 
             } else if(activityInstance.getInstanceOf().getName().equals("WorryHeads")){
@@ -193,7 +193,7 @@ public class ReachService implements HealService {
                         activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
                         activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
                         activityInstance.getInstanceOf(), activityInstance.getState(),
-                        activityInstance.getPatientPin(), dao.getAllWorryHeadsSituations());
+                        activityInstance.getPatientPin(), dao.getAllWorryHeadsSituations(), activityInstance.isActivityGlowing());
             } else if(activityInstance.getInstanceOf().getName().equals("StandUp")) {
                 activityInstance = new StandUpActivityInstance(
                         activityInstance.getActivityInstanceId(),
@@ -201,7 +201,7 @@ public class ReachService implements HealService {
                         activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
                         activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
                         activityInstance.getInstanceOf(), activityInstance.getState(),
-                        activityInstance.getPatientPin(), dao.getStandUpSituations());
+                        activityInstance.getPatientPin(), dao.getStandUpSituations(),activityInstance.isActivityGlowing());
             }
 
             ActivityInstance newActivityInstance = dao.createActivityInstance(activityInstance);
