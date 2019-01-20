@@ -13,7 +13,7 @@ public class ActivityInstance implements IHealModelType {
     public static String STATE_ATTRIBUTE = "state";
     public static String DESCRIPTION_ATTRIBUTE = "description";
     public static String ACTIVITYINSTANCEID_ATTRIBUTE = "activityInstanceId";
-    public static String GlOW_ATTRIBUTE = "shouldGlow";
+    public static String GlOW_ATTRIBUTE = "activityGlowing";
 
     private String activityInstanceId;
     private Date createdAt;
@@ -26,14 +26,14 @@ public class ActivityInstance implements IHealModelType {
     private ActivityInstanceType instanceOf;
     private String state;
     private int patientPin;
-    private boolean isActivityGlowing;
+    private boolean activityGlowing;
 
     public ActivityInstance() {
     }
 
     public ActivityInstance(String activityInstanceId, Date createdAt, Date updatedAt, String description,
                             Date startTime, Date endTime, Date userSubmissionTime, Date actualSubmissionTime,
-                            ActivityInstanceType instanceOf, String state, int patientPin, boolean isActivityGlowing) {
+                            ActivityInstanceType instanceOf, String state, int patientPin, boolean activityGlowing) {
         this.activityInstanceId = activityInstanceId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -45,7 +45,7 @@ public class ActivityInstance implements IHealModelType {
         this.instanceOf = instanceOf;
         this.state = state;
         this.patientPin = patientPin;
-        this.isActivityGlowing = isActivityGlowing;
+        this.activityGlowing = activityGlowing;
     }
 
     public Date getCreatedAt() {
@@ -136,9 +136,9 @@ public class ActivityInstance implements IHealModelType {
         this.patientPin = patientPin;
     }
 
-    public boolean isActivityGlowing() { return isActivityGlowing; }
+    public boolean getActivityGlowing() { return activityGlowing; }
 
-    public void setActivityGlowing(boolean activityGlowing) { isActivityGlowing = activityGlowing; }
+    public void setActivityGlowing(boolean activityGlowing) { this.activityGlowing = activityGlowing; }
 
     @Override
     public String toString() {
@@ -154,7 +154,7 @@ public class ActivityInstance implements IHealModelType {
                 ", state='" + state + '\'' +
                 ", description='" + description + '\'' +
                 ", patientPin='" + patientPin + '\'' +
-                ", isActivityGlowing='" + isActivityGlowing + '\'' +
+                ", activityGlowing='" + activityGlowing + '\'' +
                 '}';
     }
 
@@ -195,7 +195,7 @@ public class ActivityInstance implements IHealModelType {
                 && this.instanceOf.equals(temp.instanceOf)
                 && this.state.equals(temp.state)
                 && this.patientPin == temp.patientPin
-                && this.isActivityGlowing == temp.isActivityGlowing;
+                && this.activityGlowing == temp.activityGlowing;
     }
 
 }
