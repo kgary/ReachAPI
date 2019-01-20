@@ -20,10 +20,9 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class ActivityInstanceResource {
 
+	private static HealService reachService = HealServiceFactory.getTheService();
 	@Context
 	private UriInfo _uri;
-
-	private static HealService reachService = HealServiceFactory.getTheService();
 
 	/**
 	 * @apiDefine BadRequestError
@@ -160,30 +159,6 @@ public class ActivityInstanceResource {
 
 		ActivityInstance instance = reachService.getActivityInstance(activityInstanceId);
 
-		if(instance.getInstanceOf().getName().equals("MakeBelieve")) {
-			
-			MakeBelieveActivityInstance makeBeleieveinstance = reachService.getActivityMakeBelieveInstanceDAO(activityInstanceId);
-			
-			if (makeBeleieveinstance == null) {
-				response = builder
-						.setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-						.setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
-						.build();
-			} else if (instance.equals(NullObjects.getNullActivityInstance())) {
-				response = builder
-						.setStatusCode(Response.Status.NOT_FOUND.getStatusCode())
-						.setData("THE ACTIVITY INSTANCE YOU'RE REQUESTING DOES NOT EXIST")
-						.build();
-			} else {
-				response = builder
-						.setStatusCode(Response.Status.OK.getStatusCode())
-						.setData(makeBeleieveinstance)
-						.setServerURI(_uri.getBaseUri().toString())
-						.build();
-			}
-
-		}else {
-
 			if (instance == null) {
 				response = builder
 						.setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
@@ -201,7 +176,6 @@ public class ActivityInstanceResource {
 						.setServerURI(_uri.getBaseUri().toString())
 						.build();
 			}
-		}
 
 		return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
 	}

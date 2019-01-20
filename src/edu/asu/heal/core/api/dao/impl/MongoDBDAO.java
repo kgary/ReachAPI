@@ -364,15 +364,6 @@ public class MongoDBDAO implements DAO {
 					.projection(Projections.excludeId())
 					.first();
 
-
-			if(instance.getInstanceOf().getName().equals("MakeBelieve")) //todo need to do this more elegantly
-				instance = database
-				.getCollection(ACTIVITYINSTANCES_COLLECTION, MakeBelieveActivityInstance.class)
-				.find(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId))
-				.projection(Projections.excludeId())
-				.first();
-
-
 			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
 			System.out.println(instance);
 			return instance ;
@@ -387,8 +378,6 @@ public class MongoDBDAO implements DAO {
 		}
 	}
 
-
-	// Temp added to check makeBelieve ..... By Abhishek
 	@Override
 	public MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId) {
 		try {
@@ -396,8 +385,6 @@ public class MongoDBDAO implements DAO {
 			MongoCollection<MakeBelieveActivityInstance> activityInstanceMongoCollection =
 					database.getCollection(ACTIVITYINSTANCES_COLLECTION, MakeBelieveActivityInstance.class);
 
-			System.out.println("Mongo activity collection ...... : ");
-			// System.out.println(activityMongoCollection);
 			MakeBelieveActivityInstance makeBelieveIns =  new MakeBelieveActivityInstance();
 			MakeBelieveActivityInstance instance = activityInstanceMongoCollection
 					.find(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId))

@@ -61,8 +61,4 @@ public interface HealService {
     /****************************************  Other Service methods  *************************************************/
 
     String getWorryHeadsInstance();
-
- //   String getEmotionsActivityInstance(int patientPin, String emotion, int intensity);
-
-    MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId);
 }
