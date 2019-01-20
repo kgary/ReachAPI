@@ -1,10 +1,15 @@
 package edu.asu.heal.core.api.dao;
 
 import edu.asu.heal.core.api.models.*;
+
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
+import edu.asu.heal.reachv3.api.models.StandUpActivityInstance;
+import edu.asu.heal.reachv3.api.models.StandUpSituation;
 import edu.asu.heal.reachv3.api.models.FaceitActivityInstance;
 import edu.asu.heal.reachv3.api.models.FaceItModel;
+import edu.asu.heal.reachv3.api.models.WorryHeadsActivityInstance;
+import edu.asu.heal.reachv3.api.models.WorryHeadsSituation;
 
 import java.util.List;
 
@@ -70,11 +75,20 @@ public interface DAO {
     List<String> getEmotionsActivityInstance(String emotion, int intensity);
 
 	MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId);
+	
+	StandUpActivityInstance getActivityStandUpInstanceDAO(String activityInstanceId);
+	
+	List<StandUpSituation> getStandUpSituations();
 
 	List<FaceItModel> getFaceItChallenges();
 
 	FaceitActivityInstance getActivityFaceItInstanceDAO (String activityInstanceId);
 
 	boolean updateFaceitActivityInstance(ActivityInstance instance);
+	
+
+    List<WorryHeadsSituation> getAllWorryHeadsSituations();
+
+	WorryHeadsActivityInstance getActivityWorryHeadsInstanceDAO(String activityInstanceId);
 
 }

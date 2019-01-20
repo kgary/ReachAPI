@@ -12,9 +12,12 @@ import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
 import edu.asu.heal.reachv3.api.models.DailyDiaryActivityInstance;
+import edu.asu.heal.reachv3.api.models.SwapActivityInstance;
+import edu.asu.heal.reachv3.api.models.StandUpActivityInstance;
 import edu.asu.heal.reachv3.api.models.FaceItModel;
 import edu.asu.heal.reachv3.api.models.FaceitActivityInstance;
-import edu.asu.heal.reachv3.api.models.WorryHeadsModel;
+import edu.asu.heal.reachv3.api.models.WorryHeadsActivityInstance;
+import edu.asu.heal.reachv3.api.models.WorryHeadsSituation;
 
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
@@ -193,8 +196,31 @@ public class ReachService implements HealService {
                         activityInstance.getInstanceOf(), activityInstance.getState(),
                         activityInstance.getPatientPin()
                 );
+            } else if(activityInstance.getInstanceOf().getName().equals("SWAP")) {
+                activityInstance = new SwapActivityInstance(activityInstance.getActivityInstanceId(),
+                        activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
+                        activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
+                        activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
+                        activityInstance.getInstanceOf(), activityInstance.getState(),
+                        activityInstance.getPatientPin()
+                );
+            } else if(activityInstance.getInstanceOf().getName().equals("WorryHeads")){
+                activityInstance = new WorryHeadsActivityInstance(
+                        activityInstance.getActivityInstanceId(),
+                        activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
+                        activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
+                        activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
+                        activityInstance.getInstanceOf(), activityInstance.getState(),
+                        activityInstance.getPatientPin(), dao.getAllWorryHeadsSituations());
+            } else if(activityInstance.getInstanceOf().getName().equals("StandUp")) {
+                activityInstance = new StandUpActivityInstance(
+                        activityInstance.getActivityInstanceId(),
+                        activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
+                        activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
+                        activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
+                        activityInstance.getInstanceOf(), activityInstance.getState(),
+                        activityInstance.getPatientPin(), dao.getStandUpSituations());
             }
-
             ActivityInstance newActivityInstance = dao.createActivityInstance(activityInstance);
             return newActivityInstance;
         } catch (Exception e) {
@@ -220,22 +246,36 @@ public class ReachService implements HealService {
             if(activityInstanceType.equals("MakeBelieve")){ // todo Need to find a more elegant way to do this
                 instance = mapper.readValue(requestBody, MakeBelieveActivityInstance.class);
                 instance.setUpdatedAt(new Date());
+                
             }else if(activityInstanceType.equals("FaceIt")){
                 instance = mapper.readValue(requestBody, FaceitActivityInstance.class);
             	
             	//List<FaceItModel> faceItList=faceItInstance.getFaceItChallenges();
             	//if the size of the faceItList is more than one then that means the payload is improper 
             	//and the error needs to be handled
-            	if(dao.updateFaceitActivityInstance(instance)) {
+                if(dao.updateFaceitActivityInstance(instance)) {
             		return instance;
             	}
             	return NullObjects.getNullActivityInstance();
-            } else if(activityInstanceType.equals("DailyDiary")){
+            }else if(activityInstanceType.equals("DailyDiary")){
             	instance = mapper.readValue(requestBody, DailyDiaryActivityInstance.class);
                 instance.setUpdatedAt(new Date());   	
-            } else{
-                instance  = mapper.readValue(requestBody, ActivityInstance.class);
+            }else if(activityInstanceType.equals("SWAP")){
+            	instance = mapper.readValue(requestBody, SwapActivityInstance.class);
                 instance.setUpdatedAt(new Date());
+            }else if(activityInstanceType.equals("WorryHeads")){
+                instance = mapper.readValue(requestBody, WorryHeadsActivityInstance.class);
+                instance.setUpdatedAt(new Date());
+            }else if(activityInstanceType.equals("StandUp")){
+            	 instance = mapper.readValue(requestBody, StandUpActivityInstance.class);
+                 instance.setUpdatedAt(new Date());  
+            }else{
+                instance  = mapper.readValue(requestBody, ActivityInstance.class);
+                instance.setUpdatedAt(new Date());      
+            }
+            instance.setUserSubmissionTime(new Date());
+            if(instance.getState().equals("created") || instance.getState().equals("suspended")) {
+            	instance.setState("in-execution");
             }
             if(dao.updateActivityInstance(instance)){
                 return instance;
@@ -444,34 +484,6 @@ public class ReachService implements HealService {
 
             Logger[] logger = dao.logMessage(loggerInstance);
             return logger;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /****************************************  Other Service methods  *************************************************/
-
-    @Override
-    public String getWorryHeadsInstance() {
-        try {
-            Random r = new Random();
-            String[] o_options = {"The goalie isn't the only player on the team," +
-                    " so it couldn't have been only my fault that we lost",
-                    "Even though we didn't win, we tied the game, so we still did pretty well",
-                    "I've practiced and I feel that I did the best I could and sometimes losing just happens",
-                    "I should have practice harder."};
-
-            WorryHeadsModel whm = new WorryHeadsModel(0,
-                    "WorryHeads",
-                    "You think, \"She thinks it's my fault we didn't win.\"",
-                    "You are the goalie for your soccer team and today's game ended in a tie. " +
-                            "After the game, you hear a teammate say that your team should have won",
-                    "P text",
-                    r.nextInt(4),
-                    o_options);
-
-            return new ObjectMapper().writeValueAsString(whm);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
