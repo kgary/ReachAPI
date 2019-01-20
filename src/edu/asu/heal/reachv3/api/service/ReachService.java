@@ -148,7 +148,13 @@ public class ReachService implements HealService {
     public ActivityInstance getActivityInstance(String activityInstanceId) {
         try {
             DAO dao = DAOFactory.getTheDAO();
-            return dao.getActivityInstance(activityInstanceId);
+            ActivityInstance rval;
+            rval =  dao.getActivityInstance(activityInstanceId);
+
+            if(rval!=null && rval.getInstanceOf().getName().equals("MakeBelieve")) //todo need to do this more elegantly
+                rval = dao.getActivityMakeBelieveInstanceDAO(activityInstanceId);
+
+            return rval;
         } catch (Exception e) {
             System.out.println("SOME ERROR IN HEAL SERVICE getActivityInstance");
             e.printStackTrace();
@@ -171,7 +177,7 @@ public class ReachService implements HealService {
                         activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
                         activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
                         activityInstance.getInstanceOf(), activityInstance.getState(),
-                        activityInstance.getPatientPin(), getMakeBelieveSituation());
+                        activityInstance.getPatientPin(), dao.getMakeBelieveSituation());
             }
 
             ActivityInstance newActivityInstance = dao.createActivityInstance(activityInstance);
@@ -444,30 +450,4 @@ public class ReachService implements HealService {
             return null;
         }
     }
-
-    private MakeBelieveSituation getMakeBelieveSituation() {
-        try {
-            DAO dao = DAOFactory.getTheDAO();
-            return dao.getMakeBelieveSituation();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Some problem in getMakeBelieveInstance in Reach Service");
-        }
-        return null;
-    }
-
-    // Added for makeBelieve ... By Abhishek
-    
-	@Override
-	public MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId) {
-		try {
-            DAO dao = DAOFactory.getTheDAO();
-            return dao.getActivityMakeBelieveInstanceDAO(activityInstanceId);
-        } catch (Exception e) {
-            System.out.println("SOME ERROR IN HEAL SERVICE getActivityInstance");
-            e.printStackTrace();
-            return null;
-        }
-	}
-
 }
