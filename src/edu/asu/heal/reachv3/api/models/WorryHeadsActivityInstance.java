@@ -20,9 +20,9 @@ public class WorryHeadsActivityInstance extends ActivityInstance {
                                       Date createdAt, Date updatedAt, String description, Date startTime,
                                       Date endTime, Date userSubmissionTime, Date actualSubmissionTime,
                                       ActivityInstanceType instanceOf, String state, int patientPin,
-                                      List<WorryHeadsSituation> situation) {
+                                      List<WorryHeadsSituation> situation, boolean isActivityGlowing) {
         super(activityInstanceId, createdAt, updatedAt, description, startTime, endTime, userSubmissionTime,
-                actualSubmissionTime, instanceOf, state, patientPin);
+                actualSubmissionTime, instanceOf, state, patientPin, isActivityGlowing);
         this.situation = situation;
     }
 
@@ -34,18 +34,4 @@ public class WorryHeadsActivityInstance extends ActivityInstance {
     public void setSituation(List<WorryHeadsSituation> situation ) {
         this.situation = situation;
     }
-
-//    public void setWorryHeadsSituation() {
-//
-//        WorryHeadsSituation tmp = new WorryHeadsSituation();
-//
-//        for(WorryHeadsSituation worryHeadsSituation:situation) {
-//            if(worryHeadsSituation.getUserAnswerId()==0) {
-//                tmp=worryHeadsSituation;
-//                break;
-//            }
-//        }
-//        situation.clear();
-//        situation.add(tmp);
-//    }
 }

@@ -13,7 +13,7 @@ public class ActivityInstance implements IHealModelType {
     public static String STATE_ATTRIBUTE = "state";
     public static String DESCRIPTION_ATTRIBUTE = "description";
     public static String ACTIVITYINSTANCEID_ATTRIBUTE = "activityInstanceId";
-
+    public static String GlOW_ATTRIBUTE = "activityGlowing";
 
     private String activityInstanceId;
     private Date createdAt;
@@ -26,13 +26,14 @@ public class ActivityInstance implements IHealModelType {
     private ActivityInstanceType instanceOf;
     private String state;
     private int patientPin;
+    private boolean activityGlowing;
 
     public ActivityInstance() {
     }
 
     public ActivityInstance(String activityInstanceId, Date createdAt, Date updatedAt, String description,
                             Date startTime, Date endTime, Date userSubmissionTime, Date actualSubmissionTime,
-                            ActivityInstanceType instanceOf, String state, int patientPin) {
+                            ActivityInstanceType instanceOf, String state, int patientPin, boolean activityGlowing) {
         this.activityInstanceId = activityInstanceId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -44,6 +45,7 @@ public class ActivityInstance implements IHealModelType {
         this.instanceOf = instanceOf;
         this.state = state;
         this.patientPin = patientPin;
+        this.activityGlowing = activityGlowing;
     }
 
     public Date getCreatedAt() {
@@ -134,6 +136,10 @@ public class ActivityInstance implements IHealModelType {
         this.patientPin = patientPin;
     }
 
+    public boolean getActivityGlowing() { return activityGlowing; }
+
+    public void setActivityGlowing(boolean activityGlowing) { this.activityGlowing = activityGlowing; }
+
     @Override
     public String toString() {
         return "ActivityInstance{" +
@@ -148,6 +154,7 @@ public class ActivityInstance implements IHealModelType {
                 ", state='" + state + '\'' +
                 ", description='" + description + '\'' +
                 ", patientPin='" + patientPin + '\'' +
+                ", activityGlowing='" + activityGlowing + '\'' +
                 '}';
     }
 
@@ -166,7 +173,7 @@ public class ActivityInstance implements IHealModelType {
         result = PRIME * result + (this.instanceOf == null ? 0 :this.instanceOf.hashCode());
         result = PRIME * result + (this.state == null ? 0 :this.state.hashCode());
         result = PRIME * result + this.patientPin;
-
+        //Question - What is the significance of this method
         return result;
     }
 
@@ -187,7 +194,8 @@ public class ActivityInstance implements IHealModelType {
                 && this.actualSubmissionTime.equals(temp.actualSubmissionTime)
                 && this.instanceOf.equals(temp.instanceOf)
                 && this.state.equals(temp.state)
-                && this.patientPin == temp.patientPin;
+                && this.patientPin == temp.patientPin
+                && this.activityGlowing == temp.activityGlowing;
     }
 
 }

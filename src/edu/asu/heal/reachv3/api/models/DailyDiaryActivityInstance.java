@@ -18,9 +18,9 @@ public class DailyDiaryActivityInstance extends ActivityInstance {
 	
 	public DailyDiaryActivityInstance(String activityInstanceId, Date createdAt, Date updatedAt, String description,
 			Date startTime, Date endTime, Date userSubmissionTime, Date actualSubmissionTime,
-			ActivityInstanceType instanceOf, String state, int patientPin) {
+			ActivityInstanceType instanceOf, String state, int patientPin, boolean isActivityGlowing) {
 	     super(activityInstanceId, createdAt, updatedAt, description, startTime, endTime, 
-	    		 userSubmissionTime, actualSubmissionTime, instanceOf, state, patientPin);
+	    		 userSubmissionTime, actualSubmissionTime, instanceOf, state, patientPin, isActivityGlowing);
 	    this.whatHappened = null;
 		this.worryIntensity = 0;
 		this.actionTaken = null;

@@ -177,7 +177,7 @@ public class ReachService implements HealService {
                         activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
                         activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
                         activityInstance.getInstanceOf(), activityInstance.getState(),
-                        activityInstance.getPatientPin(), dao.getMakeBelieveSituation());
+                        activityInstance.getPatientPin(), dao.getMakeBelieveSituation(),activityInstance.getActivityGlowing());
             } else if(activityInstance.getInstanceOf().getName().equals("FaceIt")) {
                 activityInstance = new FaceitActivityInstance(
                         activityInstance.getActivityInstanceId(),
@@ -185,7 +185,7 @@ public class ReachService implements HealService {
                         activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
                         activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
                         activityInstance.getInstanceOf(), activityInstance.getState(),
-                        activityInstance.getPatientPin(), dao.getFaceItChallenges()
+                        activityInstance.getPatientPin(), dao.getFaceItChallenges(), activityInstance.getActivityGlowing()
                 );
             }else if(activityInstance.getInstanceOf().getName().equals("DailyDiary")) {
                 activityInstance = new DailyDiaryActivityInstance(
@@ -194,7 +194,7 @@ public class ReachService implements HealService {
                         activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
                         activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
                         activityInstance.getInstanceOf(), activityInstance.getState(),
-                        activityInstance.getPatientPin()
+                        activityInstance.getPatientPin(), activityInstance.getActivityGlowing()
                 );
             } else if(activityInstance.getInstanceOf().getName().equals("SWAP")) {
                 activityInstance = new SwapActivityInstance(activityInstance.getActivityInstanceId(),
@@ -202,7 +202,7 @@ public class ReachService implements HealService {
                         activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
                         activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
                         activityInstance.getInstanceOf(), activityInstance.getState(),
-                        activityInstance.getPatientPin()
+                        activityInstance.getPatientPin(), activityInstance.getActivityGlowing()
                 );
             } else if(activityInstance.getInstanceOf().getName().equals("WorryHeads")){
                 activityInstance = new WorryHeadsActivityInstance(
@@ -211,7 +211,7 @@ public class ReachService implements HealService {
                         activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
                         activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
                         activityInstance.getInstanceOf(), activityInstance.getState(),
-                        activityInstance.getPatientPin(), dao.getAllWorryHeadsSituations());
+                        activityInstance.getPatientPin(), dao.getAllWorryHeadsSituations(), activityInstance.getActivityGlowing());
             } else if(activityInstance.getInstanceOf().getName().equals("StandUp")) {
                 activityInstance = new StandUpActivityInstance(
                         activityInstance.getActivityInstanceId(),
@@ -219,7 +219,7 @@ public class ReachService implements HealService {
                         activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
                         activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
                         activityInstance.getInstanceOf(), activityInstance.getState(),
-                        activityInstance.getPatientPin(), dao.getStandUpSituations());
+                        activityInstance.getPatientPin(), dao.getStandUpSituations(),activityInstance.getActivityGlowing());
             }
             ActivityInstance newActivityInstance = dao.createActivityInstance(activityInstance);
             return newActivityInstance;
