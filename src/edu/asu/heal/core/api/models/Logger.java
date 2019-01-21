@@ -19,7 +19,7 @@ public class Logger implements IHealModelType {
     private String type;
     private String format;
     private String subtype;
-    private Integer patientPin;
+    private String patientPin;
     private String metadata;
 
     public Logger() {
@@ -27,7 +27,7 @@ public class Logger implements IHealModelType {
     }
 
     public Logger(String trial, String timeStamp, String level, String type, String format, String subtype,
-                  int patientPin, String metadata) {
+                  String patientPin, String metadata) {
         this.trialId = trial;
         this.timeStamp = timeStamp;
         this.level = level;
@@ -54,7 +54,7 @@ public class Logger implements IHealModelType {
         return metadata;
     }
 
-    public Integer getPatientPin() {
+    public String getPatientPin() {
         return patientPin;
     }
 
@@ -82,7 +82,7 @@ public class Logger implements IHealModelType {
         this.metadata = metadata;
     }
 
-    public void setPatientPin(Integer patientPin) {
+    public void setPatientPin(String patientPin) {
         this.patientPin = patientPin;
     }
 
@@ -124,7 +124,7 @@ public class Logger implements IHealModelType {
         result = PRIME * result + (this.level == null ? 0 :this.level.hashCode());
         result = PRIME * result + (this.format == null ? 0 :this.format.hashCode());
         result = PRIME * result + (this.subtype == null ? 0 :this.subtype.hashCode());
-        result = PRIME * result + (this.patientPin == 0 ? 0 :this.patientPin.hashCode());
+        result = PRIME * result + (this.patientPin == null ? 0 :this.patientPin.hashCode());
         result = PRIME * result + (this.metadata == null ? 0 :this.metadata.hashCode());
         return result;
     }

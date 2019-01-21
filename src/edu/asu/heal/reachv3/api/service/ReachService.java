@@ -161,9 +161,10 @@ public class ReachService implements HealService {
             String trialTitle = "Compass"; // Refactor : needs to be done in a better way...
             SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
             String date = timeStampFormat.format(new Date());
+            Integer ppin= instance.getPatientPin();
             String metaData = "{ \"activityInstanceId :\" \"" +instance.getActivityInstanceId() +"\" , \"ACTIVITY_INSTANCE_STATE\" : \""+ ActivityInstanceStatus.IN_EXECUTION.status() +"\" } " ;
             Logger log = new Logger(dao.getTrialIdByTitle(trialTitle),date,"INFO","ACTIVITY_STATE","JSON",
-            		instance.getInstanceOf().getName(),instance.getPatientPin(),metaData);
+            		instance.getInstanceOf().getName(),ppin.toString(),metaData);
 
             ArrayList<Logger> al = new ArrayList<Logger>();
             al.add(log);
@@ -231,9 +232,10 @@ public class ReachService implements HealService {
             String trialTitle = "Compass"; // Refactor : needs to be done in a better way...
             SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
             String date = timeStampFormat.format(new Date());
+            Integer ppin= newActivityInstance.getPatientPin();
             String metaData = "{ \"activityInstanceId :\" \"" +activityInstance.getActivityInstanceId() +"\" , \"ACTIVITY_INSTANCE_STATE\" : \""+ ActivityInstanceStatus.CREATED.status()+"\" } " ;
             Logger log = new Logger(dao.getTrialIdByTitle(trialTitle),date,"INFO","ACTIVITY_STATE","JSON",
-            		activityInstance.getInstanceOf().getName(),activityInstance.getPatientPin(),metaData);
+            		activityInstance.getInstanceOf().getName(),ppin.toString(),metaData);
 
             ArrayList<Logger> al = new ArrayList<Logger>();
             al.add(log);
@@ -294,9 +296,10 @@ public class ReachService implements HealService {
             String trialTitle = "Compass"; // Refactor : needs to be done in a better way...
             SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
             String date = timeStampFormat.format(new Date());
+            Integer ppin= instance.getPatientPin();
             String metaData = "{ \"activityInstanceId :\" \"" +instance.getActivityInstanceId() +"\" , \"ACTIVITY_INSTANCE_STATE\" : \""+ instance.getState() +"\" } " ;
             Logger log = new Logger(dao.getTrialIdByTitle(trialTitle),date,"INFO","ACTIVITY_STATE","JSON",
-            		instance.getInstanceOf().getName(),instance.getPatientPin(),metaData);
+            		instance.getInstanceOf().getName(),ppin.toString(),metaData);
 
             ArrayList<Logger> al = new ArrayList<Logger>();
             al.add(log);

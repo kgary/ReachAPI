@@ -78,7 +78,7 @@ public class NullObjects {
         l.setLevel("NULL");
         l.setMetadata("NULL");
         l.setSubtype("NULL");
-        l.setPatientPin(0);
+        l.setPatientPin("NULL");
         l.setTimeStamp("NULL");
         l.setType("NULL");
 
