@@ -21,8 +21,10 @@ import edu.asu.heal.reachv3.api.models.WorryHeadsSituation;
 
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 public class ReachService implements HealService {
@@ -154,7 +156,26 @@ public class ReachService implements HealService {
     public ActivityInstance getActivityInstance(String activityInstanceId) {
         try {
             DAO dao = DAOFactory.getTheDAO();
-            return dao.getActivityInstance(activityInstanceId);
+            ActivityInstance instance = dao.getActivityInstance(activityInstanceId);
+            
+            // Code to log state of activity instance in the Mongo...
+            
+            String trialTitle = "Compass"; // Refactor : needs to be done in a better way...
+            SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
+            String date = timeStampFormat.format(new Date());
+            Integer ppin= instance.getPatientPin();
+            String metaData = "{ \"activityInstanceId :\" \"" +instance.getActivityInstanceId() +"\" , \"ACTIVITY_INSTANCE_STATE\" : \""+ ActivityInstanceStatus.IN_EXECUTION.status() +"\" } " ;
+            Logger log = new Logger(dao.getTrialIdByTitle(trialTitle),date,"INFO","ACTIVITY_STATE","JSON",
+            		instance.getInstanceOf().getName(),ppin.toString(),metaData);
+
+            ArrayList<Logger> al = new ArrayList<Logger>();
+            al.add(log);
+            Logger[] logs = new Logger[al.size()] ;
+                       
+            logs = al.toArray(logs);
+            dao.logMessage(logs);
+
+            return instance;
         } catch (Exception e) {
             System.out.println("SOME ERROR IN HEAL SERVICE getActivityInstance");
             e.printStackTrace();
@@ -222,6 +243,25 @@ public class ReachService implements HealService {
                         activityInstance.getPatientPin(), dao.getStandUpSituations(),activityInstance.getActivityGlowing());
             }
             ActivityInstance newActivityInstance = dao.createActivityInstance(activityInstance);
+            
+            
+            // Code to log state of activity instance in the Mongo...
+            
+            String trialTitle = "Compass"; // Refactor : needs to be done in a better way...
+            SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
+            String date = timeStampFormat.format(new Date());
+            Integer ppin= newActivityInstance.getPatientPin();
+            String metaData = "{ \"activityInstanceId :\" \"" +activityInstance.getActivityInstanceId() +"\" , \"ACTIVITY_INSTANCE_STATE\" : \""+ ActivityInstanceStatus.CREATED.status()+"\" } " ;
+            Logger log = new Logger(dao.getTrialIdByTitle(trialTitle),date,"INFO","ACTIVITY_STATE","JSON",
+            		activityInstance.getInstanceOf().getName(),ppin.toString(),metaData);
+
+            ArrayList<Logger> al = new ArrayList<Logger>();
+            al.add(log);
+            Logger[] logs = new Logger[al.size()] ;
+                       
+            logs = al.toArray(logs);
+            dao.logMessage(logs);
+            
             return newActivityInstance;
         } catch (Exception e) {
             System.out.println("SOME ERROR CREATING NE ACTIVITY INSTANCE IN REACH SERVICE - CREATEACTIVITYINSTANCE");
@@ -274,9 +314,24 @@ public class ReachService implements HealService {
                 instance.setUpdatedAt(new Date());      
             }
             instance.setUserSubmissionTime(new Date());
-            if(instance.getState().equals("created") || instance.getState().equals("suspended")) {
-            	instance.setState("in-execution");
-            }
+            
+            // Code to log state of activity instance in the Mongo...
+            
+            String trialTitle = "Compass"; // Refactor : needs to be done in a better way...
+            SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
+            String date = timeStampFormat.format(new Date());
+            Integer ppin= instance.getPatientPin();
+            String metaData = "{ \"activityInstanceId :\" \"" +instance.getActivityInstanceId() +"\" , \"ACTIVITY_INSTANCE_STATE\" : \""+ instance.getState() +"\" } " ;
+            Logger log = new Logger(dao.getTrialIdByTitle(trialTitle),date,"INFO","ACTIVITY_STATE","JSON",
+            		instance.getInstanceOf().getName(),ppin.toString(),metaData);
+
+            ArrayList<Logger> al = new ArrayList<Logger>();
+            al.add(log);
+            Logger[] logs = new Logger[al.size()] ;
+                       
+            logs = al.toArray(logs);
+            dao.logMessage(logs);
+            
             if(dao.updateActivityInstance(instance)){
                 return instance;
             }

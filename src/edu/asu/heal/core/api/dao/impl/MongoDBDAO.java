@@ -725,6 +725,19 @@ public class MongoDBDAO implements DAO {
 			return null;
 		}
 	}
+	
+	@Override
+	public String getTrialIdByTitle(String title) {
+		
+		MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+		MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
+
+		Trial rval= trialCollection
+		.find(Filters.eq(Trial.TITLE_ATTRIBUTE, title))
+		.projection(Projections.excludeId()).first();
+		
+		return rval.getTrialId();
+	}
 
 	/****************************************  Logger DAO methods *****************************************************/
 
