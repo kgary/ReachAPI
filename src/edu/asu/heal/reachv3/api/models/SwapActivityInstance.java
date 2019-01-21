@@ -15,10 +15,10 @@ public class SwapActivityInstance extends ActivityInstance {
 	
 	public SwapActivityInstance(String activityInstanceId, Date createdAt, Date updatedAt, 
 			String description, Date startTime, Date endTime, Date userSubmissionTime, 
-			Date actualSubmissionTime, ActivityInstanceType instanceOf, String state, int patientPin) {
+			Date actualSubmissionTime, ActivityInstanceType instanceOf, String state, int patientPin, boolean isActivityGlowing) {
 		super(activityInstanceId, createdAt, updatedAt, 
 				description, startTime, endTime, userSubmissionTime, 
-				actualSubmissionTime, instanceOf, state, patientPin);
+				actualSubmissionTime, instanceOf, state, patientPin, isActivityGlowing);
 		this.situation=null;
 		this.worry=null;
 		this.action=null;

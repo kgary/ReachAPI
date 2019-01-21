@@ -194,7 +194,7 @@ public class ReachService implements HealService {
                         activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
                         activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
                         activityInstance.getInstanceOf(), activityInstance.getState(),
-                        activityInstance.getPatientPin()
+                        activityInstance.getPatientPin(), activityInstance.getActivityGlowing()
                 );
             } else if(activityInstance.getInstanceOf().getName().equals("SWAP")) {
                 activityInstance = new SwapActivityInstance(activityInstance.getActivityInstanceId(),
@@ -202,7 +202,7 @@ public class ReachService implements HealService {
                         activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
                         activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
                         activityInstance.getInstanceOf(), activityInstance.getState(),
-                        activityInstance.getPatientPin()
+                        activityInstance.getPatientPin(), activityInstance.getActivityGlowing()
                 );
             } else if(activityInstance.getInstanceOf().getName().equals("WorryHeads")){
                 activityInstance = new WorryHeadsActivityInstance(
