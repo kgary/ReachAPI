@@ -64,6 +64,8 @@ public interface DAO {
     List<Trial> getTrials(String domain);
 
     Trial createTrial(Trial trialInstance);
+    
+    String getTrialIdByTitle(String title);
 
     /****************************************  Logger DAO methods *****************************************************/
     Logger[] logMessage (Logger[] loggerInstance);
