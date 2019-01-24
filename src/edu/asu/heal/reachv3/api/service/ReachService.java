@@ -14,6 +14,7 @@ import edu.asu.heal.core.api.service.SuggestedActivityiesMappingService.MappingI
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
 import edu.asu.heal.reachv3.api.models.DailyDiaryActivityInstance;
+import edu.asu.heal.reachv3.api.models.Emotions;
 import edu.asu.heal.reachv3.api.models.SwapActivityInstance;
 import edu.asu.heal.reachv3.api.models.StandUpActivityInstance;
 import edu.asu.heal.reachv3.api.models.FaceItModel;
@@ -248,6 +249,15 @@ public class ReachService implements HealService {
                         activityInstance.getInstanceOf(), activityInstance.getState(),
                         activityInstance.getPatientPin(), dao.getStandUpSituations(),activityInstance.getActivityGlowing());
             }
+            else if(activityInstance.getInstanceOf().getName().equals("Emotion")) {
+                activityInstance = new Emotions(
+                        activityInstance.getActivityInstanceId(),
+                        activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
+                        activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
+                        activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
+                        activityInstance.getInstanceOf(), activityInstance.getState(),
+                        activityInstance.getPatientPin(),activityInstance.getActivityGlowing());
+            }
             ActivityInstance newActivityInstance = dao.createActivityInstance(activityInstance);
             
             
@@ -315,6 +325,9 @@ public class ReachService implements HealService {
             }else if(activityInstanceType.equals("StandUp")){
             	 instance = mapper.readValue(requestBody, StandUpActivityInstance.class);
                  instance.setUpdatedAt(new Date());  
+            }else if(activityInstanceType.equals("Emotion")){
+           	 instance = mapper.readValue(requestBody, Emotions.class);
+             instance.setUpdatedAt(new Date());  
             }else{
                 instance  = mapper.readValue(requestBody, ActivityInstance.class);
                 instance.setUpdatedAt(new Date());      
