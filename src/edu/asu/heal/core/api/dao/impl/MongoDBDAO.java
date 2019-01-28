@@ -290,12 +290,15 @@ public class MongoDBDAO implements DAO {
 
 			MongoCollection<ActivityInstance> activityInstanceCollection =
 					database.getCollection(MongoDBDAO.ACTIVITYINSTANCES_COLLECTION, ActivityInstance.class);
-
+			
+			List<String> states = new ArrayList<String>();
+			states.add(ActivityInstanceStatus.CREATED.status());
+			states.add(ActivityInstanceStatus.SUSPENDED.status());
 
 			return activityInstanceCollection
 					.find(Filters.and(Filters.in(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE,
 							patient.getActivityInstances().toArray(new String[]{})),
-							Filters.eq(ActivityInstance.STATE_ATTRIBUTE, ActivityInstanceStatus.CREATED.status()))) // todo Need to confirm this. It could be other states from the enum as well
+							Filters.in(ActivityInstance.STATE_ATTRIBUTE, states.toArray(new String[] {})))) // todo Need to confirm this. It could be other states from the enum as well
 					.projection(Projections.excludeId())
 					.into(new ArrayList<>());
 		} catch (Exception e) {

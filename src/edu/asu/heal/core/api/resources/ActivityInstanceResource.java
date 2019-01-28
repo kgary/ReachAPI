@@ -73,25 +73,25 @@ public class ActivityInstanceResource {
 					.setServerURI(_uri.getBaseUri().toString())
 					.build();
 		} else {
-			if(emotion != null){
-				String emotionsActivityResponse = reachService.getEmotionsActivityInstance(patientPin, emotion, intensity);
-				if(emotionsActivityResponse == null){
-					response = builder
-							.setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-							.setData("SOME ERROR ON THE SERVER. CONTACT ADMINISTRATOR")
-							.build();
-				}else if(emotionsActivityResponse.length() == 0){
-					response = builder
-							.setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-							.setData("THE EMOTION YOU PASSED IN IS INCORRECT")
-							.build();
-				}else{
-					response = builder
-							.setStatusCode(Response.Status.OK.getStatusCode())
-							.setData(emotionsActivityResponse)
-							.build();
-				}
-			}else{
+//			if(emotion != null){
+//				String emotionsActivityResponse = reachService.getEmotionsActivityInstance(patientPin, emotion, intensity);
+//				if(emotionsActivityResponse == null){
+//					response = builder
+//							.setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+//							.setData("SOME ERROR ON THE SERVER. CONTACT ADMINISTRATOR")
+//							.build();
+//				}else if(emotionsActivityResponse.length() == 0){
+//					response = builder
+//							.setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+//							.setData("THE EMOTION YOU PASSED IN IS INCORRECT")
+//							.build();
+//				}else{
+//					response = builder
+//							.setStatusCode(Response.Status.OK.getStatusCode())
+//							.setData(emotionsActivityResponse)
+//							.build();
+//				}
+//			}else{
 				List<ActivityInstance> instances = reachService.getActivityInstances(patientPin);
 				if (instances == null) {
 					response = builder
@@ -123,7 +123,7 @@ public class ActivityInstanceResource {
 							.setServerURI(_uri.getBaseUri().toString())
 							.build();
 				}
-			}
+			//}
 		}
 		return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
 	}
