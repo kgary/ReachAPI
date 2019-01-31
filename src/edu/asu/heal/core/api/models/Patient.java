@@ -23,7 +23,7 @@ public class Patient implements IHealModelType {
     private Date createdAt;
     private Date updatedAt;
     private ArrayList<String> activityInstances = new ArrayList<>();
-    private ArrayList<String> registrationToken = new ArrayList();
+    private ArrayList<String> registrationToken = new ArrayList<>();
 
     public Patient(){
         // blank constructor
