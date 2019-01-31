@@ -7,6 +7,7 @@ import edu.asu.heal.core.api.responses.HEALResponseBuilder;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
+import edu.asu.heal.reachv3.api.service.ReachService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -128,6 +129,10 @@ public class ActivityInstanceResource {
 		return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
 	}
 
+	
+	
+	
+	
 	/**
 	 * @api {get} /activityInstance/:id ActivityInstance Detail
 	 * @apiName ActivityInstanceDetail
