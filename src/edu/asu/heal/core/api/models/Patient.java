@@ -13,6 +13,7 @@ public class Patient implements IHealModelType {
     public static String CREATEDAT_ATTRIBUTE = "createdAt";
     public static String UPDATEDAT_ATTRIBUTE = "updatedAt";
     public static String ACTIVITYINSTANCES_ATTRIBUTE = "activityInstances";
+    public static String DEVICEID_ATTRIBUTE = "registrationToken";
 
     private String patientId;
     private int pin;
@@ -22,6 +23,7 @@ public class Patient implements IHealModelType {
     private Date createdAt;
     private Date updatedAt;
     private ArrayList<String> activityInstances = new ArrayList<>();
+    private ArrayList<String> registrationToken = new ArrayList();
 
     public Patient(){
         // blank constructor
@@ -36,9 +38,18 @@ public class Patient implements IHealModelType {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.activityInstances = activityInstances;
+        this.registrationToken = null; 
     }
 
-    // Getters and Setters
+    public ArrayList<String> getRegistrationToken() {
+		return registrationToken;
+	}
+
+	public void setRegistrationToken(ArrayList<String> registrationToken) {
+		this.registrationToken = registrationToken;
+	}
+
+	// Getters and Setters
     public int getPin() {
         return pin;
     }

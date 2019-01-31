@@ -6,12 +6,17 @@ import edu.asu.heal.core.api.responses.HEALResponseBuilder;
 import edu.asu.heal.core.api.responses.PatientResponse;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
+import edu.asu.heal.reachv3.api.service.ReachService;
 
+import javax.json.JsonObject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
+import com.fasterxml.jackson.databind.util.JSONPObject;
+
 import java.util.List;
 
 @Path("/patients")
@@ -253,6 +258,71 @@ public class PatientResource {
         } else {
 
             Patient updatedPatient = reachService.updatePatient(patient);
+
+            if (updatedPatient == null) {
+                response = builder
+                        .setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                        .setData("SOME ERROR UPDATING THE PATIENT. CONTACT ADMINISTRATOR")
+                        .build();
+            } else if (updatedPatient.equals(NullObjects.getNullPatient())) {
+                response = builder
+                        .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                        .setData("PATIENT PIN YOU PASSED IN IS INCORRECT OR DOES NOT EXIST")
+                        .build();
+            } else {
+                response = builder
+                        .setStatusCode(Response.Status.NO_CONTENT.getStatusCode())
+                        .setData(null)
+                        .setServerURI(_uri.getBaseUri().toString())
+                        .build();
+            }
+        }
+
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
+
+    }
+
+    
+    /**
+     * @api {put} /patients Update Patient
+     * @apiName updatePatients
+     * @apiGroup Patient
+     * @apiParam {json} deviceId token
+     * @apiParamExample {json} Request-payload :
+     * {
+     * "pin": 4010,
+     * "deviceId" : "AVP2019"
+     * }
+     * @apiSuccess {int} requestCode Status code indicating NO_CONTENT
+     * @apiSuccessExample {int} Success- Example : 204
+     * @apiUse BadRequestError
+     * @apiUse InternalServerError
+     * @apiUse NotImplementedError
+     */
+
+    @PUT
+    @Path("/{patientPin}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response updateDeviceId(@PathParam("patientPin") int patientPin,String regiToken) {
+        HEALResponse response;
+        HEALResponseBuilder builder;
+         
+        try{
+            builder = new HEALResponseBuilder(PatientResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+
+        if (patientPin == 0) {
+            response = builder
+                    .setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+                    .setData("YOU NEED TO PASS IN PATIENT PIN IN REQUEST PAYLOAD")
+                    .build();
+        } else {
+
+        	ReachService service = (ReachService) reachService;
+            Patient updatedPatient = service.updatePatientDeviceId(patientPin,regiToken);
 
             if (updatedPatient == null) {
                 response = builder
