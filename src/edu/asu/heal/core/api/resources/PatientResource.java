@@ -293,7 +293,7 @@ public class PatientResource {
 	 * @apiParam {json} registration token
 	 * @apiParamExample {json} Request-payload :
 	 * {
-	 *	"token" : "abhishekParmar"
+	 *	"token" : "<TOKEN GENERATED VIA FCM>"
 	 *	}
 	 * @apiSuccess {int} requestCode Status code indicating NO_CONTENT
 	 * @apiSuccessExample {int} Success- Example : 204
