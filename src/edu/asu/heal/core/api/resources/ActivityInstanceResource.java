@@ -74,7 +74,6 @@ public class ActivityInstanceResource {
 					.setServerURI(_uri.getBaseUri().toString())
 					.build();
 		} else {
-			// Task #386
 //			if(emotion != null){
 //				String emotionsActivityResponse = reachService.getEmotionsActivityInstance(patientPin, emotion, intensity);
 //				if(emotionsActivityResponse == null){
@@ -125,8 +124,8 @@ public class ActivityInstanceResource {
 							.setServerURI(_uri.getBaseUri().toString())
 							.build();
 				}
-			}
-//		}
+			//}
+		}
 		return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
 	}
 
