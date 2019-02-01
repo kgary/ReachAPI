@@ -1,5 +1,7 @@
 package edu.asu.heal.core.api.models;
 
+import java.util.Random;
+
 import javax.annotation.Generated;
 
 @SuppressWarnings("unused")
@@ -8,15 +10,15 @@ public class NotificationData implements IHealModelType {
     private String detail;
     private int id;
     private String title;
-
+    private static Random __r = new Random();
     public NotificationData() {
         super();
-        id = 555;
+        id = __r.nextInt(100000);
     }
 
     public NotificationData(String detail, String title) {
         super();
-        id = 555;
+        id = __r.nextInt(100000);
         this.detail = detail;
         this.title = title;
     }

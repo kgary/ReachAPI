@@ -1,5 +1,7 @@
 package edu.asu.heal.core.api.models;
 
+import java.util.ArrayList;
+
 import javax.annotation.Generated;
 import com.fasterxml.jackson.annotation.*;
 
@@ -8,7 +10,7 @@ import com.fasterxml.jackson.annotation.*;
 public class NotificationRequestModel implements IHealModelType {
 
     @JsonProperty private NotificationData data;
-    @JsonProperty private String to;
+    @JsonProperty private ArrayList<String> to;
     @JsonProperty private String priority;
 //    @JsonProperty private String notification;
 
@@ -27,11 +29,11 @@ public class NotificationRequestModel implements IHealModelType {
         this.data = data;
     }
 
-    public String getTo() {
+    public ArrayList<String> getTo() {
         return to;
     }
 
-    public void setTo(String to) {
+    public void setTo(ArrayList<String> to) {
         this.to = to;
     }
 

@@ -574,6 +574,7 @@ public class ReachService implements HealService {
     public void sendNotification(NotificationData data, int patientPin) {
 
         try {
+        	DAO dao = DAOFactory.getTheDAO();
             DefaultHttpClient httpClient = new DefaultHttpClient();
             HttpPost postRequest = new HttpPost(
                     "https://fcm.googleapis.com/fcm/send");
@@ -581,8 +582,11 @@ public class ReachService implements HealService {
             NotificationRequestModel notificationRequestModel = new NotificationRequestModel();
             notificationRequestModel.setData(data);
             //TODO: get token from db for pin
-            notificationRequestModel.setTo("fxxJWeK-Fo8:APA91bG_-82urLmUgfZwGfY1QA4REuXZzzQojqu9Q4FzUVo3PScT-" +
-                    "UFAEK9PSBeb2X6sRQvu6pZYfqRFeY5p3Zv2t0fqFOzFmcMBPx5nRq9GMRFzb-LuselMuS97bbmuVOzlk76_VJVu");
+            Patient p = dao.getPatient(patientPin);
+            ArrayList<String> registrationToken = p.getRegistrationToken();
+            notificationRequestModel.setTo(registrationToken);
+//            notificationRequestModel.setTo("fxxJWeK-Fo8:APA91bG_-82urLmUgfZwGfY1QA4REuXZzzQojqu9Q4FzUVo3PScT-" +
+//                    "UFAEK9PSBeb2X6sRQvu6pZYfqRFeY5p3Zv2t0fqFOzFmcMBPx5nRq9GMRFzb-LuselMuS97bbmuVOzlk76_VJVu");
 
 
             ObjectMapper mapper = new ObjectMapper();
