@@ -138,7 +138,9 @@ public class ReachService implements HealService {
 	public String getEmotionsActivityInstance(int patientPin, String emotion, int intensity){
 		try{
 			DAO dao = DAOFactory.getTheDAO();
-			List<String> results = dao.getEmotionsActivityInstance(emotion.toLowerCase(), intensity);
+			 MappingInterface mapper = MappingFactory.getTheMapper();
+			  String intensityVal = (String)mapper.intensityMappingToDifficultyLevel(intensity);
+			List<String> results = dao.getEmotionsActivityInstance(emotion.toLowerCase(), intensityVal);
 			if(results == null)
 				return "";
 
@@ -316,6 +318,9 @@ public class ReachService implements HealService {
 				instance.setUpdatedAt(new Date());
 			}else if(activityInstanceType.equals("StandUp")){
 				instance = mapper.readValue(requestBody, StandUpActivityInstance.class);
+				instance.setUpdatedAt(new Date());  
+			}else if(activityInstanceType.equals("Emotion")){
+				instance = mapper.readValue(requestBody, Emotions.class);
 				instance.setUpdatedAt(new Date());  
 			}else{
 				instance  = mapper.readValue(requestBody, ActivityInstance.class);
