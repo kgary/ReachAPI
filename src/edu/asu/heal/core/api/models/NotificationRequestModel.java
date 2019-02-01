@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.*;
 public class NotificationRequestModel implements IHealModelType {
 
     @JsonProperty private NotificationData data;
-    @JsonProperty private ArrayList<String> to;
+    @JsonProperty private String to;
     @JsonProperty private String priority;
 //    @JsonProperty private String notification;
 
@@ -29,11 +29,11 @@ public class NotificationRequestModel implements IHealModelType {
         this.data = data;
     }
 
-    public ArrayList<String> getTo() {
+    public String getTo() {
         return to;
     }
 
-    public void setTo(ArrayList<String> to) {
+    public void setTo(String to) {
         this.to = to;
     }
 

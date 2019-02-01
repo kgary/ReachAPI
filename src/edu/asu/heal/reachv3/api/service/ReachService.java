@@ -568,57 +568,61 @@ public class ReachService implements HealService {
 			return null;
 		}
 	}
-      /****************************************  Notification methods  *************************************************/
-    // Reference 1: http://developine.com/how-to-send-firebase-push-notifications-from-app-server-tutorial/
-    // Reference 2: https://firebase.google.com/docs/cloud-messaging/send-message
-    public void sendNotification(NotificationData data, int patientPin) {
+	/****************************************  Notification methods  *************************************************/
+	// Reference 1: http://developine.com/how-to-send-firebase-push-notifications-from-app-server-tutorial/
+	// Reference 2: https://firebase.google.com/docs/cloud-messaging/send-message
+	public void sendNotification(NotificationData data, int patientPin) {
 
-        try {
-        	DAO dao = DAOFactory.getTheDAO();
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpPost postRequest = new HttpPost(
-                    "https://fcm.googleapis.com/fcm/send");
+		try {
+			DAO dao = DAOFactory.getTheDAO();
+			DefaultHttpClient httpClient = new DefaultHttpClient();
+			HttpPost postRequest = new HttpPost(
+					"https://fcm.googleapis.com/fcm/send");
 
-            NotificationRequestModel notificationRequestModel = new NotificationRequestModel();
-            notificationRequestModel.setData(data);
-            //TODO: get token from db for pin
-            Patient p = dao.getPatient(patientPin);
-            ArrayList<String> registrationToken = p.getRegistrationToken();
-            notificationRequestModel.setTo(registrationToken);
-//            notificationRequestModel.setTo("fxxJWeK-Fo8:APA91bG_-82urLmUgfZwGfY1QA4REuXZzzQojqu9Q4FzUVo3PScT-" +
-//                    "UFAEK9PSBeb2X6sRQvu6pZYfqRFeY5p3Zv2t0fqFOzFmcMBPx5nRq9GMRFzb-LuselMuS97bbmuVOzlk76_VJVu");
+			NotificationRequestModel notificationRequestModel = new NotificationRequestModel();
+
+			//TODO: get token from db for pin
+			Patient p = dao.getPatient(patientPin);
+			ArrayList<String> registrationToken = p.getRegistrationToken();
+
+			for(String token : registrationToken ) {
+				notificationRequestModel.setData(data);
+				notificationRequestModel.setTo(token);
+				//            notificationRequestModel.setTo("fxxJWeK-Fo8:APA91bG_-82urLmUgfZwGfY1QA4REuXZzzQojqu9Q4FzUVo3PScT-" +
+				//                    "UFAEK9PSBeb2X6sRQvu6pZYfqRFeY5p3Zv2t0fqFOzFmcMBPx5nRq9GMRFzb-LuselMuS97bbmuVOzlk76_VJVu");
 
 
-            ObjectMapper mapper = new ObjectMapper();
-            String notificationJson = mapper.writeValueAsString(notificationRequestModel);
+				ObjectMapper mapper = new ObjectMapper();
+				String notificationJson = mapper.writeValueAsString(notificationRequestModel);
 
-            StringEntity input = new StringEntity(notificationJson);
-            input.setContentType("application/json");
-            System.out.println(input);
+				StringEntity input = new StringEntity(notificationJson);
+				input.setContentType("application/json");
+				System.out.println(input);
 
-            //TODO: server key of your firebase project goes here in header field.
-            // You can get it from firebase console.
-            postRequest.addHeader("Authorization", "key=AAAAX5CbDOM:APA91bGd_AzSXfn64BsrxT1KEfCnh_yy99lXKPFo7l" +
-                    "QUbGqM7tK0YU_YOUUO0X2lpJmMSmVkxZC6JPFkFeC6TimZFg0BsXsutnVhsGM-Ydp2ZFCVswMMnhHrzKbMZpTwKDyZU2XllSZn");
-            postRequest.setEntity(input);
+				//TODO: server key of your firebase project goes here in header field.
+				// You can get it from firebase console.
+				postRequest.addHeader("Authorization", "key=AAAAX5CbDOM:APA91bGd_AzSXfn64BsrxT1KEfCnh_yy99lXKPFo7l" +
+						"QUbGqM7tK0YU_YOUUO0X2lpJmMSmVkxZC6JPFkFeC6TimZFg0BsXsutnVhsGM-Ydp2ZFCVswMMnhHrzKbMZpTwKDyZU2XllSZn");
+				postRequest.setEntity(input);
 
-            System.out.println("reques:" + notificationJson);
+				System.out.println("reques:" + notificationJson);
 
-            HttpResponse response = httpClient.execute(postRequest);
-            if (response.getStatusLine().getStatusCode() != 200) {
-                System.out.println("Unsuccessful");
-                throw new RuntimeException("Failed : HTTP error code : "
-                        + response.getStatusLine().getStatusCode());
-            } else if (response.getStatusLine().getStatusCode() == 200) {
-                System.out.println("Successful");
-                System.out.println("response:" + EntityUtils.toString(response.getEntity()));
+				HttpResponse response = httpClient.execute(postRequest);
+				if (response.getStatusLine().getStatusCode() != 200) {
+					System.out.println("Unsuccessful");
+					throw new RuntimeException("Failed : HTTP error code : "
+							+ response.getStatusLine().getStatusCode());
+				} else if (response.getStatusLine().getStatusCode() == 200) {
+					System.out.println("Successful");
+					System.out.println("response:" + EntityUtils.toString(response.getEntity()));
 
-            }
-        } catch (RuntimeException runtimeException) {
-            runtimeException.printStackTrace();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-    }
+				}
+			}
+		} catch (RuntimeException runtimeException) {
+			runtimeException.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+	}
 
 }

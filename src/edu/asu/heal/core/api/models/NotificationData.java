@@ -15,17 +15,17 @@ public class NotificationData implements IHealModelType {
     private String title;
     private static ArrayList<Integer> values = new ArrayList<Integer>();
     private static int MAX_VAL = 10000000; // this number can be configurable .
-    
+    private static int index = 0;
     public NotificationData() {
         super();
-        id = values.get(MAX_VAL);
-        MAX_VAL--;
+        id = values.get(index);
+        index++;
     }
 
     public NotificationData(String detail, String title) {
         super();
-        id = values.get(MAX_VAL);
-        MAX_VAL--;
+        id = values.get(index);
+        index++;
         this.detail = detail;
         this.title = title;
     }
