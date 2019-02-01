@@ -1,18 +1,35 @@
 package edu.asu.heal.core.api.dao.impl;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.AggregateIterable;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.FindIterable;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.models.*;
+import edu.asu.heal.reachv3.api.models.Emotions;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
+import edu.asu.heal.reachv3.api.models.StandUpActivityInstance;
+import edu.asu.heal.reachv3.api.models.StandUpResponse;
+import edu.asu.heal.reachv3.api.models.StandUpSituation;
+import edu.asu.heal.reachv3.api.models.FaceitActivityInstance;
+import edu.asu.heal.reachv3.api.models.FaceItModel;
+import edu.asu.heal.reachv3.api.models.WorryHeadsActivityInstance;
+import edu.asu.heal.reachv3.api.models.WorryHeadsResponse;
+import edu.asu.heal.reachv3.api.models.WorryHeadsSituation;
+
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -34,10 +51,15 @@ public class MongoDBDAO implements DAO {
 	private static final String ACTIVITYINSTANCES_COLLECTION = "activityInstances";
 	private static final String MAKEBELIEVESITUATIONS_COLLECTION = "makeBelieveSituations";
 	private static final String MAKEBELIEVESITUATIONNAMES_COLLECTION = "makeBelieveSituationNames";
+	private static final String FACEITCHALLENGES_COLLECTION = "faceItChallenges";
+	private static final String WORRYHEADSSITUATIONS_COLLECTION = "worryHeadsSituations";
+	private static final String STANDUPSITUATIONS_COLLECTION = "standUpSituations";
 	private static final String LOGGER_COLLECTION = "logger";
+	private static final String EMOTIONS_COLLECTION = "emotions";
 
 	private static String __mongoDBName;
 	private static String __mongoURI;
+	private Properties properties1 = new Properties();
 	private Map<String, List<String>> emotionsMap = new HashMap<>();
 
 
@@ -45,25 +67,25 @@ public class MongoDBDAO implements DAO {
 		__mongoURI = properties.getProperty("mongo.uri");
 		__mongoDBName = properties.getProperty("mongo.dbname");
 
-		try {
-			Properties properties1 = new Properties();
-			properties1.load(MongoDBDAO.class.getResourceAsStream("emotions.properties"));
-
-			emotionsMap.put(Emotions.happy.toString(),
-					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.happy").split(","))));
-			emotionsMap.put(Emotions.sad.toString(),
-					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.sad").split(","))));
-			emotionsMap.put(Emotions.sick.toString(),
-					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.sick").split(","))));
-			emotionsMap.put(Emotions.angry.toString(),
-					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.angry").split(","))));
-			emotionsMap.put(Emotions.scared.toString(),
-					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.scared").split(","))));
-			emotionsMap.put(Emotions.worried.toString(),
-					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.worried").split(","))));
-		}catch (IOException e){
-			e.printStackTrace();
-		}
+		//		try {
+		//			//	Properties properties1 = new Properties();
+		//		//	properties1.load(MongoDBDAO.class.getResourceAsStream("emotions.properties"));
+		//			//	
+		//			//			emotionsMap.put(Emotions.happy.toString(),
+		//			//					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.happy").split(","))));
+		//			//			emotionsMap.put(Emotions.sad.toString(),
+		//			//					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.sad").split(","))));
+		//			//			emotionsMap.put(Emotions.sick.toString(),
+		//			//					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.sick").split(","))));
+		//			//			emotionsMap.put(Emotions.angry.toString(),
+		//			//					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.angry").split(","))));
+		//			//			emotionsMap.put(Emotions.scared.toString(),
+		//			//					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.scared").split(","))));
+		//			//			emotionsMap.put(Emotions.worried.toString(),
+		//			//					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.worried").split(","))));
+		//					}catch (IOException e){
+		//						e.printStackTrace();
+		//					}
 	}
 
 	private static MongoClient mongoClient  = null;
@@ -263,7 +285,8 @@ public class MongoDBDAO implements DAO {
 	public List<ActivityInstance> getScheduledActivities(int patientPin)  {
 		try {
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
-			MongoCollection<Patient> patientCollection = database.getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class);
+			MongoCollection<Patient> patientCollection = database.getCollection(MongoDBDAO.PATIENTS_COLLECTION,
+					Patient.class);
 
 			Patient patient = patientCollection.find(Filters.eq(Patient.PIN_ATTRIBUTE, patientPin)).first();
 			if (patient == null) {
@@ -274,12 +297,15 @@ public class MongoDBDAO implements DAO {
 
 			MongoCollection<ActivityInstance> activityInstanceCollection =
 					database.getCollection(MongoDBDAO.ACTIVITYINSTANCES_COLLECTION, ActivityInstance.class);
-
+			
+			List<String> states = new ArrayList<String>();
+			states.add(ActivityInstanceStatus.CREATED.status());
+			states.add(ActivityInstanceStatus.SUSPENDED.status());
 
 			return activityInstanceCollection
 					.find(Filters.and(Filters.in(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE,
 							patient.getActivityInstances().toArray(new String[]{})),
-							Filters.eq(ActivityInstance.STATE_ATTRIBUTE, ActivityInstanceStatus.CREATED.status()))) // todo Need to confirm this. It could be other states from the enum as well
+							Filters.in(ActivityInstance.STATE_ATTRIBUTE, states.toArray(new String[] {})))) // todo Need to confirm this. It could be other states from the enum as well
 					.projection(Projections.excludeId())
 					.into(new ArrayList<>());
 		} catch (Exception e) {
@@ -328,7 +354,6 @@ public class MongoDBDAO implements DAO {
 
 			ObjectId newId = ObjectId.get();
 			instance.setActivityInstanceId(newId.toHexString());
-
 			activityInstanceMongoCollection.insertOne(instance);
 			patient.getActivityInstances().add(instance.getActivityInstanceId());
 			patient.setUpdatedAt(new Date());
@@ -355,10 +380,14 @@ public class MongoDBDAO implements DAO {
 					.projection(Projections.excludeId())
 					.first();
 
-
 			if(instance.getInstanceOf().getName().equals("MakeBelieve")) //todo need to do this more elegantly
 				instance = getActivityMakeBelieveInstanceDAO(activityInstanceId);
-
+			else if(instance.getInstanceOf().getName().equals("FaceIt"))
+				instance = getActivityFaceItInstanceDAO(activityInstanceId);
+			else if(instance.getInstanceOf().getName().equals("WorryHeads"))
+				instance = getActivityWorryHeadsInstanceDAO(activityInstanceId);
+			else if(instance.getInstanceOf().getName().equals("StandUp"))
+				instance = getActivityStandUpInstanceDAO(activityInstanceId);
 
 			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
 			System.out.println(instance);
@@ -374,30 +403,30 @@ public class MongoDBDAO implements DAO {
 		}
 	}
 
+	
 	@Override
-	public MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId) {
+	public FaceitActivityInstance getActivityFaceItInstanceDAO (String activityInstanceId) {
 		try {
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
-			MongoCollection<MakeBelieveActivityInstance> activityInstanceMongoCollection =
-					database.getCollection(ACTIVITYINSTANCES_COLLECTION, MakeBelieveActivityInstance.class);
+			MongoCollection<FaceitActivityInstance> activityInstanceMongoCollection =
+					database.getCollection(ACTIVITYINSTANCES_COLLECTION, FaceitActivityInstance.class);
 
-			MakeBelieveActivityInstance makeBelieveIns =  new MakeBelieveActivityInstance();
-			MakeBelieveActivityInstance instance = activityInstanceMongoCollection
+			FaceitActivityInstance faceitActivityInstance =  new FaceitActivityInstance();
+			FaceitActivityInstance instance = activityInstanceMongoCollection
 					.find(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId))
 					.projection(Projections.excludeId())
 					.first();
 
-			MakeBelieveSituation situation = getMakeBelieveSituation();
-
-			instance.setSituation(situation);
-
+			//Call the method here
+			instance.setFaceItChallenge();
+			
+			
 			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
-			System.out.println(instance);
 			return instance ;
 		} catch (NullPointerException ne) {
 			System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCE WITH ID " + activityInstanceId);
 			ne.printStackTrace();
-			return (MakeBelieveActivityInstance) NullObjects.getNullActivityInstance();
+			return (FaceitActivityInstance) NullObjects.getNullActivityInstance();
 		} catch (Exception e) {
 			System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
 			e.printStackTrace();
@@ -422,6 +451,101 @@ public class MongoDBDAO implements DAO {
 		}catch (Exception e){
 			System.out.println("Some problem in updateActivityInstance() in MongoDBDao");
 			return false;
+		}
+	}
+	
+	@Override
+	public boolean updateFaceitActivityInstance(ActivityInstance instance) {
+		try {
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<FaceitActivityInstance> activityInstanceMongoCollection =
+					database.getCollection(ACTIVITYINSTANCES_COLLECTION, FaceitActivityInstance.class);
+			
+			//code to update the answerId and status based on the questionId passed
+			FaceitActivityInstance faceItActivityInstance = (FaceitActivityInstance) instance;
+		    int questionId = faceItActivityInstance.getFaceItChallenges().get(0).getQuestionId();
+		    String status= faceItActivityInstance.getFaceItChallenges().get(0).getStatus();
+		    int answerId= faceItActivityInstance.getFaceItChallenges().get(0).getAnswerId();
+		    BasicDBObject query = new BasicDBObject();
+		    query.put("activityInstanceId", faceItActivityInstance.getActivityInstanceId());
+		    query.put("faceItChallenges.questionId", questionId);
+
+		    BasicDBObject data = new BasicDBObject();
+		    data.put("faceItChallenges.$.status", status);
+		    data.put("faceItChallenges.$.answerId", answerId);
+
+		    BasicDBObject command = new BasicDBObject();
+		    command.put("$set", data);
+
+		    FaceitActivityInstance myUpdatedInstance=activityInstanceMongoCollection.findOneAndUpdate(query, command);
+
+			if(myUpdatedInstance != null){
+				return true;
+			}
+			return false;
+		}catch (Exception e){
+			System.out.println("Some problem in updateFaceitActivityInstance() in MongoDBDao");
+			return false;
+		}
+	}
+
+	@Override
+	public WorryHeadsActivityInstance getActivityWorryHeadsInstanceDAO(String activityInstanceId) {
+		try {
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<WorryHeadsActivityInstance> activityInstanceMongoCollection =
+					database.getCollection(ACTIVITYINSTANCES_COLLECTION, WorryHeadsActivityInstance.class);
+
+			WorryHeadsActivityInstance instance = activityInstanceMongoCollection
+					.find(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId))
+					.projection(Projections.excludeId())
+					.first();
+
+			//instance.setWorryHeadsSituation();
+			List<WorryHeadsSituation> situations = getAllWorryHeadsSituations();
+			instance.setSituation(situations);
+
+			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
+			return instance ;
+		} catch (NullPointerException ne) {
+			System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCE WITH ID " + activityInstanceId);
+			ne.printStackTrace();
+			return (WorryHeadsActivityInstance) NullObjects.getNullActivityInstance();
+		} catch (Exception e) {
+			System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public List<WorryHeadsSituation> getAllWorryHeadsSituations() {
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<WorryHeadsSituation> situationMongoCollection =
+					database.getCollection(MongoDBDAO.WORRYHEADSSITUATIONS_COLLECTION, WorryHeadsSituation.class);
+
+			//Code to randomly get a situation from the database
+			AggregateIterable<WorryHeadsSituation> situations = situationMongoCollection
+					.aggregate(Arrays.asList(Aggregates.sample(1)));
+
+			WorryHeadsSituation situation = null;
+			for(WorryHeadsSituation temp : situations){
+				situation = temp;
+			}
+
+			List<WorryHeadsSituation> worryHeadsSituations = new ArrayList();
+			worryHeadsSituations.add(situation);
+
+			return worryHeadsSituations;
+		}catch (NullPointerException ne){
+			System.out.println("Could not get random make believe situation");
+			ne.printStackTrace();
+			return null;
+		}catch (Exception e){
+			System.out.println("Some problem in getting Make believe situation");
+			e.printStackTrace();
+			return null;
 		}
 	}
 
@@ -610,6 +734,19 @@ public class MongoDBDAO implements DAO {
 			return null;
 		}
 	}
+	
+	@Override
+	public String getTrialIdByTitle(String title) {
+		
+		MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+		MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
+
+		Trial rval= trialCollection
+		.find(Filters.eq(Trial.TITLE_ATTRIBUTE, title))
+		.projection(Projections.excludeId()).first();
+		
+		return rval.getTrialId();
+	}
 
 	/****************************************  Logger DAO methods *****************************************************/
 
@@ -643,6 +780,36 @@ public class MongoDBDAO implements DAO {
 	}
 
 	/****************************************  Other DAO methods ******************************************************/
+
+	@Override
+	public MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId) {
+		try {
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<MakeBelieveActivityInstance> activityInstanceMongoCollection =
+					database.getCollection(ACTIVITYINSTANCES_COLLECTION, MakeBelieveActivityInstance.class);
+
+			MakeBelieveActivityInstance instance = activityInstanceMongoCollection
+					.find(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId))
+					.projection(Projections.excludeId())
+					.first();
+
+			MakeBelieveSituation situation = getMakeBelieveSituation();
+
+			instance.setSituation(situation);
+
+			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
+			System.out.println(instance);
+			return instance ;
+		} catch (NullPointerException ne) {
+			System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCE WITH ID " + activityInstanceId);
+			ne.printStackTrace();
+			return (MakeBelieveActivityInstance) NullObjects.getNullActivityInstance();
+		} catch (Exception e) {
+			System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	@Override
 	public MakeBelieveSituation getMakeBelieveSituation() {
@@ -684,17 +851,33 @@ public class MongoDBDAO implements DAO {
 	}
 
 	@Override
-	public List<String> getEmotionsActivityInstance(String emotion, int intensity) {
+	public List<String> getEmotionsActivityInstance(String emotion, Object intensity) {
 		try {
-			if (emotion.equals(Emotions.worried.toString())) {
-				if (intensity >= 6) {
-					List<String> temp = emotionsMap.get(emotion);
-					temp.remove("faceIt");
-					return temp;
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			// needs to incorporate Emotions model. - Task #386
+			MongoCollection<Document> emotionMongoCollection =
+					database.getCollection(MongoDBDAO.EMOTIONS_COLLECTION);//, Emotions.class);
+
+			FindIterable<Document> result =	emotionMongoCollection.find(Filters.eq(Emotions.EMOTION_NAME,emotion));
+
+			MongoCursor<Document> cursor = result.iterator();
+			List<String> rval = new ArrayList<String>();
+			while(cursor.hasNext()) {
+				Document doc = cursor.next();
+				String tempIntensity = doc.getString(Emotions.INTENSITY);
+				if(tempIntensity.contains((String)intensity)) {
+					if(doc.getString(Emotions.SUGGESTED_ACTIVITIES).length() ==1) {
+						rval.add(doc.getString(Emotions.SUGGESTED_ACTIVITIES));
+					}
+					else {
+						String x[] = doc.getString(Emotions.SUGGESTED_ACTIVITIES).split(",");
+						System.out.println("0 : " + x[0]);
+						Collections.addAll(rval, x);
+					}
 				}
 			}
 
-			return emotionsMap.get(emotion);
+			return rval;
 		}catch (NullPointerException npe){
 			npe.printStackTrace();
 			return null;
@@ -702,8 +885,94 @@ public class MongoDBDAO implements DAO {
 
 	}
 
+	@Override
+	public List<FaceItModel> getFaceItChallenges() {
+		try {
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<FaceItModel> faceItMongoCollection =
+					database.getCollection(MongoDBDAO.FACEITCHALLENGES_COLLECTION, FaceItModel.class);
+
+			FindIterable<FaceItModel> challenges = faceItMongoCollection
+					.find();
+
+			List<FaceItModel> faceItchallenges = new ArrayList<>();
+			for (FaceItModel temp : challenges) {
+				System.out.println(temp.getQuestionText());
+				faceItchallenges.add(temp);
+			}
+
+			Collections.shuffle(faceItchallenges);
+			return faceItchallenges;
+		} catch (java.lang.Exception exception) {
+			exception.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public StandUpActivityInstance getActivityStandUpInstanceDAO(String activityInstanceId) {
+		try {
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<StandUpActivityInstance> activityInstanceMongoCollection =
+					database.getCollection(ACTIVITYINSTANCES_COLLECTION, StandUpActivityInstance.class);
+
+			StandUpActivityInstance instance = activityInstanceMongoCollection
+					.find(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId))
+					.projection(Projections.excludeId())
+					.first();
+
+			List<StandUpSituation> situations = getStandUpSituations();
+			instance.setSituations(situations);
+
+			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
+			System.out.println(instance);
+			return instance ;
+		} catch (NullPointerException ne) {
+			System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCE WITH ID " + activityInstanceId);
+			ne.printStackTrace();
+			return (StandUpActivityInstance) NullObjects.getNullActivityInstance();
+		} catch (Exception e) {
+			System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
+	@Override
+	public List<StandUpSituation> getStandUpSituations() {
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<StandUpSituation> situationMongoCollection =
+					database.getCollection(MongoDBDAO.STANDUPSITUATIONS_COLLECTION, StandUpSituation.class);
+
+			//Code to randomly get a situation from the database
+			AggregateIterable<StandUpSituation> situations = situationMongoCollection
+					.aggregate(Arrays.asList(Aggregates.sample(1)));
+
+			StandUpSituation situation = null;
+			for(StandUpSituation temp : situations){
+				situation = temp;
+			}
+			
+			List<StandUpSituation> standUpSituations = new ArrayList<>();
+			standUpSituations.add(situation);
+
+			return standUpSituations;
+		}catch (NullPointerException ne){
+			System.out.println("Could not get random make believe situation");
+			ne.printStackTrace();
+			return null;
+		}catch (Exception e){
+			System.out.println("Some problem in getting Make believe situation");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+
 }
 
-enum Emotions{
-	happy, sad, sick, scared, worried, angry
-}
+//enum Emotions{
+//	happy, sad, sick, scared, worried, angry
+//}
