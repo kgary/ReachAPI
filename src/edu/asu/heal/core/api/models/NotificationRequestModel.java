@@ -1,5 +1,7 @@
 package edu.asu.heal.core.api.models;
 
+import java.util.ArrayList;
+
 import javax.annotation.Generated;
 import com.fasterxml.jackson.annotation.*;
 
