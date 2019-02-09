@@ -974,40 +974,39 @@ public class MongoDBDAO implements DAO {
 	}
 	
 	@Override
-	public int getReleasedBlobTricksDAO(int patientPin) {
-		int rval = 0;
+	public BlobTricks getReleasedBlobTricksDAO(int patientPin) {
 		try{
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+
 			MongoCollection<BlobTricks> blobTricksCollection =
-					database.getCollection(MongoDBDAO.BLOB_COLLECTION,BlobTricks.class);
-			BlobTricks result =	blobTricksCollection.find(Filters.eq("patientPin",patientPin)).first();
-			rval = result.getCount();
-			System.out.println("Mongo : count : " + rval);
-			return rval;
+					database.getCollection(BLOB_COLLECTION,BlobTricks.class);
+
+			return blobTricksCollection
+					.find(Filters.eq("patientPin",patientPin))
+					.projection(Projections.excludeId())
+					.first();
 			
 		}catch (NullPointerException ne){
 			System.out.println("Could not get random make believe situation");
 			ne.printStackTrace();
-			return rval;
+			return null;
 		}catch (Exception e){
 			System.out.println("Some problem in getting Make believe situation");
 			e.printStackTrace();
-			return rval;
+			return null;
 		}	
 	}
 	
 	@Override
-	public void updateBlobTrickCountDAO(int patientPin,int count) {
-		System.out.println("Mongo update : " + count);
+	public void updateBlobTrickCountDAO(BlobTricks blobTricks) {
 		try {
 		MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+
 		MongoCollection<BlobTricks> blobTricksCollection =
 				database.getCollection(MongoDBDAO.BLOB_COLLECTION,BlobTricks.class);
-		BlobTricks blob = new BlobTricks();
-		blob.setCount(count);
-		blob.setPatientPin(patientPin);
-		
-		blobTricksCollection.replaceOne(Filters.eq("patientPin", patientPin), blob);
+
+		blobTricksCollection.findOneAndReplace(Filters.eq("patientPin",blobTricks.getPatientPin()),blobTricks);
+
 		}
 		catch(Exception e) {
 			e.printStackTrace();
