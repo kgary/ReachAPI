@@ -1,8 +1,10 @@
-package edu.asu.heal.reachv3.api.service.schedule;
+package edu.asu.heal.reachv3.api.models.schedule;
 
 import java.util.ArrayList;
 
-public class DailyDiaryJSON {
+public class ActivityScheduleJSON {
+
+	private String activity;
 	private int score;
 	private ArrayList<AvailableTime> availableTime;
 	private int levelofSkillPersonalization;
@@ -12,10 +14,11 @@ public class DailyDiaryJSON {
 	private int actualCount;
 	private boolean isDailyActivity;
 	private UIPersonalizationFile fileNameForUIPersonalization;
-	private ArrayList<String> activityInstanceId;
+	private ArrayList<String> activityInstancesIds;
 	private int levelOfUIPersonalization;
-	
-	public DailyDiaryJSON() {		
+
+	public ActivityScheduleJSON() {
+		this.activity = "";
 		this.score=0;
 		this.levelofSkillPersonalization=0;
 		this.minimumCount0=1;
@@ -26,8 +29,8 @@ public class DailyDiaryJSON {
 		this.availableTime = new ArrayList<AvailableTime>();
 		this.fileNameForUIPersonalization = new UIPersonalizationFile();
 		this.levelOfUIPersonalization=0;
-		this.activityInstanceId = new ArrayList<String>();	
-		
+		this.activityInstancesIds = new ArrayList<String>();
+
 	}
 
 	public int getScore() {
@@ -102,12 +105,12 @@ public class DailyDiaryJSON {
 		this.fileNameForUIPersonalization = fileNameForUIPersonalization;
 	}
 
-	public ArrayList<String> getActivityInstanceId() {
-		return activityInstanceId;
+	public ArrayList<String> getActivityInstancesIds() {
+		return activityInstancesIds;
 	}
 
-	public void setActivityInstanceId(ArrayList<String> activityInstanceId) {
-		this.activityInstanceId = activityInstanceId;
+	public void setActivityInstancesIds(ArrayList<String> activityInstancesIds) {
+		this.activityInstancesIds = activityInstancesIds;
 	}
 
 	public int getLevelOfUIPersonalization() {
@@ -117,5 +120,31 @@ public class DailyDiaryJSON {
 	public void setLevelOfUIPersonalization(int levelOfUIPersonalization) {
 		this.levelOfUIPersonalization = levelOfUIPersonalization;
 	}
-	
+
+	public String getActivity() {
+		return activity;
+	}
+
+	public void setActivity(String activity) {
+		this.activity = activity;
+	}
+
+
+	@Override
+	public String toString() {
+		return "ActivityScheduleJSON{" +
+				", activity='" + activity + '\'' +
+				", score=" + score +
+				", availableTime=" + availableTime.toString() +
+				", levelofSkillPersonalization=" + levelofSkillPersonalization +
+				", minimumCount0=" + minimumCount0 +
+				", minimumCount1=" + minimumCount1 +
+				", minimumCount2=" + minimumCount2 +
+				", actualCount=" + actualCount +
+				", isDailyActivity='" + isDailyActivity + '\'' +
+				", fileNameForUIPersonalization='" + fileNameForUIPersonalization.toString() + '\'' +
+				", activityInstancesIds='" + activityInstancesIds.toString() + '\'' +
+				", levelOfUIPersonalization='" + levelOfUIPersonalization + '\'' +
+				'}';
+	}
 }

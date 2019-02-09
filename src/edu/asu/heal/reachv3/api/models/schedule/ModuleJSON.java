@@ -1,5 +1,6 @@
-package edu.asu.heal.reachv3.api.service.schedule;
+package edu.asu.heal.reachv3.api.models.schedule;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class ModuleJSON {
@@ -7,7 +8,7 @@ public class ModuleJSON {
 	private String module;
 	private Date startDate;
 	private Date endDate;
-	private ScheduleArrayJSON schedule;
+	private ArrayList<ScheduleArrayJSON> schedule;
 	
 	public ModuleJSON() {
 		
@@ -37,12 +38,22 @@ public class ModuleJSON {
 		this.endDate = endDate;
 	}
 
-	public ScheduleArrayJSON getSchedule() {
+	public ArrayList<ScheduleArrayJSON> getSchedule() {
 		return schedule;
 	}
 
-	public void setSchedule(ScheduleArrayJSON schedule) {
+	public void setSchedule(ArrayList<ScheduleArrayJSON> schedule) {
 		this.schedule = schedule;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "ModuleJSON{" +
+				", module='" + module + '\'' +
+				", startDate=" + startDate +
+				", endDate=" + endDate +
+				", schedule=" + schedule.toString() +
+				'}';
+	}
+
 }

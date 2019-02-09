@@ -1,4 +1,4 @@
-package edu.asu.heal.reachv3.api.service.schedule;
+package edu.asu.heal.reachv3.api.models.schedule;
 
 public class UIPersonalizationFile {
 
@@ -26,4 +26,13 @@ public class UIPersonalizationFile {
 	public void setLevel_2(String level_2) {
 		this.level_2 = level_2;
 	}
+
+	@Override
+	public String toString() {
+		return "UIPersonalizationFile{" +
+				", level_1='" + level_1 + '\'' +
+				", level_2=" + level_2 +
+				'}';
+	}
+
 }

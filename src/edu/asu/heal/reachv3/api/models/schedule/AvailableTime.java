@@ -1,4 +1,4 @@
-package edu.asu.heal.reachv3.api.service.schedule;
+package edu.asu.heal.reachv3.api.models.schedule;
 
 public class AvailableTime {
 
@@ -27,6 +27,12 @@ public class AvailableTime {
 	public void setFrom(int from) {
 		this.from = from;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "AvailableTime{" +
+				", to='" + to + '\'' +
+				", from=" + from +
+				'}';
+	}
 }
