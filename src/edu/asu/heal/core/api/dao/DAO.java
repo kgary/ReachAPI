@@ -92,5 +92,9 @@ public interface DAO {
     List<WorryHeadsSituation> getAllWorryHeadsSituations();
 
 	WorryHeadsActivityInstance getActivityWorryHeadsInstanceDAO(String activityInstanceId);
+	
+	int getReleasedBlobTricksDAO(int patientPin);
+	
+	void updateBlobTrickCountDAO(int patientPin, int count);
 
 }

@@ -28,17 +28,36 @@ import edu.asu.heal.reachv3.api.models.FaceitActivityInstance;
 import edu.asu.heal.reachv3.api.models.WorryHeadsActivityInstance;
 import edu.asu.heal.reachv3.api.models.WorryHeadsSituation;
 
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.Random;
 
 public class ReachService implements HealService {
 
 	private static final String DATE_FORMAT = "MM/dd/yyyy";
+	private static String days;
+	
+	static {
+		Properties _properties = new Properties();
+	        try {
+	            InputStream propFile = ReachService.class.getResourceAsStream("days.properties");
+	            _properties.load(propFile);
+	            propFile.close();
+
+	            days = _properties.getProperty("day.list");
+	            
+	        }catch(Exception e) {
+	        	e.printStackTrace();
+	        }
+
+	}
+	
 
 	/****************************************  Service methods for Activity  ******************************************/
 	@Override
@@ -625,4 +644,27 @@ public class ReachService implements HealService {
 		}
 	}
 
+	public int getReleasedBlobTricks(int patientPin) {
+		try {
+		Date today = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+		String day = sdf.format(today);
+		System.out.println("Current Day : " + day);
+		System.out.println("Days :" + days);
+		DAO dao = DAOFactory.getTheDAO();
+		int currVal = dao.getReleasedBlobTricksDAO(patientPin);
+		System.out.println("CurrVal : " + currVal);
+		if(days.contains(day)) {
+			currVal++;
+			System.out.println("Day matched...");
+			System.out.println(currVal);
+			dao.updateBlobTrickCountDAO(patientPin,currVal);
+		}
+		return currVal;
+		}catch(Exception e) {
+			
+			return 0;
+		}
+		
+	}
 }

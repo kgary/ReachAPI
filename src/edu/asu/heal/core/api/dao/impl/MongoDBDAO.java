@@ -18,6 +18,7 @@ import com.mongodb.client.model.Projections;
 import com.mongodb.client.FindIterable;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.models.*;
+import edu.asu.heal.reachv3.api.models.BlobTricks;
 import edu.asu.heal.reachv3.api.models.Emotions;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
@@ -56,6 +57,8 @@ public class MongoDBDAO implements DAO {
 	private static final String STANDUPSITUATIONS_COLLECTION = "standUpSituations";
 	private static final String LOGGER_COLLECTION = "logger";
 	private static final String EMOTIONS_COLLECTION = "emotions";
+	private static final String BLOB_COLLECTION = "blobtricks";
+	
 
 	private static String __mongoDBName;
 	private static String __mongoURI;
@@ -970,6 +973,46 @@ public class MongoDBDAO implements DAO {
 		}
 	}
 	
+	@Override
+	public int getReleasedBlobTricksDAO(int patientPin) {
+		int rval = 0;
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<BlobTricks> blobTricksCollection =
+					database.getCollection(MongoDBDAO.BLOB_COLLECTION,BlobTricks.class);
+			BlobTricks result =	blobTricksCollection.find(Filters.eq("patientPin",patientPin)).first();
+			rval = result.getCount();
+			System.out.println("Mongo : count : " + rval);
+			return rval;
+			
+		}catch (NullPointerException ne){
+			System.out.println("Could not get random make believe situation");
+			ne.printStackTrace();
+			return rval;
+		}catch (Exception e){
+			System.out.println("Some problem in getting Make believe situation");
+			e.printStackTrace();
+			return rval;
+		}	
+	}
+	
+	@Override
+	public void updateBlobTrickCountDAO(int patientPin,int count) {
+		System.out.println("Mongo update : " + count);
+		try {
+		MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+		MongoCollection<BlobTricks> blobTricksCollection =
+				database.getCollection(MongoDBDAO.BLOB_COLLECTION,BlobTricks.class);
+		BlobTricks blob = new BlobTricks();
+		blob.setCount(count);
+		blob.setPatientPin(patientPin);
+		
+		blobTricksCollection.replaceOne(Filters.eq("patientPin", patientPin), blob);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }
 
