@@ -27,6 +27,7 @@ import edu.asu.heal.reachv3.api.models.FaceItModel;
 import edu.asu.heal.reachv3.api.models.FaceitActivityInstance;
 import edu.asu.heal.reachv3.api.models.WorryHeadsActivityInstance;
 import edu.asu.heal.reachv3.api.models.WorryHeadsSituation;
+import edu.asu.heal.reachv3.api.service.schedule.MainSchedule;
 
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
@@ -450,6 +451,12 @@ public class ReachService implements HealService {
 	public Patient createPatient(String trialId) {
 		try {
 			DAO dao = DAOFactory.getTheDAO();
+			MainSchedule schedule = new MainSchedule();
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(schedule);
+			System.out.println("Schedule JSON is : " );
+			System.out.println("-------------------------");
+			System.out.println(json);
 			return dao.createPatient(trialId);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -624,5 +631,5 @@ public class ReachService implements HealService {
 			exception.printStackTrace();
 		}
 	}
-
+	
 }
