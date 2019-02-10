@@ -993,7 +993,8 @@ public class MongoDBDAO implements DAO {
 	}
 
 	@Override
-	public boolean updateLevelOfUIPersonalization(int patientPin, Integer module, Integer day, int indexOfActivity, int levelOfUIPersonalization) {
+	public boolean updateLevelOfUIPersonalization(int patientPin, Integer module, Integer day, int indexOfActivity,
+												  int levelOfUIPersonalization) {
 		try{
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
 
@@ -1004,9 +1005,11 @@ public class MongoDBDAO implements DAO {
 					.find(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin))
 					.projection(Projections.excludeId())
 					.first();
-			patientScheduleJSON.getSchedule().get(module).getSchedule().get(day).getActivitySchedule().get(indexOfActivity).setLevelOfUIPersonalization(levelOfUIPersonalization);
+			patientScheduleJSON.getSchedule().get(module).getSchedule().get(day).getActivitySchedule()
+					.get(indexOfActivity).setLevelOfUIPersonalization(levelOfUIPersonalization);
 
-			scheduleMongoCollection.findOneAndReplace(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin), patientScheduleJSON);
+			scheduleMongoCollection.findOneAndReplace(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin),
+					patientScheduleJSON);
 
 			return true;
 		}catch (NullPointerException ne){

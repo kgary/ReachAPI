@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.org.apache.xalan.internal.xsltc.dom.ArrayNodeListIterator;
 
 import edu.asu.heal.reachv3.api.models.schedule.ActivityScheduleJSON;
 import edu.asu.heal.reachv3.api.models.schedule.AvailableTime;
@@ -12,12 +11,6 @@ import edu.asu.heal.reachv3.api.models.schedule.ModuleJSON;
 import edu.asu.heal.reachv3.api.models.schedule.PatientScheduleJSON;
 import edu.asu.heal.reachv3.api.models.schedule.ScheduleArrayJSON;
 import edu.asu.heal.reachv3.api.notification.INotificationInterface;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOFactory;
@@ -151,6 +144,7 @@ public class ReachService implements HealService {
 		List<ActivityInstance> response = null;
 		try {
 			DAO dao = DAOFactory.getTheDAO();
+			System.out.println(dao);
 			List<ActivityInstance> instances = dao.getScheduledActivities(patientPin);
 
 			return instances;
@@ -680,7 +674,7 @@ public class ReachService implements HealService {
 												if(dao.updateLevelOfUIPersonalization(patientPin, module, dayOfModule, indexOfActivity, 1))
 													System.out.println("Update successful");
 												else 
-													System.out.println("Update failed.");
+													System.out.println("Update failed.");	//May need to do something here. Also, add to logs - Vishakha
 											}
 											else {
 												System.out.println("Notification class not set for level 1.");
@@ -691,7 +685,8 @@ public class ReachService implements HealService {
 											// Do nothing
 										}
 									}else if(notDoneDays >= (moduleLen-l2_min) && notDoneDays <=moduleLen-l2_max) {
-										if(activity.getLevelOfUIPersonalization() == 1) {
+										//not necessarily we sent the L1 on that day. Could have been sent on previous day so check if L2 sent on same day
+										if(activity.getLevelOfUIPersonalization() != 2) {
 											// Level 2
 											if (l2_class != null) {
 												Class<?> level_2 = Class.forName(l2_class);
