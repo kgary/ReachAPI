@@ -345,7 +345,7 @@ public class ActivityResource {
         }
         return Response.status(response.getStatusCode()).build();
     }
-    
+
 
     /** @apiDefine ActivityNotFoundError
      * @apiError (Error 4xx) {404} NotFound Activity cannot be found
@@ -367,11 +367,8 @@ public class ActivityResource {
      */
     @GET
     @Path("/blobTricks")
-    @QueryParam("patientPin")
     public Response getReleasedBlobTricks(@QueryParam("patientPin") int patientPin) {
-    
-    	int numberOfBlobTrick = ((ReachService) reachService).getReleasedBlobTricks(patientPin);
-   //     List<Activity> activities = reachService.getActivities(domain);
+    	int numberOfBlobTrick = ((ReachService) reachService).getBlobTricks(patientPin);
 
         HEALResponse response;
         HEALResponseBuilder builder;
