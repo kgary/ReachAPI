@@ -76,9 +76,6 @@ public class ActivityInstanceResource {
 					.setServerURI(_uri.getBaseUri().toString())
 					.build();
 		} else {
-				NotificationData notificationData = new NotificationData("Detail textxyz", "Title Hello");
-				//Uncomment this if you want to send a test notification and call this API
-				reachService.sendNotification(notificationData, patientPin);
 				List<ActivityInstance> instances = reachService.getActivityInstances(patientPin);
 				if (instances == null) {
 					response = builder

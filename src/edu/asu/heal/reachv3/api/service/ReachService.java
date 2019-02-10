@@ -4,7 +4,15 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.org.apache.xalan.internal.xsltc.dom.ArrayNodeListIterator;
+
+import edu.asu.heal.reachv3.api.models.schedule.ActivityScheduleJSON;
+import edu.asu.heal.reachv3.api.models.schedule.AvailableTime;
+import edu.asu.heal.reachv3.api.models.schedule.ModuleJSON;
 import edu.asu.heal.reachv3.api.models.schedule.PatientScheduleJSON;
+import edu.asu.heal.reachv3.api.models.schedule.ScheduleArrayJSON;
+import edu.asu.heal.reachv3.api.notification.INotificationInterface;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -23,17 +31,41 @@ import edu.asu.heal.reachv3.api.models.StandUpActivityInstance;
 import edu.asu.heal.reachv3.api.models.FaceitActivityInstance;
 import edu.asu.heal.reachv3.api.models.WorryHeadsActivityInstance;
 
+import java.io.InputStream;
 import java.io.StringWriter;
+import java.lang.reflect.Constructor;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ReachService implements HealService {
 
 	private static final String DATE_FORMAT = "MM/dd/yyyy";
+	private static Properties _properties;
 
+	static {
+		_properties = new Properties();
+		try {
+			InputStream propFile = DAOFactory.class.getResourceAsStream("notificationRule.properties");
+			_properties.load(propFile);
+			propFile.close();
+		} catch (Throwable t) {
+			t.printStackTrace();
+			try {
+				throw new Exception(t);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	/****************************************  Service methods for Activity  ******************************************/
 	@Override
 	public List<Activity> getActivities(String domain) {
@@ -444,12 +476,12 @@ public class ReachService implements HealService {
 	public Patient createPatient(String trialId) {
 		try {
 			DAO dao = DAOFactory.getTheDAO();
-//			MainSchedule schedule = new MainSchedule();
+			//			MainSchedule schedule = new MainSchedule();
 			ObjectMapper mapper = new ObjectMapper();
-//			String json = mapper.writeValueAsString(schedule);
+			//			String json = mapper.writeValueAsString(schedule);
 			System.out.println("Schedule JSON is : " );
 			System.out.println("-------------------------");
-//			System.out.println(json);
+			//			System.out.println(json);
 			return dao.createPatient(trialId);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -568,61 +600,6 @@ public class ReachService implements HealService {
 			return null;
 		}
 	}
-	/****************************************  Notification methods  *************************************************/
-	// Reference 1: http://developine.com/how-to-send-firebase-push-notifications-from-app-server-tutorial/
-	// Reference 2: https://firebase.google.com/docs/cloud-messaging/send-message
-	public void sendNotification(NotificationData data, int patientPin) {
-
-		try {
-			DAO dao = DAOFactory.getTheDAO();
-			DefaultHttpClient httpClient = new DefaultHttpClient();
-			HttpPost postRequest = new HttpPost(
-					"https://fcm.googleapis.com/fcm/send");
-
-			NotificationRequestModel notificationRequestModel = new NotificationRequestModel();
-
-			Patient p = dao.getPatient(patientPin);
-			ArrayList<String> registrationToken = p.getRegistrationToken();
-
-			for(String token : registrationToken ) {
-				notificationRequestModel.setData(data);
-				notificationRequestModel.setTo(token);
-				//            notificationRequestModel.setTo("fxxJWeK-Fo8:APA91bG_-82urLmUgfZwGfY1QA4REuXZzzQojqu9Q4FzUVo3PScT-" +
-				//                    "UFAEK9PSBeb2X6sRQvu6pZYfqRFeY5p3Zv2t0fqFOzFmcMBPx5nRq9GMRFzb-LuselMuS97bbmuVOzlk76_VJVu");
-
-
-				ObjectMapper mapper = new ObjectMapper();
-				String notificationJson = mapper.writeValueAsString(notificationRequestModel);
-
-				StringEntity input = new StringEntity(notificationJson);
-				input.setContentType("application/json");
-				System.out.println(input);
-
-				//TODO: server key of your firebase project goes here in header field.
-				// You can get it from firebase console.
-				postRequest.addHeader("Authorization", "key=AAAAX5CbDOM:APA91bGd_AzSXfn64BsrxT1KEfCnh_yy99lXKPFo7l" +
-						"QUbGqM7tK0YU_YOUUO0X2lpJmMSmVkxZC6JPFkFeC6TimZFg0BsXsutnVhsGM-Ydp2ZFCVswMMnhHrzKbMZpTwKDyZU2XllSZn");
-				postRequest.setEntity(input);
-
-				System.out.println("reques:" + notificationJson);
-
-				HttpResponse response = httpClient.execute(postRequest);
-				if (response.getStatusLine().getStatusCode() != 200) {
-					System.out.println("Unsuccessful");
-					throw new RuntimeException("Failed : HTTP error code : "
-							+ response.getStatusLine().getStatusCode());
-				} else if (response.getStatusLine().getStatusCode() == 200) {
-					System.out.println("Successful");
-					System.out.println("response:" + EntityUtils.toString(response.getEntity()));
-
-				}
-			}
-		} catch (RuntimeException runtimeException) {
-			runtimeException.printStackTrace();
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-	}
 
 
 	/****************************************  Personalization methods  *************************************************/
@@ -643,6 +620,114 @@ public class ReachService implements HealService {
 			DAO dao = DAOFactory.getTheDAO();
 			PatientScheduleJSON patientScheduleJSON = dao.getSchedule(patientPin);
 
+			ArrayList<ModuleJSON> moduleJson = patientScheduleJSON.getSchedule();
+
+			Integer module =-1;
+			Integer dayOfModule =-1;
+			Integer moduleLen=0;
+
+			Date today = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(new Date().toString());
+			DateFormat dateFormat = new SimpleDateFormat("HH");
+			Integer currHour = Integer.valueOf(dateFormat.format(today));
+
+			// create method  to get module and day of module - done
+			HashMap<String, Integer> map = this.getModuleAndDay(moduleJson,today);
+
+			if(map != null) {
+				module = map.get("module");
+				dayOfModule = map.get("day");
+				moduleLen=map.get("moduleLength");
+			}
+
+			if(module ==-1) {
+				// No module selected so no trials for this patient pin
+			}else {
+				if(dayOfModule != 0) {
+
+					ArrayList<ScheduleArrayJSON> schedule = moduleJson.get(module).getSchedule();
+					ArrayList<ActivityScheduleJSON> activityList = schedule.get(dayOfModule).getActivitySchedule();
+					int indexOfActivity =-1;
+					for(ActivityScheduleJSON activity : activityList) {
+						indexOfActivity++;	
+						ArrayList<AvailableTime> time = activity.getAvailableTime();
+						for(AvailableTime t : time) {
+
+							if(currHour >= t.getFrom() && currHour <=t.getTo()) {
+
+								if(activity.getActualCount() < activity.getMinimumCount()) {
+									int notDoneDays = this.getNotDoneDays(schedule,activity.getActivity(),dayOfModule);
+									int l1_min = Integer.parseInt(_properties.getProperty("level_1.minValDivisor"));
+									int l1_max = Integer.parseInt(_properties.getProperty("level_1.maxValSubtrahend"));
+									int l2_min = Integer.parseInt(_properties.getProperty("level_2.minValSubtrahend"));
+									int l2_max = Integer.parseInt(_properties.getProperty("level_2.maxValSubtrahend"));
+
+									String l1_class = _properties.getProperty("level_1.className");
+									String l2_class = _properties.getProperty("level_2.className");
+
+									INotificationInterface notificationClass = null;
+
+									if(notDoneDays > Math.floor(moduleLen/l1_min) && notDoneDays < (moduleLen-l1_max)) {
+										if(activity.getLevelOfUIPersonalization() == 0) {
+											// Level 1 notification					
+											if (l1_class != null) {
+												Class<?> level_1 = Class.forName(l1_class);
+												Constructor<?> constructor = level_1.getConstructor();
+												notificationClass = (INotificationInterface) constructor.newInstance();
+											}
+											if(notificationClass != null) {
+												notificationClass.sendNotification(activity.getActivity(), patientPin, notDoneDays, 1);
+												// Updating level of UI personalization in schedule
+												if(dao.updateLevelOfUIPersonalization(patientPin, module, dayOfModule, indexOfActivity, 1))
+													System.out.println("Update successful");
+												else 
+													System.out.println("Update failed.");
+											}
+											else {
+												System.out.println("Notification class not set for level 1.");
+											}
+											
+										}
+										else {
+											// Do nothing
+										}
+									}else if(notDoneDays >= (moduleLen-l2_min) && notDoneDays <=moduleLen-l2_max) {
+										if(activity.getLevelOfUIPersonalization() == 1) {
+											// Level 2
+											if (l2_class != null) {
+												Class<?> level_2 = Class.forName(l2_class);
+												Constructor<?> constructor = level_2.getConstructor();
+												notificationClass = (INotificationInterface) constructor.newInstance();
+											}
+											if(notificationClass != null) {
+												notificationClass.sendNotification(activity.getActivity(), patientPin, notDoneDays, 2);
+												// Updating level of UI personalization in schedule
+												if(dao.updateLevelOfUIPersonalization(patientPin, module, dayOfModule, indexOfActivity, 2))
+													System.out.println("Update successful");
+												else 
+													System.out.println("Update failed.");
+											}
+											else {
+												System.out.println("Notification class not set for level 2");
+											}
+											// update levelof ui
+										}
+										else {
+											// Do nothing
+										}
+									}
+									// check how many days not done this activity
+									// x>=2 && x<n-1 - L1 -
+									//x >=n-1 -- L2
+									// according to "levelOfUIPersonalization"
+									// update level of ui personl if notification sent
+								}
+							}
+						}
+					}
+				}else {
+					System.out.println("It is day 0.");
+				}
+			}
 
 		} catch (RuntimeException runtimeException) {
 			runtimeException.printStackTrace();
@@ -651,5 +736,64 @@ public class ReachService implements HealService {
 		}
 
 	}
-	
+
+
+	private int getNotDoneDays(ArrayList<ScheduleArrayJSON> schedule, String activity, int dayOfModule) {
+
+		int counter = dayOfModule;
+		int rval =0;
+		while(counter >= 0) {
+			counter--;
+			ScheduleArrayJSON obj = schedule.get(counter);
+			ArrayList<ActivityScheduleJSON> act = obj.getActivitySchedule();
+			for(ActivityScheduleJSON temp : act) {
+				if(temp.getActivity().equals(activity)) {
+					if(temp.getActualCount() >= temp.getMinimumCount()) {
+						return rval;
+					}else if(temp.getActualCount() < temp.getMinimumCount()) {
+						rval++;
+					}
+
+				}
+			}
+		}
+		return rval;
+	}
+
+	private HashMap<String, Integer> getModuleAndDay(ArrayList<ModuleJSON> moduleJson, Date today) {
+		HashMap<String, Integer> rval = new HashMap<String, Integer>();
+		try {
+			for(int i =0; i<moduleJson.size(); i++) {
+
+				Date startDate= new SimpleDateFormat(ReachService.DATE_FORMAT).parse(moduleJson.get(i).getStartDate().toString());
+				Date endDate = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(moduleJson.get(i).getEndDate().toString());
+
+				if(today.compareTo(startDate) >= 0 && today.compareTo(endDate) <=0) {
+
+					rval.put("module", Integer.valueOf(moduleJson.get(i).getModule())-1);
+					long diffTime = today.getTime() - startDate.getTime();
+					Long d = TimeUnit.DAYS.convert(diffTime, TimeUnit.MILLISECONDS);
+					rval.put("day",d.intValue());
+					Long moduleLen =TimeUnit.DAYS.convert(endDate.getTime() - startDate.getTime(),TimeUnit.MILLISECONDS);
+					rval.put("moduleLength", moduleLen.intValue());
+					System.out.println("Map in getModuleAndDay : " + rval);
+					break;
+				}
+
+			}
+
+			return rval;
+		}catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	// Clean this up.
+	@Override
+	public void sendNotification(NotificationData data, int patientPin) {
+		// TODO Auto-generated method stub
+
+	}
+
 }
