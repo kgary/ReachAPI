@@ -10,6 +10,7 @@ import edu.asu.heal.reachv3.api.models.FaceitActivityInstance;
 import edu.asu.heal.reachv3.api.models.FaceItModel;
 import edu.asu.heal.reachv3.api.models.WorryHeadsActivityInstance;
 import edu.asu.heal.reachv3.api.models.WorryHeadsSituation;
+import edu.asu.heal.reachv3.api.models.schedule.PatientScheduleJSON;
 
 import java.util.List;
 
@@ -92,5 +93,7 @@ public interface DAO {
     List<WorryHeadsSituation> getAllWorryHeadsSituations();
 
 	WorryHeadsActivityInstance getActivityWorryHeadsInstanceDAO(String activityInstanceId);
+
+    PatientScheduleJSON getSchedule(int patientPin);
 
 }

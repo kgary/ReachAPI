@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.asu.heal.reachv3.api.models.schedule.PatientScheduleJSON;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -15,18 +16,12 @@ import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.core.api.responses.HEALResponse;
 import edu.asu.heal.core.api.service.HealService;
-import edu.asu.heal.core.api.service.SuggestedActivityiesMappingService.MappingFactory;
-import edu.asu.heal.core.api.service.SuggestedActivityiesMappingService.MappingInterface;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
-import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
 import edu.asu.heal.reachv3.api.models.DailyDiaryActivityInstance;
-import edu.asu.heal.reachv3.api.models.Emotions;
 import edu.asu.heal.reachv3.api.models.SwapActivityInstance;
 import edu.asu.heal.reachv3.api.models.StandUpActivityInstance;
-import edu.asu.heal.reachv3.api.models.FaceItModel;
 import edu.asu.heal.reachv3.api.models.FaceitActivityInstance;
 import edu.asu.heal.reachv3.api.models.WorryHeadsActivityInstance;
-import edu.asu.heal.reachv3.api.models.WorryHeadsSituation;
 
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
@@ -34,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 public class ReachService implements HealService {
 
@@ -455,6 +449,12 @@ public class ReachService implements HealService {
 	public Patient createPatient(String trialId) {
 		try {
 			DAO dao = DAOFactory.getTheDAO();
+//			MainSchedule schedule = new MainSchedule();
+			ObjectMapper mapper = new ObjectMapper();
+//			String json = mapper.writeValueAsString(schedule);
+			System.out.println("Schedule JSON is : " );
+			System.out.println("-------------------------");
+//			System.out.println(json);
 			return dao.createPatient(trialId);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -586,7 +586,6 @@ public class ReachService implements HealService {
 
 			NotificationRequestModel notificationRequestModel = new NotificationRequestModel();
 
-			//TODO: get token from db for pin
 			Patient p = dao.getPatient(patientPin);
 			ArrayList<String> registrationToken = p.getRegistrationToken();
 
@@ -630,4 +629,32 @@ public class ReachService implements HealService {
 		}
 	}
 
+
+	/****************************************  Personalization methods  *************************************************/
+
+	@Override
+	public void personalizeUserExperience(int patientPin) {
+
+		//Fetch schedule for passed pin
+
+		// check available time and current time match?
+
+		// if available time = current time
+		// check status of completion and decide type of notification to be sent
+		// check if notification already sent
+		// if not, then send it
+
+		try {
+			DAO dao = DAOFactory.getTheDAO();
+			PatientScheduleJSON patientScheduleJSON = dao.getSchedule(patientPin);
+
+
+		} catch (RuntimeException runtimeException) {
+			runtimeException.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+
+	}
+	
 }
