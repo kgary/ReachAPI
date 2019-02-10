@@ -42,22 +42,22 @@ public class ReachService implements HealService {
 
 	private static final String DATE_FORMAT = "MM/dd/yyyy";
 	private static String days;
-	
+
 	static {
 		Properties _properties = new Properties();
-	        try {
-	            InputStream propFile = ReachService.class.getResourceAsStream("days.properties");
-	            _properties.load(propFile);
-	            propFile.close();
+		try {
+			InputStream propFile = ReachService.class.getResourceAsStream("days.properties");
+			_properties.load(propFile);
+			propFile.close();
 
-	            days = _properties.getProperty("day.list");
-	            
-	        }catch(Exception e) {
-	        	e.printStackTrace();
-	        }
+			days = _properties.getProperty("day.list");
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 
 	}
-	
+
 
 	/****************************************  Service methods for Activity  ******************************************/
 	@Override
@@ -646,25 +646,31 @@ public class ReachService implements HealService {
 
 	public int getReleasedBlobTricks(int patientPin) {
 		try {
-		Date today = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
-		String day = sdf.format(today);
-		System.out.println("Current Day : " + day);
-		System.out.println("Days :" + days);
-		DAO dao = DAOFactory.getTheDAO();
-		int currVal = dao.getReleasedBlobTricksDAO(patientPin);
-		System.out.println("CurrVal : " + currVal);
-		if(days.contains(day)) {
-			currVal++;
-			System.out.println("Day matched...");
-			System.out.println(currVal);
-			dao.updateBlobTrickCountDAO(patientPin,currVal);
-		}
-		return currVal;
+			Date today = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+			String day = sdf.format(today);
+			DAO dao = DAOFactory.getTheDAO();
+			int currVal = dao.getReleasedBlobTricksDAO(patientPin);
+			return currVal;
 		}catch(Exception e) {
-			
+			e.printStackTrace();
 			return 0;
 		}
-		
+
+	}
+
+	public int updateBlobTricksCount(int patientPin) {
+		try {
+			DAO dao = DAOFactory.getTheDAO();
+			int rval = dao.getReleasedBlobTricksDAO(patientPin);
+			rval++;
+			dao.updateBlobTrickCountDAO(patientPin,rval);
+			return rval;
+		}catch(Exception e) {
+			System.out.println("Issue in updating blobtrick count.");
+			e.printStackTrace();
+			return 0;
+		}
+
 	}
 }
