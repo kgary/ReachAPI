@@ -345,4 +345,43 @@ public class ActivityResource {
         }
         return Response.status(response.getStatusCode()).build();
     }
+
+
+    /** @apiDefine ActivityNotFoundError
+     * @apiError (Error 4xx) {404} NotFound Activity cannot be found
+     * */
+
+    /**
+     * @apiDefine InternalServerError
+     * @apiError (Error 5xx) {500} InternalServerError Something went wrong at server, Please contact the administrator!
+     * */
+
+    /**
+     * @api {get} /activities?domain=domainName Get list of Activities for a given domain
+     * @apiName GetActivities
+     * @apiGroup Activity
+     * @apiParam {String} domain Domain name for which activities are to be fetched. Use "_" in place of space
+     * character. Case sensitive.
+     * @apiUse ActivityNotFoundError
+     * @apiUse InternalServerError
+     */
+    @GET
+    @Path("/blobTricks")
+    public Response getReleasedBlobTricks(@QueryParam("patientPin") int patientPin) {
+    	int numberOfBlobTrick = ((ReachService) reachService).getBlobTricks(patientPin);
+
+        HEALResponse response;
+        HEALResponseBuilder builder;
+        try{
+            builder = new HEALResponseBuilder(ActivityResponse.class);
+        }catch (InstantiationException | IllegalAccessException ie){
+            ie.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+            response = builder
+                    .setStatusCode(Response.Status.OK.getStatusCode())
+                    .setData("{ \"count\" : \""+numberOfBlobTrick +"\"}")
+                    .build();
+        return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
+    }
 }

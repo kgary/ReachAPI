@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import edu.asu.heal.reachv3.api.models.*;
 import edu.asu.heal.reachv3.api.models.schedule.ActivityScheduleJSON;
 import edu.asu.heal.reachv3.api.models.schedule.AvailableTime;
 import edu.asu.heal.reachv3.api.models.schedule.ModuleJSON;
@@ -12,17 +12,19 @@ import edu.asu.heal.reachv3.api.models.schedule.PatientScheduleJSON;
 import edu.asu.heal.reachv3.api.models.schedule.ScheduleArrayJSON;
 import edu.asu.heal.reachv3.api.notification.INotificationInterface;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.core.api.responses.HEALResponse;
 import edu.asu.heal.core.api.service.HealService;
-import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
-import edu.asu.heal.reachv3.api.models.DailyDiaryActivityInstance;
-import edu.asu.heal.reachv3.api.models.SwapActivityInstance;
-import edu.asu.heal.reachv3.api.models.StandUpActivityInstance;
-import edu.asu.heal.reachv3.api.models.FaceitActivityInstance;
-import edu.asu.heal.reachv3.api.models.WorryHeadsActivityInstance;
+import edu.asu.heal.core.api.service.SuggestedActivityiesMappingService.MappingFactory;
+import edu.asu.heal.core.api.service.SuggestedActivityiesMappingService.MappingInterface;
 
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -36,20 +38,23 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.Random;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class ReachService implements HealService {
 
 	private static final String DATE_FORMAT = "MM/dd/yyyy";
-	private static Properties _properties;
+	private static String days;
 
+		private static Properties _properties;
 	static {
 		_properties = new Properties();
 		try {
 			InputStream propFile = DAOFactory.class.getResourceAsStream("notificationRule.properties");
 			_properties.load(propFile);
 			propFile.close();
+			days = _properties.getProperty("blobTricks.day.list");
 		} catch (Throwable t) {
 			t.printStackTrace();
 			try {
@@ -59,6 +64,7 @@ public class ReachService implements HealService {
 			}
 		}
 	}
+
 	/****************************************  Service methods for Activity  ******************************************/
 	@Override
 	public List<Activity> getActivities(String domain) {
@@ -155,8 +161,8 @@ public class ReachService implements HealService {
 		}
 	}
 
-	public String getEmotionsActivityInstance(int patientPin, String emotion, int intensity){
-		try{
+	public String getEmotionsActivityInstance(int patientPin, String emotion, int intensity) {
+		try {
 			DAO dao = DAOFactory.getTheDAO();
 			 MappingInterface mapper = MappingFactory.getTheMapper();
 			  String intensityVal = (String)mapper.intensityMappingToDifficultyLevel(intensity);
@@ -176,7 +182,7 @@ public class ReachService implements HealService {
 			writer.close();
 			return emotionsActivities;
 
-		} catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -193,14 +199,14 @@ public class ReachService implements HealService {
 			String trialTitle = "Compass"; // Refactor : needs to be done in a better way...
 			SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
 			String date = timeStampFormat.format(new Date());
-			Integer ppin= instance.getPatientPin();
-			String metaData = "{ \"activityInstanceId :\" \"" +instance.getActivityInstanceId() +"\" , \"ACTIVITY_INSTANCE_STATE\" : \""+ ActivityInstanceStatus.IN_EXECUTION.status() +"\" } " ;
-			Logger log = new Logger(dao.getTrialIdByTitle(trialTitle),date,"INFO","ACTIVITY_STATE","JSON",
-					instance.getInstanceOf().getName(),ppin.toString(),metaData);
+			Integer ppin = instance.getPatientPin();
+			String metaData = "{ \"activityInstanceId :\" \"" + instance.getActivityInstanceId() + "\" , \"ACTIVITY_INSTANCE_STATE\" : \"" + ActivityInstanceStatus.IN_EXECUTION.status() + "\" } ";
+			Logger log = new Logger(dao.getTrialIdByTitle(trialTitle), date, "INFO", "ACTIVITY_STATE", "JSON",
+					instance.getInstanceOf().getName(), ppin.toString(), metaData);
 
 			ArrayList<Logger> al = new ArrayList<Logger>();
 			al.add(log);
-			Logger[] logs = new Logger[al.size()] ;
+			Logger[] logs = new Logger[al.size()];
 
 			logs = al.toArray(logs);
 			dao.logMessage(logs);
@@ -221,15 +227,15 @@ public class ReachService implements HealService {
 			if (activityInstance.getState() == null) activityInstance.setState(ActivityInstanceStatus.CREATED.status());
 			if (activityInstance.getUpdatedAt() == null) activityInstance.setUpdatedAt(new Date());
 
-			if(activityInstance.getInstanceOf().getName().equals("MakeBelieve")){ //todo need a more elegant way of making the check whether it is of type make believe
+			if (activityInstance.getInstanceOf().getName().equals("MakeBelieve")) { //todo need a more elegant way of making the check whether it is of type make believe
 				activityInstance =
 						new MakeBelieveActivityInstance(activityInstance.getActivityInstanceId(),
 								activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
 								activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
 								activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 								activityInstance.getInstanceOf(), activityInstance.getState(),
-								activityInstance.getPatientPin(), dao.getMakeBelieveSituation(),activityInstance.getActivityGlowing());
-			} else if(activityInstance.getInstanceOf().getName().equals("FaceIt")) {
+								activityInstance.getPatientPin(), dao.getMakeBelieveSituation(), activityInstance.getActivityGlowing());
+			} else if (activityInstance.getInstanceOf().getName().equals("FaceIt")) {
 				activityInstance = new FaceitActivityInstance(
 						activityInstance.getActivityInstanceId(),
 						activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
@@ -237,8 +243,8 @@ public class ReachService implements HealService {
 						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 						activityInstance.getInstanceOf(), activityInstance.getState(),
 						activityInstance.getPatientPin(), dao.getFaceItChallenges(), activityInstance.getActivityGlowing()
-						);
-			}else if(activityInstance.getInstanceOf().getName().equals("DailyDiary")) {
+				);
+			} else if (activityInstance.getInstanceOf().getName().equals("DailyDiary")) {
 				activityInstance = new DailyDiaryActivityInstance(
 						activityInstance.getActivityInstanceId(),
 						activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
@@ -246,16 +252,16 @@ public class ReachService implements HealService {
 						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 						activityInstance.getInstanceOf(), activityInstance.getState(),
 						activityInstance.getPatientPin(), activityInstance.getActivityGlowing()
-						);
-			} else if(activityInstance.getInstanceOf().getName().equals("SWAP")) {
+				);
+			} else if (activityInstance.getInstanceOf().getName().equals("SWAP")) {
 				activityInstance = new SwapActivityInstance(activityInstance.getActivityInstanceId(),
 						activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
 						activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
 						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 						activityInstance.getInstanceOf(), activityInstance.getState(),
 						activityInstance.getPatientPin(), activityInstance.getActivityGlowing()
-						);
-			} else if(activityInstance.getInstanceOf().getName().equals("WorryHeads")){
+				);
+			} else if (activityInstance.getInstanceOf().getName().equals("WorryHeads")) {
 				activityInstance = new WorryHeadsActivityInstance(
 						activityInstance.getActivityInstanceId(),
 						activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
@@ -263,14 +269,14 @@ public class ReachService implements HealService {
 						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 						activityInstance.getInstanceOf(), activityInstance.getState(),
 						activityInstance.getPatientPin(), dao.getAllWorryHeadsSituations(), activityInstance.getActivityGlowing());
-			} else if(activityInstance.getInstanceOf().getName().equals("StandUp")) {
+			} else if (activityInstance.getInstanceOf().getName().equals("StandUp")) {
 				activityInstance = new StandUpActivityInstance(
 						activityInstance.getActivityInstanceId(),
 						activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
 						activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
 						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 						activityInstance.getInstanceOf(), activityInstance.getState(),
-						activityInstance.getPatientPin(), dao.getStandUpSituations(),activityInstance.getActivityGlowing());
+						activityInstance.getPatientPin(), dao.getStandUpSituations(), activityInstance.getActivityGlowing());
 			}
 			ActivityInstance newActivityInstance = dao.createActivityInstance(activityInstance);
 
@@ -280,14 +286,14 @@ public class ReachService implements HealService {
 			String trialTitle = "Compass"; // Refactor : needs to be done in a better way...
 			SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
 			String date = timeStampFormat.format(new Date());
-			Integer ppin= newActivityInstance.getPatientPin();
-			String metaData = "{ \"activityInstanceId :\" \"" +activityInstance.getActivityInstanceId() +"\" , \"ACTIVITY_INSTANCE_STATE\" : \""+ ActivityInstanceStatus.CREATED.status()+"\" } " ;
-			Logger log = new Logger(dao.getTrialIdByTitle(trialTitle),date,"INFO","ACTIVITY_STATE","JSON",
-					activityInstance.getInstanceOf().getName(),ppin.toString(),metaData);
+			Integer ppin = newActivityInstance.getPatientPin();
+			String metaData = "{ \"activityInstanceId :\" \"" + activityInstance.getActivityInstanceId() + "\" , \"ACTIVITY_INSTANCE_STATE\" : \"" + ActivityInstanceStatus.CREATED.status() + "\" } ";
+			Logger log = new Logger(dao.getTrialIdByTitle(trialTitle), date, "INFO", "ACTIVITY_STATE", "JSON",
+					activityInstance.getInstanceOf().getName(), ppin.toString(), metaData);
 
 			ArrayList<Logger> al = new ArrayList<Logger>();
 			al.add(log);
-			Logger[] logs = new Logger[al.size()] ;
+			Logger[] logs = new Logger[al.size()];
 
 			logs = al.toArray(logs);
 			dao.logMessage(logs);
@@ -313,30 +319,30 @@ public class ReachService implements HealService {
 			String activityInstanceType = activityInstanceAsTree.get("instanceOf").get("name").asText();
 
 			ActivityInstance instance;
-			if(activityInstanceType.equals("MakeBelieve")){ // todo Need to find a more elegant way to do this
+			if (activityInstanceType.equals("MakeBelieve")) { // todo Need to find a more elegant way to do this
 				instance = mapper.readValue(requestBody, MakeBelieveActivityInstance.class);
 				instance.setUpdatedAt(new Date());
 
-			}else if(activityInstanceType.equals("FaceIt")){
+			} else if (activityInstanceType.equals("FaceIt")) {
 				instance = mapper.readValue(requestBody, FaceitActivityInstance.class);
 
 				//List<FaceItModel> faceItList=faceItInstance.getFaceItChallenges();
 				//if the size of the faceItList is more than one then that means the payload is improper 
 				//and the error needs to be handled
-				if(dao.updateFaceitActivityInstance(instance)) {
+				if (dao.updateFaceitActivityInstance(instance)) {
 					return instance;
 				}
 				return NullObjects.getNullActivityInstance();
-			}else if(activityInstanceType.equals("DailyDiary")){
+			} else if (activityInstanceType.equals("DailyDiary")) {
 				instance = mapper.readValue(requestBody, DailyDiaryActivityInstance.class);
-				instance.setUpdatedAt(new Date());   	
-			}else if(activityInstanceType.equals("SWAP")){
+				instance.setUpdatedAt(new Date());
+			} else if (activityInstanceType.equals("SWAP")) {
 				instance = mapper.readValue(requestBody, SwapActivityInstance.class);
 				instance.setUpdatedAt(new Date());
-			}else if(activityInstanceType.equals("WorryHeads")){
+			} else if (activityInstanceType.equals("WorryHeads")) {
 				instance = mapper.readValue(requestBody, WorryHeadsActivityInstance.class);
 				instance.setUpdatedAt(new Date());
-			}else if(activityInstanceType.equals("StandUp")){
+			} else if (activityInstanceType.equals("StandUp")) {
 				instance = mapper.readValue(requestBody, StandUpActivityInstance.class);
 				instance.setUpdatedAt(new Date());  
 			}else if(activityInstanceType.equals("Emotion")){
@@ -353,25 +359,25 @@ public class ReachService implements HealService {
 			String trialTitle = "Compass"; // Refactor : needs to be done in a better way...
 			SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
 			String date = timeStampFormat.format(new Date());
-			Integer ppin= instance.getPatientPin();
-			String metaData = "{ \"activityInstanceId :\" \"" +instance.getActivityInstanceId() +"\" , \"ACTIVITY_INSTANCE_STATE\" : \""+ instance.getState() +"\" } " ;
-			Logger log = new Logger(dao.getTrialIdByTitle(trialTitle),date,"INFO","ACTIVITY_STATE","JSON",
-					instance.getInstanceOf().getName(),ppin.toString(),metaData);
+			Integer ppin = instance.getPatientPin();
+			String metaData = "{ \"activityInstanceId :\" \"" + instance.getActivityInstanceId() + "\" , \"ACTIVITY_INSTANCE_STATE\" : \"" + instance.getState() + "\" } ";
+			Logger log = new Logger(dao.getTrialIdByTitle(trialTitle), date, "INFO", "ACTIVITY_STATE", "JSON",
+					instance.getInstanceOf().getName(), ppin.toString(), metaData);
 
 			ArrayList<Logger> al = new ArrayList<Logger>();
 			al.add(log);
-			Logger[] logs = new Logger[al.size()] ;
+			Logger[] logs = new Logger[al.size()];
 
 			logs = al.toArray(logs);
 			dao.logMessage(logs);
 
-			if(dao.updateActivityInstance(instance)){
+			if (dao.updateActivityInstance(instance)) {
 				return instance;
 			}
 			return NullObjects.getNullActivityInstance();
-		} catch (NullPointerException ne){
+		} catch (NullPointerException ne) {
 			return NullObjects.getNullActivityInstance();
-		}catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println("Error from updateActivityInstance() in ReachService");
 			e.printStackTrace();
 			return null;
@@ -521,20 +527,21 @@ public class ReachService implements HealService {
 
 	/****************** Patient DeviceId update ********************************/
 
-	public Patient updatePatientDeviceId(int patientPin , String regiToken) {
+	public Patient updatePatientDeviceId(int patientPin, String regiToken) {
 		try {
 			DAO dao = DAOFactory.getTheDAO();
 
 			Patient p = getPatient(patientPin);
 			p.getRegistrationToken().add(regiToken);
 			return dao.updatePatient(p);
-		}catch(Exception e) {
+		} catch (Exception e) {
 			System.out.println("PROBLEM IN ADDING DEVICE ID TOKEN.");
 			e.printStackTrace();
 			return null;
 		}
 
 	}
+
 	/****************************************  Service methods for Trial  *********************************************/
 
 	@Override
@@ -588,7 +595,7 @@ public class ReachService implements HealService {
 
 	/****************************************  Service methods for Logger *********************************************/
 	@Override
-	public Logger[] logMessage (Logger[] loggerInstance) {
+	public Logger[] logMessage(Logger[] loggerInstance) {
 		try {
 			DAO dao = DAOFactory.getTheDAO();
 
@@ -600,6 +607,11 @@ public class ReachService implements HealService {
 		}
 	}
 
+	/****************************************  Notification methods  *************************************************/
+	// Reference 1: http://developine.com/how-to-send-firebase-push-notifications-from-app-server-tutorial/
+	// Reference 2: https://firebase.google.com/docs/cloud-messaging/send-message
+	public void sendNotification(NotificationData data, int patientPin) {
+	}
 
 	/****************************************  Personalization methods  *************************************************/
 
@@ -789,11 +801,34 @@ public class ReachService implements HealService {
 		}
 	}
 
-	// Clean this up.
-	@Override
-	public void sendNotification(NotificationData data, int patientPin) {
-		// TODO Auto-generated method stub
+	
+	public int getBlobTricks(int patientPin) {
+		try {
+			Date today = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+			String day = sdf.format(today);
+			DAO dao = DAOFactory.getTheDAO();
+			int currVal = dao.getReleasedBlobTricksDAO(patientPin).getCount();
+			return currVal;
+		}catch(Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
 
 	}
 
+	public int updateBlobTricksCount(int patientPin) {
+		try {
+			DAO dao = DAOFactory.getTheDAO();
+			int rval = dao.getReleasedBlobTricksDAO(patientPin).getCount();
+			rval++;
+			BlobTricks  obj = new BlobTricks(patientPin, rval);
+			dao.updateBlobTrickCountDAO(obj);
+			return rval;
+		}catch(Exception e) {
+			System.out.println("Issue in updating blobtrick count.");
+			e.printStackTrace();
+			return 0;
+		}
+	}
 }

@@ -14,6 +14,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.models.*;
+import edu.asu.heal.reachv3.api.models.BlobTricks;
 import edu.asu.heal.reachv3.api.models.Emotions;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
@@ -51,6 +52,8 @@ public class MongoDBDAO implements DAO {
 	private static final String SCHEDULE_COLLECTION = "schedule";
 	private static final String LOGGER_COLLECTION = "logger";
 	private static final String EMOTIONS_COLLECTION = "emotions";
+	private static final String BLOB_COLLECTION = "blobtricks";
+	
 
 	private static String __mongoDBName;
 	private static String __mongoURI;
@@ -962,6 +965,46 @@ public class MongoDBDAO implements DAO {
 			System.out.println("Some problem in getting Make believe situation");
 			e.printStackTrace();
 			return null;
+		}
+	}
+	
+	@Override
+	public BlobTricks getReleasedBlobTricksDAO(int patientPin) {
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+
+			MongoCollection<BlobTricks> blobTricksCollection =
+					database.getCollection(BLOB_COLLECTION,BlobTricks.class);
+
+			return blobTricksCollection
+					.find(Filters.eq("patientPin",patientPin))
+					.projection(Projections.excludeId())
+					.first();
+			
+		}catch (NullPointerException ne){
+			System.out.println("Could not get random make believe situation");
+			ne.printStackTrace();
+			return null;
+		}catch (Exception e){
+			System.out.println("Some problem in getting Make believe situation");
+			e.printStackTrace();
+			return null;
+		}	
+	}
+	
+	@Override
+	public void updateBlobTrickCountDAO(BlobTricks blobTricks) {
+		try {
+		MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+
+		MongoCollection<BlobTricks> blobTricksCollection =
+				database.getCollection(MongoDBDAO.BLOB_COLLECTION,BlobTricks.class);
+
+		blobTricksCollection.findOneAndReplace(Filters.eq("patientPin",blobTricks.getPatientPin()),blobTricks);
+
+		}
+		catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 
