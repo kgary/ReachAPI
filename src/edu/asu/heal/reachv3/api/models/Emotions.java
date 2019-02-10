@@ -13,7 +13,7 @@ public class Emotions extends ActivityInstance{
 	public static String SESSION ="session";
 	//public static String ID=""
 	private String emotionName;
-	private int intensity;
+	private String intensity;
 	private String suggestedActivities;
 	private String session;
 	
@@ -25,7 +25,7 @@ public class Emotions extends ActivityInstance{
 		super(activityInstanceId, createdAt, updatedAt, description, startTime, endTime, 
 	    		 userSubmissionTime, actualSubmissionTime, instanceOf, state, patientPin, isActivityGlowing);
 		this.emotionName=null;
-		this.intensity=0;
+		this.intensity=null;
 		this.suggestedActivities =null;
 		this.session = null;
 	}
@@ -36,10 +36,10 @@ public class Emotions extends ActivityInstance{
 	public void setEmotionName(String emotionName) {
 		this.emotionName = emotionName;
 	}
-	public int getIntensity() {
+	public String getIntensity() {
 		return intensity;
 	}
-	public void setIntensity(int intensity) {
+	public void setIntensity(String intensity) {
 		this.intensity = intensity;
 	}
 	public String getSuggestedActivity() {

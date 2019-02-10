@@ -14,6 +14,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Path("/activityinstances/")
@@ -74,9 +76,6 @@ public class ActivityInstanceResource {
 					.setServerURI(_uri.getBaseUri().toString())
 					.build();
 		} else {
-				NotificationData notificationData = new NotificationData("Detail textxyz", "Title Hello");
-				//Uncomment this if you want to send a test notification and call this API
-				reachService.sendNotification(notificationData, patientPin);
 				List<ActivityInstance> instances = reachService.getActivityInstances(patientPin);
 				if (instances == null) {
 					response = builder
@@ -323,4 +322,5 @@ public class ActivityInstanceResource {
 		return Response.status(response.getStatusCode()).build();
 
 	}
+	
 }

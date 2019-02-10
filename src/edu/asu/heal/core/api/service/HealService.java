@@ -62,5 +62,6 @@ public interface HealService {
     void sendNotification(NotificationData data, int patientPin);
 
     /****************************************  Other Service methods  *************************************************/
+    void personalizeUserExperience(int patientpin);
 
 }

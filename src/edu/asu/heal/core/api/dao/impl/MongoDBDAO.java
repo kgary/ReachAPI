@@ -1,9 +1,6 @@
 package edu.asu.heal.core.api.dao.impl;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.AggregateIterable;
@@ -15,7 +12,6 @@ import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
-import com.mongodb.client.FindIterable;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.reachv3.api.models.BlobTricks;
@@ -23,20 +19,18 @@ import edu.asu.heal.reachv3.api.models.Emotions;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
 import edu.asu.heal.reachv3.api.models.StandUpActivityInstance;
-import edu.asu.heal.reachv3.api.models.StandUpResponse;
 import edu.asu.heal.reachv3.api.models.StandUpSituation;
 import edu.asu.heal.reachv3.api.models.FaceitActivityInstance;
 import edu.asu.heal.reachv3.api.models.FaceItModel;
 import edu.asu.heal.reachv3.api.models.WorryHeadsActivityInstance;
-import edu.asu.heal.reachv3.api.models.WorryHeadsResponse;
 import edu.asu.heal.reachv3.api.models.WorryHeadsSituation;
 
+import edu.asu.heal.reachv3.api.models.schedule.PatientScheduleJSON;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.types.ObjectId;
 
-import java.io.IOException;
 import java.util.*;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -55,6 +49,7 @@ public class MongoDBDAO implements DAO {
 	private static final String FACEITCHALLENGES_COLLECTION = "faceItChallenges";
 	private static final String WORRYHEADSSITUATIONS_COLLECTION = "worryHeadsSituations";
 	private static final String STANDUPSITUATIONS_COLLECTION = "standUpSituations";
+	private static final String SCHEDULE_COLLECTION = "schedule";
 	private static final String LOGGER_COLLECTION = "logger";
 	private static final String EMOTIONS_COLLECTION = "emotions";
 	private static final String BLOB_COLLECTION = "blobtricks";
@@ -972,6 +967,7 @@ public class MongoDBDAO implements DAO {
 			return null;
 		}
 	}
+<<<<<<< HEAD
 	
 	@Override
 	public int getReleasedBlobTricksDAO(int patientPin) {
@@ -1013,7 +1009,66 @@ public class MongoDBDAO implements DAO {
 			e.printStackTrace();
 		}
 	}
+=======
+>>>>>>> aa61592fe67bd0fc567c84d68a2e32f11d636134
 
+
+	@Override
+	public PatientScheduleJSON getSchedule(int patientPin) {
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+
+			MongoCollection<PatientScheduleJSON> scheduleMongoCollection =
+					database.getCollection(SCHEDULE_COLLECTION, PatientScheduleJSON.class);
+
+			PatientScheduleJSON patientScheduleJSON = scheduleMongoCollection
+					.find(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin))
+					.projection(Projections.excludeId())
+					.first();
+
+
+			return patientScheduleJSON;
+		}catch (NullPointerException ne){
+			System.out.println("Error in getting schedule.");
+			ne.printStackTrace();
+			return null;
+		}catch (Exception e){
+			System.out.println("Some problem in getting schedule.");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public boolean updateLevelOfUIPersonalization(int patientPin, Integer module, Integer day, int indexOfActivity,
+												  int levelOfUIPersonalization) {
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+
+			MongoCollection<PatientScheduleJSON> scheduleMongoCollection =
+					database.getCollection(SCHEDULE_COLLECTION, PatientScheduleJSON.class);
+
+			PatientScheduleJSON patientScheduleJSON = scheduleMongoCollection
+					.find(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin))
+					.projection(Projections.excludeId())
+					.first();
+			patientScheduleJSON.getSchedule().get(module).getSchedule().get(day).getActivitySchedule()
+					.get(indexOfActivity).setLevelOfUIPersonalization(levelOfUIPersonalization);
+
+			scheduleMongoCollection.findOneAndReplace(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin),
+					patientScheduleJSON);
+
+			return true;
+		}catch (NullPointerException ne){
+			System.out.println("Error in getting schedule.");
+			ne.printStackTrace();
+			return false;
+		}catch (Exception e){
+			System.out.println("Some problem in getting schedule.");
+			e.printStackTrace();
+			return false;
+		}
+	}
 }
 
 //enum Emotions{

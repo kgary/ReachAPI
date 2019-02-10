@@ -2,6 +2,7 @@ package edu.asu.heal.core.api.models;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 
 public class Patient implements IHealModelType {
 
@@ -23,7 +24,7 @@ public class Patient implements IHealModelType {
     private Date createdAt;
     private Date updatedAt;
     private ArrayList<String> activityInstances = new ArrayList<>();
-    private ArrayList<String> registrationToken = new ArrayList<>();
+    private HashSet<String> registrationToken = new HashSet<String>();
 
     public Patient(){
         // blank constructor
@@ -41,11 +42,11 @@ public class Patient implements IHealModelType {
         this.registrationToken = null; 
     }
 
-    public ArrayList<String> getRegistrationToken() {
+    public HashSet<String> getRegistrationToken() {
 		return registrationToken;
 	}
 
-	public void setRegistrationToken(ArrayList<String> registrationToken) {
+	public void setRegistrationToken(HashSet<String> registrationToken) {
 		this.registrationToken = registrationToken;
 	}
 

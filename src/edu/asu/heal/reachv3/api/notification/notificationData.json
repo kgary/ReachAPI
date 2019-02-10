@@ -1,0 +1,80 @@
+{
+	"Relaxation":{
+		"level_1" : [
+			"Belly breathing for 1 minute can help you relax. Try now?",
+			"Belly breathing will help you control your thoughts. Try it now?",
+			"Belly breathing will cool your body and quiet your anxious thoughts.",
+			"Belly breathing can change your negative thoughts. Try Relax now.",
+			"Heading to bed? Try Belly breathing before you go to sleep."
+		],
+		"level_2" : [
+			"You haven't practiced Belly breathing for past <N> days. Give it a try and get blob trick",
+			"Do you feel tense? Try BB"
+		]
+	},
+	"DailyDiary" :{
+		"level_1":[
+			"Have something on your mind? Share with your friend Blob",
+			"Did anything happen today? Write in your personal journal",
+			"DD can help you become self-aware."
+		],
+		"level_2":[
+			"Writing what happened can help relieve thoughts and anxiety. Try it",
+			"Try DD and boost your confidence. Get a blob trick also."
+		]
+
+	},
+	"SWAP":{
+		"level_1":[
+			"Use SWAP in practice and share with me - Blob",
+			"Did you try SWAP? Write it in your diary.",
+			"Sharing is caring. Share what happened with me. I am here to help."
+		],
+		"level_2":[
+			"P in SWAP is for practice. Did you try it? Share with me.",
+			"Get a bonus trick when you write in your SWAP sheet.",
+			"Do you know SWAP helps you act during Worry? Share what you did."
+		]
+	},
+	"WorryHeads": {
+		"level_1" : [
+			"Trouble with SWAP? Try worryheads and learn.",
+			"Worryheads help you act in different situations. Try now.",
+			"I am not sure what to do in this situation. Can you help? - Blob",
+			"P in SWAP is practice. Keep practicing WH",
+			"Practice WH. you can get it right."
+		],
+		"level_2" : [
+			"I haven't seen you for a while. Try WH",
+			"WH will help you learn what to do in case of worry. Let's try it.",
+			"Get a trick when you complete worryheads."
+		]
+	},
+	"MakeBelieve" :{
+		"level_1" : [
+			"Hey! I have some new Make-Believe situations for you to try. - Blob",
+			"I am having difficulty in starting a conversation. Help me.",
+			"Try these samples to learn more about how's of conversation.",
+			"Try these samples to learn more about when's of conversation.",
+			"I am scared. When should I start a conversation? Can you help? - Blob"
+		],
+		"level_2": [
+			"Try these samples to learn to keep friends by talking.",
+			"Let's practice skills of conversation together. - Blob",
+			"You haven't practiced Make-believe for past <N> days. Give it a try and get blob trick"
+		]
+	},
+	"StandUp":{
+		"level_1":[
+			"Practice SAFE when you complete Stand Up situations.",
+			"It's time to practice SAFE using Stand Up.",
+			"Stand Up helps you practice speaking nicely. Try it now!",
+			"Being assertive is important to stand up for yourself. Let's practice it using Stand Up.",
+			"It is important to speak your mind. Try these sample situations in Stand Up.",
+			"Stand Up will help you learn to use SAFE. Try now!"
+		],
+		"level_2":[
+			"You haven't practiced Standup for past <N> days. Give it a try and get blob trick"
+		]
+	}
+}
