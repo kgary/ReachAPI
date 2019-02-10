@@ -95,5 +95,7 @@ public interface DAO {
 	WorryHeadsActivityInstance getActivityWorryHeadsInstanceDAO(String activityInstanceId);
 
     PatientScheduleJSON getSchedule(int patientPin);
+    
+    boolean updateLevelOfUIPersonalization(int patientPin, Integer module, Integer day, int indexOfActivity, int levelOfUIPersonalization);
 
 }

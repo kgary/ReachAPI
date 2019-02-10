@@ -939,7 +939,7 @@ public class MongoDBDAO implements DAO {
 		try{
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
 			MongoCollection<StandUpSituation> situationMongoCollection =
-					database.getCollection(MongoDBDAO.SCHEDULE_COLLECTION, StandUpSituation.class);
+					database.getCollection(MongoDBDAO.STANDUPSITUATIONS_COLLECTION, StandUpSituation.class);
 
 			//Code to randomly get a situation from the database
 			AggregateIterable<StandUpSituation> situations = situationMongoCollection
@@ -982,16 +982,46 @@ public class MongoDBDAO implements DAO {
 
 			return patientScheduleJSON;
 		}catch (NullPointerException ne){
-			System.out.println("Could not get random make believe situation");
+			System.out.println("Error in getting schedule.");
 			ne.printStackTrace();
 			return null;
 		}catch (Exception e){
-			System.out.println("Some problem in getting Make believe situation");
+			System.out.println("Some problem in getting schedule.");
 			e.printStackTrace();
 			return null;
 		}
 	}
 
+	@Override
+	public boolean updateLevelOfUIPersonalization(int patientPin, Integer module, Integer day, int indexOfActivity,
+												  int levelOfUIPersonalization) {
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+
+			MongoCollection<PatientScheduleJSON> scheduleMongoCollection =
+					database.getCollection(SCHEDULE_COLLECTION, PatientScheduleJSON.class);
+
+			PatientScheduleJSON patientScheduleJSON = scheduleMongoCollection
+					.find(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin))
+					.projection(Projections.excludeId())
+					.first();
+			patientScheduleJSON.getSchedule().get(module).getSchedule().get(day).getActivitySchedule()
+					.get(indexOfActivity).setLevelOfUIPersonalization(levelOfUIPersonalization);
+
+			scheduleMongoCollection.findOneAndReplace(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin),
+					patientScheduleJSON);
+
+			return true;
+		}catch (NullPointerException ne){
+			System.out.println("Error in getting schedule.");
+			ne.printStackTrace();
+			return false;
+		}catch (Exception e){
+			System.out.println("Some problem in getting schedule.");
+			e.printStackTrace();
+			return false;
+		}
+	}
 }
 
 //enum Emotions{

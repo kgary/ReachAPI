@@ -32,6 +32,18 @@ public class ActivityScheduleJSON {
 		this.activityInstancesIds = new ArrayList<String>();
 
 	}
+	
+	public int getMinimumCount() {
+		
+		if(this.levelofSkillPersonalization == 0)
+			return minimumCount0;
+		if(this.levelofSkillPersonalization == 1)
+			return minimumCount1;
+		if(this.levelofSkillPersonalization == 2)
+			return minimumCount2;
+		
+		return minimumCount0;
+	}
 
 	public int getScore() {
 		return score;
