@@ -1,0 +1,1660 @@
+{
+	"pin" : 4011,
+	"schedule" : [
+		{
+			"module" : "1",
+			"startDate" : ISODate("2019-02-06T00:00:03Z"),
+			"endDate" : ISODate("2019-02-08T00:00:03Z"),
+			"schedule" : [
+				{
+					"day" : 0,
+					"activitySchedule" : [
+						{	"activity" : "Relaxation",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "DailyDiary",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "Emotions",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						}
+					]
+				},
+				{
+					"day" : 1,
+					"activitySchedule" : [
+						{	"activity" : "Relaxation",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "DailyDiary",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 22,
+									"to" : 23
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "Emotions",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						}
+					]
+				},
+				{
+					"day" : 2,
+					"activitySchedule" : [
+						{	"activity" : "Relaxation",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "DailyDiary",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 22,
+									"to" : 23
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "Emotions",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						}
+					]
+				}
+			]
+		},
+		{
+			"module" : "2",
+			"startDate" : ISODate("2019-02-09T00:00:03Z"),
+			"endDate" : ISODate("2019-02-11T00:00:03Z"),
+			"schedule" : [
+				{
+					"day" : 0,
+					"activitySchedule" : [
+						{	"activity" : "Relaxation",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "DailyDiary",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 1,
+							"minimumCount1" : 1,
+							"minimumCount2" : 1,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 22,
+									"to" : 23
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "Emotions",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "WorryHeads",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 5,
+							"minimumCount1" : 8,
+							"minimumCount2" : 10,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "SWAP",
+							"isDailyActivity" : "false",
+							"minimumCount0" : 2,
+							"minimumCount1" : 3,
+							"minimumCount2" : 3,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						}
+					]
+				},
+				{
+					"day" : 1,
+					"activitySchedule" : [
+						{	"activity" : "Relaxation",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "DailyDiary",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 1,
+							"minimumCount1" : 1,
+							"minimumCount2" : 1,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 22,
+									"to" : 23
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "Emotions",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "WorryHeads",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 5,
+							"minimumCount1" : 8,
+							"minimumCount2" : 10,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "SWAP",
+							"isDailyActivity" : "false",
+							"minimumCount0" : 2,
+							"minimumCount1" : 3,
+							"minimumCount2" : 3,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						}
+					]
+				},
+				{
+					"day" : 2,
+					"activitySchedule" : [
+						{	"activity" : "Relaxation",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "DailyDiary",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 1,
+							"minimumCount1" : 1,
+							"minimumCount2" : 1,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 22,
+									"to" : 23
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "Emotions",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "WorryHeads",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 5,
+							"minimumCount1" : 8,
+							"minimumCount2" : 10,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "SWAP",
+							"isDailyActivity" : "false",
+							"minimumCount0" : 2,
+							"minimumCount1" : 3,
+							"minimumCount2" : 3,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						}
+					]
+				}
+			]
+		},
+		{
+			"module" : "3",
+			"startDate" : ISODate("2019-02-12T00:00:03Z"),
+			"endDate" : ISODate("2019-02-14T00:00:03Z"),
+			"schedule" : [
+				{
+					"day" : 0,
+					"activitySchedule" : [
+						{	"activity" : "Relaxation",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "DailyDiary",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 1,
+							"minimumCount1" : 1,
+							"minimumCount2" : 1,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 22,
+									"to" : 23
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "Emotions",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "WorryHeads",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 5,
+							"minimumCount1" : 8,
+							"minimumCount2" : 10,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "SWAP",
+							"isDailyActivity" : "false",
+							"minimumCount0" : 2,
+							"minimumCount1" : 3,
+							"minimumCount2" : 3,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "MakeBelieve",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 5,
+							"minimumCount1" : 8,
+							"minimumCount2" : 10,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						}
+					]
+				},
+				{
+					"day" : 1,
+					"activitySchedule" : [
+						{	"activity" : "Relaxation",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "DailyDiary",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 1,
+							"minimumCount1" : 1,
+							"minimumCount2" : 1,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 22,
+									"to" : 23
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "Emotions",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "WorryHeads",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 5,
+							"minimumCount1" : 8,
+							"minimumCount2" : 10,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "SWAP",
+							"isDailyActivity" : "false",
+							"minimumCount0" : 2,
+							"minimumCount1" : 3,
+							"minimumCount2" : 3,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "MakeBelieve",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 5,
+							"minimumCount1" : 8,
+							"minimumCount2" : 10,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						}
+					]
+				},
+				{
+					"day" : 2,
+					"activitySchedule" : [
+						{	"activity" : "Relaxation",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "DailyDiary",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 1,
+							"minimumCount1" : 1,
+							"minimumCount2" : 1,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 22,
+									"to" : 23
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "Emotions",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "WorryHeads",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 5,
+							"minimumCount1" : 8,
+							"minimumCount2" : 10,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "SWAP",
+							"isDailyActivity" : "false",
+							"minimumCount0" : 2,
+							"minimumCount1" : 3,
+							"minimumCount2" : 3,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "MakeBelieve",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 5,
+							"minimumCount1" : 8,
+							"minimumCount2" : 10,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						}
+					]
+				}
+			]
+		},
+		{
+			"module" : "4",
+			"startDate" : ISODate("2019-02-15T00:00:03Z"),
+			"endDate" : ISODate("2019-02-16T00:00:03Z"),
+			"schedule" : [
+				{
+					"day" : 0,
+					"activitySchedule" : [
+						{	"activity" : "Relaxation",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "DailyDiary",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 1,
+							"minimumCount1" : 1,
+							"minimumCount2" : 1,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 22,
+									"to" : 23
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "Emotions",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "WorryHeads",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 5,
+							"minimumCount1" : 8,
+							"minimumCount2" : 10,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "SWAP",
+							"isDailyActivity" : "false",
+							"minimumCount0" : 2,
+							"minimumCount1" : 3,
+							"minimumCount2" : 3,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "MakeBelieve",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 5,
+							"minimumCount1" : 8,
+							"minimumCount2" : 10,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "StandUp",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 5,
+							"minimumCount1" : 8,
+							"minimumCount2" : 10,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						}
+					]
+				},
+				{
+					"day" : 1,
+					"activitySchedule" : [
+						{	"activity" : "Relaxation",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "DailyDiary",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 1,
+							"minimumCount1" : 1,
+							"minimumCount2" : 1,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 22,
+									"to" : 23
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "Emotions",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "WorryHeads",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 5,
+							"minimumCount1" : 8,
+							"minimumCount2" : 10,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "SWAP",
+							"isDailyActivity" : "false",
+							"minimumCount0" : 2,
+							"minimumCount1" : 3,
+							"minimumCount2" : 3,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "MakeBelieve",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 5,
+							"minimumCount1" : 8,
+							"minimumCount2" : 10,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "StandUp",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 5,
+							"minimumCount1" : 8,
+							"minimumCount2" : 10,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 13,
+									"to" : 18
+								},
+								{
+									"from" : 19,
+									"to" : 22
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						}
+					]
+				}
+			]
+		},
+		{
+			"module" : "5",
+			"startDate" : ISODate("2019-02-17T00:00:03Z"),
+			"endDate" : ISODate("2019-02-17T00:00:03Z"),
+			"schedule" : [
+				{
+					"day" : 0,
+					"activitySchedule" : [
+						{	"activity" : "Relaxation",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "DailyDiary",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 1,
+							"minimumCount1" : 1,
+							"minimumCount2" : 1,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "Emotions",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "WorryHeads",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 5,
+							"minimumCount1" : 8,
+							"minimumCount2" : 10,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "SWAP",
+							"isDailyActivity" : "false",
+							"minimumCount0" : 2,
+							"minimumCount1" : 3,
+							"minimumCount2" : 3,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "MakeBelieve",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 5,
+							"minimumCount1" : 8,
+							"minimumCount2" : 10,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "StandUp",
+							"isDailyActivity" : "true",
+							"minimumCount0" : 5,
+							"minimumCount1" : 8,
+							"minimumCount2" : 10,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						},
+						{	"activity" : "FaceIt",
+							"isDailyActivity" : "false",
+							"minimumCount0" : 0,
+							"minimumCount1" : 0,
+							"minimumCount2" : 0,
+							"actualCount" : 0,
+							"score" : 0,
+							"availableTime" : [
+								{
+									"from" : 9,
+									"to" : 10
+								},
+								{
+									"from" : 18,
+									"to" : 20
+								}
+							],
+							"levelOfUIPersonalization" : 0,
+							"fileNameForUIPersonalization" : {
+								"level_1" : "<PATH TO THE FILE IN RESOURCE>",
+								"level_2" : "<PATH TO THE FILE IN RESOURCE>"
+							},
+							"levelofSkillPersonalization" : 0,
+							"activityInstancesIds" : [ ]
+						}
+					]
+				}
+			]
+		}
+	]
+}
