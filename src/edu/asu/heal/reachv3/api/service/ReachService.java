@@ -43,6 +43,23 @@ public class ReachService implements HealService {
 	private static String MODULE="module";
 	private static String DAY="day";
 	private static String MODULE_LENGTH="moduleLength";
+	private static String UI_L1_MIN = "level_1.minValDivisor";
+	private static String UI_L1_MAX = "level_1.maxValSubtrahend";
+	private static String UI_L2_MIN = "level_2.minValSubtrahend";
+	private static String UI_L2_MAX = "level_2.maxValSubtrahend";
+	private static String BLOB_TRICKS_DAYS = "blobTricks.day.list";
+	private static String SKILL_WH_L1_MIN = "WorryHeads.skill_level_1_min";
+	private static String SKILL_WH_L1_MAX = "WorryHeads.skill_level_1_max";
+	private static String SKILL_WH_L2_MIN = "WorryHeads.skill_level_2_min";
+	private static String SKILL_WH_L2_MAX = "WorryHeads.skill_level_2_max";
+	private static String SKILL_SU_L1_MIN = "StandUp.skill_level_1_min";
+	private static String SKILL_SU_L1_MAX = "StandUp.skill_level_1_max";
+	private static String SKILL_SU_L2_MIN = "StandUp.skill_level_2_min";
+	private static String SKILL_SU_L2_MAX = "StandUp.skill_level_2_max";
+	private static String SKILL_MB_L1_MIN = "MakeBelieve.skill_level_1_min";
+	private static String SKILL_MB_L1_MAX = "MakeBelieve.skill_level_1_max";
+	private static String SKILL_MB_L2_MIN = "MakeBelieve.skill_level_2_min";
+	private static String SKILL_MB_L2_MAX = "MakeBelieve.skill_level_2_max";
 
 	private static Properties _properties;
 	static {
@@ -51,7 +68,7 @@ public class ReachService implements HealService {
 			InputStream propFile = ReachService.class.getResourceAsStream("notificationRule.properties");
 			_properties.load(propFile);
 			propFile.close();
-			days = _properties.getProperty("blobTricks.day.list");
+			days = _properties.getProperty(BLOB_TRICKS_DAYS);
 		} catch (Throwable t) {
 			t.printStackTrace();
 			try {
@@ -723,10 +740,10 @@ public class ReachService implements HealService {
 								if(activity.getActualCount() < activity.getMinimumCount()) {
 
 									int notDoneDays = this.getNotDoneDays(schedule,activity.getActivity(),dayOfModule);
-									int l1_min = Integer.parseInt(_properties.getProperty("level_1.minValDivisor"));
-									int l1_max = Integer.parseInt(_properties.getProperty("level_1.maxValSubtrahend"));
-									int l2_min = Integer.parseInt(_properties.getProperty("level_2.minValSubtrahend"));
-									int l2_max = Integer.parseInt(_properties.getProperty("level_2.maxValSubtrahend"));
+									int l1_min = Integer.parseInt(_properties.getProperty(UI_L1_MIN));
+									int l1_max = Integer.parseInt(_properties.getProperty(UI_L1_MAX));
+									int l2_min = Integer.parseInt(_properties.getProperty(UI_L2_MIN));
+									int l2_max = Integer.parseInt(_properties.getProperty(UI_L2_MAX));
 
 									String l1_class = _properties.getProperty("level_1.className");
 									String l2_class = _properties.getProperty("level_2.className");
@@ -934,19 +951,36 @@ public class ReachService implements HealService {
 
 				    String activityName = activity.getActivity();
 
+					Integer l1_min = 0, l1_max = 0, l2_min = 0, l2_max = 0;
+
 					if(activityName.equals("WorryHeads") || activityName.equals("StandUp") ||
                             activityName.equals("MakeBelieve")){
 
 						switch (activityName) {
 							case "WorryHeads":
 								resetDate= patientScheduleJSON.getWorryHeadsResetDate();
+								l1_min = Integer.parseInt(_properties.getProperty(SKILL_WH_L1_MIN));
+								l1_max = Integer.parseInt(_properties.getProperty(SKILL_WH_L1_MAX));
+								l2_min = Integer.parseInt(_properties.getProperty(SKILL_WH_L2_MIN));
+								l2_max = Integer.parseInt(_properties.getProperty(SKILL_WH_L2_MAX));
 								break;
 							case "StandUp":
 								resetDate= patientScheduleJSON.getStandUpResetDate();
+								l1_min = Integer.parseInt(_properties.getProperty(SKILL_SU_L1_MIN));
+								l1_max = Integer.parseInt(_properties.getProperty(SKILL_SU_L1_MAX));
+								l2_min = Integer.parseInt(_properties.getProperty(SKILL_SU_L2_MIN));
+								l2_max = Integer.parseInt(_properties.getProperty(SKILL_SU_L2_MAX));
 								break;
 							case "MakeBelieve":
 								resetDate= patientScheduleJSON.getMakeBelieveResetDate();
+								l1_min = Integer.parseInt(_properties.getProperty(SKILL_MB_L1_MIN));
+								l1_max = Integer.parseInt(_properties.getProperty(SKILL_MB_L1_MAX));
+								l2_min = Integer.parseInt(_properties.getProperty(SKILL_MB_L2_MIN));
+								l2_max = Integer.parseInt(_properties.getProperty(SKILL_MB_L2_MAX));
 								break;
+							default:
+								index++;
+								continue;
 
 						}
 
@@ -962,9 +996,8 @@ public class ReachService implements HealService {
                         }
                         ArrayList<ScheduleArrayJSON> currentModuleSchedule = moduleJson.get(currModule).getSchedule();
 
-                        while((currModule > resetModule) || (currModule == resetModule && prevDay >= resetDay)) {//today.compareTo(resetDate) != 0){
+                        while((currModule > resetModule) || (currModule == resetModule && prevDay >= resetDay)) {
 
-//							if(prevDay >= 0) {
                             ArrayList<ActivityScheduleJSON> actList = currentModuleSchedule.get(prevDay)
                                                                             .getActivitySchedule();
 
@@ -979,46 +1012,37 @@ public class ReachService implements HealService {
                                 }
                             }
                             prevDay--;
-//							}else{
                             if (prevDay < 0) {
                                 currModule--;
                                 currentModuleSchedule = moduleJson.get(currModule).getSchedule();
                                 prevDay = currentModuleSchedule.size() - 1;
                             }
 
-                            //You are taking prev day's schedule so use that for checks
-//							Calendar cal =Calendar.getInstance();
-//							cal.setTime(today);
-//							int decrement =-1;
-//							cal.add(Calendar.DATE,decrement);
-//							today = cal.getTime();
-
                         }
 						Double result=0.0;
 						if(totalActtualCount !=0) {
                             result = Double.valueOf((totalScore / totalActtualCount) * 100);
 
-                            Integer l1_min = Integer.parseInt(_properties.getProperty("skill_level_1_min"));
-                            Integer l1_max = Integer.parseInt(_properties.getProperty("skill_level_1_max"));
-                            Integer l2_min = Integer.parseInt(_properties.getProperty("skill_level_2_min"));
-                            Integer l2_max = Integer.parseInt(_properties.getProperty("skill_level_2_max"));
-
-
+							//set levelOfSkillPersonalization to 1
                             if (result >= l1_min && result < l1_max) {
-                                if (dao.updateLevelOfSkillPersonalization(patientPin, module, dayOfModule, index, 2)) {
+                                if (dao.updateLevelOfSkillPersonalization(patientPin, module,
+										dayOfModule, index, 1)) {
+
                                     System.out.println("Skill level updated successfully to level 2");
                                 } else {
                                     System.out.println("Skill level updated FAILED !! to level 2");
                                 }
                                 //set levelOfSkillPersonalization to 2
                             } else if (result >= l2_min && result < l2_max) {
-                                if (dao.updateLevelOfSkillPersonalization(patientPin, module, dayOfModule, index, 2)) {
+                                if (dao.updateLevelOfSkillPersonalization(patientPin, module,
+										dayOfModule, index, 2)) {
+
                                     System.out.println("Skill level updated successfully to level 1");
                                 } else {
                                     System.out.println("Skill level updated FAILED !!! to level 1");
                                 }
 
-                                //set levelOfSkillPersonalization to 1
+
                             }
                         }
 
