@@ -1036,20 +1036,19 @@ public class MongoDBDAO implements DAO {
 	}
 
 	@Override
-	public boolean updateLevelOfUIPersonalization(int patientPin, Integer module, Integer day, int indexOfActivity,
-												  int levelOfUIPersonalization) {
+	public boolean updatePatientSchedule(int patientPin, PatientScheduleJSON patientScheduleJSON) {
 		try{
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
 
 			MongoCollection<PatientScheduleJSON> scheduleMongoCollection =
 					database.getCollection(SCHEDULE_COLLECTION, PatientScheduleJSON.class);
 
-			PatientScheduleJSON patientScheduleJSON = scheduleMongoCollection
-					.find(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin))
-					.projection(Projections.excludeId())
-					.first();
-			patientScheduleJSON.getSchedule().get(module).getSchedule().get(day).getActivitySchedule()
-					.get(indexOfActivity).setLevelOfUIPersonalization(levelOfUIPersonalization);
+//			PatientScheduleJSON patientScheduleJSON = scheduleMongoCollection
+//					.find(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin))
+//					.projection(Projections.excludeId())
+//					.first();
+//			patientScheduleJSON.getSchedule().get(module).getSchedule().get(day).getActivitySchedule()
+//					.get(indexOfActivity).setLevelOfUIPersonalization(levelOfUIPersonalization);
 
 			scheduleMongoCollection.findOneAndReplace(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin),
 					patientScheduleJSON);

@@ -46,8 +46,11 @@ public class ReachService implements HealService {
 
 	private static final String DATE_FORMAT = "MM/dd/yyyy";
 	private static String days;
+	private static String MODULE="module";
+	private static String DAY="day";
+	private static String MODULE_LENGTH="moduleLength";
 
-		private static Properties _properties;
+	private static Properties _properties;
 	static {
 		_properties = new Properties();
 		try {
@@ -164,8 +167,8 @@ public class ReachService implements HealService {
 	public String getEmotionsActivityInstance(int patientPin, String emotion, int intensity) {
 		try {
 			DAO dao = DAOFactory.getTheDAO();
-			 MappingInterface mapper = MappingFactory.getTheMapper();
-			  String intensityVal = (String)mapper.intensityMappingToDifficultyLevel(intensity);
+			MappingInterface mapper = MappingFactory.getTheMapper();
+			String intensityVal = (String)mapper.intensityMappingToDifficultyLevel(intensity);
 			List<String> results = dao.getEmotionsActivityInstance(emotion.toLowerCase(), intensityVal);
 			if(results == null)
 				return "";
@@ -243,7 +246,7 @@ public class ReachService implements HealService {
 						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 						activityInstance.getInstanceOf(), activityInstance.getState(),
 						activityInstance.getPatientPin(), dao.getFaceItChallenges(), activityInstance.getActivityGlowing()
-				);
+						);
 			} else if (activityInstance.getInstanceOf().getName().equals("DailyDiary")) {
 				activityInstance = new DailyDiaryActivityInstance(
 						activityInstance.getActivityInstanceId(),
@@ -252,7 +255,7 @@ public class ReachService implements HealService {
 						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 						activityInstance.getInstanceOf(), activityInstance.getState(),
 						activityInstance.getPatientPin(), activityInstance.getActivityGlowing()
-				);
+						);
 			} else if (activityInstance.getInstanceOf().getName().equals("SWAP")) {
 				activityInstance = new SwapActivityInstance(activityInstance.getActivityInstanceId(),
 						activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
@@ -260,7 +263,7 @@ public class ReachService implements HealService {
 						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 						activityInstance.getInstanceOf(), activityInstance.getState(),
 						activityInstance.getPatientPin(), activityInstance.getActivityGlowing()
-				);
+						);
 			} else if (activityInstance.getInstanceOf().getName().equals("WorryHeads")) {
 				activityInstance = new WorryHeadsActivityInstance(
 						activityInstance.getActivityInstanceId(),
@@ -280,6 +283,33 @@ public class ReachService implements HealService {
 			}
 			ActivityInstance newActivityInstance = dao.createActivityInstance(activityInstance);
 
+			// Code to add AI in patient schedule
+			String activityInstanceId = newActivityInstance.getActivityInstanceId();
+			Integer patientPin = newActivityInstance.getPatientPin();
+
+			PatientScheduleJSON patientSchedule = dao.getSchedule(patientPin);
+			Date today = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(new Date().toString());
+			HashMap<String, Integer> map = getModuleAndDay(patientSchedule.getSchedule(), today);
+			Integer module =-1, dayOfModule =-1, moduleLen =-1;
+			if(map != null) {
+				module = map.get(this.MODULE);
+				dayOfModule=map.get(this.DAY);
+				moduleLen = map.get(this.MODULE_LENGTH);				
+			}
+			if(module != -1) {
+				ScheduleArrayJSON schedule = patientSchedule.getSchedule().get(module).getSchedule().get(dayOfModule);
+				ArrayList<ActivityScheduleJSON> actList = schedule.getActivitySchedule();
+				for(ActivityScheduleJSON obj : actList) {
+					
+					if(obj.getActivity().equals(newActivityInstance.getInstanceOf().getName())) {
+						obj.getActivityInstancesIds().add(activityInstanceId);
+						break;
+					}
+				}
+				dao.updatePatientSchedule(patientPin, patientSchedule);
+			}else {
+				//
+			}
 
 			// Code to log state of activity instance in the Mongo...
 
@@ -645,9 +675,9 @@ public class ReachService implements HealService {
 			HashMap<String, Integer> map = this.getModuleAndDay(moduleJson,today);
 
 			if(map != null) {
-				module = map.get("module");
-				dayOfModule = map.get("day");
-				moduleLen=map.get("moduleLength");
+				module = map.get(this.MODULE);
+				dayOfModule = map.get(this.DAY);
+				moduleLen=map.get(this.MODULE_LENGTH);
 			}
 
 			if(module ==-1) {
@@ -688,7 +718,9 @@ public class ReachService implements HealService {
 											if(notificationClass != null) {
 												notificationClass.sendNotification(activity.getActivity(), patientPin, notDoneDays, 1);
 												// Updating level of UI personalization in schedule
-												if(dao.updateLevelOfUIPersonalization(patientPin, module, dayOfModule, indexOfActivity, 1))
+												patientScheduleJSON.getSchedule().get(module).getSchedule().get(dayOfModule).getActivitySchedule()
+												.get(indexOfActivity).setLevelOfUIPersonalization(1);
+												if(dao.updatePatientSchedule(patientPin, patientScheduleJSON))
 													System.out.println("Update successful");
 												else 
 													System.out.println("Update failed.");	//May need to do something here. Also, add to logs - Vishakha
@@ -696,7 +728,7 @@ public class ReachService implements HealService {
 											else {
 												System.out.println("Notification class not set for level 1.");
 											}
-											
+
 										}
 										else {
 											// Do nothing
@@ -713,7 +745,9 @@ public class ReachService implements HealService {
 											if(notificationClass != null) {
 												notificationClass.sendNotification(activity.getActivity(), patientPin, notDoneDays, 2);
 												// Updating level of UI personalization in schedule
-												if(dao.updateLevelOfUIPersonalization(patientPin, module, dayOfModule, indexOfActivity, 2))
+												patientScheduleJSON.getSchedule().get(module).getSchedule().get(dayOfModule).getActivitySchedule()
+												.get(indexOfActivity).setLevelOfUIPersonalization(2);
+												if(dao.updatePatientSchedule(patientPin, patientScheduleJSON))
 													System.out.println("Update successful");
 												else 
 													System.out.println("Update failed.");
@@ -782,12 +816,12 @@ public class ReachService implements HealService {
 
 				if(today.compareTo(startDate) >= 0 && today.compareTo(endDate) <=0) {
 
-					rval.put("module", Integer.valueOf(moduleJson.get(i).getModule())-1);
+					rval.put(this.MODULE, Integer.valueOf(moduleJson.get(i).getModule())-1);
 					long diffTime = today.getTime() - startDate.getTime();
 					Long d = TimeUnit.DAYS.convert(diffTime, TimeUnit.MILLISECONDS);
-					rval.put("day",d.intValue());
+					rval.put(this.DAY,d.intValue());
 					Long moduleLen =TimeUnit.DAYS.convert(endDate.getTime() - startDate.getTime(),TimeUnit.MILLISECONDS);
-					rval.put("moduleLength", moduleLen.intValue());
+					rval.put(this.MODULE_LENGTH, moduleLen.intValue());
 					System.out.println("Map in getModuleAndDay : " + rval);
 					break;
 				}
@@ -801,7 +835,7 @@ public class ReachService implements HealService {
 		}
 	}
 
-	
+
 	public int getBlobTricks(int patientPin) {
 		try {
 			Date today = new Date();

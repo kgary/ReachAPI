@@ -93,6 +93,6 @@ public interface DAO {
 
     PatientScheduleJSON getSchedule(int patientPin);
     
-    boolean updateLevelOfUIPersonalization(int patientPin, Integer module, Integer day, int indexOfActivity, int levelOfUIPersonalization);
+    boolean updatePatientSchedule(int patientPin, PatientScheduleJSON patientScheduleJSON);
 
 }
