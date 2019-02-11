@@ -15,6 +15,14 @@ public class WorryHeadsActivityInstance extends ActivityInstance {
     public WorryHeadsActivityInstance(List<WorryHeadsSituation> situation ) {
         this.situation = situation;
     }
+    
+    @Override
+    public int getResponseCount() {
+    	if(situation.get(0).getResponses().size()==1)
+    		return 1;
+    	else
+    		return 0;
+    }
 
     public WorryHeadsActivityInstance(String activityInstanceId,
                                       Date createdAt, Date updatedAt, String description, Date startTime,

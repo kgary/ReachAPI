@@ -402,6 +402,33 @@ public class ReachService implements HealService {
 			dao.logMessage(logs);
 
 			if (dao.updateActivityInstance(instance)) {
+				//
+				PatientScheduleJSON patientSchedule = dao.getSchedule(instance.getPatientPin());
+				HashMap<String,Integer> modules = getModuleAndDay(patientSchedule.getSchedule(), new Date());
+				int module = modules.get(this.MODULE);
+				int days = modules.get(this.DAY);
+				int moduleLength = modules.get(this.MODULE_LENGTH);
+				
+				String activityName;
+				ArrayList<ActivityScheduleJSON> activityScheduleJSON = patientSchedule.getSchedule().get(module).getSchedule().get(days).getActivitySchedule();
+				for(int i=0;i<activityScheduleJSON.size();i++) {
+					activityName = activityScheduleJSON.get(i).getActivity();
+					if(instance.getInstanceOf().getName().equals(activityName)) {
+						int score = activityScheduleJSON.get(i).getScore() + instance.getResponseCount();
+						int actualCount = activityScheduleJSON.get(i).getActualCount() + 1;
+						if(dao.updatePatientScoreActualCount(ppin, module, days, i, score, actualCount)) {
+							System.out.println("Update sucessful");
+						}else {
+							System.out.println("Update failed.");
+						}
+						
+					}
+				}
+				
+				//patientSchedule.getSchedule().get(0).getSchedule().get(0).getActivitySchedule().get(0).getScore();
+				
+				
+				//
 				return instance;
 			}
 			return NullObjects.getNullActivityInstance();

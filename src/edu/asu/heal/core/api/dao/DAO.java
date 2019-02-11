@@ -94,5 +94,7 @@ public interface DAO {
     PatientScheduleJSON getSchedule(int patientPin);
     
     boolean updatePatientSchedule(int patientPin, PatientScheduleJSON patientScheduleJSON);
+    
+    boolean updatePatientScoreActualCount(int patientPin, int module, int day, int indexOfActivity,int score, int actualCount);
 
 }

@@ -26,4 +26,12 @@ public class MakeBelieveActivityInstance extends ActivityInstance{
     public void setSituation(MakeBelieveSituation situation) {
         this.situation = situation;
     }
+    
+    public int getResponseCount() {
+    	
+    	if((situation.getQuestions().get(0).getResponses().size() == 1) && (situation.getQuestions().get(1).getResponses().size() == 1))
+    		return 1;
+    	else
+    		return 0;
+    }
 }

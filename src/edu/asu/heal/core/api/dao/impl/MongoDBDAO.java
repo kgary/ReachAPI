@@ -53,7 +53,7 @@ public class MongoDBDAO implements DAO {
 	private static final String LOGGER_COLLECTION = "logger";
 	private static final String EMOTIONS_COLLECTION = "emotions";
 	private static final String BLOB_COLLECTION = "blobtricks";
-	
+
 
 	private static String __mongoDBName;
 	private static String __mongoURI;
@@ -295,7 +295,7 @@ public class MongoDBDAO implements DAO {
 
 			MongoCollection<ActivityInstance> activityInstanceCollection =
 					database.getCollection(MongoDBDAO.ACTIVITYINSTANCES_COLLECTION, ActivityInstance.class);
-			
+
 			List<String> states = new ArrayList<String>();
 			states.add(ActivityInstanceStatus.CREATED.status());
 			states.add(ActivityInstanceStatus.SUSPENDED.status());
@@ -401,7 +401,7 @@ public class MongoDBDAO implements DAO {
 		}
 	}
 
-	
+
 	@Override
 	public FaceitActivityInstance getActivityFaceItInstanceDAO (String activityInstanceId) {
 		try {
@@ -417,8 +417,8 @@ public class MongoDBDAO implements DAO {
 
 			//Call the method here
 			instance.setFaceItChallenge();
-			
-			
+
+
 			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
 			return instance ;
 		} catch (NullPointerException ne) {
@@ -451,31 +451,31 @@ public class MongoDBDAO implements DAO {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public boolean updateFaceitActivityInstance(ActivityInstance instance) {
 		try {
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
 			MongoCollection<FaceitActivityInstance> activityInstanceMongoCollection =
 					database.getCollection(ACTIVITYINSTANCES_COLLECTION, FaceitActivityInstance.class);
-			
+
 			//code to update the answerId and status based on the questionId passed
 			FaceitActivityInstance faceItActivityInstance = (FaceitActivityInstance) instance;
-		    int questionId = faceItActivityInstance.getFaceItChallenges().get(0).getQuestionId();
-		    String status= faceItActivityInstance.getFaceItChallenges().get(0).getStatus();
-		    int answerId= faceItActivityInstance.getFaceItChallenges().get(0).getAnswerId();
-		    BasicDBObject query = new BasicDBObject();
-		    query.put("activityInstanceId", faceItActivityInstance.getActivityInstanceId());
-		    query.put("faceItChallenges.questionId", questionId);
+			int questionId = faceItActivityInstance.getFaceItChallenges().get(0).getQuestionId();
+			String status= faceItActivityInstance.getFaceItChallenges().get(0).getStatus();
+			int answerId= faceItActivityInstance.getFaceItChallenges().get(0).getAnswerId();
+			BasicDBObject query = new BasicDBObject();
+			query.put("activityInstanceId", faceItActivityInstance.getActivityInstanceId());
+			query.put("faceItChallenges.questionId", questionId);
 
-		    BasicDBObject data = new BasicDBObject();
-		    data.put("faceItChallenges.$.status", status);
-		    data.put("faceItChallenges.$.answerId", answerId);
+			BasicDBObject data = new BasicDBObject();
+			data.put("faceItChallenges.$.status", status);
+			data.put("faceItChallenges.$.answerId", answerId);
 
-		    BasicDBObject command = new BasicDBObject();
-		    command.put("$set", data);
+			BasicDBObject command = new BasicDBObject();
+			command.put("$set", data);
 
-		    FaceitActivityInstance myUpdatedInstance=activityInstanceMongoCollection.findOneAndUpdate(query, command);
+			FaceitActivityInstance myUpdatedInstance=activityInstanceMongoCollection.findOneAndUpdate(query, command);
 
 			if(myUpdatedInstance != null){
 				return true;
@@ -732,17 +732,17 @@ public class MongoDBDAO implements DAO {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public String getTrialIdByTitle(String title) {
-		
+
 		MongoDatabase database = MongoDBDAO.getConnectedDatabase();
 		MongoCollection<Trial> trialCollection = database.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
 
 		Trial rval= trialCollection
-		.find(Filters.eq(Trial.TITLE_ATTRIBUTE, title))
-		.projection(Projections.excludeId()).first();
-		
+				.find(Filters.eq(Trial.TITLE_ATTRIBUTE, title))
+				.projection(Projections.excludeId()).first();
+
 		return rval.getTrialId();
 	}
 
@@ -952,7 +952,7 @@ public class MongoDBDAO implements DAO {
 			for(StandUpSituation temp : situations){
 				situation = temp;
 			}
-			
+
 			List<StandUpSituation> standUpSituations = new ArrayList<>();
 			standUpSituations.add(situation);
 
@@ -967,7 +967,7 @@ public class MongoDBDAO implements DAO {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public BlobTricks getReleasedBlobTricksDAO(int patientPin) {
 		try{
@@ -980,7 +980,7 @@ public class MongoDBDAO implements DAO {
 					.find(Filters.eq("patientPin",patientPin))
 					.projection(Projections.excludeId())
 					.first();
-			
+
 		}catch (NullPointerException ne){
 			System.out.println("Could not get random make believe situation");
 			ne.printStackTrace();
@@ -991,16 +991,16 @@ public class MongoDBDAO implements DAO {
 			return null;
 		}	
 	}
-	
+
 	@Override
 	public void updateBlobTrickCountDAO(BlobTricks blobTricks) {
 		try {
-		MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
 
-		MongoCollection<BlobTricks> blobTricksCollection =
-				database.getCollection(MongoDBDAO.BLOB_COLLECTION,BlobTricks.class);
+			MongoCollection<BlobTricks> blobTricksCollection =
+					database.getCollection(MongoDBDAO.BLOB_COLLECTION,BlobTricks.class);
 
-		blobTricksCollection.findOneAndReplace(Filters.eq("patientPin",blobTricks.getPatientPin()),blobTricks);
+			blobTricksCollection.findOneAndReplace(Filters.eq("patientPin",blobTricks.getPatientPin()),blobTricks);
 
 		}
 		catch(Exception e) {
@@ -1043,12 +1043,45 @@ public class MongoDBDAO implements DAO {
 			MongoCollection<PatientScheduleJSON> scheduleMongoCollection =
 					database.getCollection(SCHEDULE_COLLECTION, PatientScheduleJSON.class);
 
-//			PatientScheduleJSON patientScheduleJSON = scheduleMongoCollection
-//					.find(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin))
-//					.projection(Projections.excludeId())
-//					.first();
-//			patientScheduleJSON.getSchedule().get(module).getSchedule().get(day).getActivitySchedule()
-//					.get(indexOfActivity).setLevelOfUIPersonalization(levelOfUIPersonalization);
+			//			PatientScheduleJSON patientScheduleJSON = scheduleMongoCollection
+			//					.find(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin))
+			//					.projection(Projections.excludeId())
+			//					.first();
+			//			patientScheduleJSON.getSchedule().get(module).getSchedule().get(day).getActivitySchedule()
+			//					.get(indexOfActivity).setLevelOfUIPersonalization(levelOfUIPersonalization);
+
+			scheduleMongoCollection.findOneAndReplace(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin),
+					patientScheduleJSON);
+
+			return true;
+		}catch (NullPointerException ne){
+			System.out.println("Error in getting schedule.");
+			ne.printStackTrace();
+			return false;
+		}catch (Exception e){
+			System.out.println("Some problem in getting schedule.");
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean updatePatientScoreActualCount(int patientPin, int module, int day, 
+			int indexOfActivity,int score, int actualCount) {
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+
+			MongoCollection<PatientScheduleJSON> scheduleMongoCollection =
+					database.getCollection(SCHEDULE_COLLECTION, PatientScheduleJSON.class);
+
+			PatientScheduleJSON patientScheduleJSON = scheduleMongoCollection
+					.find(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin))
+					.projection(Projections.excludeId())
+					.first();
+			patientScheduleJSON.getSchedule().get(module).getSchedule().get(day).getActivitySchedule()
+			.get(indexOfActivity).setScore(score);
+			patientScheduleJSON.getSchedule().get(module).getSchedule().get(day).getActivitySchedule()
+			.get(indexOfActivity).setActualCount(actualCount);
 
 			scheduleMongoCollection.findOneAndReplace(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin),
 					patientScheduleJSON);

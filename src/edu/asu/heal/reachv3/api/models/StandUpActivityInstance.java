@@ -12,6 +12,14 @@ public class StandUpActivityInstance extends ActivityInstance{
 	
 	public StandUpActivityInstance() {}
 	
+	@Override
+	public int getResponseCount() {
+    	if(situations.get(0).getResponses().size()==1)
+    		return 1;
+    	else
+    		return 0;
+    }
+	
 	public StandUpActivityInstance(String activityInstanceId, Date createdAt, Date updatedAt, String description, Date startTime, Date endTime, Date userSubmissionTime, Date actualSubmissionTime, ActivityInstanceType instanceOf, String state, int patientPin, List<StandUpSituation> situation,boolean isActivityGlowing) {
         super(activityInstanceId, createdAt, updatedAt, description, startTime, endTime, userSubmissionTime, actualSubmissionTime, instanceOf, state, patientPin, isActivityGlowing);
         this.situations = situation;
