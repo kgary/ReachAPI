@@ -1,6 +1,7 @@
 package edu.asu.heal.reachv3.api.models.schedule;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class PatientScheduleJSON {
 
@@ -9,6 +10,10 @@ public class PatientScheduleJSON {
 
     private int pin;
     private ArrayList<ModuleJSON> schedule;
+    private Date worryHeadsResetDate;
+    private Date standUpResetDate;
+    private Date makeBelieveResetDate;
+
 
     public int getPin() {
         return pin;
@@ -24,6 +29,30 @@ public class PatientScheduleJSON {
 
     public void setSchedule(ArrayList<ModuleJSON> schedule) {
         this.schedule = schedule;
+    }
+
+    public Date getWorryHeadsResetDate() {
+        return worryHeadsResetDate;
+    }
+
+    public void setWorryHeadsResetDate(Date worryHeadsResetDate) {
+        this.worryHeadsResetDate = worryHeadsResetDate;
+    }
+
+    public Date getStandUpResetDate() {
+        return standUpResetDate;
+    }
+
+    public void setStandUpResetDate(Date standUpResetDate) {
+        this.standUpResetDate = standUpResetDate;
+    }
+
+    public Date getMakeBelieveResetDate() {
+        return makeBelieveResetDate;
+    }
+
+    public void setMakeBelieveResetDate(Date makeBelieveResetDate) {
+        this.makeBelieveResetDate = makeBelieveResetDate;
     }
 
     @Override

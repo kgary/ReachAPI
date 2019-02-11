@@ -32,14 +32,7 @@ import java.lang.reflect.Constructor;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -404,30 +397,33 @@ public class ReachService implements HealService {
 
 			if (dao.updateActivityInstance(instance)) {
 				//
-				PatientScheduleJSON patientSchedule = dao.getSchedule(instance.getPatientPin());
-				HashMap<String,Integer> modules = getModuleAndDay(patientSchedule.getSchedule(), new Date());
-				int module = modules.get(this.MODULE);
-				int days = modules.get(this.DAY);
-				int moduleLength = modules.get(this.MODULE_LENGTH);
-				
-				String activityName;
-				ArrayList<ActivityScheduleJSON> activityScheduleJSON = patientSchedule.getSchedule().get(module).getSchedule().get(days).getActivitySchedule();
-				for(int i=0;i<activityScheduleJSON.size();i++) {
-					activityName = activityScheduleJSON.get(i).getActivity();
-					if(instance.getInstanceOf().getName().equals(activityName)) {
-						int score = activityScheduleJSON.get(i).getScore() + instance.getResponseCount();
-						int actualCount = activityScheduleJSON.get(i).getActualCount() + 1;
-						if(dao.updatePatientScoreActualCount(ppin, module, days, i, score, actualCount)) {
-							System.out.println("Update sucessful");
-						}else {
-							System.out.println("Update failed.");
+				if(instance.getState().equals(ActivityInstanceStatus.COMPLETED.status())) {
+
+					PatientScheduleJSON patientSchedule = dao.getSchedule(instance.getPatientPin());
+					HashMap<String, Integer> modules = getModuleAndDay(patientSchedule.getSchedule(), new Date());
+					int module = modules.get(this.MODULE);
+					int days = modules.get(this.DAY);
+					int moduleLength = modules.get(this.MODULE_LENGTH);
+
+					String activityName;
+					ArrayList<ActivityScheduleJSON> activityScheduleJSON = patientSchedule.getSchedule().get(module).getSchedule().get(days).getActivitySchedule();
+					for (int i = 0; i < activityScheduleJSON.size(); i++) {
+						activityName = activityScheduleJSON.get(i).getActivity();
+						if (instance.getInstanceOf().getName().equals(activityName)) {
+							int score = activityScheduleJSON.get(i).getScore() + instance.getResponseCount();
+							int actualCount = activityScheduleJSON.get(i).getActualCount() + 1;
+							if (dao.updatePatientScoreActualCount(ppin, module, days, i, score, actualCount)) {
+								System.out.println("Update sucessful");
+							} else {
+								System.out.println("Update failed.");
+							}
+
 						}
-						
 					}
+
+					//patientSchedule.getSchedule().get(0).getSchedule().get(0).getActivitySchedule().get(0).getScore();
+
 				}
-				
-				//patientSchedule.getSchedule().get(0).getSchedule().get(0).getActivitySchedule().get(0).getScore();
-				
 				
 				//
 				return instance;
@@ -895,5 +891,136 @@ public class ReachService implements HealService {
 			e.printStackTrace();
 			return 0;
 		}
+	}
+
+
+
+	public void personalizeSkillSet(int patientPin){
+
+
+		try {
+			DAO dao = DAOFactory.getTheDAO();
+			PatientScheduleJSON patientScheduleJSON = dao.getSchedule(patientPin);
+
+			ArrayList<ModuleJSON> moduleJson = patientScheduleJSON.getSchedule();
+
+			Integer module = -1, resetModule=-1;
+			Integer dayOfModule = -1, resetDay=-1;
+			Integer moduleLen = 0;
+
+
+			Date today = new Date();//new SimpleDateFormat(ReachService.DATE_FORMAT).parse(.toString());
+			DateFormat dateFormat = new SimpleDateFormat("HH");
+			Integer currHour = Integer.valueOf(dateFormat.format(today));
+
+			// create method  to get module and day of module - done
+			HashMap<String, Integer> map = this.getModuleAndDay(moduleJson, today);
+
+			if (map != null) {
+				module = map.get(this.MODULE);
+				dayOfModule = map.get(this.DAY);
+				moduleLen = map.get(this.MODULE_LENGTH);
+			}
+
+			if (module == -1) {
+				// No module selected so no trials for this patient pin
+			} else {
+
+				ArrayList<ScheduleArrayJSON> schedule = moduleJson.get(module).getSchedule();
+				ArrayList<ActivityScheduleJSON> activityList = schedule.get(dayOfModule).getActivitySchedule();
+				Date resetDate = new Date();
+				int index =0;
+				for(ActivityScheduleJSON activity : activityList){
+
+					if(activity.getActivity().equals("WorryHeads") || activity.getActivity().equals("StandUp") ||
+							activity.getActivity().equals("MakeBelieve")){
+
+						switch (activity.getActivity()) {
+							case "WorryHeads":
+								resetDate= patientScheduleJSON.getWorryHeadsResetDate();
+								break;
+							case "StandUp":
+								resetDate= patientScheduleJSON.getStandUpResetDate();
+								break;
+							case "MakeBelieve":
+								resetDate= patientScheduleJSON.getMakeBelieveResetDate();
+								break;
+
+						}
+
+						float totalScore=0,totalActtualCount=0;
+						int currModule = module;
+						int prevDay=dayOfModule-1;
+
+						while(today.compareTo(resetDate) != 0){
+
+							ArrayList<ScheduleArrayJSON> s = moduleJson.get(currModule).getSchedule();
+							if(prevDay !=0) {
+								ArrayList<ActivityScheduleJSON> actList = s.get(prevDay).getActivitySchedule();
+
+								for (ActivityScheduleJSON a : actList) {
+									if(a.getActivity().equals(activity.getActivity())) {
+
+										if (a.getActualCount() == 0)
+											continue;
+										else {
+											totalScore += a.getScore();
+											totalActtualCount += a.getActualCount();
+										}
+									}
+								}
+								prevDay--;
+							}else{
+								currModule--;
+							}
+							Calendar cal =Calendar.getInstance();
+							cal.setTime(today);
+							int decrement =-1;
+							cal.add(Calendar.DATE,decrement);
+							today = cal.getTime();
+
+						}
+						Double result=0.0;
+						if(totalActtualCount !=0)
+						 result = Double.valueOf((totalScore/totalActtualCount) *100);
+
+						Integer l1_min = Integer.parseInt(_properties.getProperty("skill_level_1_min"));
+						Integer l1_max = Integer.parseInt(_properties.getProperty("skill_level_1_max"));
+						Integer l2_min = Integer.parseInt(_properties.getProperty("skill_level_2_min"));
+						Integer l2_max = Integer.parseInt(_properties.getProperty("skill_level_2_max"));
+
+
+						if(result < l1_max){
+							if(dao.updateLevelOfSkillPersonalization(patientPin,module,dayOfModule,index,2)){
+								System.out.println("Skill level updated successfully to level 2");
+							}else{
+								System.out.println("Skill level updated FAILED !! to level 2");
+							}
+							//set levelOfSkillPersonalization to 2
+						}else if(result >=l2_min && result <l2_max){
+							if(dao.updateLevelOfSkillPersonalization(patientPin,module,dayOfModule,index,2)){
+								System.out.println("Skill level updated successfully to level 1");
+							}else{
+								System.out.println("Skill level updated FAILED !!! to level 1");
+							}
+
+							//set levelOfSkillPersonalization to 1
+						}
+
+
+					}
+					index++;
+
+				}
+
+
+			}
+
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+
+
+
 	}
 }

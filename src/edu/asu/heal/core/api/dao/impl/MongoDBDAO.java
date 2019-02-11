@@ -1097,6 +1097,37 @@ public class MongoDBDAO implements DAO {
 			return false;
 		}
 	}
+
+	@Override
+	public boolean updateLevelOfSkillPersonalization(int patientPin, int module, int day,
+												 int indexOfActivity,Integer levelOfSkillPersonalization) {
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+
+			MongoCollection<PatientScheduleJSON> scheduleMongoCollection =
+					database.getCollection(SCHEDULE_COLLECTION, PatientScheduleJSON.class);
+
+			PatientScheduleJSON patientScheduleJSON = scheduleMongoCollection
+					.find(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin))
+					.projection(Projections.excludeId())
+					.first();
+			patientScheduleJSON.getSchedule().get(module).getSchedule().get(day).getActivitySchedule()
+					.get(indexOfActivity).setLevelofSkillPersonalization(levelOfSkillPersonalization);
+
+			scheduleMongoCollection.findOneAndReplace(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin),
+					patientScheduleJSON);
+
+			return true;
+		}catch (NullPointerException ne){
+			System.out.println("Error in getting schedule.");
+			ne.printStackTrace();
+			return false;
+		}catch (Exception e){
+			System.out.println("Some problem in getting schedule.");
+			e.printStackTrace();
+			return false;
+		}
+	}
 }
 
 //enum Emotions{
