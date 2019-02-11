@@ -3,6 +3,7 @@ package edu.asu.heal.reachv3.api.notification;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Properties;
@@ -24,7 +25,7 @@ public class LevelTwoNotification implements INotificationInterface{
 			notificationData = new JSONObject(data);
 			
 			_properties = new Properties();
-			InputStream propFile = DAOFactory.class.getResourceAsStream("urls.properties");
+			InputStream propFile = LevelTwoNotification.class.getResourceAsStream("urls.properties");
 			_properties.load(propFile);
 			propFile.close();
 		}catch(Exception e) {
@@ -41,13 +42,13 @@ public class LevelTwoNotification implements INotificationInterface{
 		String serverKey = _properties.getProperty("serverKey");
 		
 		NotificationData data = new NotificationData(details, null, url, levelOfNotification);
+
 		Notification obj = new Notification();
 		obj.sendNotification(data, patientPin, serverKey);
 		
 	}
 	
 	public String getNotifiactionDetails(String activityName, int levelOfNotification) {
-
 		JSONObject actDetails = notificationData.getJSONObject(activityName);
 		JSONArray arr =actDetails.getJSONArray("level_"+levelOfNotification);
 		ArrayList<String> detail = new ArrayList<String>();
@@ -63,7 +64,8 @@ public class LevelTwoNotification implements INotificationInterface{
 	public static String readFile(String filename) {
 		String result = "";
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(filename));
+			InputStream is = LevelTwoNotification.class.getResourceAsStream(filename);
+			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			StringBuilder sb = new StringBuilder();
 			String line = br.readLine();
 			while (line != null) {

@@ -31,7 +31,7 @@ public class AvailableTime {
 	@Override
 	public String toString() {
 		return "AvailableTime{" +
-				", to='" + to + '\'' +
+				", to=" + to +
 				", from=" + from +
 				'}';
 	}

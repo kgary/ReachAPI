@@ -81,4 +81,14 @@ public class NotificationData implements IHealModelType {
     	Collections.shuffle(values);
     	
     }
+
+    @Override
+    public String toString() {
+        return "NotificationData{" +
+                ", url=" + url +
+                ", details=" + detail +
+                ", levelOfNotification=" + levelOfNotification +
+                ", title=" + title +
+                '}';
+    }
 }
