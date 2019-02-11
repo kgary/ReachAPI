@@ -932,10 +932,12 @@ public class ReachService implements HealService {
 				int index =0;
 				for(ActivityScheduleJSON activity : activityList){
 
-					if(activity.getActivity().equals("WorryHeads") || activity.getActivity().equals("StandUp") ||
-							activity.getActivity().equals("MakeBelieve")){
+				    String activityName = activity.getActivity();
 
-						switch (activity.getActivity()) {
+					if(activityName.equals("WorryHeads") || activityName.equals("StandUp") ||
+                            activityName.equals("MakeBelieve")){
+
+						switch (activityName) {
 							case "WorryHeads":
 								resetDate= patientScheduleJSON.getWorryHeadsResetDate();
 								break;
@@ -952,61 +954,73 @@ public class ReachService implements HealService {
 						int currModule = module;
 						int prevDay=dayOfModule-1;
 
-						while(today.compareTo(resetDate) != 0){
+                        HashMap<String, Integer> resetDateMap = this.getModuleAndDay(moduleJson, resetDate);
 
-							ArrayList<ScheduleArrayJSON> s = moduleJson.get(currModule).getSchedule();
-							if(prevDay !=0) {
-								ArrayList<ActivityScheduleJSON> actList = s.get(prevDay).getActivitySchedule();
+                        if (resetDateMap != null) {
+                            resetModule = resetDateMap.get(this.MODULE);
+                            resetDay = resetDateMap.get(this.DAY);
+                        }
+                        ArrayList<ScheduleArrayJSON> currentModuleSchedule = moduleJson.get(currModule).getSchedule();
 
-								for (ActivityScheduleJSON a : actList) {
-									if(a.getActivity().equals(activity.getActivity())) {
+                        while((currModule > resetModule) || (currModule == resetModule && prevDay >= resetDay)) {//today.compareTo(resetDate) != 0){
 
-										if (a.getActualCount() == 0)
-											continue;
-										else {
-											totalScore += a.getScore();
-											totalActtualCount += a.getActualCount();
-										}
-									}
-								}
-								prevDay--;
-							}else{
-								currModule--;
-							}
-							Calendar cal =Calendar.getInstance();
-							cal.setTime(today);
-							int decrement =-1;
-							cal.add(Calendar.DATE,decrement);
-							today = cal.getTime();
+//							if(prevDay >= 0) {
+                            ArrayList<ActivityScheduleJSON> actList = currentModuleSchedule.get(prevDay)
+                                                                            .getActivitySchedule();
 
-						}
+                            for (ActivityScheduleJSON a : actList) {
+                                if(a.getActivity().equals(activityName)) {
+
+                                    if (a.getActualCount() > 0) {
+                                        totalScore += a.getScore();
+                                        totalActtualCount += a.getActualCount();
+
+                                    }
+                                }
+                            }
+                            prevDay--;
+//							}else{
+                            if (prevDay < 0) {
+                                currModule--;
+                                currentModuleSchedule = moduleJson.get(currModule).getSchedule();
+                                prevDay = currentModuleSchedule.size() - 1;
+                            }
+
+                            //You are taking prev day's schedule so use that for checks
+//							Calendar cal =Calendar.getInstance();
+//							cal.setTime(today);
+//							int decrement =-1;
+//							cal.add(Calendar.DATE,decrement);
+//							today = cal.getTime();
+
+                        }
 						Double result=0.0;
-						if(totalActtualCount !=0)
-						 result = Double.valueOf((totalScore/totalActtualCount) *100);
+						if(totalActtualCount !=0) {
+                            result = Double.valueOf((totalScore / totalActtualCount) * 100);
 
-						Integer l1_min = Integer.parseInt(_properties.getProperty("skill_level_1_min"));
-						Integer l1_max = Integer.parseInt(_properties.getProperty("skill_level_1_max"));
-						Integer l2_min = Integer.parseInt(_properties.getProperty("skill_level_2_min"));
-						Integer l2_max = Integer.parseInt(_properties.getProperty("skill_level_2_max"));
+                            Integer l1_min = Integer.parseInt(_properties.getProperty("skill_level_1_min"));
+                            Integer l1_max = Integer.parseInt(_properties.getProperty("skill_level_1_max"));
+                            Integer l2_min = Integer.parseInt(_properties.getProperty("skill_level_2_min"));
+                            Integer l2_max = Integer.parseInt(_properties.getProperty("skill_level_2_max"));
 
 
-						if(result < l1_max){
-							if(dao.updateLevelOfSkillPersonalization(patientPin,module,dayOfModule,index,2)){
-								System.out.println("Skill level updated successfully to level 2");
-							}else{
-								System.out.println("Skill level updated FAILED !! to level 2");
-							}
-							//set levelOfSkillPersonalization to 2
-						}else if(result >=l2_min && result <l2_max){
-							if(dao.updateLevelOfSkillPersonalization(patientPin,module,dayOfModule,index,2)){
-								System.out.println("Skill level updated successfully to level 1");
-							}else{
-								System.out.println("Skill level updated FAILED !!! to level 1");
-							}
+                            if (result >= l1_min && result < l1_max) {
+                                if (dao.updateLevelOfSkillPersonalization(patientPin, module, dayOfModule, index, 2)) {
+                                    System.out.println("Skill level updated successfully to level 2");
+                                } else {
+                                    System.out.println("Skill level updated FAILED !! to level 2");
+                                }
+                                //set levelOfSkillPersonalization to 2
+                            } else if (result >= l2_min && result < l2_max) {
+                                if (dao.updateLevelOfSkillPersonalization(patientPin, module, dayOfModule, index, 2)) {
+                                    System.out.println("Skill level updated successfully to level 1");
+                                } else {
+                                    System.out.println("Skill level updated FAILED !!! to level 1");
+                                }
 
-							//set levelOfSkillPersonalization to 1
-						}
-
+                                //set levelOfSkillPersonalization to 1
+                            }
+                        }
 
 					}
 					index++;
