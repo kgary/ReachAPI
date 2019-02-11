@@ -1,6 +1,7 @@
 package edu.asu.heal.reachv3.api.models.schedule;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class ActivityScheduleJSON {
 
@@ -14,7 +15,7 @@ public class ActivityScheduleJSON {
 	private int actualCount;
 	private boolean isDailyActivity;
 	private UIPersonalizationFile fileNameForUIPersonalization;
-	private ArrayList<String> activityInstancesIds;
+	private HashSet<String> activityInstancesIds;
 	private int levelOfUIPersonalization;
 
 	public ActivityScheduleJSON() {
@@ -29,7 +30,7 @@ public class ActivityScheduleJSON {
 		this.availableTime = new ArrayList<AvailableTime>();
 		this.fileNameForUIPersonalization = new UIPersonalizationFile();
 		this.levelOfUIPersonalization=0;
-		this.activityInstancesIds = new ArrayList<String>();
+		this.activityInstancesIds = new HashSet<String>();
 
 	}
 	
@@ -117,11 +118,11 @@ public class ActivityScheduleJSON {
 		this.fileNameForUIPersonalization = fileNameForUIPersonalization;
 	}
 
-	public ArrayList<String> getActivityInstancesIds() {
+	public HashSet<String> getActivityInstancesIds() {
 		return activityInstancesIds;
 	}
 
-	public void setActivityInstancesIds(ArrayList<String> activityInstancesIds) {
+	public void setActivityInstancesIds(HashSet<String> activityInstancesIds) {
 		this.activityInstancesIds = activityInstancesIds;
 	}
 
