@@ -48,6 +48,9 @@ public class ActivityInstance implements IHealModelType {
         this.activityGlowing = activityGlowing;
     }
 
+    public int getResponseCount() {
+    	return 0;
+    }
     public Date getCreatedAt() {
         return createdAt;
     }
