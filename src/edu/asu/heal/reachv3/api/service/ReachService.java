@@ -31,6 +31,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -54,7 +55,7 @@ public class ReachService implements HealService {
 	static {
 		_properties = new Properties();
 		try {
-			InputStream propFile = DAOFactory.class.getResourceAsStream("notificationRule.properties");
+			InputStream propFile = ReachService.class.getResourceAsStream("notificationRule.properties");
 			_properties.load(propFile);
 			propFile.close();
 			days = _properties.getProperty("blobTricks.day.list");
@@ -667,7 +668,7 @@ public class ReachService implements HealService {
 			Integer dayOfModule =-1;
 			Integer moduleLen=0;
 
-			Date today = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(new Date().toString());
+			Date today = new Date();//new SimpleDateFormat(ReachService.DATE_FORMAT).parse(.toString());
 			DateFormat dateFormat = new SimpleDateFormat("HH");
 			Integer currHour = Integer.valueOf(dateFormat.format(today));
 
@@ -689,13 +690,15 @@ public class ReachService implements HealService {
 					ArrayList<ActivityScheduleJSON> activityList = schedule.get(dayOfModule).getActivitySchedule();
 					int indexOfActivity =-1;
 					for(ActivityScheduleJSON activity : activityList) {
-						indexOfActivity++;	
+
+						indexOfActivity++;
 						ArrayList<AvailableTime> time = activity.getAvailableTime();
 						for(AvailableTime t : time) {
 
 							if(currHour >= t.getFrom() && currHour <=t.getTo()) {
 
 								if(activity.getActualCount() < activity.getMinimumCount()) {
+
 									int notDoneDays = this.getNotDoneDays(schedule,activity.getActivity(),dayOfModule);
 									int l1_min = Integer.parseInt(_properties.getProperty("level_1.minValDivisor"));
 									int l1_max = Integer.parseInt(_properties.getProperty("level_1.maxValSubtrahend"));
@@ -706,20 +709,22 @@ public class ReachService implements HealService {
 									String l2_class = _properties.getProperty("level_2.className");
 
 									INotificationInterface notificationClass = null;
-
-									if(notDoneDays > Math.floor(moduleLen/l1_min) && notDoneDays < (moduleLen-l1_max)) {
+									int l1_minVal = Double.valueOf(Math.floor(moduleLen/l1_min)).intValue();
+									if((l1_minVal == (moduleLen-l1_max) && notDoneDays == l1_minVal) || ((l1_minVal != (moduleLen-l1_max))
+											&& (notDoneDays >= l1_minVal &&
+											notDoneDays < (moduleLen-l1_max)))) {
 										if(activity.getLevelOfUIPersonalization() == 0) {
-											// Level 1 notification					
+											// Level 1 notification
 											if (l1_class != null) {
 												Class<?> level_1 = Class.forName(l1_class);
 												Constructor<?> constructor = level_1.getConstructor();
 												notificationClass = (INotificationInterface) constructor.newInstance();
 											}
 											if(notificationClass != null) {
-												notificationClass.sendNotification(activity.getActivity(), patientPin, notDoneDays, 1);
+												notificationClass.sendNotification(activity.getActivity(), patientPin,
+														notDoneDays, 1);
 												// Updating level of UI personalization in schedule
-												patientScheduleJSON.getSchedule().get(module).getSchedule().get(dayOfModule).getActivitySchedule()
-												.get(indexOfActivity).setLevelOfUIPersonalization(1);
+												activity.setLevelOfUIPersonalization(1);
 												if(dao.updatePatientSchedule(patientPin, patientScheduleJSON))
 													System.out.println("Update successful");
 												else 
@@ -745,8 +750,7 @@ public class ReachService implements HealService {
 											if(notificationClass != null) {
 												notificationClass.sendNotification(activity.getActivity(), patientPin, notDoneDays, 2);
 												// Updating level of UI personalization in schedule
-												patientScheduleJSON.getSchedule().get(module).getSchedule().get(dayOfModule).getActivitySchedule()
-												.get(indexOfActivity).setLevelOfUIPersonalization(2);
+												activity.setLevelOfUIPersonalization(2);
 												if(dao.updatePatientSchedule(patientPin, patientScheduleJSON))
 													System.out.println("Update successful");
 												else 
@@ -786,10 +790,9 @@ public class ReachService implements HealService {
 
 	private int getNotDoneDays(ArrayList<ScheduleArrayJSON> schedule, String activity, int dayOfModule) {
 
-		int counter = dayOfModule;
+		int counter = dayOfModule-1;
 		int rval =0;
 		while(counter >= 0) {
-			counter--;
 			ScheduleArrayJSON obj = schedule.get(counter);
 			ArrayList<ActivityScheduleJSON> act = obj.getActivitySchedule();
 			for(ActivityScheduleJSON temp : act) {
@@ -802,6 +805,7 @@ public class ReachService implements HealService {
 
 				}
 			}
+			counter--;
 		}
 		return rval;
 	}
@@ -811,8 +815,8 @@ public class ReachService implements HealService {
 		try {
 			for(int i =0; i<moduleJson.size(); i++) {
 
-				Date startDate= new SimpleDateFormat(ReachService.DATE_FORMAT).parse(moduleJson.get(i).getStartDate().toString());
-				Date endDate = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(moduleJson.get(i).getEndDate().toString());
+				Date startDate= moduleJson.get(i).getStartDate();// new SimpleDateFormat(ReachService.DATE_FORMAT).parse(.toString());
+				Date endDate = moduleJson.get(i).getEndDate(); //new SimpleDateFormat(ReachService.DATE_FORMAT).parse(.toString());
 
 				if(today.compareTo(startDate) >= 0 && today.compareTo(endDate) <=0) {
 
