@@ -16,7 +16,7 @@ public class HourlyScheduledTask extends TimerTask {
         List<Patient> patients = reachService.getPatients("5a946ff566684905df608446");
 
         for(int i=0;i<patients.size();i++){
-            reachService.personalizeUserExperience(4012);
+            reachService.personalizeUserExperience(patients.get(i).getPin());
         }
         now = new Date();
         System.out.println("Time is :" + now);
