@@ -1036,19 +1036,20 @@ public class MongoDBDAO implements DAO {
 	}
 
 	@Override
-	public boolean updatePatientSchedule(int patientPin, PatientScheduleJSON patientScheduleJSON) {
+	public boolean updateUIPersonalization(int patientPin, int module, 
+			int dayOfModule, int indexOfActivity, int levelOfUIPersonalization) {
 		try{
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
 
 			MongoCollection<PatientScheduleJSON> scheduleMongoCollection =
 					database.getCollection(SCHEDULE_COLLECTION, PatientScheduleJSON.class);
 
-			//			PatientScheduleJSON patientScheduleJSON = scheduleMongoCollection
-			//					.find(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin))
-			//					.projection(Projections.excludeId())
-			//					.first();
-			//			patientScheduleJSON.getSchedule().get(module).getSchedule().get(day).getActivitySchedule()
-			//					.get(indexOfActivity).setLevelOfUIPersonalization(levelOfUIPersonalization);
+						PatientScheduleJSON patientScheduleJSON = scheduleMongoCollection
+								.find(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin))
+								.projection(Projections.excludeId())
+								.first();
+						patientScheduleJSON.getSchedule().get(module).getSchedule().get(dayOfModule).getActivitySchedule()
+								.get(indexOfActivity).setLevelOfUIPersonalization(levelOfUIPersonalization);
 
 			scheduleMongoCollection.findOneAndReplace(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin),
 					patientScheduleJSON);
@@ -1113,6 +1114,37 @@ public class MongoDBDAO implements DAO {
 					.first();
 			patientScheduleJSON.getSchedule().get(module).getSchedule().get(day).getActivitySchedule()
 					.get(indexOfActivity).setLevelofSkillPersonalization(levelOfSkillPersonalization);
+
+			scheduleMongoCollection.findOneAndReplace(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin),
+					patientScheduleJSON);
+
+			return true;
+		}catch (NullPointerException ne){
+			System.out.println("Error in getting schedule.");
+			ne.printStackTrace();
+			return false;
+		}catch (Exception e){
+			System.out.println("Some problem in getting schedule.");
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	@Override
+	public boolean updateActivityInstanceInPatientSchedule(int patientPin, int module, int day,
+    		int indexOfActivity,String activityInstanceId) {
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+
+			MongoCollection<PatientScheduleJSON> scheduleMongoCollection =
+					database.getCollection(SCHEDULE_COLLECTION, PatientScheduleJSON.class);
+
+			PatientScheduleJSON patientScheduleJSON = scheduleMongoCollection
+					.find(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin))
+					.projection(Projections.excludeId())
+					.first();
+			patientScheduleJSON.getSchedule().get(module).getSchedule().get(day).getActivitySchedule()
+					.get(indexOfActivity).getActivityInstancesIds().add(activityInstanceId);
 
 			scheduleMongoCollection.findOneAndReplace(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin),
 					patientScheduleJSON);

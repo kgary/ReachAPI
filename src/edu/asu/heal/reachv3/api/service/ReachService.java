@@ -310,14 +310,19 @@ public class ReachService implements HealService {
 			if(module != -1) {
 				ScheduleArrayJSON schedule = patientSchedule.getSchedule().get(module).getSchedule().get(dayOfModule);
 				ArrayList<ActivityScheduleJSON> actList = schedule.getActivitySchedule();
+				int indexOfActivity =-1;
 				for(ActivityScheduleJSON obj : actList) {
-					
+					indexOfActivity++;
 					if(obj.getActivity().equals(newActivityInstance.getInstanceOf().getName())) {
-						obj.getActivityInstancesIds().add(activityInstanceId);
-						break;
+						if(dao.updateActivityInstanceInPatientSchedule(patientPin, module, dayOfModule,indexOfActivity,activityInstanceId)) {
+							System.out.println("AI is successfully updated in Schedule");
+							break;
+						}else {
+							System.out.println("AI update is failed in schedule");
+						}
+						
 					}
 				}
-				dao.updatePatientSchedule(patientPin, patientSchedule);
 			}else {
 				//
 			}
@@ -765,7 +770,7 @@ public class ReachService implements HealService {
 														notDoneDays, 1);
 												// Updating level of UI personalization in schedule
 												activity.setLevelOfUIPersonalization(1);
-												if(dao.updatePatientSchedule(patientPin, patientScheduleJSON))
+												if(dao.updateUIPersonalization(patientPin, module, dayOfModule,indexOfActivity,1))
 													System.out.println("Update successful");
 												else 
 													System.out.println("Update failed.");	//May need to do something here. Also, add to logs - Vishakha
@@ -791,7 +796,7 @@ public class ReachService implements HealService {
 												notificationClass.sendNotification(activity.getActivity(), patientPin, notDoneDays, 2);
 												// Updating level of UI personalization in schedule
 												activity.setLevelOfUIPersonalization(2);
-												if(dao.updatePatientSchedule(patientPin, patientScheduleJSON))
+												if(dao.updateUIPersonalization(patientPin, module, dayOfModule,indexOfActivity,2))
 													System.out.println("Update successful");
 												else 
 													System.out.println("Update failed.");
