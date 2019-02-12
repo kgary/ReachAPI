@@ -37,7 +37,7 @@ public class LevelTwoNotification implements INotificationInterface{
 
 	@Override
 	public void sendNotification(String activityName, int patientPin, Integer numberOfDaysNotDone,int levelOfNotification) {
-		String details = getNotifiactionDetails(activityName,levelOfNotification);
+		String details = getNotifiactionDetails(activityName,levelOfNotification,numberOfDaysNotDone.toString());
 		String url = _properties.getProperty(activityName);
 		String serverKey = _properties.getProperty("serverKey");
 		
@@ -48,7 +48,7 @@ public class LevelTwoNotification implements INotificationInterface{
 		
 	}
 	
-	public String getNotifiactionDetails(String activityName, int levelOfNotification) {
+	public String getNotifiactionDetails(String activityName, int levelOfNotification,String numberOfDaysNotDone) {
 		JSONObject actDetails = notificationData.getJSONObject(activityName);
 		JSONArray arr =actDetails.getJSONArray("level_"+levelOfNotification);
 		ArrayList<String> detail = new ArrayList<String>();
@@ -58,6 +58,9 @@ public class LevelTwoNotification implements INotificationInterface{
 			}
 		}
 		Collections.shuffle(detail);
+		if(detail.get(0).contains("<N>")) {
+			detail.get(0).replaceAll("<N>", numberOfDaysNotDone);
+		}
 		return detail.get(0);		
 	}
 

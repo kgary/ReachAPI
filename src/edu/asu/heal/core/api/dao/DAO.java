@@ -97,4 +97,7 @@ public interface DAO {
     
     boolean updatePatientScoreActualCount(int patientPin, int module, int day, int indexOfActivity,int score, int actualCount);
 
+    boolean updateLevelOfSkillPersonalization(int patientPin, int module, int day,
+                                                     int indexOfActivity,Integer levelOfSkillPersonalization);
+
 }
