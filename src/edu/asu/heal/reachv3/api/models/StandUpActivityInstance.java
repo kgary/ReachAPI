@@ -14,7 +14,8 @@ public class StandUpActivityInstance extends ActivityInstance{
 	
 	@Override
 	public int getResponseCount() {
-    	if(situations.get(0).getResponses().size()==1)
+    	if(situations != null && situations.size() > 0 && situations.get(0).getResponses() != null
+				&& situations.get(0).getResponses().size()==1)
     		return 1;
     	else
     		return 0;

@@ -344,7 +344,7 @@
 							"levelofSkillPersonalization" : 0,
 							"activityInstancesIds" : [ ]
 						},
-						{	"activity" : "SWAP",
+						{	"activity" : "STOP",
 							"isDailyActivity" : "false",
 							"minimumCount0" : 2,
 							"minimumCount1" : 3,
@@ -470,7 +470,7 @@
 							"levelofSkillPersonalization" : 0,
 							"activityInstancesIds" : [ ]
 						},
-						{	"activity" : "SWAP",
+						{	"activity" : "STOP",
 							"isDailyActivity" : "false",
 							"minimumCount0" : 2,
 							"minimumCount1" : 3,
@@ -596,7 +596,7 @@
 							"levelofSkillPersonalization" : 0,
 							"activityInstancesIds" : [ ]
 						},
-						{	"activity" : "SWAP",
+						{	"activity" : "STOP",
 							"isDailyActivity" : "false",
 							"minimumCount0" : 2,
 							"minimumCount1" : 3,
@@ -729,7 +729,7 @@
 							"levelofSkillPersonalization" : 0,
 							"activityInstancesIds" : [ ]
 						},
-						{	"activity" : "SWAP",
+						{	"activity" : "STOP",
 							"isDailyActivity" : "false",
 							"minimumCount0" : 2,
 							"minimumCount1" : 3,
@@ -880,7 +880,7 @@
 							"levelofSkillPersonalization" : 0,
 							"activityInstancesIds" : [ ]
 						},
-						{	"activity" : "SWAP",
+						{	"activity" : "STOP",
 							"isDailyActivity" : "false",
 							"minimumCount0" : 2,
 							"minimumCount1" : 3,
@@ -1031,7 +1031,7 @@
 							"levelofSkillPersonalization" : 0,
 							"activityInstancesIds" : [ ]
 						},
-						{	"activity" : "SWAP",
+						{	"activity" : "STOP",
 							"isDailyActivity" : "false",
 							"minimumCount0" : 2,
 							"minimumCount1" : 3,
@@ -1189,7 +1189,7 @@
 							"levelofSkillPersonalization" : 0,
 							"activityInstancesIds" : [ ]
 						},
-						{	"activity" : "SWAP",
+						{	"activity" : "STOP",
 							"isDailyActivity" : "false",
 							"minimumCount0" : 2,
 							"minimumCount1" : 3,
@@ -1365,7 +1365,7 @@
 							"levelofSkillPersonalization" : 0,
 							"activityInstancesIds" : [ ]
 						},
-						{	"activity" : "SWAP",
+						{	"activity" : "STOP",
 							"isDailyActivity" : "false",
 							"minimumCount0" : 2,
 							"minimumCount1" : 3,
@@ -1552,7 +1552,7 @@
 							"levelofSkillPersonalization" : 0,
 							"activityInstancesIds" : [ ]
 						},
-						{	"activity" : "SWAP",
+						{	"activity" : "STOP",
 							"isDailyActivity" : "false",
 							"minimumCount0" : 2,
 							"minimumCount1" : 3,

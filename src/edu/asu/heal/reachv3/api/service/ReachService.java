@@ -267,7 +267,7 @@ public class ReachService implements HealService {
 						activityInstance.getInstanceOf(), activityInstance.getState(),
 						activityInstance.getPatientPin(), activityInstance.getActivityGlowing()
 						);
-			} else if (activityInstance.getInstanceOf().getName().equals("SWAP")) {
+			} else if (activityInstance.getInstanceOf().getName().equals("STOP")) {
 				activityInstance = new SwapActivityInstance(activityInstance.getActivityInstanceId(),
 						activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
 						activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
@@ -294,57 +294,64 @@ public class ReachService implements HealService {
 			}
 			ActivityInstance newActivityInstance = dao.createActivityInstance(activityInstance);
 
-			// Code to add AI in patient schedule
-			String activityInstanceId = newActivityInstance.getActivityInstanceId();
-			Integer patientPin = newActivityInstance.getPatientPin();
+			try {
+				// Code to add AI in patient schedule
+				String activityInstanceId = newActivityInstance.getActivityInstanceId();
+				Integer patientPin = newActivityInstance.getPatientPin();
 
-			PatientScheduleJSON patientSchedule = dao.getSchedule(patientPin);
-			Date today = new SimpleDateFormat(ReachService.DATE_FORMAT).parse(new Date().toString());
-			HashMap<String, Integer> map = getModuleAndDay(patientSchedule.getSchedule(), today);
-			Integer module =-1, dayOfModule =-1, moduleLen =-1;
-			if(map != null) {
-				module = map.get(this.MODULE);
-				dayOfModule=map.get(this.DAY);
-				moduleLen = map.get(this.MODULE_LENGTH);				
-			}
-			if(module != -1) {
-				ScheduleArrayJSON schedule = patientSchedule.getSchedule().get(module).getSchedule().get(dayOfModule);
-				ArrayList<ActivityScheduleJSON> actList = schedule.getActivitySchedule();
-				int indexOfActivity =-1;
-				for(ActivityScheduleJSON obj : actList) {
-					indexOfActivity++;
-					if(obj.getActivity().equals(newActivityInstance.getInstanceOf().getName())) {
-						if(dao.updateActivityInstanceInPatientSchedule(patientPin, module, dayOfModule,indexOfActivity,activityInstanceId)) {
-							System.out.println("AI is successfully updated in Schedule");
-							break;
-						}else {
-							System.out.println("AI update is failed in schedule");
-						}
-						
-					}
+				PatientScheduleJSON patientSchedule = dao.getSchedule(patientPin);
+				Date today = new Date();
+				HashMap<String, Integer> map = getModuleAndDay(patientSchedule.getSchedule(), today);
+				Integer module =-1, dayOfModule =-1, moduleLen =-1;
+				if(map != null) {
+					module = map.get(this.MODULE);
+					dayOfModule=map.get(this.DAY);
+					moduleLen = map.get(this.MODULE_LENGTH);
 				}
-			}else {
-				//
+				if(module != -1) {
+					ScheduleArrayJSON schedule = patientSchedule.getSchedule().get(module).getSchedule().get(dayOfModule);
+					ArrayList<ActivityScheduleJSON> actList = schedule.getActivitySchedule();
+					int indexOfActivity =-1;
+					for(ActivityScheduleJSON obj : actList) {
+						indexOfActivity++;
+						if(obj.getActivity().equals(newActivityInstance.getInstanceOf().getName())) {
+							if(dao.updateActivityInstanceInPatientSchedule(patientPin, module, dayOfModule,indexOfActivity,activityInstanceId)) {
+								System.out.println("AI is successfully updated in Schedule");
+								break;
+							}else {
+								System.out.println("AI update is failed in schedule");
+							}
+
+						}
+					}
+				}else {
+					//
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				// Code to log state of activity instance in the Mongo...
+
+				String trialTitle = "Compass"; // Refactor : needs to be done in a better way...
+				SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
+				String date = timeStampFormat.format(new Date());
+				Integer ppin = newActivityInstance.getPatientPin();
+				String metaData = "{ \"activityInstanceId :\" \"" + activityInstance.getActivityInstanceId() + "\" , " +
+						"\"ACTIVITY_INSTANCE_STATE\" : \"" + ActivityInstanceStatus.CREATED.status() + "\" } ";
+				Logger log = new Logger(dao.getTrialIdByTitle(trialTitle), date, "INFO", "ACTIVITY_STATE",
+						"JSON", activityInstance.getInstanceOf().getName(), ppin.toString(), metaData);
+
+				ArrayList<Logger> al = new ArrayList<Logger>();
+				al.add(log);
+				Logger[] logs = new Logger[al.size()];
+
+				logs = al.toArray(logs);
+				dao.logMessage(logs);
+
+				return newActivityInstance;
 			}
 
-			// Code to log state of activity instance in the Mongo...
 
-			String trialTitle = "Compass"; // Refactor : needs to be done in a better way...
-			SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
-			String date = timeStampFormat.format(new Date());
-			Integer ppin = newActivityInstance.getPatientPin();
-			String metaData = "{ \"activityInstanceId :\" \"" + activityInstance.getActivityInstanceId() + "\" , \"ACTIVITY_INSTANCE_STATE\" : \"" + ActivityInstanceStatus.CREATED.status() + "\" } ";
-			Logger log = new Logger(dao.getTrialIdByTitle(trialTitle), date, "INFO", "ACTIVITY_STATE", "JSON",
-					activityInstance.getInstanceOf().getName(), ppin.toString(), metaData);
-
-			ArrayList<Logger> al = new ArrayList<Logger>();
-			al.add(log);
-			Logger[] logs = new Logger[al.size()];
-
-			logs = al.toArray(logs);
-			dao.logMessage(logs);
-
-			return newActivityInstance;
 		} catch (Exception e) {
 			System.out.println("SOME ERROR CREATING NE ACTIVITY INSTANCE IN REACH SERVICE - CREATEACTIVITYINSTANCE");
 			e.printStackTrace();
@@ -382,7 +389,7 @@ public class ReachService implements HealService {
 			} else if (activityInstanceType.equals("DailyDiary")) {
 				instance = mapper.readValue(requestBody, DailyDiaryActivityInstance.class);
 				instance.setUpdatedAt(new Date());
-			} else if (activityInstanceType.equals("SWAP")) {
+			} else if (activityInstanceType.equals("STOP")) {
 				instance = mapper.readValue(requestBody, SwapActivityInstance.class);
 				instance.setUpdatedAt(new Date());
 			} else if (activityInstanceType.equals("WorryHeads")) {

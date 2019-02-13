@@ -29,7 +29,11 @@ public class MakeBelieveActivityInstance extends ActivityInstance{
     
     public int getResponseCount() {
     	
-    	if((situation.getQuestions().get(0).getResponses().size() == 1) && (situation.getQuestions().get(1).getResponses().size() == 1))
+    	if(situation != null && situation.getQuestions().size() > 1
+                && situation.getQuestions().get(0).getResponses() != null &&
+                situation.getQuestions().get(1).getResponses() != null
+                && ((situation.getQuestions().get(0).getResponses().size() == 1) &&
+                (situation.getQuestions().get(1).getResponses().size() == 1)))
     		return 1;
     	else
     		return 0;
