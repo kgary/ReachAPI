@@ -36,7 +36,7 @@ public class LevelTwoNotification implements INotificationInterface{
 	}
 
 	@Override
-	public void sendNotification(String activityName, int patientPin, Integer numberOfDaysNotDone,int levelOfNotification) {
+	public boolean sendNotification(String activityName, int patientPin, Integer numberOfDaysNotDone,int levelOfNotification) {
 		String details = getNotifiactionDetails(activityName,levelOfNotification,numberOfDaysNotDone.toString());
 		String url = _properties.getProperty(activityName);
 		String serverKey = _properties.getProperty("serverKey");
@@ -44,8 +44,11 @@ public class LevelTwoNotification implements INotificationInterface{
 		NotificationData data = new NotificationData(details, null, url, levelOfNotification);
 
 		Notification obj = new Notification();
-		obj.sendNotification(data, patientPin, serverKey);
+		if(obj.sendNotification(data, patientPin, serverKey)) {
+			return true;
+		}
 		
+		return false;
 	}
 	
 	public String getNotifiactionDetails(String activityName, int levelOfNotification,String numberOfDaysNotDone) {

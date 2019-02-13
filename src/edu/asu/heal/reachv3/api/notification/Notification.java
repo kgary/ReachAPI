@@ -24,7 +24,7 @@ public class Notification {
 	/****************************************  Notification methods  *************************************************/
 	// Reference 1: http://developine.com/how-to-send-firebase-push-notifications-from-app-server-tutorial/
 	// Reference 2: https://firebase.google.com/docs/cloud-messaging/send-message
-	public void sendNotification(NotificationData data, int patientPin, String serverKey) {
+	public boolean sendNotification(NotificationData data, int patientPin, String serverKey) {
 
 		// move server key to property and add para in method.
 		
@@ -75,10 +75,13 @@ public class Notification {
 
 				}
 			}
+			return true;
 		} catch (RuntimeException runtimeException) {
 			runtimeException.printStackTrace();
+			return false;
 		} catch (Exception exception) {
 			exception.printStackTrace();
+			return false;
 		}
 	}
 
