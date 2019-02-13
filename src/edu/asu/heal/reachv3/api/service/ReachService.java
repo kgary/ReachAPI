@@ -872,7 +872,7 @@ public class ReachService implements HealService {
 
 	private int getTotalActualCountOfActivity(ArrayList<ScheduleArrayJSON> schedule, String activity, int dayOfModule) {
 
-		int counter = dayOfModule-1;
+		int counter = dayOfModule;
 		int totalActualCount =0;
 		while(counter >= 0) {
 			ScheduleArrayJSON obj = schedule.get(counter);
