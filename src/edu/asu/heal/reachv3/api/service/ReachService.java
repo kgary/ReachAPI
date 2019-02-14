@@ -1119,4 +1119,58 @@ public class ReachService implements HealService {
 
 
 	}
+
+	@Override
+	public HashMap<String, Boolean> getActivitySchedule(int patientPin) {
+
+		try {
+			DAO dao = DAOFactory.getTheDAO();
+			HashMap<String,Boolean> rval = new HashMap<String, Boolean>();
+			System.out.println("1");
+			PatientScheduleJSON patientScheduleJSON = dao.getSchedule(patientPin);
+			System.out.println("2");
+			
+			ArrayList<ModuleJSON> moduleJson = patientScheduleJSON.getSchedule();
+
+			System.out.println("3");
+			
+			
+			Integer module =-1;
+			Integer dayOfModule =-1;
+			Integer moduleLen=0;
+
+			Date today = new Date();//new SimpleDateFormat(ReachService.DATE_FORMAT).parse(.toString());
+
+			// create method  to get module and day of module - done
+			HashMap<String, Integer> map = this.getModuleAndDay(moduleJson,today);
+
+			if(map != null) {
+				module = map.get(this.MODULE);
+				dayOfModule = map.get(this.DAY);
+				moduleLen=map.get(this.MODULE_LENGTH);
+			}
+			System.out.println("Module : " + module);
+			System.out.println("Day of module : " + dayOfModule);
+			System.out.println("module len : " + moduleLen);
+			ArrayList<ScheduleArrayJSON> schedule = moduleJson.get(module).getSchedule();
+			ArrayList<ActivityScheduleJSON> activityList = schedule.get(dayOfModule).getActivitySchedule();
+			System.out.println("4");
+			
+			for(ActivityScheduleJSON activity : activityList) {
+				
+				if(activity.getActualCount() < activity.getMinimumCount()) {
+					rval.put(activity.getActivity(), true);
+				}else {
+					rval.put(activity.getActivity(),false);
+				}
+			}
+			System.out.println("Reach  : " + rval);
+			return rval;
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 }

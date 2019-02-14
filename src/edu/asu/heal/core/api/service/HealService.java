@@ -3,6 +3,7 @@ package edu.asu.heal.core.api.service;
 import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface HealService {
@@ -63,5 +64,7 @@ public interface HealService {
 
     /****************************************  Other Service methods  *************************************************/
     void personalizeUserExperience(int patientpin);
+    
+    HashMap<String, Boolean> getActivitySchedule(int patientPin);
 
 }

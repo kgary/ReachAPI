@@ -27,7 +27,7 @@ public class SchedulerMain implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(new HourlyScheduledTask(), 0, 1, TimeUnit.HOURS);
+        service.scheduleAtFixedRate(new HourlyScheduledTask(), 0, 1, TimeUnit.DAYS);
     }
 
     @Override
