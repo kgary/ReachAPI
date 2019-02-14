@@ -4,6 +4,6 @@ import edu.asu.heal.core.api.models.NotificationData;
 
 public interface INotificationInterface {
 	
-	void sendNotification(String activityName, int patientPin, Integer numberOfDaysNotDone, int levelOfNotification);
+	boolean sendNotification(String activityName, int patientPin, Integer numberOfDaysNotDone, int levelOfNotification);
 
 }
