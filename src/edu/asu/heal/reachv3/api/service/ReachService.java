@@ -836,7 +836,7 @@ public class ReachService implements HealService {
 					else {
 						// Do nothing
 					}
-				}else if(days == 2) {
+				}else if(days >= 2) {
 					//not necessarily we sent the L1 on that day. Could have been sent on previous day so check if L2 sent on same day
 					if(activity.getLevelOfUIPersonalization() != 2) {
 						// Level 2
