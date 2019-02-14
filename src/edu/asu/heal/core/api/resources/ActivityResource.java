@@ -413,43 +413,32 @@ public class ActivityResource {
 	@GET
 	@Path("/activityschedule")
 	public Response getActivitySchedule(@QueryParam("patientPin") int patientPin) {
-		//    List<Activity> activities = reachService.getActivities(domain);
-		HashMap<String,Boolean> map = reachService.getActivitySchedule(patientPin);
 
+		HashMap<String,Boolean> map = reachService.getActivitySchedule(patientPin);
 		ObjectMapper mapper = new ObjectMapper();
+		HEALResponse response;
+		HEALResponseBuilder builder;
 		String rval = null;
 		try {
 			rval = mapper.writeValueAsString(map);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		System.out.println("Resource : " + map);
-		HEALResponse response;
-		HEALResponseBuilder builder;
-		try{
 			builder = new HEALResponseBuilder(ActivityResponse.class);
-		}catch (InstantiationException | IllegalAccessException ie){
+		} catch (JsonProcessingException | InstantiationException | IllegalAccessException ie) {
 			ie.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
-
-		
-			if (map == null) {
-				response = builder
-						.setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-						.setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
-						.build();
-			} else {
-				response = builder
-						.setStatusCode(Response.Status.OK.getStatusCode())
-						.setData(rval)
-						.setServerURI(_uri.getBaseUri().toString())
-						.build();
-			}
-		
+		if (map == null) {
+			response = builder
+					.setStatusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+					.setData("SOME SERVER ERROR. PLEASE CONTACT ADMINISTRATOR")
+					.build();
+		} else {
+			response = builder
+					.setStatusCode(Response.Status.OK.getStatusCode())
+					.setData(rval)
+					.setServerURI(_uri.getBaseUri().toString())
+					.build();
+		}
 		return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
-		
+
 	}
 }
