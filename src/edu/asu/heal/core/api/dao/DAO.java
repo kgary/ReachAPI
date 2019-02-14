@@ -68,7 +68,7 @@ public interface DAO {
 
     MakeBelieveSituation getMakeBelieveSituation();
 
-    List<String> getEmotionsActivityInstance(String emotion, Object intensity);
+    List<String> getEmotionsActivityInstance(String emotion, Object intensity, String sessionId);
 
 	MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId);
 	
