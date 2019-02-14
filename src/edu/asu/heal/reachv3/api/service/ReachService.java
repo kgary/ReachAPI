@@ -180,20 +180,10 @@ public class ReachService implements HealService {
 			DAO dao = DAOFactory.getTheDAO();
 			MappingInterface mapper = MappingFactory.getTheMapper();
 			String intensityVal = (String)mapper.intensityMappingToDifficultyLevel(intensity);
-
-			System.out.println("IntensityValue : " + intensityVal);
-
 			PatientScheduleJSON patientSchedule = dao.getSchedule(patientPin);
 			HashMap<String, Integer> modules = getModuleAndDay(patientSchedule.getSchedule(), new Date());
-
 			int module = modules.get(this.MODULE);
-
-			System.out.println("Module :" + module);
 			String sessionId = patientSchedule.getSchedule().get(module).getModule();
-
-
-			System.out.println("Session Id : " + sessionId);
-
 			List<String> results = dao.getEmotionsActivityInstance(emotion.toLowerCase(), intensityVal, sessionId);
 			if(results == null)
 				return "";

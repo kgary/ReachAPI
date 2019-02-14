@@ -217,9 +217,6 @@ public class MongoDBDAO implements DAO {
 			MongoCollection<Activity> activityMongoCollection =
 					database.getCollection(ACTIVITIES_COLLECTION, Activity.class);
 
-			System.out.println("In get activity .... ");
-			System.out.println(activityMongoCollection);
-
 			return activityMongoCollection
 					.find(Filters.eq(Activity.ACTIVITYID_ATTRIBUTE, activityId))
 					.projection(Projections.excludeId())
@@ -870,7 +867,6 @@ public class MongoDBDAO implements DAO {
 					}
 					else {
 						String x[] = doc.getString(Emotions.SUGGESTED_ACTIVITIES).split(",");
-						System.out.println("0 : " + x[0]);
 						Collections.addAll(rval, x);
 					}
 				}
