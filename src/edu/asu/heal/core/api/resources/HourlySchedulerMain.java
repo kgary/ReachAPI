@@ -8,21 +8,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @WebListener
-public class SchedulerMain implements ServletContextListener {
+public class HourlySchedulerMain implements ServletContextListener {
 
     private ScheduledExecutorService service;
-
-//    public static void main(String args[]) throws InterruptedException {
-//
-//        Timer time = new Timer(); // Instantiate Timer Object
-//        HourlyScheduledTask st = new HourlyScheduledTask(); // Instantiate HourlyScheduledTask class
-//        time.schedule(st, 0, 10000); // Create Repetitively task for every 1 secs
-//
-//        //for demo only.
-//        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-//        service.scheduleAtFixedRate(new HourlyScheduledTask(), 0, 10, TimeUnit.SECONDS);
-//
-//    }
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
