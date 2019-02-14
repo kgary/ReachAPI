@@ -5,6 +5,7 @@ import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.reachv3.api.models.*;
 import edu.asu.heal.reachv3.api.models.schedule.PatientScheduleJSON;
 
+import java.util.Date;
 import java.util.List;
 
 public interface DAO {
@@ -104,5 +105,7 @@ public interface DAO {
 
     boolean updateActivityInstanceInPatientSchedule(int patientPin, int module, int day,
     		int indexOfActivity,String activityInstanceId);
+
+    boolean updateResetDate(int patientPin, Date newResetDate, String activityName);
 
 }

@@ -60,6 +60,9 @@ public class ReachService implements HealService {
 	private static String SKILL_MB_L1_MAX = "MakeBelieve.skill_level_1_max";
 	private static String SKILL_MB_L2_MIN = "MakeBelieve.skill_level_2_min";
 	private static String SKILL_MB_L2_MAX = "MakeBelieve.skill_level_2_max";
+	private static String MB_RESET_COUNT = "MakeBeleieve.reset.count";
+	private static String WH_RESET_COUNT = "WorryHeads.reset.count";
+	private static String SU_RESET_COUNT = "StandUp.reset.count";
 
 	private static Properties _properties;
 	static {
@@ -1082,7 +1085,8 @@ public class ReachService implements HealService {
 							result = Double.valueOf((totalScore / totalActtualCount) * 100);
 
 							//set levelOfSkillPersonalization to 1
-							if (result >= l1_min && result < l1_max) {
+							if (result >= l1_min && result < l1_max && 
+									shouldSetNewSkillSet(patientScheduleJSON, today, activityName)) {
 								if (dao.updateLevelOfSkillPersonalization(patientPin, module,
 										dayOfModule, index, 1)) {
 
@@ -1091,7 +1095,8 @@ public class ReachService implements HealService {
 									System.out.println("Skill level updated FAILED !! to level 2");
 								}
 								//set levelOfSkillPersonalization to 2
-							} else if (result >= l2_min && result < l2_max) {
+							} else if (result >= l2_min && result < l2_max && 
+									shouldSetNewSkillSet(patientScheduleJSON, today, activityName)) {
 								if (dao.updateLevelOfSkillPersonalization(patientPin, module,
 										dayOfModule, index, 2)) {
 
@@ -1101,6 +1106,8 @@ public class ReachService implements HealService {
 								}
 
 
+							}else {
+								System.out.println("Skill personalization has already applied for several days.");
 							}
 						}
 
@@ -1145,7 +1152,7 @@ public class ReachService implements HealService {
 			ArrayList<ScheduleArrayJSON> schedule = moduleJson.get(module).getSchedule();
 			ArrayList<ActivityScheduleJSON> activityList = schedule.get(dayOfModule).getActivitySchedule();
 			for(ActivityScheduleJSON activity : activityList) {
-				
+
 				if(activity.getActualCount() < activity.getMinimumCount()) {
 					rval.put(activity.getActivity(), true);
 				}else {
@@ -1153,10 +1160,110 @@ public class ReachService implements HealService {
 				}
 			}
 			return rval;
-			
+
 		}catch(Exception e) {
 			e.printStackTrace();
 		}		
 		return null;
 	}
+
+
+	public boolean shouldSetNewSkillSet(PatientScheduleJSON patientScheduleJSON, Date today, String activityName) {
+		try {
+			DAO dao = DAOFactory.getTheDAO();
+			Integer module=-1, dayOfModule=0, moduleLen=0;
+			ArrayList<ModuleJSON> moduleJson = patientScheduleJSON.getSchedule();
+			HashMap<String, Integer> map = this.getModuleAndDay(moduleJson,today);
+
+			if(map != null) {
+				module = map.get(this.MODULE);
+				dayOfModule = map.get(this.DAY);
+				moduleLen=map.get(this.MODULE_LENGTH);
+			}
+			
+			Integer resetModule=-1, resetDay=0;
+			Date resetDate = new Date();
+			
+			int resetCount =-1;
+			int count =0, levelOfSkill =-1;
+			int prevDay = dayOfModule-1;
+			boolean rval = true;
+			if(module ==-1) {
+
+			}else {
+				switch(activityName) {
+				case "WorryHeads":
+					resetDate = patientScheduleJSON.getWorryHeadsResetDate();
+					resetCount = Integer.parseInt(_properties.getProperty(WH_RESET_COUNT));
+					break;
+				case "MakeBelieve":
+					resetDate = patientScheduleJSON.getMakeBelieveResetDate();
+					resetCount = Integer.parseInt(_properties.getProperty(MB_RESET_COUNT));
+					break;
+				case "SWAP":
+			//		resetCount = Integer.parseInt(_properties.getProperty("SWAP_RESET_COUNT"));
+					break;
+				case "StandUp":
+					resetDate = patientScheduleJSON.getStandUpResetDate();
+					resetCount = Integer.parseInt(_properties.getProperty(SU_RESET_COUNT));
+					break;
+				}
+				HashMap<String, Integer> resetDateMap = this.getModuleAndDay(moduleJson, resetDate);
+				if (resetDateMap != null) {
+					resetModule = resetDateMap.get(this.MODULE);
+					resetDay = resetDateMap.get(this.DAY);
+				}
+				
+				if(resetCount == -1) {
+					System.out.println("Reset count not set for the Activity : " + activityName);
+				}else {
+					ArrayList<ScheduleArrayJSON> schedule =null;
+					while(count < resetCount) {
+						schedule = moduleJson.get(module).getSchedule();
+						if(dayOfModule == 0) {
+							module--;
+							prevDay = moduleJson.get(module).getSchedule().size() -1;
+							if((module==resetModule) && prevDay < resetDay) {
+								break;
+							}
+						}else {
+							ArrayList<ActivityScheduleJSON> activityList = schedule.get(prevDay).getActivitySchedule();
+
+							for(ActivityScheduleJSON activity :activityList) {
+								if(activity.getActivity().equals(activityName)) {
+									if(activity.getLevelofSkillPersonalization() == levelOfSkill) {
+										count++;
+									}else {
+										levelOfSkill = activity.getLevelofSkillPersonalization();
+										dayOfModule--;
+										break;
+									}
+								}
+							}
+						}
+					}
+					if(count == resetCount) {
+						// update reset date
+						if(dao.updateResetDate(patientScheduleJSON.getPin(), new Date(), activityName)) {
+							System.out.println("Reset Date updated for activity : " + activityName);
+						}else {
+							System.out.println("Reset Date FAILED to update for activity : " + activityName);
+						}
+						rval = false;
+					}
+				}
+			}
+			return rval;
+		}catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+
+
+	}
+
+	public boolean updateResetDate() {
+		return false;
+	}
 }
+
