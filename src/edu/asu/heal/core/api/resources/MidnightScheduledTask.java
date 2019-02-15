@@ -17,12 +17,12 @@ public class MidnightScheduledTask extends TimerTask {
 
     @Override
     public void run() {
-        List<Patient> patients = reachService.getPatients("5a946ff566684905df608446");
-        for(int i=0;i<patients.size();i++){
-            service.personalizeSkillSet(patients.get(i).getPin());
-            service.updateBlobTricksCount(patients.get(i).getPin());
-        }
+//        List<Patient> patients = reachService.getPatients("5a946ff566684905df608446");
+//        for(int i=0;i<patients.size();i++){
+//            service.personalizeSkillSet(patients.get(i).getPin());
+//            service.updateBlobTricksCount(patients.get(i).getPin());
+//        }
         now = new Date();
-        System.out.println("Time is :" + now);
+        System.out.println("Time in the midnight is :" + now);
     }
 }

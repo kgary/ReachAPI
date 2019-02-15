@@ -13,11 +13,11 @@ public class HourlyScheduledTask extends TimerTask {
     @Override
     public void run() {
 
-        List<Patient> patients = reachService.getPatients("5a946ff566684905df608446");
-
-        for(int i=0;i<patients.size();i++){
-            reachService.personalizeUserExperience(patients.get(i).getPin());
-        }
+//        List<Patient> patients = reachService.getPatients("5a946ff566684905df608446");
+//
+//        for(int i=0;i<patients.size();i++){
+//            reachService.personalizeUserExperience(patients.get(i).getPin());
+//        }
         now = new Date();
         System.out.println("Time is :" + now);
     }
