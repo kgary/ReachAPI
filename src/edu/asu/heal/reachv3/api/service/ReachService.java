@@ -183,7 +183,11 @@ public class ReachService implements HealService {
 			DAO dao = DAOFactory.getTheDAO();
 			MappingInterface mapper = MappingFactory.getTheMapper();
 			String intensityVal = (String)mapper.intensityMappingToDifficultyLevel(intensity);
-			List<String> results = dao.getEmotionsActivityInstance(emotion.toLowerCase(), intensityVal);
+			PatientScheduleJSON patientSchedule = dao.getSchedule(patientPin);
+			HashMap<String, Integer> modules = getModuleAndDay(patientSchedule.getSchedule(), new Date());
+			int module = modules.get(this.MODULE);
+			String sessionId = patientSchedule.getSchedule().get(module).getModule();
+			List<String> results = dao.getEmotionsActivityInstance(emotion.toLowerCase(), intensityVal, sessionId);
 			if(results == null)
 				return "";
 
@@ -809,62 +813,122 @@ public class ReachService implements HealService {
 			String l2_class = _properties.getProperty("level_2.className");
 
 			int l1_minVal = Double.valueOf(Math.floor(moduleLen/l1_min)).intValue();
-			if((l1_minVal == (moduleLen-l1_max) && days == l1_minVal) || ((l1_minVal != (moduleLen-l1_max))
-					&& (days >= l1_minVal &&
-					days < (moduleLen-l1_max)))) {
-				if(activity.getLevelOfUIPersonalization() == 0) {
-					// Level 1 notification
-					if (l1_class != null) {
-						Class<?> level_1 = Class.forName(l1_class);
-						Constructor<?> constructor = level_1.getConstructor();
-						notificationClass = (INotificationInterface) constructor.newInstance();
-					}
-					if(notificationClass != null) {
-						if(notificationClass.sendNotification(activity.getActivity(), patientPin,
-								days, 1)) {
-							rval = true;
+			
+			if(activity.getActivity().equals("DailyDiary")) {
+				if(days == 1) {
+					if(activity.getLevelOfUIPersonalization() == 0) {
+						// Level 1 notification
+						if (l1_class != null) {
+							Class<?> level_1 = Class.forName(l1_class);
+							Constructor<?> constructor = level_1.getConstructor();
+							notificationClass = (INotificationInterface) constructor.newInstance();
 						}
-						// Updating level of UI personalization in schedule
-						activity.setLevelOfUIPersonalization(1);
-						if(dao.updateUIPersonalization(patientPin, module, dayOfModule,indexOfActivity,1))
-							System.out.println("Update successful");
-						else 
-							System.out.println("Update failed.");	//May need to do something here. Also, add to logs - Vishakha
-					}
-					else {
-						System.out.println("Notification class not set for level 1.");
-					}
+						if(notificationClass != null) {
+							if(notificationClass.sendNotification(activity.getActivity(), patientPin,
+									days, 1)) {
+								rval = true;
+							}
+							// Updating level of UI personalization in schedule
+							activity.setLevelOfUIPersonalization(1);
+							if(dao.updateUIPersonalization(patientPin, module, dayOfModule,indexOfActivity,1))
+								System.out.println("Update successful");
+							else 
+								System.out.println("Update failed.");	//May need to do something here. Also, add to logs - Vishakha
+						}
+						else {
+							System.out.println("Notification class not set for level 1.");
+						}
 
-				}
-				else {
-					// Do nothing
-				}
-			}else if(days >= (moduleLen-l2_min) && days <=moduleLen-l2_max) {
-				//not necessarily we sent the L1 on that day. Could have been sent on previous day so check if L2 sent on same day
-				if(activity.getLevelOfUIPersonalization() != 2) {
-					// Level 2
-					if (l2_class != null) {
-						Class<?> level_2 = Class.forName(l2_class);
-						Constructor<?> constructor = level_2.getConstructor();
-						notificationClass = (INotificationInterface) constructor.newInstance();
-					}
-					if(notificationClass != null) {
-						if(notificationClass.sendNotification(activity.getActivity(), patientPin, days, 2)) {
-							rval =true;
-						}
-						// Updating level of UI personalization in schedule
-						activity.setLevelOfUIPersonalization(2);
-						if(dao.updateUIPersonalization(patientPin, module, dayOfModule,indexOfActivity,2))
-							System.out.println("Update successful");
-						else 
-							System.out.println("Update failed.");
 					}
 					else {
-						System.out.println("Notification class not set for level 2");
+						// Do nothing
+					}
+				}else if(days >= 2) {
+					//not necessarily we sent the L1 on that day. Could have been sent on previous day so check if L2 sent on same day
+					if(activity.getLevelOfUIPersonalization() != 2) {
+						// Level 2
+						if (l2_class != null) {
+							Class<?> level_2 = Class.forName(l2_class);
+							Constructor<?> constructor = level_2.getConstructor();
+							notificationClass = (INotificationInterface) constructor.newInstance();
+						}
+						if(notificationClass != null) {
+							if(notificationClass.sendNotification(activity.getActivity(), patientPin, days, 2)) {
+								rval =true;
+							}
+							// Updating level of UI personalization in schedule
+							activity.setLevelOfUIPersonalization(2);
+							if(dao.updateUIPersonalization(patientPin, module, dayOfModule,indexOfActivity,2))
+								System.out.println("Update successful");
+							else 
+								System.out.println("Update failed.");
+						}
+						else {
+							System.out.println("Notification class not set for level 2");
+						}
+					}
+					else {
+						// Do nothing
 					}
 				}
-				else {
-					// Do nothing
+			}else {
+				if((l1_minVal == (moduleLen-l1_max) && days == l1_minVal) || ((l1_minVal != (moduleLen-l1_max))
+						&& (days >= l1_minVal &&
+						days < (moduleLen-l1_max)))) {
+					if(activity.getLevelOfUIPersonalization() == 0) {
+						// Level 1 notification
+						if (l1_class != null) {
+							Class<?> level_1 = Class.forName(l1_class);
+							Constructor<?> constructor = level_1.getConstructor();
+							notificationClass = (INotificationInterface) constructor.newInstance();
+						}
+						if(notificationClass != null) {
+							if(notificationClass.sendNotification(activity.getActivity(), patientPin,
+									days, 1)) {
+								rval = true;
+							}
+							// Updating level of UI personalization in schedule
+							activity.setLevelOfUIPersonalization(1);
+							if(dao.updateUIPersonalization(patientPin, module, dayOfModule,indexOfActivity,1))
+								System.out.println("Update successful");
+							else 
+								System.out.println("Update failed.");	//May need to do something here. Also, add to logs - Vishakha
+						}
+						else {
+							System.out.println("Notification class not set for level 1.");
+						}
+
+					}
+					else {
+						// Do nothing
+					}
+				}else if(days >= (moduleLen-l2_min) && days <=moduleLen-l2_max) {
+					//not necessarily we sent the L1 on that day. Could have been sent on previous day so check if L2 sent on same day
+					if(activity.getLevelOfUIPersonalization() != 2) {
+						// Level 2
+						if (l2_class != null) {
+							Class<?> level_2 = Class.forName(l2_class);
+							Constructor<?> constructor = level_2.getConstructor();
+							notificationClass = (INotificationInterface) constructor.newInstance();
+						}
+						if(notificationClass != null) {
+							if(notificationClass.sendNotification(activity.getActivity(), patientPin, days, 2)) {
+								rval =true;
+							}
+							// Updating level of UI personalization in schedule
+							activity.setLevelOfUIPersonalization(2);
+							if(dao.updateUIPersonalization(patientPin, module, dayOfModule,indexOfActivity,2))
+								System.out.println("Update successful");
+							else 
+								System.out.println("Update failed.");
+						}
+						else {
+							System.out.println("Notification class not set for level 2");
+						}
+					}
+					else {
+						// Do nothing
+					}
 				}
 			}
 		}catch(Exception e) {
@@ -972,9 +1036,7 @@ public class ReachService implements HealService {
 	}
 
 
-
 	public void personalizeSkillSet(int patientPin){
-
 
 		try {
 			DAO dao = DAOFactory.getTheDAO();
@@ -985,7 +1047,6 @@ public class ReachService implements HealService {
 			Integer module = -1, resetModule=-1;
 			Integer dayOfModule = -1, resetDay=-1;
 			Integer moduleLen = 0;
-
 
 			Date today = new Date();//new SimpleDateFormat(ReachService.DATE_FORMAT).parse(.toString());
 			DateFormat dateFormat = new SimpleDateFormat("HH");
@@ -1040,7 +1101,7 @@ public class ReachService implements HealService {
 							l2_max = Integer.parseInt(_properties.getProperty(SKILL_MB_L2_MAX));
 							break;
 						default:
-							index++;
+							//index++; 
 							continue;
 
 						}
@@ -1090,22 +1151,19 @@ public class ReachService implements HealService {
 								if (dao.updateLevelOfSkillPersonalization(patientPin, module,
 										dayOfModule, index, 1)) {
 
-									System.out.println("Skill level updated successfully to level 2");
+									System.out.println("Skill level updated successfully to level 1");
 								} else {
-									System.out.println("Skill level updated FAILED !! to level 2");
+									System.out.println("Skill level updated FAILED !! to level 1");
 								}
 								//set levelOfSkillPersonalization to 2
 							} else if (result >= l2_min && result < l2_max && 
 									shouldSetNewSkillSet(patientScheduleJSON, today, activityName)) {
 								if (dao.updateLevelOfSkillPersonalization(patientPin, module,
 										dayOfModule, index, 2)) {
-
-									System.out.println("Skill level updated successfully to level 1");
+									System.out.println("Skill level updated successfully to level 2");
 								} else {
-									System.out.println("Skill level updated FAILED !!! to level 1");
+									System.out.println("Skill level updated FAILED !!! to level 2");
 								}
-
-
 							}else {
 								System.out.println("Skill personalization has already applied for several days.");
 							}
@@ -1113,17 +1171,13 @@ public class ReachService implements HealService {
 
 					}
 					index++;
-
 				}
-
 
 			}
 
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-
-
 
 	}
 

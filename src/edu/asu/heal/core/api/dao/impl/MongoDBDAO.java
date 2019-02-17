@@ -217,9 +217,6 @@ public class MongoDBDAO implements DAO {
 			MongoCollection<Activity> activityMongoCollection =
 					database.getCollection(ACTIVITIES_COLLECTION, Activity.class);
 
-			System.out.println("In get activity .... ");
-			System.out.println(activityMongoCollection);
-
 			return activityMongoCollection
 					.find(Filters.eq(Activity.ACTIVITYID_ATTRIBUTE, activityId))
 					.projection(Projections.excludeId())
@@ -849,7 +846,7 @@ public class MongoDBDAO implements DAO {
 	}
 
 	@Override
-	public List<String> getEmotionsActivityInstance(String emotion, Object intensity) {
+	public List<String> getEmotionsActivityInstance(String emotion, Object intensity, String sessionId) {
 		try {
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
 			// needs to incorporate Emotions model. - Task #386
@@ -863,13 +860,13 @@ public class MongoDBDAO implements DAO {
 			while(cursor.hasNext()) {
 				Document doc = cursor.next();
 				String tempIntensity = doc.getString(Emotions.INTENSITY);
-				if(tempIntensity.contains((String)intensity)) {
+				String tempSession = doc.getString(Emotions.SESSION);
+				if(tempIntensity.contains((String)intensity) && tempSession.contains(sessionId)) {
 					if(doc.getString(Emotions.SUGGESTED_ACTIVITIES).length() ==1) {
 						rval.add(doc.getString(Emotions.SUGGESTED_ACTIVITIES));
 					}
 					else {
 						String x[] = doc.getString(Emotions.SUGGESTED_ACTIVITIES).split(",");
-						System.out.println("0 : " + x[0]);
 						Collections.addAll(rval, x);
 					}
 				}
