@@ -1185,9 +1185,10 @@ public class ReachService implements HealService {
 			Date resetDate = new Date();
 			
 			int resetCount =-1;
-			int count =0, levelOfSkill =-1;
+			int count =0, levelOfSkill =2;
 			int prevDay = dayOfModule-1;
 			boolean rval = true;
+			int flag=0;
 			if(module ==-1) {
 
 			}else {
@@ -1220,7 +1221,7 @@ public class ReachService implements HealService {
 					ArrayList<ScheduleArrayJSON> schedule =null;
 					while(count < resetCount) {
 						schedule = moduleJson.get(module).getSchedule();
-						if(dayOfModule == 0) {
+						if(prevDay == -1) {
 							module--;
 							prevDay = moduleJson.get(module).getSchedule().size() -1;
 							if((module==resetModule) && prevDay < resetDay) {
@@ -1232,17 +1233,18 @@ public class ReachService implements HealService {
 							for(ActivityScheduleJSON activity :activityList) {
 								if(activity.getActivity().equals(activityName)) {
 									if(activity.getLevelofSkillPersonalization() == levelOfSkill) {
-										count++;
+										flag++;
 									}else {
 										levelOfSkill = activity.getLevelofSkillPersonalization();
-										dayOfModule--;
+										prevDay--;
 										break;
 									}
 								}
 							}
 						}
+						count++;
 					}
-					if(count == resetCount) {
+					if(flag == resetCount) {
 						// update reset date
 						if(dao.updateResetDate(patientScheduleJSON.getPin(), new Date(), activityName)) {
 							System.out.println("Reset Date updated for activity : " + activityName);
