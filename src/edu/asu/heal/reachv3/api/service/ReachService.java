@@ -295,6 +295,15 @@ public class ReachService implements HealService {
 						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 						activityInstance.getInstanceOf(), activityInstance.getState(),
 						activityInstance.getPatientPin(), dao.getStandUpSituations(), activityInstance.getActivityGlowing());
+			}else if (activityInstance.getInstanceOf().getName().equals("SUDS")) {
+				activityInstance = new SUDSActivityInstance(
+						activityInstance.getActivityInstanceId(),
+						activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
+						activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
+						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
+						activityInstance.getInstanceOf(), activityInstance.getState(),
+						activityInstance.getPatientPin(), 
+						activityInstance.getActivityGlowing(), dao.getSUDSQuestion());
 			}
 			ActivityInstance newActivityInstance = dao.createActivityInstance(activityInstance);
 
@@ -404,6 +413,9 @@ public class ReachService implements HealService {
 				instance.setUpdatedAt(new Date());  
 			}else if(activityInstanceType.equals("Emotion")){
 				instance = mapper.readValue(requestBody, Emotions.class);
+				instance.setUpdatedAt(new Date());  
+			}else if(activityInstanceType.equals("SUDS")){
+				instance = mapper.readValue(requestBody, SUDSActivityInstance.class);
 				instance.setUpdatedAt(new Date());  
 			}else{
 				instance  = mapper.readValue(requestBody, ActivityInstance.class);
