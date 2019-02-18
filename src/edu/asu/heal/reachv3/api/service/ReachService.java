@@ -40,6 +40,7 @@ public class ReachService implements HealService {
 
 	private static final String DATE_FORMAT = "MM/dd/yyyy";
 	private static String days;
+	private static String TRIAL_NAME="Compass";
 	private static String MODULE="module";
 	private static String DAY="day";
 	private static String MODULE_LENGTH="moduleLength";
@@ -214,7 +215,7 @@ public class ReachService implements HealService {
 
 			// Code to log state of activity instance in the Mongo...
 
-			String trialTitle = "Compass"; // Refactor : needs to be done in a better way...
+			String trialTitle = TRIAL_NAME; // Refactor : needs to be done in a better way...
 			SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
 			String date = timeStampFormat.format(new Date());
 			Integer ppin = instance.getPatientPin();
@@ -345,7 +346,7 @@ public class ReachService implements HealService {
 			} finally {
 				// Code to log state of activity instance in the Mongo...
 
-				String trialTitle = "Compass"; // Refactor : needs to be done in a better way...
+				String trialTitle = TRIAL_NAME; // Refactor : needs to be done in a better way...
 				SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
 				String date = timeStampFormat.format(new Date());
 				Integer ppin = newActivityInstance.getPatientPin();
@@ -425,7 +426,7 @@ public class ReachService implements HealService {
 
 			// Code to log state of activity instance in the Mongo...
 
-			String trialTitle = "Compass"; // Refactor : needs to be done in a better way...
+			String trialTitle = TRIAL_NAME; // Refactor : needs to be done in a better way...
 			SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
 			String date = timeStampFormat.format(new Date());
 			Integer ppin = instance.getPatientPin();
@@ -692,6 +693,18 @@ public class ReachService implements HealService {
 		}
 	}
 
+	@Override
+	public String getTrialIdByTitle(String trialName) {
+		try {
+			DAO dao = DAOFactory.getTheDAO();
+
+			String trialId = dao.getTrialIdByTitle(trialName);
+			return trialId;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	/****************************************  Service methods for Logger *********************************************/
 	@Override
 	public Logger[] logMessage(Logger[] loggerInstance) {
@@ -705,12 +718,20 @@ public class ReachService implements HealService {
 			return null;
 		}
 	}
+	
+	@Override
+	public Logger[] logPersonalizationMessage(Logger[] loggerInstance) {
+		try {
+			DAO dao = DAOFactory.getTheDAO();
 
-	/****************************************  Notification methods  *************************************************/
-	// Reference 1: http://developine.com/how-to-send-firebase-push-notifications-from-app-server-tutorial/
-	// Reference 2: https://firebase.google.com/docs/cloud-messaging/send-message
-	public void sendNotification(NotificationData data, int patientPin) {
+			Logger[] logger = dao.logPersonalizationMessage(loggerInstance);
+			return logger;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
+
 
 	/****************************************  Personalization methods  *************************************************/
 
@@ -803,13 +824,26 @@ public class ReachService implements HealService {
 
 	}
 
-
+	@Override
 	public boolean sendNotification(int patientPin,int module, int moduleLen, int dayOfModule, 
 			int indexOfActivity, int days, ActivityScheduleJSON activity) {
 
 		boolean rval = false;
 
 		try {
+			Logger log;
+			String trialTitle = TRIAL_NAME; // Refactor : needs to be done in a better way...
+			SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
+			String date = timeStampFormat.format(new Date());
+			Integer ppin = Integer.valueOf(patientPin);
+			String metaData ="";
+			String level="";
+			String activityVal = "ACTIVITY_NAME";
+			String levelOfUXP= "LEVEL_OF_PERSONALIZATION";
+			String type ="PERSONALIZATION";
+			String format = "JSON";
+			String subType = "UX";
+			
 			INotificationInterface notificationClass = null;
 			DAO dao = DAOFactory.getTheDAO();
 
@@ -836,6 +870,9 @@ public class ReachService implements HealService {
 							if(notificationClass.sendNotification(activity.getActivity(), patientPin,
 									days, 1)) {
 								rval = true;
+								metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
+										+ "\""+levelOfUXP+"\" : \"1\" } ";
+								level="SENT";
 							}
 							// Updating level of UI personalization in schedule
 							activity.setLevelOfUIPersonalization(1);
@@ -846,6 +883,9 @@ public class ReachService implements HealService {
 						}
 						else {
 							System.out.println("Notification class not set for level 1.");
+							metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
+									+ "\""+levelOfUXP+"\" : \"1\" } ";
+							level="NOT_SENT";
 						}
 
 					}
@@ -864,6 +904,9 @@ public class ReachService implements HealService {
 						if(notificationClass != null) {
 							if(notificationClass.sendNotification(activity.getActivity(), patientPin, days, 2)) {
 								rval =true;
+								metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
+										+ "\""+levelOfUXP+"\" : \"2\" } ";
+								level="SENT";
 							}
 							// Updating level of UI personalization in schedule
 							activity.setLevelOfUIPersonalization(2);
@@ -873,6 +916,9 @@ public class ReachService implements HealService {
 								System.out.println("Update failed.");
 						}
 						else {
+							metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
+									+ "\""+levelOfUXP+"\" : \"2\" } ";
+							level="NOT_SENT";
 							System.out.println("Notification class not set for level 2");
 						}
 					}
@@ -895,6 +941,9 @@ public class ReachService implements HealService {
 							if(notificationClass.sendNotification(activity.getActivity(), patientPin,
 									days, 1)) {
 								rval = true;
+								metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
+										+ "\""+levelOfUXP+"\" : \"1\" } ";
+								level="SENT";
 							}
 							// Updating level of UI personalization in schedule
 							activity.setLevelOfUIPersonalization(1);
@@ -904,6 +953,9 @@ public class ReachService implements HealService {
 								System.out.println("Update failed.");	//May need to do something here. Also, add to logs - Vishakha
 						}
 						else {
+							metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
+									+ "\""+levelOfUXP+"\" : \"1\" } ";
+							level="NOT_SENT";
 							System.out.println("Notification class not set for level 1.");
 						}
 
@@ -923,6 +975,9 @@ public class ReachService implements HealService {
 						if(notificationClass != null) {
 							if(notificationClass.sendNotification(activity.getActivity(), patientPin, days, 2)) {
 								rval =true;
+								metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
+										+ "\""+levelOfUXP+"\" : \"2\" } ";
+								level="SENT";
 							}
 							// Updating level of UI personalization in schedule
 							activity.setLevelOfUIPersonalization(2);
@@ -932,6 +987,9 @@ public class ReachService implements HealService {
 								System.out.println("Update failed.");
 						}
 						else {
+							metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
+									+ "\""+levelOfUXP+"\" : \"2\" } ";
+							level="NOT_SENT";
 							System.out.println("Notification class not set for level 2");
 						}
 					}
@@ -940,6 +998,15 @@ public class ReachService implements HealService {
 					}
 				}
 			}
+			log = new Logger(dao.getTrialIdByTitle(trialTitle),date,level,
+					type, format, subType, ppin.toString(), metaData);
+			ArrayList<Logger> al = new ArrayList<Logger>();
+			al.add(log);
+			Logger[] logs = new Logger[al.size()];
+
+			logs = al.toArray(logs);
+			dao.logPersonalizationMessage(logs);
+			
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -963,6 +1030,7 @@ public class ReachService implements HealService {
 		return totalActualCount;
 
 	}
+	
 	private int getNotDoneDays(ArrayList<ScheduleArrayJSON> schedule, String activity, int dayOfModule) {
 
 		int counter = dayOfModule-1;
@@ -1013,7 +1081,6 @@ public class ReachService implements HealService {
 		}
 	}
 
-
 	public int getBlobTricks(int patientPin) {
 		try {
 			Date today = new Date();
@@ -1044,10 +1111,22 @@ public class ReachService implements HealService {
 		}
 	}
 
-
 	public void personalizeSkillSet(int patientPin){
 
 		try {
+			Logger log;
+			String trialTitle = TRIAL_NAME; // Refactor : needs to be done in a better way...
+			SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
+			String date = timeStampFormat.format(new Date());
+			Integer ppin = Integer.valueOf(patientPin);
+			String metaData ="";
+			String level="";
+			String activityVal = "ACTIVITY_NAME";
+			String levelOfUXP= "LEVEL_OF_PERSONALIZATION";
+			String type ="PERSONALIZATION";
+			String format = "JSON";
+			String subType = "SKILL";
+			
 			DAO dao = DAOFactory.getTheDAO();
 			PatientScheduleJSON patientScheduleJSON = dao.getSchedule(patientPin);
 
@@ -1157,19 +1236,31 @@ public class ReachService implements HealService {
 							//set levelOfSkillPersonalization to 1
 							if (result >= l1_min && result < l1_max) {
 
+								
 								if (dao.updateLevelOfSkillPersonalization(patientPin, module,
 										dayOfModule, index, 1)) {
-
+									metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
+											+ "\""+levelOfUXP+"\" : \"1\" } ";
+									level="UPDATED_SKILL_LEVEL";
 									System.out.println("Skill level updated successfully to level 1");
 								} else {
+									metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
+											+ "\""+levelOfUXP+"\" : \"1\" } ";
+									level="NOT_UPDATED_SKILL_LEVEL";
 									System.out.println("Skill level updated FAILED !! to level 1");
 								}
 								//set levelOfSkillPersonalization to 2
 							} else if (result >= l2_min && result < l2_max) {
 								if (dao.updateLevelOfSkillPersonalization(patientPin, module,
 										dayOfModule, index, 2)) {
+									metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
+											+ "\""+levelOfUXP+"\" : \"2\" } ";
+									level="UPDATED_SKILL_LEVEL";
 									System.out.println("Skill level updated successfully to level 2");
 								} else {
+									metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
+											+ "\""+levelOfUXP+"\" : \"2\" } ";
+									level="NOT_UPDATED_SKILL_LEVEL";
 									System.out.println("Skill level updated FAILED !!! to level 2");
 								}
 							}
@@ -1180,7 +1271,15 @@ public class ReachService implements HealService {
 				}
 
 			}
+			log = new Logger(dao.getTrialIdByTitle(trialTitle),date,level,
+					type, format, subType, ppin.toString(), metaData);
+			ArrayList<Logger> al = new ArrayList<Logger>();
+			al.add(log);
+			Logger[] logs = new Logger[al.size()];
 
+			logs = al.toArray(logs);
+			dao.logPersonalizationMessage(logs);
+			
 		}catch (Exception e){
 			e.printStackTrace();
 		}
