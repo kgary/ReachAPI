@@ -105,4 +105,5 @@ public interface DAO {
     boolean updateActivityInstanceInPatientSchedule(int patientPin, int module, int day,
     		int indexOfActivity,String activityInstanceId);
 
+    SUDSQuestion getSUDSQuestion();
 }
