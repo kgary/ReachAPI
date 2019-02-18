@@ -441,4 +441,29 @@ public class ActivityResource {
 		return Response.status(response.getStatusCode()).entity(response.toEntity()).build();
 
 	}
+
+	/** @apiDefine ActivityNotFoundError
+	 * @apiError (Error 4xx) {404} NotFound Activity cannot be found
+	 * */
+
+	/**
+	 * @apiDefine InternalServerError
+	 * @apiError (Error 5xx) {500} InternalServerError Something went wrong at server, Please contact the administrator!
+	 * */
+
+	/**
+	 * @api {get} /activities/ping Get list of Activities for a given domain
+	 * @apiName GetActivities
+	 * @apiGroup Activity
+	 * @apiParam {String} domain Domain name for which activities are to be fetched. Use "_" in place of space
+	 * character. Case sensitive.
+	 * @apiUse ActivityNotFoundError
+	 * @apiUse InternalServerError
+	 */
+	@GET
+	@Path("/ping")
+	public Response ping() {
+		return Response.status(Response.Status.OK).build();
+
+	}
 }
