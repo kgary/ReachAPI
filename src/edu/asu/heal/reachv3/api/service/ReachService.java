@@ -13,6 +13,7 @@ import edu.asu.heal.reachv3.api.models.schedule.ScheduleArrayJSON;
 import edu.asu.heal.reachv3.api.notification.INotificationInterface;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -1057,8 +1058,10 @@ public class ReachService implements HealService {
 		try {
 			for(int i =0; i<moduleJson.size(); i++) {
 
-				Date startDate= moduleJson.get(i).getStartDate();// new SimpleDateFormat(ReachService.DATE_FORMAT).parse(.toString());
-				Date endDate = moduleJson.get(i).getEndDate(); //new SimpleDateFormat(ReachService.DATE_FORMAT).parse(.toString());
+				Date startDate= getDateWithoutTime(moduleJson.get(i).getStartDate());// new SimpleDateFormat(ReachService.DATE_FORMAT).parse(.toString());
+				Date endDate = getDateWithoutTime(moduleJson.get(i).getEndDate()); //new SimpleDateFormat(ReachService.DATE_FORMAT).parse(.toString());
+
+				today = getDateWithoutTime(today);
 
 				if(today.compareTo(startDate) >= 0 && today.compareTo(endDate) <=0) {
 
@@ -1079,6 +1082,17 @@ public class ReachService implements HealService {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public static Date getDateWithoutTime(Date date) throws ParseException {
+		try {
+			SimpleDateFormat formatter = new SimpleDateFormat(
+					"dd/MM/yyyy");
+			return formatter.parse(formatter.format(date));
+		} catch (java.text.ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public int getBlobTricks(int patientPin) {
@@ -1208,6 +1222,12 @@ public class ReachService implements HealService {
 
 						while((currModule > resetModule) || (currModule == resetModule && prevDay >= resetDay)) {
 
+							if (prevDay < 0) {
+								currModule--;
+								currentModuleSchedule = moduleJson.get(currModule).getSchedule();
+								prevDay = currentModuleSchedule.size() - 1;
+							}
+
 							ArrayList<ActivityScheduleJSON> actList = currentModuleSchedule.get(prevDay)
 									.getActivitySchedule();
 
@@ -1222,11 +1242,7 @@ public class ReachService implements HealService {
 								}
 							}
 							prevDay--;
-							if (prevDay < 0) {
-								currModule--;
-								currentModuleSchedule = moduleJson.get(currModule).getSchedule();
-								prevDay = currentModuleSchedule.size() - 1;
-							}
+
 
 						}
 						Double result=0.0;
