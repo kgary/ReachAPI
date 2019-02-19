@@ -221,7 +221,7 @@ public class ReachService implements HealService {
 			String date = timeStampFormat.format(new Date());
 			Integer ppin = instance.getPatientPin();
 			String metaData = "{ \"activityInstanceId :\" \"" + instance.getActivityInstanceId() + "\" , \"ACTIVITY_INSTANCE_STATE\" : \"" + ActivityInstanceStatus.IN_EXECUTION.status() + "\" } ";
-			Logger log = new Logger(dao.getTrialIdByTitle(trialTitle), date, "INFO", "ACTIVITY_STATE", "JSON",
+			Logger log = new Logger(dao.getTrialIdByTitle(trialTitle), date, "INFO", "ACTIVITY_INSTANCE_STATE", "JSON",
 					instance.getInstanceOf().getName(), ppin.toString(), metaData);
 
 			ArrayList<Logger> al = new ArrayList<Logger>();
@@ -353,7 +353,7 @@ public class ReachService implements HealService {
 				Integer ppin = newActivityInstance.getPatientPin();
 				String metaData = "{ \"activityInstanceId :\" \"" + activityInstance.getActivityInstanceId() + "\" , " +
 						"\"ACTIVITY_INSTANCE_STATE\" : \"" + ActivityInstanceStatus.CREATED.status() + "\" } ";
-				Logger log = new Logger(dao.getTrialIdByTitle(trialTitle), date, "INFO", "ACTIVITY_STATE",
+				Logger log = new Logger(dao.getTrialIdByTitle(trialTitle), date, "INFO", "ACTIVITY_INSTANCE_STATE",
 						"JSON", activityInstance.getInstanceOf().getName(), ppin.toString(), metaData);
 
 				ArrayList<Logger> al = new ArrayList<Logger>();
@@ -432,7 +432,7 @@ public class ReachService implements HealService {
 			String date = timeStampFormat.format(new Date());
 			Integer ppin = instance.getPatientPin();
 			String metaData = "{ \"activityInstanceId :\" \"" + instance.getActivityInstanceId() + "\" , \"ACTIVITY_INSTANCE_STATE\" : \"" + instance.getState() + "\" } ";
-			Logger log = new Logger(dao.getTrialIdByTitle(trialTitle), date, "INFO", "ACTIVITY_STATE", "JSON",
+			Logger log = new Logger(dao.getTrialIdByTitle(trialTitle), date, "INFO", "ACTIVITY_INSTANCE_STATE", "JSON",
 					instance.getInstanceOf().getName(), ppin.toString(), metaData);
 
 			ArrayList<Logger> al = new ArrayList<Logger>();
