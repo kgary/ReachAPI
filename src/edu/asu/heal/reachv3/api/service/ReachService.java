@@ -844,6 +844,7 @@ public class ReachService implements HealService {
 			String type ="PERSONALIZATION";
 			String format = "JSON";
 			String subType = "UX";
+			String notDoneDays = "NOT_DONE_DAYS";
 			
 			INotificationInterface notificationClass = null;
 			DAO dao = DAOFactory.getTheDAO();
@@ -872,20 +873,23 @@ public class ReachService implements HealService {
 									days, 1)) {
 								rval = true;
 								metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
-										+ "\""+levelOfUXP+"\" : \"1\" } ";
+										+ "\""+levelOfUXP+"\" : \"1\" ,"
+												+ "\""+notDoneDays+"\" : "+days+"\" } ";
 								level="SENT";
+								// Updating level of UI personalization in schedule
+								activity.setLevelOfUIPersonalization(1);
+								if(dao.updateUIPersonalization(patientPin, module, dayOfModule,indexOfActivity,1))
+									System.out.println("Update successful");
+								else 
+									System.out.println("Update failed.");	//May need to do something here. Also, add to logs - Vishakha
 							}
-							// Updating level of UI personalization in schedule
-							activity.setLevelOfUIPersonalization(1);
-							if(dao.updateUIPersonalization(patientPin, module, dayOfModule,indexOfActivity,1))
-								System.out.println("Update successful");
-							else 
-								System.out.println("Update failed.");	//May need to do something here. Also, add to logs - Vishakha
+							
 						}
 						else {
 							System.out.println("Notification class not set for level 1.");
 							metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
-									+ "\""+levelOfUXP+"\" : \"1\" } ";
+									+ "\""+levelOfUXP+"\" : \"1\" ,"
+											+ "\""+notDoneDays+"\" : "+days+"\" } ";
 							level="NOT_SENT";
 						}
 
@@ -906,19 +910,22 @@ public class ReachService implements HealService {
 							if(notificationClass.sendNotification(activity.getActivity(), patientPin, days, 2)) {
 								rval =true;
 								metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
-										+ "\""+levelOfUXP+"\" : \"2\" } ";
+										+ "\""+levelOfUXP+"\" : \"2\" ,"
+												+ "\""+notDoneDays+"\" : "+days+"\" } ";
 								level="SENT";
+								// Updating level of UI personalization in schedule
+								activity.setLevelOfUIPersonalization(2);
+								if(dao.updateUIPersonalization(patientPin, module, dayOfModule,indexOfActivity,2))
+									System.out.println("Update successful");
+								else 
+									System.out.println("Update failed.");
 							}
-							// Updating level of UI personalization in schedule
-							activity.setLevelOfUIPersonalization(2);
-							if(dao.updateUIPersonalization(patientPin, module, dayOfModule,indexOfActivity,2))
-								System.out.println("Update successful");
-							else 
-								System.out.println("Update failed.");
+							
 						}
 						else {
 							metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
-									+ "\""+levelOfUXP+"\" : \"2\" } ";
+									+ "\""+levelOfUXP+"\" : \"2\" ,"
+											+ "\""+notDoneDays+"\" : "+days+"\" } ";
 							level="NOT_SENT";
 							System.out.println("Notification class not set for level 2");
 						}
@@ -943,19 +950,22 @@ public class ReachService implements HealService {
 									days, 1)) {
 								rval = true;
 								metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
-										+ "\""+levelOfUXP+"\" : \"1\" } ";
+										+ "\""+levelOfUXP+"\" : \"1\" ,"
+												+ "\""+notDoneDays+"\" : "+days+"\" } ";
 								level="SENT";
+								// Updating level of UI personalization in schedule
+								activity.setLevelOfUIPersonalization(1);
+								if(dao.updateUIPersonalization(patientPin, module, dayOfModule,indexOfActivity,1))
+									System.out.println("Update successful");
+								else 
+									System.out.println("Update failed.");	//May need to do something here. Also, add to logs - Vishakha
 							}
-							// Updating level of UI personalization in schedule
-							activity.setLevelOfUIPersonalization(1);
-							if(dao.updateUIPersonalization(patientPin, module, dayOfModule,indexOfActivity,1))
-								System.out.println("Update successful");
-							else 
-								System.out.println("Update failed.");	//May need to do something here. Also, add to logs - Vishakha
+						
 						}
 						else {
 							metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
-									+ "\""+levelOfUXP+"\" : \"1\" } ";
+									+ "\""+levelOfUXP+"\" : \"1\" ,"
+											+ "\""+notDoneDays+"\" : "+days+"\" } ";
 							level="NOT_SENT";
 							System.out.println("Notification class not set for level 1.");
 						}
@@ -977,19 +987,22 @@ public class ReachService implements HealService {
 							if(notificationClass.sendNotification(activity.getActivity(), patientPin, days, 2)) {
 								rval =true;
 								metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
-										+ "\""+levelOfUXP+"\" : \"2\" } ";
+										+ "\""+levelOfUXP+"\" : \"2\" ,"
+												+ "\""+notDoneDays+"\" : "+days+"\" } ";
 								level="SENT";
+								// Updating level of UI personalization in schedule
+								activity.setLevelOfUIPersonalization(2);
+								if(dao.updateUIPersonalization(patientPin, module, dayOfModule,indexOfActivity,2))
+									System.out.println("Update successful");
+								else 
+									System.out.println("Update failed.");
 							}
-							// Updating level of UI personalization in schedule
-							activity.setLevelOfUIPersonalization(2);
-							if(dao.updateUIPersonalization(patientPin, module, dayOfModule,indexOfActivity,2))
-								System.out.println("Update successful");
-							else 
-								System.out.println("Update failed.");
+							
 						}
 						else {
 							metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
-									+ "\""+levelOfUXP+"\" : \"2\" } ";
+									+ "\""+levelOfUXP+"\" : \"2\" ,"
+											+ "\""+notDoneDays+"\" : "+days+"\" } ";
 							level="NOT_SENT";
 							System.out.println("Notification class not set for level 2");
 						}
