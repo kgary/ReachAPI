@@ -1069,7 +1069,8 @@ public class ReachService implements HealService {
 					long diffTime = today.getTime() - startDate.getTime();
 					Long d = TimeUnit.DAYS.convert(diffTime, TimeUnit.MILLISECONDS);
 					rval.put(this.DAY,d.intValue());
-					Long moduleLen =TimeUnit.DAYS.convert(endDate.getTime() - startDate.getTime(),TimeUnit.MILLISECONDS);
+					Long moduleLen =TimeUnit.DAYS.convert(endDate.getTime() -
+							startDate.getTime(),TimeUnit.MILLISECONDS)+1;
 					rval.put(this.MODULE_LENGTH, moduleLen.intValue());
 					System.out.println("Map in getModuleAndDay : " + rval);
 					break;
