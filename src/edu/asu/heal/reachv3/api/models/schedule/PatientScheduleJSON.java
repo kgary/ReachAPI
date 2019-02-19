@@ -13,9 +13,37 @@ public class PatientScheduleJSON {
     private Date worryHeadsResetDate;
     private Date standUpResetDate;
     private Date makeBelieveResetDate;
+    private Date worryHeadsStartDate;
+    private Date standUpStartDate;
+    private Date makeBelieveStartDate;
 
 
-    public int getPin() {
+    
+    public Date getWorryHeadsStartDate() {
+		return worryHeadsStartDate;
+	}
+
+	public void setWorryHeadsStartDate(Date worryHeadsStartDate) {
+		this.worryHeadsStartDate = worryHeadsStartDate;
+	}
+
+	public Date getStandUpStartDate() {
+		return standUpStartDate;
+	}
+
+	public void setStandUpStartDate(Date standUpStartDate) {
+		this.standUpStartDate = standUpStartDate;
+	}
+
+	public Date getMakeBelieveStartDate() {
+		return makeBelieveStartDate;
+	}
+
+	public void setMakeBelieveStartDate(Date makeBelieveStartDate) {
+		this.makeBelieveStartDate = makeBelieveStartDate;
+	}
+
+	public int getPin() {
         return pin;
     }
 

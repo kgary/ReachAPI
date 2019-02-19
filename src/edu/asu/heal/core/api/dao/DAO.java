@@ -63,12 +63,14 @@ public interface DAO {
 
     /****************************************  Logger DAO methods *****************************************************/
     Logger[] logMessage (Logger[] loggerInstance);
+    
+    Logger[] logPersonalizationMessage (Logger[] loggerInstance);
 
     /****************************************  Other DAO methods ******************************************************/
 
     MakeBelieveSituation getMakeBelieveSituation();
 
-    List<String> getEmotionsActivityInstance(String emotion, Object intensity);
+    List<String> getEmotionsActivityInstance(String emotion, Object intensity, String sessionId);
 
 	MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId);
 	
@@ -105,4 +107,5 @@ public interface DAO {
     boolean updateActivityInstanceInPatientSchedule(int patientPin, int module, int day,
     		int indexOfActivity,String activityInstanceId);
 
+    SUDSQuestion getSUDSQuestion();
 }
