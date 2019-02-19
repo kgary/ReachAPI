@@ -17,7 +17,6 @@ public class HourlyScheduledTask extends TimerTask {
 	Date now;
 	@Override
 	public void run() {
-
 		try {
 			List<Patient> patients = reachService.getPatients("5a946ff566684905df608446");
 
@@ -56,3 +55,4 @@ public class HourlyScheduledTask extends TimerTask {
 		}
 	}
 }
+
