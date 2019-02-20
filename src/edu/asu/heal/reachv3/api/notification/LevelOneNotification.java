@@ -23,9 +23,9 @@ public class LevelOneNotification implements INotificationInterface {
 		try {
 			String data = readFile("notificationData.json");
 			notificationData = new JSONObject(data);
-			
+
 			_properties = new Properties();
-			InputStream propFile = DAOFactory.class.getResourceAsStream("urls.properties");
+			InputStream propFile = LevelOneNotification.class.getResourceAsStream("urls.properties");
 			_properties.load(propFile);
 			propFile.close();
 		}catch(Exception e) {
@@ -40,8 +40,9 @@ public class LevelOneNotification implements INotificationInterface {
 	public boolean sendNotification(String activityName, int patientPin, Integer numberOfDaysNotDone, int levelOfNotification) {
 		String details = getNotifiactionDetails(activityName,levelOfNotification, numberOfDaysNotDone.toString());
 		String url = _properties.getProperty(activityName);
+
 		String serverKey = _properties.getProperty("serverKey");
-		
+
 		NotificationData data = new NotificationData(details, null, url, levelOfNotification);
 		Notification obj = new Notification();
 		if(obj.sendNotification(data, patientPin, serverKey)) {

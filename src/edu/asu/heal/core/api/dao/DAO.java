@@ -64,6 +64,8 @@ public interface DAO {
 
     /****************************************  Logger DAO methods *****************************************************/
     Logger[] logMessage (Logger[] loggerInstance);
+    
+    Logger[] logPersonalizationMessage (Logger[] loggerInstance);
 
     /****************************************  Other DAO methods ******************************************************/
 
@@ -108,4 +110,5 @@ public interface DAO {
 
     boolean updateResetDate(int patientPin, Date newResetDate, String activityName);
 
+    SUDSQuestion getSUDSQuestion();
 }

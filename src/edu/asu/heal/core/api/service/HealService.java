@@ -2,6 +2,7 @@ package edu.asu.heal.core.api.service;
 
 import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
+import edu.asu.heal.reachv3.api.models.schedule.ActivityScheduleJSON;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,12 +56,17 @@ public interface HealService {
     List<Trial> getTrials(String domain);
 
     Trial addTrial(Trial trialInstance);
+    
+    String getTrialIdByTitle(String trialName);
 
     /****************************************  Service methods for Logger  ********************************************/
     Logger[] logMessage (Logger[] loggerInstance);
+    
+    Logger[] logPersonalizationMessage (Logger[] loggerInstance);
 
     /****************************************  Notification methods  *************************************************/
-    void sendNotification(NotificationData data, int patientPin);
+    boolean sendNotification(int patientPin,int module, int moduleLen, int dayOfModule, 
+			int indexOfActivity, int days, ActivityScheduleJSON activity);
 
     /****************************************  Other Service methods  *************************************************/
     void personalizeUserExperience(int patientpin);

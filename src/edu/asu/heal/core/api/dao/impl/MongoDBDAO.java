@@ -18,6 +18,8 @@ import edu.asu.heal.reachv3.api.models.BlobTricks;
 import edu.asu.heal.reachv3.api.models.Emotions;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
+import edu.asu.heal.reachv3.api.models.SUDSActivityInstance;
+import edu.asu.heal.reachv3.api.models.SUDSQuestion;
 import edu.asu.heal.reachv3.api.models.StandUpActivityInstance;
 import edu.asu.heal.reachv3.api.models.StandUpSituation;
 import edu.asu.heal.reachv3.api.models.FaceitActivityInstance;
@@ -51,8 +53,10 @@ public class MongoDBDAO implements DAO {
 	private static final String STANDUPSITUATIONS_COLLECTION = "standUpSituations";
 	private static final String SCHEDULE_COLLECTION = "schedule";
 	private static final String LOGGER_COLLECTION = "logger";
-	private static final String EMOTIONS_COLLECTION = "emotions";
+	private static final String PERSONALIZE_LOGGER_COLLECTION = "personalizelogger";
+	private static final String EMOTIONS_COLLECTION = "emotion";
 	private static final String BLOB_COLLECTION = "blobtricks";
+	private static final String SUDS_COLLECTION = "suds";
 
 
 	private static String __mongoDBName;
@@ -65,25 +69,6 @@ public class MongoDBDAO implements DAO {
 		__mongoURI = properties.getProperty("mongo.uri");
 		__mongoDBName = properties.getProperty("mongo.dbname");
 
-		//		try {
-		//			//	Properties properties1 = new Properties();
-		//		//	properties1.load(MongoDBDAO.class.getResourceAsStream("emotions.properties"));
-		//			//	
-		//			//			emotionsMap.put(Emotions.happy.toString(),
-		//			//					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.happy").split(","))));
-		//			//			emotionsMap.put(Emotions.sad.toString(),
-		//			//					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.sad").split(","))));
-		//			//			emotionsMap.put(Emotions.sick.toString(),
-		//			//					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.sick").split(","))));
-		//			//			emotionsMap.put(Emotions.angry.toString(),
-		//			//					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.angry").split(","))));
-		//			//			emotionsMap.put(Emotions.scared.toString(),
-		//			//					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.scared").split(","))));
-		//			//			emotionsMap.put(Emotions.worried.toString(),
-		//			//					new ArrayList<>(Arrays.asList(properties1.getProperty("emotions.worried").split(","))));
-		//					}catch (IOException e){
-		//						e.printStackTrace();
-		//					}
 	}
 
 	private static MongoClient mongoClient  = null;
@@ -773,6 +758,32 @@ public class MongoDBDAO implements DAO {
 			return null;
 		}
 	}
+	
+	@Override
+	public Logger[] logPersonalizationMessage (Logger[] loggerInstance) {
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<Trial> trialsCollection = MongoDBDAO.getConnectedDatabase()
+					.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
+
+			MongoCollection<Logger> loggerCollection = database.getCollection(MongoDBDAO.PERSONALIZE_LOGGER_COLLECTION,
+					Logger.class);
+			for (Logger log: loggerInstance) {
+				String trialId = log.getTrialId();
+
+				Trial trial = trialsCollection.find(Filters.eq(Trial.TRIALID_ATTRIBUTE, trialId)).first();
+
+				if(trial != null) {
+					loggerCollection.insertOne(log);
+				}
+			}
+			return loggerInstance;
+		} catch (Exception e){
+			System.out.println("Some problem in storing personlized logs");
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	/****************************************  Other DAO methods ******************************************************/
 
@@ -1195,6 +1206,34 @@ public class MongoDBDAO implements DAO {
 			e.printStackTrace();
 			return false;
 		}
+  }
+  
+	@Override
+	public SUDSQuestion getSUDSQuestion() {
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+
+			MongoCollection<SUDSQuestion> sudsMongoCollection =
+					database.getCollection(SUDS_COLLECTION, SUDSQuestion.class);
+
+			AggregateIterable<SUDSQuestion> questions = sudsMongoCollection
+					.aggregate(Arrays.asList(Aggregates.sample(1)));
+
+			SUDSQuestion result=null;
+			for(SUDSQuestion temp : questions){
+				result = temp;
+			}
+			return result;
+		}catch (NullPointerException ne){
+			System.out.println("Error in getting schedule.");
+			ne.printStackTrace();
+			return null;
+		}catch (Exception e){
+			System.out.println("Some problem in getting schedule.");
+			e.printStackTrace();
+			return null;
+		}
+
 	}
 }
 
