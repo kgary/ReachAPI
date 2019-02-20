@@ -71,6 +71,8 @@ public interface HealService {
     /****************************************  Other Service methods  *************************************************/
     void personalizeUserExperience(int patientpin);
     
+    void personalizeSkillSet(int patientPin);
+    
     HashMap<String, Boolean> getActivitySchedule(int patientPin);
 
 }
