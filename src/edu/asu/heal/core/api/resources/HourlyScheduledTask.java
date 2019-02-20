@@ -39,40 +39,37 @@ public class HourlyScheduledTask extends TimerTask {
 			reachService.logPersonalizationMessage(logs);
 			al.clear();
 			for(int i=0;i<patients.size();i++){
-				if(patients.get(i).getPin() == 4011) {
-					Integer ppin = patients.get(i).getPin();
-					startMetaData = "{ \"Message\" :  \"UX Personalization started for PIN :"+ppin+"\" } ";
-					start = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "UX_PERSONALIZATION_BEGIN", "JSON",
-							null, ppin.toString(), startMetaData);
+				Integer ppin = patients.get(i).getPin();
+				startMetaData = "{ \"Message\" :  \"UX Personalization started for PIN :"+ppin+"\" } ";
+				start = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "UX_PERSONALIZATION_BEGIN", "JSON",
+						null, ppin.toString(), startMetaData);
 
-					al.add(start);
-					logs = new Logger[al.size()];
+				al.add(start);
+				logs = new Logger[al.size()];
 
-					logs = al.toArray(logs);
-					reachService.logPersonalizationMessage(logs);
-					reachService.personalizeUserExperience(patients.get(i).getPin());
+				logs = al.toArray(logs);
+				reachService.logPersonalizationMessage(logs);
+				reachService.personalizeUserExperience(patients.get(i).getPin());
 
-					endMetaData = "{ \"Message\" :  \"UX Personalization ended for PIN :"+ppin+"\" } ";
-					end = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "UX_PERSONALIZATION_END", "JSON",
-							null, ppin.toString(), endMetaData);
-
-					al.clear();
-					al.add(end);
-					logs = new Logger[al.size()];
-
-					logs = al.toArray(logs);
-					reachService.logPersonalizationMessage(logs);
-				}
-				al.clear();
-				endMetaData = "{ \"Message\" :  \"------------ UX PERSONALIZATION CRON ENDED  -----------\" } ";
+				endMetaData = "{ \"Message\" :  \"UX Personalization ended for PIN :"+ppin+"\" } ";
 				end = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "UX_PERSONALIZATION_END", "JSON",
-						null, null, endMetaData);
+						null, ppin.toString(), endMetaData);
+
+				al.clear();
 				al.add(end);
 				logs = new Logger[al.size()];
+
 				logs = al.toArray(logs);
 				reachService.logPersonalizationMessage(logs);
 			}
-
+			al.clear();
+			endMetaData = "{ \"Message\" :  \"------------ UX PERSONALIZATION CRON ENDED  -----------\" } ";
+			end = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "UX_PERSONALIZATION_END", "JSON",
+					null, null, endMetaData);
+			al.add(end);
+			logs = new Logger[al.size()];
+			logs = al.toArray(logs);
+			reachService.logPersonalizationMessage(logs);
 			now = new Date();
 			System.out.println("Time is :" + now);
 		}catch(Exception e) {

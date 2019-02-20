@@ -41,40 +41,37 @@ public class MidnightScheduledTask extends TimerTask {
 			reachService.logPersonalizationMessage(logs);
 			al.clear();
 			for(int i=0;i<patients.size();i++){
-				if(patients.get(i).getPin() == 4011) {
-					Integer ppin = patients.get(i).getPin();
-					startMetaData = "{ \"Message\" :  \"Skill Personalization started for PIN :"+ppin+"\" } ";
-					start = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "SKILL_PERSONALIZATION_BEGIN", "JSON",
-							null, ppin.toString(), startMetaData);
+				Integer ppin = patients.get(i).getPin();
+				startMetaData = "{ \"Message\" :  \"Skill Personalization started for PIN :"+ppin+"\" } ";
+				start = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "SKILL_PERSONALIZATION_BEGIN", "JSON",
+						null, ppin.toString(), startMetaData);
 
-					al.add(start);
-					logs = new Logger[al.size()];
+				al.add(start);
+				logs = new Logger[al.size()];
 
-					logs = al.toArray(logs);
-					reachService.logPersonalizationMessage(logs);
-					reachService.personalizeSkillSet(patients.get(i).getPin());
+				logs = al.toArray(logs);
+				reachService.logPersonalizationMessage(logs);
+				reachService.personalizeSkillSet(patients.get(i).getPin());
 
-					endMetaData = "{ \"Message\" :  \"Skill Personalization ended for PIN :"+ppin+"\" } ";
-					end = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "SKILL_PERSONALIZATION_END", "JSON",
-							null, ppin.toString(), endMetaData);
-
-					al.clear();
-					al.add(end);
-					logs = new Logger[al.size()];
-
-					logs = al.toArray(logs);
-					reachService.logPersonalizationMessage(logs);
-				}
-				al.clear();
-				endMetaData = "{ \"Message\" :  \"**************** SKILL PERSONALIZATION CRON ENDED ****************\" } ";
+				endMetaData = "{ \"Message\" :  \"Skill Personalization ended for PIN :"+ppin+"\" } ";
 				end = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "SKILL_PERSONALIZATION_END", "JSON",
-						null, null, endMetaData);
+						null, ppin.toString(), endMetaData);
+
+				al.clear();
 				al.add(end);
 				logs = new Logger[al.size()];
+
 				logs = al.toArray(logs);
 				reachService.logPersonalizationMessage(logs);
 			}
-
+			al.clear();
+			endMetaData = "{ \"Message\" :  \"**************** SKILL PERSONALIZATION CRON ENDED ****************\" } ";
+			end = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "SKILL_PERSONALIZATION_END", "JSON",
+					null, null, endMetaData);
+			al.add(end);
+			logs = new Logger[al.size()];
+			logs = al.toArray(logs);
+			reachService.logPersonalizationMessage(logs);
 			now = new Date();
 			System.out.println("Time is :" + now);
 		}catch(Exception e) {
