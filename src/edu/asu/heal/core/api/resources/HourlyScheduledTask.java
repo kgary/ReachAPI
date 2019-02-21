@@ -27,7 +27,7 @@ public class HourlyScheduledTask extends TimerTask {
 			Logger start,end;
 			Logger[] logs;
 			ArrayList<Logger> al = new ArrayList<Logger>();
-			
+
 			startMetaData = "{ \"Message\" :  \"------------ UX PERSONALIZATION CRON STARTED -----------\" } ";
 			start = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "UX_PERSONALIZATION_BEGIN", "JSON",
 					null, null, startMetaData);
@@ -50,7 +50,7 @@ public class HourlyScheduledTask extends TimerTask {
 				logs = al.toArray(logs);
 				reachService.logPersonalizationMessage(logs);
 				reachService.personalizeUserExperience(patients.get(i).getPin());
-				
+
 				endMetaData = "{ \"Message\" :  \"UX Personalization ended for PIN :"+ppin+"\" } ";
 				end = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "UX_PERSONALIZATION_END", "JSON",
 						null, ppin.toString(), endMetaData);
@@ -70,7 +70,6 @@ public class HourlyScheduledTask extends TimerTask {
 			logs = new Logger[al.size()];
 			logs = al.toArray(logs);
 			reachService.logPersonalizationMessage(logs);
-		
 			now = new Date();
 			System.out.println("Time is :" + now);
 		}catch(Exception e) {
