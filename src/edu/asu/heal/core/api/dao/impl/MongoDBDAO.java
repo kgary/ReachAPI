@@ -56,7 +56,7 @@ public class MongoDBDAO implements DAO {
 	private static final String PERSONALIZE_LOGGER_COLLECTION = "personalizelogger";
 	private static final String EMOTIONS_COLLECTION = "emotion";
 	private static final String BLOB_COLLECTION = "blobtricks";
-	private static final String SUDS_COLLECTION = "suds";
+	private static final String SUDS_COLLECTION = "sudsquestions";
 
 
 	private static String __mongoDBName;
