@@ -52,7 +52,8 @@ public class MidnightScheduledTask extends TimerTask {
 				logs = al.toArray(logs);
 				reachService.logPersonalizationMessage(logs);
 				reachService.personalizeSkillSet(patients.get(i).getPin());
-
+				((ReachService) reachService).updateBlobTricksCount(patients.get(i).getPin());
+				
 				endMetaData = "{ \"Message\" :  \"Skill Personalization ended for PIN :"+ppin+"\" } ";
 				end = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "SKILL_PERSONALIZATION_END", "JSON",
 						null, ppin.toString(), endMetaData);
