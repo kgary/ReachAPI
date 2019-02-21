@@ -1170,6 +1170,45 @@ public class MongoDBDAO implements DAO {
 	}
 
 	@Override
+	public boolean updateResetDate(int patientPin, Date newResetDate, String activityName) {
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+
+			MongoCollection<PatientScheduleJSON> scheduleMongoCollection =
+					database.getCollection(SCHEDULE_COLLECTION, PatientScheduleJSON.class);
+
+			PatientScheduleJSON patientScheduleJSON = scheduleMongoCollection
+					.find(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin))
+					.projection(Projections.excludeId())
+					.first();
+			switch(activityName) {
+			case "WorryHeads":
+				patientScheduleJSON.setWorryHeadsResetDate(newResetDate);
+				break;
+			case "MakeBelieve":
+				patientScheduleJSON.setMakeBelieveResetDate(newResetDate);
+				break;
+			case "StandUp":
+				patientScheduleJSON.setStandUpResetDate(newResetDate);
+				break;
+			}
+			
+			scheduleMongoCollection.findOneAndReplace(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin),
+					patientScheduleJSON);
+
+			return true;
+		}catch (NullPointerException ne){
+			System.out.println("Error in getting schedule.");
+			ne.printStackTrace();
+			return false;
+		}catch (Exception e){
+			System.out.println("Some problem in getting schedule.");
+			e.printStackTrace();
+			return false;
+		}
+  }
+  
+	@Override
 	public SUDSQuestion getSUDSQuestion() {
 		try{
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
