@@ -43,10 +43,10 @@ public class LevelTwoNotification implements INotificationInterface{
 		String url = _properties.getProperty(activityName);
 		String serverKey = _properties.getProperty("serverKey");
 		
-		List<LevelTwoNotificationCollector> l2List = new ArrayList<>();
+		List<ActivityList> l2List = new ArrayList<>();
 		
 		for(int i=0; i<list.size();i++) {
-			LevelTwoNotificationCollector obj = new LevelTwoNotificationCollector();
+			ActivityList obj = new ActivityList();
 			obj.setActivityName(list.get(i));
 			obj.setUrl(_properties.getProperty(list.get(i)));
 			obj.setShouldGlow(false);

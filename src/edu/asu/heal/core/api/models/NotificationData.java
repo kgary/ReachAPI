@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Generated;
-import edu.asu.heal.reachv3.api.notification.LevelTwoNotificationCollector;
+import edu.asu.heal.reachv3.api.notification.ActivityList;
 
 @SuppressWarnings("unused")
 public class NotificationData implements IHealModelType {
@@ -17,7 +17,7 @@ public class NotificationData implements IHealModelType {
     private String title;
     private String url;
     private Integer levelOfNotification;
-    private List<LevelTwoNotificationCollector> list;
+    private List<ActivityList> list;
   
 
 	private static ArrayList<Integer> values = new ArrayList<Integer>();
@@ -32,7 +32,7 @@ public class NotificationData implements IHealModelType {
     }
     
 
-    public NotificationData(String detail, String title, String url, Integer levelOfNotification, List<LevelTwoNotificationCollector> list) {
+    public NotificationData(String detail, String title, String url, Integer levelOfNotification, List<ActivityList> list) {
         super();
         id = values.get(index);
         index++;
@@ -44,12 +44,12 @@ public class NotificationData implements IHealModelType {
     }
 
     
-    public List<LevelTwoNotificationCollector> getList() {
+    public List<ActivityList> getList() {
 		return list;
 	}
 
 
-	public void setList(List<LevelTwoNotificationCollector> list) {
+	public void setList(List<ActivityList> list) {
 		this.list = list;
 	}
 

@@ -1,12 +1,12 @@
 package edu.asu.heal.reachv3.api.notification;
 
-public class LevelTwoNotificationCollector {
+public class ActivityList {
 
 	public String activityName;
 	public String url;
 	public boolean shouldGlow;
 	
-	public LevelTwoNotificationCollector() {}
+	public ActivityList() {}
 
 	public String getActivityName() {
 		return activityName;
