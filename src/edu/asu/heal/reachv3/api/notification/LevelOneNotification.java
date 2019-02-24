@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import org.json.JSONArray;
@@ -37,13 +38,14 @@ public class LevelOneNotification implements INotificationInterface {
 	}
 
 	@Override
-	public boolean sendNotification(String activityName, int patientPin, Integer numberOfDaysNotDone, int levelOfNotification) {
+	public boolean sendNotification(String activityName, int patientPin, 
+			Integer numberOfDaysNotDone, int levelOfNotification,List<String> list ) {
 		String details = getNotifiactionDetails(activityName,levelOfNotification, numberOfDaysNotDone.toString());
 		String url = _properties.getProperty(activityName);
 
 		String serverKey = _properties.getProperty("serverKey");
 
-		NotificationData data = new NotificationData(details, null, url, levelOfNotification);
+		NotificationData data = new NotificationData(details, null, url, levelOfNotification,null);
 		Notification obj = new Notification();
 		if(obj.sendNotification(data, patientPin, serverKey)) {
 			return true;

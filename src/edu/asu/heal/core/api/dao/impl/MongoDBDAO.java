@@ -26,7 +26,7 @@ import edu.asu.heal.reachv3.api.models.FaceitActivityInstance;
 import edu.asu.heal.reachv3.api.models.FaceItModel;
 import edu.asu.heal.reachv3.api.models.WorryHeadsActivityInstance;
 import edu.asu.heal.reachv3.api.models.WorryHeadsSituation;
-
+import edu.asu.heal.reachv3.api.models.schedule.ActivityScheduleJSON;
 import edu.asu.heal.reachv3.api.models.schedule.PatientScheduleJSON;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -1058,6 +1058,45 @@ public class MongoDBDAO implements DAO {
 								.first();
 						patientScheduleJSON.getSchedule().get(module).getSchedule().get(dayOfModule).getActivitySchedule()
 								.get(indexOfActivity).setLevelOfUIPersonalization(levelOfUIPersonalization);
+
+			scheduleMongoCollection.findOneAndReplace(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin),
+					patientScheduleJSON);
+
+			return true;
+		}catch (NullPointerException ne){
+			System.out.println("Error in getting schedule.");
+			ne.printStackTrace();
+			return false;
+		}catch (Exception e){
+			System.out.println("Some problem in getting schedule.");
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean updateLvlTwoUIPersonalization(int patientPin, int module, 
+			int dayOfModule, List<String> activityNames, int levelOfUIPersonalization) {
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+
+			MongoCollection<PatientScheduleJSON> scheduleMongoCollection =
+					database.getCollection(SCHEDULE_COLLECTION, PatientScheduleJSON.class);
+
+						PatientScheduleJSON patientScheduleJSON = scheduleMongoCollection
+								.find(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin))
+								.projection(Projections.excludeId())
+								.first();
+						ArrayList<ActivityScheduleJSON> activities = patientScheduleJSON.getSchedule().get(module)
+								.getSchedule().get(dayOfModule).getActivitySchedule();
+						
+						for(ActivityScheduleJSON activity : activities) {
+							if(activityNames.contains(activity.getActivity())) {
+								activity.setLevelOfUIPersonalization(levelOfUIPersonalization);
+							}
+						}
+//						patientScheduleJSON.getSchedule().get(module).getSchedule().get(dayOfModule).getActivitySchedule()
+//								.get(indexOfActivity).setLevelOfUIPersonalization(levelOfUIPersonalization);
 
 			scheduleMongoCollection.findOneAndReplace(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin),
 					patientScheduleJSON);

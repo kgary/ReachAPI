@@ -99,6 +99,9 @@ public interface DAO {
     boolean updateUIPersonalization(int patientPin, int module, 
 			int dayOfModule, int indexOfActivity, int levelOfPersonalization);
     
+    boolean updateLvlTwoUIPersonalization(int patientPin, int module, 
+			int dayOfModule, List<String> activityNames, int levelOfPersonalization);
+    
     boolean updatePatientScoreActualCount(int patientPin, int module, int day, 
     		int indexOfActivity,int score, int actualCount);
 

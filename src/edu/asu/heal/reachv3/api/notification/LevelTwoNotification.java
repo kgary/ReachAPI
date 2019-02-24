@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import org.json.JSONArray;
@@ -36,12 +37,23 @@ public class LevelTwoNotification implements INotificationInterface{
 	}
 
 	@Override
-	public boolean sendNotification(String activityName, int patientPin, Integer numberOfDaysNotDone,int levelOfNotification) {
+	public boolean sendNotification(String activityName, int patientPin,
+			Integer numberOfDaysNotDone,int levelOfNotification, List<String> list) {
 		String details = getNotifiactionDetails(activityName,levelOfNotification,numberOfDaysNotDone.toString());
 		String url = _properties.getProperty(activityName);
 		String serverKey = _properties.getProperty("serverKey");
 		
-		NotificationData data = new NotificationData(details, null, url, levelOfNotification);
+		List<LevelTwoNotificationCollector> l2List = new ArrayList<>();
+		
+		for(int i=0; i<list.size();i++) {
+			LevelTwoNotificationCollector obj = new LevelTwoNotificationCollector();
+			obj.setActivityName(list.get(i));
+			obj.setUrl(_properties.getProperty(list.get(i)));
+			obj.setShouldGlow(false);
+			l2List.add(obj);
+		}
+		
+		NotificationData data = new NotificationData(details, null, url, levelOfNotification, l2List);
 
 		Notification obj = new Notification();
 		if(obj.sendNotification(data, patientPin, serverKey)) {
