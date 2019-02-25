@@ -46,10 +46,11 @@ public class LevelTwoNotification implements INotificationInterface{
 		List<ActivityList> l2List = new ArrayList<>();
 		
 		for(int i=0; i<list.size();i++) {
-			ActivityList obj = new ActivityList();
-			obj.setActivityName(list.get(i));
-			obj.setUrl(_properties.getProperty(list.get(i)));
-			obj.setShouldGlow(false);
+			String activityUrl = "";
+			if (_properties.getProperty(list.get(i)) != null) {
+				url = _properties.getProperty(list.get(i));
+			}
+			ActivityList obj = new ActivityList(list.get(i), activityUrl, false);
 			l2List.add(obj);
 		}
 		
@@ -64,19 +65,22 @@ public class LevelTwoNotification implements INotificationInterface{
 	}
 	
 	public String getNotifiactionDetails(String activityName, int levelOfNotification,String numberOfDaysNotDone) {
-		JSONObject actDetails = notificationData.getJSONObject(activityName);
-		JSONArray arr =actDetails.getJSONArray("level_"+levelOfNotification);
-		ArrayList<String> detail = new ArrayList<String>();
-		if(arr != null) {
-			for(int i=0; i<arr.length(); i++) {
-				detail.add(arr.getString(i));
+		if (notificationData.has(activityName) && notificationData.getJSONObject(activityName) != null) {
+			JSONObject actDetails = notificationData.getJSONObject(activityName);
+			JSONArray arr = actDetails.getJSONArray("level_" + levelOfNotification);
+			ArrayList<String> detail = new ArrayList<String>();
+			if (arr != null) {
+				for (int i = 0; i < arr.length(); i++) {
+					detail.add(arr.getString(i));
+				}
 			}
+			Collections.shuffle(detail);
+			if (detail.get(0).contains("<N>")) {
+				detail.get(0).replaceAll("<N>", numberOfDaysNotDone);
+			}
+			return detail.get(0);
 		}
-		Collections.shuffle(detail);
-		if(detail.get(0).contains("<N>")) {
-			detail.get(0).replaceAll("<N>", numberOfDaysNotDone);
-		}
-		return detail.get(0);		
+		return "";
 	}
 
 	public static String readFile(String filename) {

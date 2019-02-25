@@ -64,9 +64,6 @@ public interface HealService {
     
     Logger[] logPersonalizationMessage (Logger[] loggerInstance);
 
-    /****************************************  Notification methods  *************************************************/
-    boolean sendNotification(int patientPin,int module, int moduleLen, int dayOfModule, 
-			int indexOfActivity, int days, ActivityScheduleJSON activity);
 
     /****************************************  Other Service methods  *************************************************/
     boolean personalizeUserExperience(int patientpin);

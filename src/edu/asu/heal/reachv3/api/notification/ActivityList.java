@@ -8,6 +8,12 @@ public class ActivityList {
 	
 	public ActivityList() {}
 
+	public ActivityList(String activityName, String url, boolean shouldGlow) {
+		this.activityName = activityName;
+		this.url = url;
+		this.shouldGlow = shouldGlow;
+	}
+
 	public String getActivityName() {
 		return activityName;
 	}

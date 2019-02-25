@@ -53,7 +53,6 @@ public class Notification {
 				input.setContentType("application/json");
 				System.out.println(input);
 
-				//TODO: server key of your firebase project goes here in header field.
 				// You can get it from firebase console.
 //				postRequest.addHeader("Authorization", "key=AAAAX5CbDOM:APA91bGd_AzSXfn64BsrxT1KEfCnh_yy99lXKPFo7l" +
 //						"QUbGqM7tK0YU_YOUUO0X2lpJmMSmVkxZC6JPFkFeC6TimZFg0BsXsutnVhsGM-Ydp2ZFCVswMMnhHrzKbMZpTwKDyZU2XllSZn");

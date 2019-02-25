@@ -872,7 +872,8 @@ public class MongoDBDAO implements DAO {
 				Document doc = cursor.next();
 				String tempIntensity = doc.getString(Emotions.INTENSITY);
 				String tempSession = doc.getString(Emotions.SESSION);
-				if(tempIntensity.contains((String)intensity) && tempSession.contains(sessionId)) {
+				if(((sessionId == null || sessionId.length() == 0) && tempIntensity.contains((String)intensity))
+						|| tempIntensity.contains((String)intensity) && tempSession.contains(sessionId)) {
 					if(doc.getString(Emotions.SUGGESTED_ACTIVITIES).length() ==1) {
 						rval.add(doc.getString(Emotions.SUGGESTED_ACTIVITIES));
 					}
