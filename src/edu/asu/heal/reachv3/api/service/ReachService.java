@@ -836,7 +836,8 @@ public class ReachService implements HealService {
 
 						// Check if cutrrent time is in available time
 						for(AvailableTime t : time) {
-							if(currHour >= t.getFrom() && currHour <=t.getTo()) {
+
+							if(currHour >= t.getFrom() && currHour <= t.getTo()) {
 
 								// Configure for daily and weekly activities
 								if(activity.isDailyActivity()) {
@@ -849,9 +850,10 @@ public class ReachService implements HealService {
 										// Check if L1 or L2 notif needs to be sent
 										if(activity.getLevelOfUIPersonalization() != 1 &&
 												(l1_minVal == (moduleLen-l1_max) && notDoneDays == l1_minVal)
-												|| ((l1_minVal != (moduleLen-l1_max))
-													&& (notDoneDays >= l1_minVal
-													&& notDoneDays < (moduleLen-l1_max)))) {
+												|| (notDoneDays >= l1_minVal
+													&& notDoneDays < (moduleLen-l1_max))) {
+
+											System.out.println("In send le notif");
 
 											// Send L1 notification
 											if(sendLevelOneNotification(patientPin, module,
@@ -908,8 +910,7 @@ public class ReachService implements HealService {
 						}
 					}
 					if(!levelTwoNotifActivities.isEmpty()) {
-						sendLevelTwoNotification(patientPin, module, moduleLen,
-								dayOfModule, levelTwoNotifActivities);
+						sendLevelTwoNotification(patientPin, module, dayOfModule, levelTwoNotifActivities);
 					}
 				}else {
 					System.out.println("It is day 0.");
@@ -996,7 +997,7 @@ public class ReachService implements HealService {
 	}
 
 	public boolean sendLevelTwoNotification(int patientPin,int module, int dayOfModule,
-			int days, List<String> list) {
+			List<String> list) {
 		boolean rval = false;
 		try {
 			Logger log;
@@ -1025,7 +1026,7 @@ public class ReachService implements HealService {
 					notificationClass = (INotificationInterface) constructor.newInstance();
 //				}
 				if(notificationClass != null) {
-					if(notificationClass.sendNotification(activityName, patientPin, days, 2, list)) {
+					if(notificationClass.sendNotification(activityName, patientPin, 0, 2, list)) {
 						rval =true;
 						metaData = "{ \""+activityVal+ "\": \""+activityName+"\","
 								+ "\""+levelOfUXP+"\" : \"2\" ,"
@@ -1091,7 +1092,7 @@ public class ReachService implements HealService {
 
 	private int getNotDoneDays(ArrayList<ScheduleArrayJSON> schedule, String activity, int dayOfModule) {
 
-		int counter = dayOfModule-1;
+		int counter = dayOfModule;
 		int rval =0;
 		while(counter >= 0) {
 			ScheduleArrayJSON obj = schedule.get(counter);

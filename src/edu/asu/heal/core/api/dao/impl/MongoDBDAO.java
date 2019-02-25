@@ -1089,7 +1089,7 @@ public class MongoDBDAO implements DAO {
 								.projection(Projections.excludeId())
 								.first();
 						ArrayList<ActivityScheduleJSON> activities = patientScheduleJSON.getSchedule().get(module)
-								.getSchedule().get(dayOfModule).getActivitySchedule();
+								.getSchedule().get(dayOfModule-1).getActivitySchedule();
 						
 						for(ActivityScheduleJSON activity : activities) {
 							if(activityNames.contains(activity.getActivity())) {

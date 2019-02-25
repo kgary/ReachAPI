@@ -48,7 +48,7 @@ public class LevelTwoNotification implements INotificationInterface{
 		for(int i=0; i<list.size();i++) {
 			String activityUrl = "";
 			if (_properties.getProperty(list.get(i)) != null) {
-				url = _properties.getProperty(list.get(i));
+                activityUrl = _properties.getProperty(list.get(i));
 			}
 			ActivityList obj = new ActivityList(list.get(i), activityUrl, false);
 			l2List.add(obj);
