@@ -17,7 +17,7 @@ public class NotificationData implements IHealModelType {
     private String title;
     private String url;
     private Integer levelOfNotification;
-    private List<ActivityList> list;
+    private List<ActivityList> activities;
   
 
 	private static ArrayList<Integer> values = new ArrayList<Integer>();
@@ -28,7 +28,7 @@ public class NotificationData implements IHealModelType {
         super();
         id = values.get(index);
         index++;
-        list = new ArrayList<>();
+        activities = new ArrayList<>();
     }
     
 
@@ -40,21 +40,19 @@ public class NotificationData implements IHealModelType {
         this.title = title;
         this.url=url;
         this.levelOfNotification=levelOfNotification;
-        this.list=list;
+        this.activities=list;
     }
 
-    
-    public List<ActivityList> getList() {
-		return list;
-	}
 
+    public List<ActivityList> getActivities() {
+        return activities;
+    }
 
-	public void setList(List<ActivityList> list) {
-		this.list = list;
-	}
+    public void setActivities(List<ActivityList> activities) {
+        this.activities = activities;
+    }
 
-
-	public Integer getLevelOfNotification() {
+    public Integer getLevelOfNotification() {
 		return levelOfNotification;
 	}
 
@@ -104,6 +102,7 @@ public class NotificationData implements IHealModelType {
                 ", details=" + detail +
                 ", levelOfNotification=" + levelOfNotification +
                 ", title=" + title +
+                ", activities" + activities.toString() +
                 '}';
     }
 }

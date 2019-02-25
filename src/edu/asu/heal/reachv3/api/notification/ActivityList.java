@@ -37,6 +37,13 @@ public class ActivityList {
 	public void setShouldGlow(boolean shouldGlow) {
 		this.shouldGlow = shouldGlow;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "ActivityList{" +
+				", activityName=" + activityName +
+				", url=" + url +
+				", shouldGlow=" + shouldGlow +
+				'}';
+	}
 }
