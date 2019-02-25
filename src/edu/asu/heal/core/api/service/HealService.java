@@ -64,14 +64,11 @@ public interface HealService {
     
     Logger[] logPersonalizationMessage (Logger[] loggerInstance);
 
-    /****************************************  Notification methods  *************************************************/
-    boolean sendNotification(int patientPin,int module, int moduleLen, int dayOfModule, 
-			int indexOfActivity, int days, ActivityScheduleJSON activity);
 
     /****************************************  Other Service methods  *************************************************/
-    void personalizeUserExperience(int patientpin);
+    boolean personalizeUserExperience(int patientpin);
     
-    void personalizeSkillSet(int patientPin);
+    boolean personalizeSkillSet(int patientPin);
     
     HashMap<String, Boolean> getActivitySchedule(int patientPin);
 
