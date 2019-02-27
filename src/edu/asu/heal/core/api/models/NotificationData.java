@@ -3,9 +3,11 @@ package edu.asu.heal.core.api.models;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Generated;
+import edu.asu.heal.reachv3.api.notification.ActivityList;
 
 @SuppressWarnings("unused")
 public class NotificationData implements IHealModelType {
@@ -15,6 +17,7 @@ public class NotificationData implements IHealModelType {
     private String title;
     private String url;
     private Integer levelOfNotification;
+    private List<ActivityList> activities;
   
 
 	private static ArrayList<Integer> values = new ArrayList<Integer>();
@@ -25,10 +28,11 @@ public class NotificationData implements IHealModelType {
         super();
         id = values.get(index);
         index++;
+        activities = new ArrayList<>();
     }
     
 
-    public NotificationData(String detail, String title, String url, Integer levelOfNotification) {
+    public NotificationData(String detail, String title, String url, Integer levelOfNotification, List<ActivityList> list) {
         super();
         id = values.get(index);
         index++;
@@ -36,9 +40,18 @@ public class NotificationData implements IHealModelType {
         this.title = title;
         this.url=url;
         this.levelOfNotification=levelOfNotification;
+        this.activities=list;
     }
 
-    
+
+    public List<ActivityList> getActivities() {
+        return activities;
+    }
+
+    public void setActivities(List<ActivityList> activities) {
+        this.activities = activities;
+    }
+
     public Integer getLevelOfNotification() {
 		return levelOfNotification;
 	}
@@ -89,6 +102,7 @@ public class NotificationData implements IHealModelType {
                 ", details=" + detail +
                 ", levelOfNotification=" + levelOfNotification +
                 ", title=" + title +
+                ", activities" + activities.toString() +
                 '}';
     }
 }

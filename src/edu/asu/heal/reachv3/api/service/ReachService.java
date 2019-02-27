@@ -850,7 +850,7 @@ public class ReachService implements HealService {
 										if(activity.getLevelOfUIPersonalization() != 1 &&
 												(l1_minVal == (moduleLen-l1_max) && notDoneDays == l1_minVal)
 												|| (notDoneDays >= l1_minVal
-												&& notDoneDays < (moduleLen-l1_max))) {
+													&& notDoneDays < (moduleLen-l1_max))) {
 
 											System.out.println("In send le notif");
 
@@ -865,7 +865,7 @@ public class ReachService implements HealService {
 												&& activity.getLevelOfUIPersonalization() != 2) {
 											//L2
 											levelTwoNotifActivities.add(activity.getActivity());
-
+											
 										}
 
 									} else {
@@ -885,7 +885,7 @@ public class ReachService implements HealService {
 										if(activity.getLevelOfUIPersonalization() != 1 &&
 												(l1_minVal == (moduleLen-l1_max) && dayOfModule == l1_minVal)
 												|| ((l1_minVal != (moduleLen-l1_max))
-														&& (dayOfModule >= l1_minVal
+													&& (dayOfModule >= l1_minVal
 														&& dayOfModule < (moduleLen-l1_max)))) {
 											// Send L1
 											if(sendLevelOneNotification(patientPin, module,
@@ -1018,12 +1018,12 @@ public class ReachService implements HealService {
 			DAO dao = DAOFactory.getTheDAO();
 			String activityName = "notifLandingPage";	
 
-			// Level 2
-			if (l2_class != null) {
-				Class<?> level_2 = Class.forName(l2_class);
-				Constructor<?> constructor = level_2.getConstructor();
-				notificationClass = (INotificationInterface) constructor.newInstance();
-				//				}
+				// Level 2
+				if (l2_class != null) {
+					Class<?> level_2 = Class.forName(l2_class);
+					Constructor<?> constructor = level_2.getConstructor();
+					notificationClass = (INotificationInterface) constructor.newInstance();
+//				}
 				if(notificationClass != null) {
 					if(notificationClass.sendNotification(activityName, patientPin, 0, 2, list)) {
 						rval =true;
@@ -1034,8 +1034,8 @@ public class ReachService implements HealService {
 						level="SENT";
 						// Updating level of UI personalization in schedule
 						// For update we have to do iteratively.
-						//	activity.setLevelOfUIPersonalization(2);
-
+					//	activity.setLevelOfUIPersonalization(2);
+						
 						if(dao.updateLvlTwoUIPersonalization(patientPin, module, dayOfModule,list,2))
 							System.out.println("Update successful");
 						else 
@@ -1560,7 +1560,7 @@ public class ReachService implements HealService {
 
 
 	}
-
+	
 	public boolean isLastDayOfModule(int patientPin) {
 		try {
 			DAO dao = DAOFactory.getTheDAO();
@@ -1592,6 +1592,5 @@ public class ReachService implements HealService {
 		}
 		return false;
 	}
-
 }
 
