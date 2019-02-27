@@ -2,6 +2,7 @@ package edu.asu.heal.core.api.service;
 
 import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
+import edu.asu.heal.reachv3.api.models.SUDSActivitiesWrapper;
 import edu.asu.heal.reachv3.api.models.schedule.ActivityScheduleJSON;
 
 import java.util.HashMap;
@@ -64,15 +65,12 @@ public interface HealService {
     
     Logger[] logPersonalizationMessage (Logger[] loggerInstance);
 
-    /****************************************  Notification methods  *************************************************/
-    boolean sendNotification(int patientPin,int module, int moduleLen, int dayOfModule, 
-			int indexOfActivity, int days, ActivityScheduleJSON activity);
 
     /****************************************  Other Service methods  *************************************************/
-    void personalizeUserExperience(int patientpin);
+    boolean personalizeUserExperience(int patientpin);
     
-    void personalizeSkillSet(int patientPin);
+    boolean personalizeSkillSet(int patientPin);
     
-    HashMap<String, Boolean> getActivitySchedule(int patientPin);
+    SUDSActivitiesWrapper getActivitySchedule(int patientPin);
 
 }

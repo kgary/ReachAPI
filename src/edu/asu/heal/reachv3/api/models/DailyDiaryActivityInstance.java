@@ -12,19 +12,25 @@ public class DailyDiaryActivityInstance extends ActivityInstance {
 	private int worryIntensity;
 	private String actionTaken;
 	private String thoughts;
+	private SUDSQuestion sudsQuestion;
+	private String responseType;
+	private int intensity;
 	
 	public DailyDiaryActivityInstance() {
 	}
 	
 	public DailyDiaryActivityInstance(String activityInstanceId, Date createdAt, Date updatedAt, String description,
 			Date startTime, Date endTime, Date userSubmissionTime, Date actualSubmissionTime,
-			ActivityInstanceType instanceOf, String state, int patientPin, boolean isActivityGlowing) {
+			ActivityInstanceType instanceOf, String state, int patientPin, boolean isActivityGlowing, SUDSQuestion question, String responseType) {
 	     super(activityInstanceId, createdAt, updatedAt, description, startTime, endTime, 
 	    		 userSubmissionTime, actualSubmissionTime, instanceOf, state, patientPin, isActivityGlowing);
 	    this.whatHappened = null;
 		this.worryIntensity = 0;
 		this.actionTaken = null;
 		this.thoughts = null;
+		this.sudsQuestion=question;
+		this.responseType=responseType;
+		this.intensity=-1;
 	}
 	
 	public String getWhatHappened() {
