@@ -57,6 +57,28 @@ public class DailyDiaryActivityInstance extends ActivityInstance {
 	public void setThoughts(String thoughts) {
 		this.thoughts = thoughts;
 	}
-	
 
+	public SUDSQuestion getSudsQuestion() {
+		return sudsQuestion;
+	}
+
+	public void setSudsQuestion(SUDSQuestion sudsQuestion) {
+		this.sudsQuestion = sudsQuestion;
+	}
+
+	public String getResponseType() {
+		return responseType;
+	}
+
+	public void setResponseType(String responseType) {
+		this.responseType = responseType;
+	}
+
+	public int getIntensity() {
+		return intensity;
+	}
+
+	public void setIntensity(int intensity) {
+		this.intensity = intensity;
+	}
 }

@@ -1565,6 +1565,7 @@ public class ReachService implements HealService {
 		try {
 			DAO dao = DAOFactory.getTheDAO();
 			PatientScheduleJSON patientScheduleJSON = dao.getSchedule(patientPin);
+			System.out.println("patientScheduleJSON = " + patientScheduleJSON.toString());
 			if(patientScheduleJSON == null)
 				return false;
 			Date today = new Date();
@@ -1582,6 +1583,10 @@ public class ReachService implements HealService {
 			else {
 				return false;
 			}
+
+			System.out.println("dayOfModule = " + dayOfModule);
+			System.out.println("moduleLen = " + moduleLen);
+
 			if(dayOfModule == moduleLen-1) {
 				return true;
 			}
