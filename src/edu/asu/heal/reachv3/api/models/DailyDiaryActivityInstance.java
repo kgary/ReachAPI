@@ -1,6 +1,7 @@
 package edu.asu.heal.reachv3.api.models;
 
 import java.util.Date;
+import java.util.List;
 
 import edu.asu.heal.core.api.models.ActivityInstance;
 import edu.asu.heal.core.api.models.ActivityInstanceType;
@@ -12,27 +13,32 @@ public class DailyDiaryActivityInstance extends ActivityInstance {
 	private int worryIntensity;
 	private String actionTaken;
 	private String thoughts;
-	private SUDSQuestion sudsQuestion;
+	private List<SUDSQuestion> sudsQuestion;
 	private String responseType;
 	private int intensity;
 	
 	public DailyDiaryActivityInstance() {
 	}
-	
-	public DailyDiaryActivityInstance(String activityInstanceId, Date createdAt, Date updatedAt, String description,
-			Date startTime, Date endTime, Date userSubmissionTime, Date actualSubmissionTime,
-			ActivityInstanceType instanceOf, String state, int patientPin, boolean isActivityGlowing, SUDSQuestion question, String responseType) {
-	     super(activityInstanceId, createdAt, updatedAt, description, startTime, endTime, 
-	    		 userSubmissionTime, actualSubmissionTime, instanceOf, state, patientPin, isActivityGlowing);
-	    this.whatHappened = null;
-		this.worryIntensity = 0;
-		this.actionTaken = null;
-		this.thoughts = null;
-		this.sudsQuestion=question;
-		this.responseType=responseType;
-		this.intensity=-1;
+
+	public DailyDiaryActivityInstance(String activityInstanceId,
+									  Date createdAt, Date updatedAt,
+									  String description, Date startTime, Date endTime,
+									  Date userSubmissionTime, Date actualSubmissionTime,
+									  ActivityInstanceType instanceOf, String state,
+									  int patientPin, boolean activityGlowing, String whatHappened,
+									  int worryIntensity, String actionTaken, String thoughts,
+									  List<SUDSQuestion> sudsQuestion, String responseType, int intensity) {
+		super(activityInstanceId, createdAt, updatedAt, description, startTime, endTime,
+				userSubmissionTime, actualSubmissionTime, instanceOf, state, patientPin, activityGlowing);
+		this.whatHappened = whatHappened;
+		this.worryIntensity = worryIntensity;
+		this.actionTaken = actionTaken;
+		this.thoughts = thoughts;
+		this.sudsQuestion = sudsQuestion;
+		this.responseType = responseType;
+		this.intensity = intensity;
 	}
-	
+
 	public String getWhatHappened() {
 		return whatHappened;
 	}
@@ -58,11 +64,11 @@ public class DailyDiaryActivityInstance extends ActivityInstance {
 		this.thoughts = thoughts;
 	}
 
-	public SUDSQuestion getSudsQuestion() {
+	public List<SUDSQuestion> getSudsQuestion() {
 		return sudsQuestion;
 	}
 
-	public void setSudsQuestion(SUDSQuestion sudsQuestion) {
+	public void setSudsQuestion(List<SUDSQuestion> sudsQuestion) {
 		this.sudsQuestion = sudsQuestion;
 	}
 
