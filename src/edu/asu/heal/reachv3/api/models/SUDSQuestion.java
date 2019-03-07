@@ -5,13 +5,24 @@ public class SUDSQuestion {
 	String question;
 	String questionType;
 	String response;
+	int intensity;
 	
 	public SUDSQuestion(){}
 
-	public SUDSQuestion(String question, String questionType, String response) {
+	public SUDSQuestion(String question, String questionType, String response,int intensity) {
 		this.question = question;
 		this.questionType = questionType;
 		this.response = response;
+		this.intensity=intensity;
+		
+	}
+
+	public int getIntensity() {
+		return intensity;
+	}
+
+	public void setIntensity(int intensity) {
+		this.intensity = intensity;
 	}
 
 	public String getQuestion() {

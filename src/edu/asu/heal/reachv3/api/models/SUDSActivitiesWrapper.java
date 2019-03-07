@@ -5,15 +5,15 @@ import java.util.HashMap;
 public class SUDSActivitiesWrapper{
 	
 	HashMap<String,Boolean> actvityMap;
-	boolean sudsconfig;
+	boolean sudsConfig;
 	
 	public SUDSActivitiesWrapper() {
 		this.actvityMap=null;
-		sudsconfig=false;
+		sudsConfig=false;
 		
 	}
-	public SUDSActivitiesWrapper(HashMap<String,Boolean> map, boolean config ) {
-		this.sudsconfig=config;
+	public SUDSActivitiesWrapper(HashMap<String,Boolean> map, boolean sudsConfig ) {
+		this.sudsConfig=sudsConfig;
 		this.actvityMap=map;
 	}
 	public HashMap<String, Boolean> getActvityMap() {
@@ -22,11 +22,11 @@ public class SUDSActivitiesWrapper{
 	public void setActvityMap(HashMap<String, Boolean> actvityMap) {
 		this.actvityMap = actvityMap;
 	}
-	public boolean getConfig() {
-		return sudsconfig;
+	public boolean getSudsConfig() {
+		return sudsConfig;
 	}
-	public void setConfig(boolean config) {
-		this.sudsconfig = config;
+	public void setSudsConfig(boolean sudsConfig) {
+		this.sudsConfig = sudsConfig;
 	}
 	
 

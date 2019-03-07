@@ -283,8 +283,8 @@ public class ReachService implements HealService {
 							activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
 							activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 							activityInstance.getInstanceOf(), activityInstance.getState(),
-							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),dao.getSUDSQuestion(),null
-							);
+							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),
+							null,0,null,null,dao.getSUDSQuestion());
 				}else {
 					activityInstance = new DailyDiaryActivityInstance(
 							activityInstance.getActivityInstanceId(),
@@ -292,7 +292,8 @@ public class ReachService implements HealService {
 							activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
 							activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 							activityInstance.getInstanceOf(), activityInstance.getState(),
-							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),null,null
+							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),
+							null,0,null,null,null
 							);
 				}
 			} else if (activityInstance.getInstanceOf().getName().equals("STOP")) {
@@ -484,7 +485,7 @@ public class ReachService implements HealService {
 						for (int i = 0; i < activityScheduleJSON.size(); i++) {
 							String activityName = activityScheduleJSON.get(i).getActivity();
 							if (instance.getInstanceOf().getName().equals(activityName)) {
-								int score = activityScheduleJSON.get(i).getScore() + instance.getResponseCount();
+								int score = activityScheduleJSON.get(i).getScore() + instance.fetchResponseCount();
 								int actualCount = activityScheduleJSON.get(i).getActualCount() + 1;
 								if (dao.updatePatientScoreActualCount(ppin, module, days, i, score, actualCount)) {
 									System.out.println("Update sucessful");
@@ -1128,9 +1129,7 @@ public class ReachService implements HealService {
 				Date endDate = getDateWithoutTime(moduleJson.get(i).getEndDate()); //new SimpleDateFormat(ReachService.DATE_FORMAT).parse(.toString());
 
 				today = getDateWithoutTime(today);
-
 				if(today.compareTo(startDate) >= 0 && today.compareTo(endDate) <=0) {
-
 					rval.put(this.MODULE, Integer.valueOf(moduleJson.get(i).getModule())-1);
 					long diffTime = today.getTime() - startDate.getTime();
 					Long d = TimeUnit.DAYS.convert(diffTime, TimeUnit.MILLISECONDS);
@@ -1138,12 +1137,11 @@ public class ReachService implements HealService {
 					Long moduleLen =TimeUnit.DAYS.convert(endDate.getTime() -
 							startDate.getTime(),TimeUnit.MILLISECONDS)+1;
 					rval.put(this.MODULE_LENGTH, moduleLen.intValue());
-					System.out.println("Map in getModuleAndDay : " + rval);
 					break;
 				}
 
 			}
-
+			
 			return rval;
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -1420,7 +1418,6 @@ public class ReachService implements HealService {
 
 			// create method  to get module and day of module - done
 			HashMap<String, Integer> map = this.getModuleAndDay(patientScheduleJSON,today);
-
 			if(map != null && map.size() > 0) {
 				if (map.containsKey(this.MODULE) && map.get(this.MODULE) != null)
 					module = map.get(this.MODULE);
@@ -1440,7 +1437,7 @@ public class ReachService implements HealService {
 					}else {
 						rval.put(activity.getActivity(),false);
 					}
-					scheduledActivityList.setConfig(true);
+					scheduledActivityList.setSudsConfig(true);
 				}else {
 					if(activity.getActualCount() < activity.getMinimumCount()) {
 						rval.put(activity.getActivity(), true);
@@ -1565,7 +1562,6 @@ public class ReachService implements HealService {
 		try {
 			DAO dao = DAOFactory.getTheDAO();
 			PatientScheduleJSON patientScheduleJSON = dao.getSchedule(patientPin);
-			System.out.println("patientScheduleJSON = " + patientScheduleJSON.toString());
 			if(patientScheduleJSON == null)
 				return false;
 			Date today = new Date();
@@ -1583,10 +1579,6 @@ public class ReachService implements HealService {
 			else {
 				return false;
 			}
-
-			System.out.println("dayOfModule = " + dayOfModule);
-			System.out.println("moduleLen = " + moduleLen);
-
 			if(dayOfModule == moduleLen-1) {
 				return true;
 			}

@@ -15,6 +15,7 @@ import com.mongodb.client.model.Projections;
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.reachv3.api.models.BlobTricks;
+import edu.asu.heal.reachv3.api.models.DailyDiaryActivityInstance;
 import edu.asu.heal.reachv3.api.models.Emotions;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
 import edu.asu.heal.reachv3.api.models.MakeBelieveSituation;
@@ -367,6 +368,8 @@ public class MongoDBDAO implements DAO {
 				instance = getActivityWorryHeadsInstanceDAO(activityInstanceId);
 			else if(instance.getInstanceOf().getName().equals("StandUp"))
 				instance = getActivityStandUpInstanceDAO(activityInstanceId);
+			else if(instance.getInstanceOf().getName().equals("DailyDiary"))
+				instance = getActivityDailyDiaryInstanceDAO(activityInstanceId);
 
 			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
 			System.out.println(instance);
@@ -975,6 +978,34 @@ public class MongoDBDAO implements DAO {
 			return null;
 		}
 	}
+	
+	@Override
+	public DailyDiaryActivityInstance getActivityDailyDiaryInstanceDAO(String activityInstanceId) {
+		try {
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<DailyDiaryActivityInstance> activityInstanceMongoCollection =
+					database.getCollection(ACTIVITYINSTANCES_COLLECTION, DailyDiaryActivityInstance.class);
+
+			DailyDiaryActivityInstance instance = activityInstanceMongoCollection
+					.find(Filters.eq(ActivityInstance.ACTIVITYINSTANCEID_ATTRIBUTE, activityInstanceId))
+					.projection(Projections.excludeId())
+					.first();
+
+			System.out.println("ACTIVITY INSTANCE GOT FROM DB");
+			System.out.println(instance);
+			return instance ;
+		} catch (NullPointerException ne) {
+			System.out.println("SOME PROBLEM IN GETTING ACTIVITY INSTANCE WITH ID " + activityInstanceId);
+			ne.printStackTrace();
+			return (DailyDiaryActivityInstance) NullObjects.getNullActivityInstance();
+		} catch (Exception e) {
+			System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
 
 	@Override
 	public BlobTricks getReleasedBlobTricksDAO(int patientPin) {
@@ -1252,7 +1283,7 @@ public class MongoDBDAO implements DAO {
   }
   
 	@Override
-	public SUDSQuestion getSUDSQuestion() {
+	public List<SUDSQuestion> getSUDSQuestion() {
 		try{
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
 
@@ -1262,9 +1293,9 @@ public class MongoDBDAO implements DAO {
 			AggregateIterable<SUDSQuestion> questions = sudsMongoCollection
 					.aggregate(Arrays.asList(Aggregates.sample(1)));
 
-			SUDSQuestion result=null;
+			List<SUDSQuestion> result = new ArrayList<SUDSQuestion>();
 			for(SUDSQuestion temp : questions){
-				result = temp;
+				result.add(temp);
 			}
 			return result;
 		}catch (NullPointerException ne){

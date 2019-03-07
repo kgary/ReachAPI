@@ -14,8 +14,6 @@ public class DailyDiaryActivityInstance extends ActivityInstance {
 	private String actionTaken;
 	private String thoughts;
 	private List<SUDSQuestion> sudsQuestion;
-	private String responseType;
-	private int intensity;
 	
 	public DailyDiaryActivityInstance() {
 	}
@@ -27,7 +25,7 @@ public class DailyDiaryActivityInstance extends ActivityInstance {
 									  ActivityInstanceType instanceOf, String state,
 									  int patientPin, boolean activityGlowing, String whatHappened,
 									  int worryIntensity, String actionTaken, String thoughts,
-									  List<SUDSQuestion> sudsQuestion, String responseType, int intensity) {
+									  List<SUDSQuestion> sudsQuestion) {
 		super(activityInstanceId, createdAt, updatedAt, description, startTime, endTime,
 				userSubmissionTime, actualSubmissionTime, instanceOf, state, patientPin, activityGlowing);
 		this.whatHappened = whatHappened;
@@ -35,8 +33,6 @@ public class DailyDiaryActivityInstance extends ActivityInstance {
 		this.actionTaken = actionTaken;
 		this.thoughts = thoughts;
 		this.sudsQuestion = sudsQuestion;
-		this.responseType = responseType;
-		this.intensity = intensity;
 	}
 
 	public String getWhatHappened() {
@@ -72,19 +68,4 @@ public class DailyDiaryActivityInstance extends ActivityInstance {
 		this.sudsQuestion = sudsQuestion;
 	}
 
-	public String getResponseType() {
-		return responseType;
-	}
-
-	public void setResponseType(String responseType) {
-		this.responseType = responseType;
-	}
-
-	public int getIntensity() {
-		return intensity;
-	}
-
-	public void setIntensity(int intensity) {
-		this.intensity = intensity;
-	}
 }
