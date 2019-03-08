@@ -1290,14 +1290,11 @@ public class MongoDBDAO implements DAO {
 			MongoCollection<SUDSQuestion> sudsMongoCollection =
 					database.getCollection(SUDS_COLLECTION, SUDSQuestion.class);
 
-			AggregateIterable<SUDSQuestion> questions = sudsMongoCollection
-					.aggregate(Arrays.asList(Aggregates.sample(1)));
+			List<SUDSQuestion> sudsQuestions = sudsMongoCollection.find()
+					.projection(Projections.excludeId())
+					.into(new ArrayList<>());
 
-			List<SUDSQuestion> result = new ArrayList<SUDSQuestion>();
-			for(SUDSQuestion temp : questions){
-				result.add(temp);
-			}
-			return result;
+			return sudsQuestions;
 		}catch (NullPointerException ne){
 			System.out.println("Error in getting schedule.");
 			ne.printStackTrace();

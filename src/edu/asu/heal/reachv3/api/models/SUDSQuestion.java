@@ -1,29 +1,32 @@
 package edu.asu.heal.reachv3.api.models;
 
-public class SUDSQuestion {
+import edu.asu.heal.core.api.models.IHealModelType;
+
+import java.util.List;
+
+public class SUDSQuestion implements IHealModelType {
 	
 	String question;
 	String questionType;
 	String response;
-	int intensity;
+	List<SudsOption> options;
+
 	
 	public SUDSQuestion(){}
 
-	public SUDSQuestion(String question, String questionType, String response,int intensity) {
+	public SUDSQuestion(String question, String questionType, String response) {
 		this.question = question;
 		this.questionType = questionType;
 		this.response = response;
-		this.intensity=intensity;
-		
+
 	}
 
-	public int getIntensity() {
-		return intensity;
-	}
-
-	public void setIntensity(int intensity) {
-		this.intensity = intensity;
-	}
+    public SUDSQuestion(String question, String questionType, String response, List<SudsOption> options) {
+        this.question = question;
+        this.questionType = questionType;
+        this.response = response;
+        this.options = options;
+    }
 
 	public String getQuestion() {
 		return question;
@@ -49,7 +52,15 @@ public class SUDSQuestion {
 		this.response = response;
 	}
 
-	@Override
+    public List<SudsOption> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<SudsOption> options) {
+        this.options = options;
+    }
+
+    @Override
 	public String toString() {
 		return "SUDSQuestion{" +
 				", question='" + question + '\'' +
