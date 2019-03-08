@@ -1396,6 +1396,7 @@ public class ReachService implements HealService {
 	public SUDSActivitiesWrapper getActivitySchedule(int patientPin) {
 
 		HashMap<String,Boolean> rval = new HashMap<String, Boolean>();
+
 		SUDSActivitiesWrapper scheduledActivityList = new SUDSActivitiesWrapper();
 		
 		try {
