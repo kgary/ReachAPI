@@ -611,12 +611,6 @@ public class ReachService implements HealService {
 	public Patient createPatient(String trialId, int patientPin) {
 		try {
 			DAO dao = DAOFactory.getTheDAO();
-			//			MainSchedule schedule = new MainSchedule();
-			ObjectMapper mapper = new ObjectMapper();
-			//			String json = mapper.writeValueAsString(schedule);
-			System.out.println("Schedule JSON is : " );
-			System.out.println("-------------------------");
-			//			System.out.println(json);
 			return dao.createPatient(trialId,patientPin);
 		} catch (Exception e) {
 			e.printStackTrace();

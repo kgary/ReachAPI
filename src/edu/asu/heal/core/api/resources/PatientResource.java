@@ -212,10 +212,17 @@ public class PatientResource {
 					.setData("SOME ERROR CREATING NEW PATIENT. CONTACT ADMINISTRATOR")
 					.build();
 		} else if (insertedPatient.equals(NullObjects.getNullPatient())) {
-			response = builder
-					.setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-					.setData("INCORRECT TRIAL ID IN THE REQUEST")
-					.build();
+			if(insertedPatient.getPin() != -1) {
+				response = builder
+						.setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+						.setData("PATIENT ALREADY EXISTS WITH THIS PIN")
+						.build();
+			}else {
+				response = builder
+						.setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+						.setData("INCORRECT TRIAL ID IN THE REQUEST")
+						.build();
+			}
 		} else {
 			response = builder
 					.setStatusCode(Response.Status.CREATED.getStatusCode())
