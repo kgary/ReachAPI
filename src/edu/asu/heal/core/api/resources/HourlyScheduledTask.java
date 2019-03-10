@@ -80,7 +80,6 @@ public class HourlyScheduledTask extends TimerTask {
 			}else {
 				System.out.println("No Patients in the trial....");
 			}
-
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
