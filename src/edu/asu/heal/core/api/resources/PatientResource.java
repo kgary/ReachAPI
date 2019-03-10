@@ -189,7 +189,8 @@ public class PatientResource {
 	 * @apiUse NotImplementedError
 	 */
 	@POST
-	public Response createPatient(String trialId) {
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response createPatient(String patientData) {
 		HEALResponse response;
 		HEALResponseBuilder builder;
 		try{
@@ -198,8 +199,8 @@ public class PatientResource {
 			ie.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
-
-		Patient insertedPatient = reachService.createPatient(trialId);
+		JSONObject jobj = new JSONObject(patientData);
+		Patient insertedPatient = reachService.createPatient(jobj.getString("trialId"), jobj.getInt("patientPin"));
 
 		if (insertedPatient == null) {
 			response = builder

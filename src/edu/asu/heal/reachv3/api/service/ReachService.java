@@ -608,7 +608,7 @@ public class ReachService implements HealService {
 	}
 
 	@Override
-	public Patient createPatient(String trialId) {
+	public Patient createPatient(String trialId, int patientPin) {
 		try {
 			DAO dao = DAOFactory.getTheDAO();
 			//			MainSchedule schedule = new MainSchedule();
@@ -617,7 +617,7 @@ public class ReachService implements HealService {
 			System.out.println("Schedule JSON is : " );
 			System.out.println("-------------------------");
 			//			System.out.println(json);
-			return dao.createPatient(trialId);
+			return dao.createPatient(trialId,patientPin);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
