@@ -200,7 +200,11 @@ public class PatientResource {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 		JSONObject jobj = new JSONObject(patientData);
-		Patient insertedPatient = reachService.createPatient(jobj.getString("trialId"), jobj.getInt("patientPin"));
+		int patientPin=0;
+		if(jobj.has("patientPin") && !jobj.isNull("patientPin")) {
+			patientPin =jobj.getInt("patientPin");
+		}
+		Patient insertedPatient = reachService.createPatient(jobj.getString("trialId"), patientPin);
 
 		if (insertedPatient == null) {
 			response = builder
