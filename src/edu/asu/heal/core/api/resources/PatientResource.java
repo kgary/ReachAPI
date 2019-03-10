@@ -189,7 +189,8 @@ public class PatientResource {
 	 * @apiUse NotImplementedError
 	 */
 	@POST
-	public Response createPatient(String trialId) {
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response createPatient(String patientData) {
 		HEALResponse response;
 		HEALResponseBuilder builder;
 		try{
@@ -198,8 +199,12 @@ public class PatientResource {
 			ie.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
-
-		Patient insertedPatient = reachService.createPatient(trialId);
+		JSONObject jobj = new JSONObject(patientData);
+		int patientPin=0;
+		if(jobj.has("patientPin") && !jobj.isNull("patientPin")) {
+			patientPin =jobj.getInt("patientPin");
+		}
+		Patient insertedPatient = reachService.createPatient(jobj.getString("trialId"), patientPin);
 
 		if (insertedPatient == null) {
 			response = builder
@@ -207,10 +212,17 @@ public class PatientResource {
 					.setData("SOME ERROR CREATING NEW PATIENT. CONTACT ADMINISTRATOR")
 					.build();
 		} else if (insertedPatient.equals(NullObjects.getNullPatient())) {
-			response = builder
-					.setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
-					.setData("INCORRECT TRIAL ID IN THE REQUEST")
-					.build();
+			if(insertedPatient.getPin() != -1) {
+				response = builder
+						.setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+						.setData("PATIENT ALREADY EXISTS WITH THIS PIN")
+						.build();
+			}else {
+				response = builder
+						.setStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
+						.setData("INCORRECT TRIAL ID IN THE REQUEST")
+						.build();
+			}
 		} else {
 			response = builder
 					.setStatusCode(Response.Status.CREATED.getStatusCode())

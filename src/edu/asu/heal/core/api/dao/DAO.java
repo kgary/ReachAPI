@@ -49,7 +49,7 @@ public interface DAO {
 
     Patient getPatient(int patientPin);
 
-    Patient createPatient(String trialId);
+    Patient createPatient(String trialId, int patientPin);
 
     Patient updatePatient(Patient patient);
 

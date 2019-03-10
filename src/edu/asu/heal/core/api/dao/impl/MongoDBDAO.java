@@ -573,7 +573,7 @@ public class MongoDBDAO implements DAO {
 	}
 
 	@Override
-	public Patient createPatient(String trialId) {
+	public Patient createPatient(String trialId, int patientPin) {
 		try {
 
 			MongoCollection<Trial> trialsCollection = MongoDBDAO.getConnectedDatabase()
@@ -584,15 +584,29 @@ public class MongoDBDAO implements DAO {
 			if(trial == null)
 				return NullObjects.getNullPatient();
 
+			MongoCollection<Patient> patientCollection = MongoDBDAO.getConnectedDatabase()
+					.getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class);
+
 			//Temporary code to generate new pin. It just increments the largest pin number in the database by 1
-			int newPin = MongoDBDAO.getConnectedDatabase()
+			int newPin;
+			if(patientPin == 0) {
+			newPin= MongoDBDAO.getConnectedDatabase()
 					.getCollection(MongoDBDAO.PATIENTS_COLLECTION)
 					.aggregate(Arrays.asList(Aggregates.group(null,
 							Accumulators.max(Patient.PIN_ATTRIBUTE, "$" + Patient.PIN_ATTRIBUTE))))
 					.first()
 					.getInteger(Patient.PIN_ATTRIBUTE);
 			++newPin;
-
+			}else {
+				Patient patient = patientCollection.find(Filters.eq(Patient.PIN_ATTRIBUTE, patientPin)).first();
+				if(patient != null) {
+					Patient p = NullObjects.getNullPatient();
+					p.setPin(patientPin);
+					return p;
+				}
+					
+				newPin=patientPin;
+			}
 			Patient newPatient = new Patient();
 			ObjectId newId = ObjectId.get();
 			newPatient.setPatientId(newId.toHexString());
@@ -604,8 +618,7 @@ public class MongoDBDAO implements DAO {
 			newPatient.setState(PatientState.CREATED.state());
 
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
-			MongoCollection<Patient> patientCollection = database.getCollection(MongoDBDAO.PATIENTS_COLLECTION, Patient.class);
-
+			
 			patientCollection.insertOne(newPatient);
 
 			trial.getPatients().add(newPatient.getPatientId());
