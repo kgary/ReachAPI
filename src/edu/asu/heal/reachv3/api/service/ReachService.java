@@ -276,14 +276,26 @@ public class ReachService implements HealService {
 						activityInstance.getPatientPin(), dao.getFaceItChallenges(), activityInstance.getActivityGlowing()
 						);
 			} else if (activityInstance.getInstanceOf().getName().equals("DailyDiary")) {
-				activityInstance = new DailyDiaryActivityInstance(
-						activityInstance.getActivityInstanceId(),
-						activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
-						activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
-						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
-						activityInstance.getInstanceOf(), activityInstance.getState(),
-						activityInstance.getPatientPin(), activityInstance.getActivityGlowing()
-						);
+				if(isLastDayOfModule(activityInstance.getPatientPin())) {
+					activityInstance = new DailyDiaryActivityInstance(
+							activityInstance.getActivityInstanceId(),
+							activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
+							activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
+							activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
+							activityInstance.getInstanceOf(), activityInstance.getState(),
+							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),
+							null,0,null,null,dao.getSUDSQuestion());
+				}else {
+					activityInstance = new DailyDiaryActivityInstance(
+							activityInstance.getActivityInstanceId(),
+							activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
+							activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
+							activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
+							activityInstance.getInstanceOf(), activityInstance.getState(),
+							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),
+							null,0,null,null,null
+							);
+				}
 			} else if (activityInstance.getInstanceOf().getName().equals("STOP")) {
 				activityInstance = new SwapActivityInstance(activityInstance.getActivityInstanceId(),
 						activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
@@ -308,15 +320,6 @@ public class ReachService implements HealService {
 						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 						activityInstance.getInstanceOf(), activityInstance.getState(),
 						activityInstance.getPatientPin(), dao.getStandUpSituations(), activityInstance.getActivityGlowing());
-			}else if (activityInstance.getInstanceOf().getName().equals("SUDS")) {
-				activityInstance = new SUDSActivityInstance(
-						activityInstance.getActivityInstanceId(),
-						activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
-						activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
-						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
-						activityInstance.getInstanceOf(), activityInstance.getState(),
-						activityInstance.getPatientPin(), 
-						activityInstance.getActivityGlowing(), dao.getSUDSQuestion());
 			}
 			ActivityInstance newActivityInstance = dao.createActivityInstance(activityInstance);
 
@@ -437,9 +440,6 @@ public class ReachService implements HealService {
 			}else if(activityInstanceType.equals("Emotion")){
 				instance = mapper.readValue(requestBody, Emotions.class);
 				instance.setUpdatedAt(new Date());  
-			}else if(activityInstanceType.equals("SUDS")){
-				instance = mapper.readValue(requestBody, SUDSActivityInstance.class);
-				instance.setUpdatedAt(new Date());  
 			}else{
 				instance  = mapper.readValue(requestBody, ActivityInstance.class);
 				instance.setUpdatedAt(new Date());      
@@ -485,7 +485,7 @@ public class ReachService implements HealService {
 						for (int i = 0; i < activityScheduleJSON.size(); i++) {
 							String activityName = activityScheduleJSON.get(i).getActivity();
 							if (instance.getInstanceOf().getName().equals(activityName)) {
-								int score = activityScheduleJSON.get(i).getScore() + instance.getResponseCount();
+								int score = activityScheduleJSON.get(i).getScore() + instance.fetchResponseCount();
 								int actualCount = activityScheduleJSON.get(i).getActualCount() + 1;
 								if (dao.updatePatientScoreActualCount(ppin, module, days, i, score, actualCount)) {
 									System.out.println("Update sucessful");
@@ -1123,9 +1123,7 @@ public class ReachService implements HealService {
 				Date endDate = getDateWithoutTime(moduleJson.get(i).getEndDate()); //new SimpleDateFormat(ReachService.DATE_FORMAT).parse(.toString());
 
 				today = getDateWithoutTime(today);
-
 				if(today.compareTo(startDate) >= 0 && today.compareTo(endDate) <=0) {
-
 					rval.put(this.MODULE, Integer.valueOf(moduleJson.get(i).getModule())-1);
 					long diffTime = today.getTime() - startDate.getTime();
 					Long d = TimeUnit.DAYS.convert(diffTime, TimeUnit.MILLISECONDS);
@@ -1133,12 +1131,11 @@ public class ReachService implements HealService {
 					Long moduleLen =TimeUnit.DAYS.convert(endDate.getTime() -
 							startDate.getTime(),TimeUnit.MILLISECONDS)+1;
 					rval.put(this.MODULE_LENGTH, moduleLen.intValue());
-					System.out.println("Map in getModuleAndDay : " + rval);
 					break;
 				}
 
 			}
-
+			
 			return rval;
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -1390,10 +1387,12 @@ public class ReachService implements HealService {
 	}
 
 	@Override
-	public HashMap<String, Boolean> getActivitySchedule(int patientPin) {
+	public SUDSActivitiesWrapper getActivitySchedule(int patientPin) {
 
 		HashMap<String,Boolean> rval = new HashMap<String, Boolean>();
 
+		SUDSActivitiesWrapper scheduledActivityList = new SUDSActivitiesWrapper();
+		
 		try {
 			DAO dao = DAOFactory.getTheDAO();
 
@@ -1402,7 +1401,7 @@ public class ReachService implements HealService {
 			if (patientScheduleJSON == null
 					|| patientScheduleJSON.getSchedule() == null
 					|| patientScheduleJSON.getSchedule().size() == 0) {
-				return new HashMap<>();
+				return new SUDSActivitiesWrapper();
 			}
 
 			ArrayList<ModuleJSON> moduleJson = patientScheduleJSON.getSchedule();
@@ -1414,7 +1413,6 @@ public class ReachService implements HealService {
 
 			// create method  to get module and day of module - done
 			HashMap<String, Integer> map = this.getModuleAndDay(patientScheduleJSON,today);
-
 			if(map != null && map.size() > 0) {
 				if (map.containsKey(this.MODULE) && map.get(this.MODULE) != null)
 					module = map.get(this.MODULE);
@@ -1423,23 +1421,32 @@ public class ReachService implements HealService {
 				if (map.containsKey(this.MODULE_LENGTH) && map.get(this.MODULE_LENGTH) != null)
 					moduleLen=map.get(this.MODULE_LENGTH);
 			} else {
-				return new HashMap<>();
+				return new SUDSActivitiesWrapper() ;
 			}
 			ArrayList<ScheduleArrayJSON> schedule = moduleJson.get(module).getSchedule();
 			ArrayList<ActivityScheduleJSON> activityList = schedule.get(dayOfModule).getActivitySchedule();
 			for(ActivityScheduleJSON activity : activityList) {
-				if(activity.getActualCount() < activity.getMinimumCount()) {
-					rval.put(activity.getActivity(), true);
+				if(dayOfModule == moduleLen-1) {
+					if(activity.getActualCount() < activity.getMinimumCount()) {
+						rval.put(activity.getActivity(), true);
+					}else {
+						rval.put(activity.getActivity(),false);
+					}
+					scheduledActivityList.setSudsConfig(true);
 				}else {
-					rval.put(activity.getActivity(),false);
+					if(activity.getActualCount() < activity.getMinimumCount()) {
+						rval.put(activity.getActivity(), true);
+					}else {
+						rval.put(activity.getActivity(),false);
+					}
 				}
 			}
-
+			scheduledActivityList.setActvityMap(rval);
 
 		}catch(Exception e) {
 			e.printStackTrace();
 		} finally {
-			return rval;
+			return scheduledActivityList;
 		}
 	}
 
@@ -1545,6 +1552,37 @@ public class ReachService implements HealService {
 
 
 	}
+	
+	public boolean isLastDayOfModule(int patientPin) {
+		try {
+			DAO dao = DAOFactory.getTheDAO();
+			PatientScheduleJSON patientScheduleJSON = dao.getSchedule(patientPin);
+			if(patientScheduleJSON == null)
+				return false;
+			Date today = new Date();
+			HashMap<String,Integer> map = getModuleAndDay(patientScheduleJSON, today);
+			Integer module =-1,dayOfModule=-1,moduleLen=0;
+			if(map != null && map.size() > 0) {
+				if (map.containsKey(this.MODULE) && map.get(this.MODULE) != null)
+					module = map.get(this.MODULE);
+				if (map.containsKey(this.DAY) && map.get(this.DAY) != null)
+					dayOfModule = map.get(this.DAY);
+				if (map.containsKey(this.MODULE_LENGTH) && map.get(this.MODULE_LENGTH) != null)
+					moduleLen=map.get(this.MODULE_LENGTH);
 
+			}
+			else {
+				return false;
+			}
+			if(dayOfModule == moduleLen-1) {
+				return true;
+			}
+
+		}catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return false;
+	}
 }
 

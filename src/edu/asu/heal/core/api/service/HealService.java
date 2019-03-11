@@ -2,6 +2,7 @@ package edu.asu.heal.core.api.service;
 
 import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
+import edu.asu.heal.reachv3.api.models.SUDSActivitiesWrapper;
 import edu.asu.heal.reachv3.api.models.schedule.ActivityScheduleJSON;
 
 import java.util.HashMap;
@@ -70,6 +71,6 @@ public interface HealService {
     
     boolean personalizeSkillSet(int patientPin);
     
-    HashMap<String, Boolean> getActivitySchedule(int patientPin);
+    SUDSActivitiesWrapper getActivitySchedule(int patientPin);
 
 }

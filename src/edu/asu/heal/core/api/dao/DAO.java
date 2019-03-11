@@ -77,6 +77,8 @@ public interface DAO {
 	
 	StandUpActivityInstance getActivityStandUpInstanceDAO(String activityInstanceId);
 	
+	DailyDiaryActivityInstance getActivityDailyDiaryInstanceDAO(String activityInstanceId);
+	
 	List<StandUpSituation> getStandUpSituations();
 
 	List<FaceItModel> getFaceItChallenges();
@@ -113,5 +115,5 @@ public interface DAO {
 
     boolean updateResetDate(int patientPin, Date newResetDate, String activityName);
 
-    SUDSQuestion getSUDSQuestion();
+    List<SUDSQuestion> getSUDSQuestion();
 }

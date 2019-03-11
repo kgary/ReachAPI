@@ -17,7 +17,7 @@ public class WorryHeadsActivityInstance extends ActivityInstance {
     }
     
     @Override
-    public int getResponseCount() {
+    public int fetchResponseCount() {
     	if(situation != null && situation.size() > 0 && situation.get(0).getResponses() != null
                 && situation.get(0).getResponses().size()==1)
     		return 1;

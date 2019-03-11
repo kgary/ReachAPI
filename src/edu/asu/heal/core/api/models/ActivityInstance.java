@@ -27,7 +27,7 @@ public class ActivityInstance implements IHealModelType {
     private String state;
     private int patientPin;
     private boolean activityGlowing;
-
+ 
     public ActivityInstance() {
     }
 
@@ -48,9 +48,10 @@ public class ActivityInstance implements IHealModelType {
         this.activityGlowing = activityGlowing;
     }
 
-    public int getResponseCount() {
+    public int fetchResponseCount() {
     	return 0;
     }
+    
     public Date getCreatedAt() {
         return createdAt;
     }

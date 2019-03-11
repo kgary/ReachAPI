@@ -7,6 +7,7 @@ import edu.asu.heal.core.api.responses.HEALResponse;
 import edu.asu.heal.core.api.responses.HEALResponseBuilder;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
+import edu.asu.heal.reachv3.api.models.SUDSActivitiesWrapper;
 import edu.asu.heal.reachv3.api.service.ReachService;
 
 import javax.ws.rs.*;
@@ -414,7 +415,7 @@ public class ActivityResource {
 	@Path("/activityschedule")
 	public Response getActivitySchedule(@QueryParam("patientPin") int patientPin) {
 
-		HashMap<String,Boolean> map = reachService.getActivitySchedule(patientPin);
+		SUDSActivitiesWrapper map = reachService.getActivitySchedule(patientPin);
 		ObjectMapper mapper = new ObjectMapper();
 		HEALResponse response;
 		HEALResponseBuilder builder;

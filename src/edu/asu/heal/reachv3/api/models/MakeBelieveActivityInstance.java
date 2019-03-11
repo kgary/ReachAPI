@@ -27,7 +27,8 @@ public class MakeBelieveActivityInstance extends ActivityInstance{
         this.situation = situation;
     }
     
-    public int getResponseCount() {
+    @Override
+    public int fetchResponseCount() {
     	
     	if(situation != null && situation.getQuestions().size() > 1
                 && situation.getQuestions().get(0).getResponses() != null &&
