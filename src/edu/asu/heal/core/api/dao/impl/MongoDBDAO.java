@@ -1119,7 +1119,7 @@ public class MongoDBDAO implements DAO {
 	}
 
 	@Override
-	public boolean updateLvlTwoUIPersonalization(int patientPin, int module, 
+	public boolean updateLvlOneTwoUIPersonalization(int patientPin, int module, 
 			int dayOfModule, List<String> activityNames, int levelOfUIPersonalization) {
 		try{
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();

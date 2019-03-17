@@ -40,34 +40,49 @@ public class LevelOneNotification implements INotificationInterface {
 	@Override
 	public boolean sendNotification(String activityName, int patientPin, 
 			Integer numberOfDaysNotDone, int levelOfNotification,List<String> list ) {
-		String details = getNotifiactionDetails(activityName,levelOfNotification, numberOfDaysNotDone.toString());
-		String url = _properties.getProperty(activityName);
 
+		String details = getNotifiactionDetails(activityName,levelOfNotification,numberOfDaysNotDone.toString());
+		String url = _properties.getProperty(activityName);
 		String serverKey = _properties.getProperty("serverKey");
 
-		NotificationData data = new NotificationData(details, null, url, levelOfNotification,null);
+		List<ActivityList> l1List = new ArrayList<>();
+
+		for(int i=0; i<list.size();i++) {
+			String activityUrl = "";
+			if (_properties.getProperty(list.get(i)) != null) {
+				activityUrl = _properties.getProperty(list.get(i));
+			}
+			ActivityList obj = new ActivityList(list.get(i), activityUrl, false);
+			l1List.add(obj);
+		}
+
+		NotificationData data = new NotificationData(details, null, url, levelOfNotification, l1List);
+
 		Notification obj = new Notification();
 		if(obj.sendNotification(data, patientPin, serverKey)) {
 			return true;
-		}
-		return false;
+		}		
+		return false;		
 	}
 
 	public String getNotifiactionDetails(String activityName, int levelOfNotification, String numberOfDaysNotDone ) {
 
-		JSONObject actDetails = notificationData.getJSONObject(activityName);
-		JSONArray arr =actDetails.getJSONArray("level_"+levelOfNotification);
-		ArrayList<String> detail = new ArrayList<String>();
-		if(arr != null) {
-			for(int i=0; i<arr.length(); i++) {
-				detail.add(arr.getString(i));
+		if (notificationData.has(activityName) && notificationData.getJSONObject(activityName) != null) {
+			JSONObject actDetails = notificationData.getJSONObject(activityName);
+			JSONArray arr = actDetails.getJSONArray("level_" + levelOfNotification);
+			ArrayList<String> detail = new ArrayList<String>();
+			if (arr != null) {
+				for (int i = 0; i < arr.length(); i++) {
+					detail.add(arr.getString(i));
+				}
 			}
+			Collections.shuffle(detail);
+			if (detail.get(0).contains("<N>")) {
+				detail.get(0).replaceAll("<N>", numberOfDaysNotDone);
+			}
+			return detail.get(0);
 		}
-		Collections.shuffle(detail);
-		if(detail.get(0).contains("<N>")) {
-			detail.get(0).replaceAll("<N>", numberOfDaysNotDone);
-			}
-		return detail.get(0);		
+		return "";
 	}
 
 	public static String readFile(String filename) {
