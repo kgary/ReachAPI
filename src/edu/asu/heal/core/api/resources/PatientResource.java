@@ -7,7 +7,6 @@ import edu.asu.heal.core.api.responses.PatientResponse;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 import edu.asu.heal.reachv3.api.service.ReachService;
-import jdk.nashorn.internal.parser.JSONParser;
 
 import javax.json.JsonObject;
 import javax.ws.rs.*;
