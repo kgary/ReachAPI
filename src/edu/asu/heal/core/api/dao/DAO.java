@@ -114,6 +114,9 @@ public interface DAO {
     		int indexOfActivity,String activityInstanceId);
 
     boolean updateResetDate(int patientPin, Date newResetDate, String activityName);
+    
+    boolean updateAverageLevelOfPersonalization(int patientPin, int module, int day,
+    		Integer averageLevelOfPersonalization);
 
     List<SUDSQuestion> getSUDSQuestion();
 }

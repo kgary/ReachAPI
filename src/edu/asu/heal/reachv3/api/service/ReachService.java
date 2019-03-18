@@ -826,16 +826,23 @@ public class ReachService implements HealService {
 							module, dayOfModule, activityJson.getActivity());
 					adherenceActivityMap.put(activityJson.getActivity(),value);
 				}
-				Double totalAverageAdherence = 
+				int averageLevelOfPersonalization;
+				Double totalAverageAdherence =100.0;
+				if(!adherenceActivityMap.isEmpty()) {
+				totalAverageAdherence = 
 						(adherenceActivityMap.values().stream()
 								.mapToDouble(Double :: doubleValue).sum())/adherenceActivityMap.size();
+				}
 
-				int averageLevelOfPersonalization = convertTotalAverageAdherenceToLevel(totalAverageAdherence);
-
+				averageLevelOfPersonalization = convertTotalAverageAdherenceToLevel(totalAverageAdherence);
+				
+				// setting average level of personalization for this day.
+				
+				dao.updateAverageLevelOfPersonalization(patientPin, module, dayOfModule, averageLevelOfPersonalization);
+				
 				double l1_threshold = Double.parseDouble(_properties.getProperty(LEVEL_1_ADHERENCE_THRESHOLD));
 				double l2_threshold = Double.parseDouble(_properties.getProperty(LEVEL_2_ADHERENCE_THRESHOLD));
 
-				List<String> levelZeroActivity = new ArrayList<>();
 				List<String> levelOneActivity = new ArrayList<>();
 				List<String> levelTwoActivity = new ArrayList<>();
 

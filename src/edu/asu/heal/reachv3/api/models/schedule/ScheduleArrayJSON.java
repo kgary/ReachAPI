@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class ScheduleArrayJSON {
 	
 	private int day;
+	private int averageLevelOfPersonalization;
 	private ArrayList<ActivityScheduleJSON> activitySchedule;
 	
 	public ScheduleArrayJSON() {}
@@ -14,7 +15,15 @@ public class ScheduleArrayJSON {
 		activitySchedule = new ArrayList<ActivityScheduleJSON>();
 	}
 
-	
+
+	public int getAverageLevelOfPersonalization() {
+		return averageLevelOfPersonalization;
+	}
+
+	public void setAverageLevelOfPersonalization(int averageLevelOfPersonalization) {
+		this.averageLevelOfPersonalization = averageLevelOfPersonalization;
+	}
+
 	public int getDay() {
 		return day;
 	}
