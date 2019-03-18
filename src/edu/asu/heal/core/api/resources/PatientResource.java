@@ -7,8 +7,6 @@ import edu.asu.heal.core.api.responses.PatientResponse;
 import edu.asu.heal.core.api.service.HealService;
 import edu.asu.heal.core.api.service.HealServiceFactory;
 import edu.asu.heal.reachv3.api.service.ReachService;
-
-import javax.json.JsonObject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -16,8 +14,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.json.JSONObject;
-
-import com.fasterxml.jackson.databind.util.JSONPObject;
 
 import java.util.List;
 
