@@ -29,9 +29,11 @@ public class WorryHeadsActivityInstance extends ActivityInstance {
                                       Date createdAt, Date updatedAt, String description, Date startTime,
                                       Date endTime, Date userSubmissionTime, Date actualSubmissionTime,
                                       ActivityInstanceType instanceOf, String state, int patientPin,
-                                      List<WorryHeadsSituation> situation, boolean isActivityGlowing) {
+                                      List<WorryHeadsSituation> situation, boolean isActivityGlowing,
+                                      int currentCount,int toBeDoneCount) {
         super(activityInstanceId, createdAt, updatedAt, description, startTime, endTime, userSubmissionTime,
-                actualSubmissionTime, instanceOf, state, patientPin, isActivityGlowing);
+                actualSubmissionTime, instanceOf, state, patientPin, isActivityGlowing,
+                 currentCount, toBeDoneCount);
         this.situation = situation;
     }
 

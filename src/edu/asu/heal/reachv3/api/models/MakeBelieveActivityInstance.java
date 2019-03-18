@@ -13,8 +13,13 @@ public class MakeBelieveActivityInstance extends ActivityInstance{
         this.situation = situation;
     }
 
-    public MakeBelieveActivityInstance(String activityInstanceId, Date createdAt, Date updatedAt, String description, Date startTime, Date endTime, Date userSubmissionTime, Date actualSubmissionTime, ActivityInstanceType instanceOf, String state, int patientPin, MakeBelieveSituation situation, boolean isActivityGlowing) {
-        super(activityInstanceId, createdAt, updatedAt, description, startTime, endTime, userSubmissionTime, actualSubmissionTime, instanceOf, state, patientPin, isActivityGlowing);
+    public MakeBelieveActivityInstance(String activityInstanceId, Date createdAt, Date updatedAt, 
+    		String description, Date startTime, Date endTime, Date userSubmissionTime, Date actualSubmissionTime,
+    		ActivityInstanceType instanceOf, String state, int patientPin, 
+    		MakeBelieveSituation situation, boolean isActivityGlowing, int currentCount,int toBeDoneCount) {
+        super(activityInstanceId, createdAt, updatedAt, description, startTime, 
+        		endTime, userSubmissionTime, actualSubmissionTime, instanceOf, 
+        		state, patientPin, isActivityGlowing, currentCount, toBeDoneCount);
         this.situation = situation;
     }
 
