@@ -21,9 +21,11 @@ public class Emotions extends ActivityInstance{
 	
 	public Emotions(String activityInstanceId, Date createdAt, Date updatedAt, String description,
 			Date startTime, Date endTime, Date userSubmissionTime, Date actualSubmissionTime,
-			ActivityInstanceType instanceOf, String state, int patientPin, boolean isActivityGlowing) {
+			ActivityInstanceType instanceOf, String state, int patientPin, boolean isActivityGlowing,
+			int currentCount,int toBeDoneCount) {
 		super(activityInstanceId, createdAt, updatedAt, description, startTime, endTime, 
-	    		 userSubmissionTime, actualSubmissionTime, instanceOf, state, patientPin, isActivityGlowing);
+	    		 userSubmissionTime, actualSubmissionTime, instanceOf, state, patientPin, isActivityGlowing
+	    		 , currentCount, toBeDoneCount);
 		this.emotionName=null;
 		this.intensity=null;
 		this.suggestedActivities =null;
