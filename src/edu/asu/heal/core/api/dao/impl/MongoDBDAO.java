@@ -54,6 +54,7 @@ public class MongoDBDAO implements DAO {
 	private static final String SCHEDULE_COLLECTION = "schedule";
 	private static final String LOGGER_COLLECTION = "logger";
 	private static final String PERSONALIZE_LOGGER_COLLECTION = "personalizelogger";
+	private static final String EXCEPTION_LOGGER_COLLECTION = "exceptionlogger";
 	private static final String EMOTIONS_COLLECTION = "emotion";
 	private static final String BLOB_COLLECTION = "blobtricks";
 	private static final String SUDS_COLLECTION = "sudsquestions";
@@ -782,6 +783,32 @@ public class MongoDBDAO implements DAO {
 					.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
 
 			MongoCollection<Logger> loggerCollection = database.getCollection(MongoDBDAO.PERSONALIZE_LOGGER_COLLECTION,
+					Logger.class);
+			for (Logger log: loggerInstance) {
+				String trialId = log.getTrialId();
+
+				Trial trial = trialsCollection.find(Filters.eq(Trial.TRIALID_ATTRIBUTE, trialId)).first();
+
+				if(trial != null) {
+					loggerCollection.insertOne(log);
+				}
+			}
+			return loggerInstance;
+		} catch (Exception e){
+			System.out.println("Some problem in storing personlized logs");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	@Override
+	public Logger[] logExceptionMessage (Logger[] loggerInstance) {
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<Trial> trialsCollection = MongoDBDAO.getConnectedDatabase()
+					.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
+
+			MongoCollection<Logger> loggerCollection = database.getCollection(MongoDBDAO.EXCEPTION_LOGGER_COLLECTION,
 					Logger.class);
 			for (Logger log: loggerInstance) {
 				String trialId = log.getTrialId();

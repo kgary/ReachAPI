@@ -68,6 +68,7 @@ public class ReachService implements HealService {
 	private static String SU_RESET_COUNT = "StandUp.reset.count";
 	private static String LEVEL_1_ADHERENCE_THRESHOLD = "Level_1.adherence.threshold";
 	private static String LEVEL_2_ADHERENCE_THRESHOLD = "Level_2.adherence.threshold";
+	private static Integer INTERNAL_ERROR_CODE =500;
 
 	private static Properties _properties;
 	static {
@@ -77,13 +78,14 @@ public class ReachService implements HealService {
 			_properties.load(propFile);
 			propFile.close();
 			days = _properties.getProperty(BLOB_TRICKS_DAYS);
-		} catch (Throwable t) {
-			t.printStackTrace();
-			try {
-				throw new Exception(t);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		} catch (Exception e) {
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = "ReachService";
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+				
 		}
 	}
 
@@ -96,8 +98,14 @@ public class ReachService implements HealService {
 
 			return result;
 		} catch (Exception e) {
-			System.out.println("SOME ERROR IN GETACTIVITIES() IN REACHSERVICE CLASS");
-			e.printStackTrace();
+			
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -172,13 +180,25 @@ public class ReachService implements HealService {
 		List<ActivityInstance> response = null;
 		try {
 			DAO dao = DAOFactory.getTheDAO();
-			System.out.println(dao);
 			List<ActivityInstance> instances = dao.getScheduledActivities(patientPin);
+			if(instances.get(0).equals(NullObjects.getNullActivityInstance())) {
+				ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+				int lineNumber = -1;//e.getStackTrace()[0].getLineNumber(); 
+				String classOfException = "Invalid request";//e.toString();
+				String nameOfClass = this.getClass().getSimpleName();
+				String nameOfMethod = "getActivityInstances";
+				exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, patientPin,400);
+			}
 
 			return instances;
 		} catch (Exception e) {
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
 			System.out.println("SOME ERROR IN GETACTIVITYINSTANCES() IN REACHSERVICE");
-			e.printStackTrace();
 			return null;
 		}
 	}
