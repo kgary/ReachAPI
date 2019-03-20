@@ -197,7 +197,8 @@ public class ReachService implements HealService {
 			String classOfException = e.toString();
 			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
-			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, 
+					nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
 			System.out.println("SOME ERROR IN GETACTIVITYINSTANCES() IN REACHSERVICE");
 			return null;
 		}
