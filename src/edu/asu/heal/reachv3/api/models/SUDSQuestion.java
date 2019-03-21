@@ -5,7 +5,8 @@ import edu.asu.heal.core.api.models.IHealModelType;
 import java.util.List;
 
 public class SUDSQuestion implements IHealModelType {
-	
+
+	int questionId;
 	String question;
 	String questionType;
 	String response;
@@ -60,9 +61,18 @@ public class SUDSQuestion implements IHealModelType {
         this.options = options;
     }
 
-    @Override
+	public int getQuestionId() {
+		return questionId;
+	}
+
+	public void setQuestionId(int questionId) {
+		this.questionId = questionId;
+	}
+
+	@Override
 	public String toString() {
 		return "SUDSQuestion{" +
+				", questionId='" + questionId + '\'' +
 				", question='" + question + '\'' +
 				", questionType='" + questionType + '\'' +
 				", response='" + response + '\'' +
