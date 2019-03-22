@@ -18,9 +18,11 @@ public class FaceitActivityInstance extends ActivityInstance {
     public FaceitActivityInstance(String activityInstanceId, Date createdAt, Date updatedAt, String description,
                                        Date startTime, Date endTime, Date userSubmissionTime, Date actualSubmissionTime,
                                        ActivityInstanceType instanceOf, String state, int patientPin,
-                                       List<FaceItModel> faceItChallenges, boolean isActivityGlowing) {
+                                       List<FaceItModel> faceItChallenges, boolean isActivityGlowing,
+                                       int currentCount,int toBeDoneCount) {
         super(activityInstanceId, createdAt, updatedAt, description, startTime, endTime, userSubmissionTime,
-                actualSubmissionTime, instanceOf, state, patientPin, isActivityGlowing);
+                actualSubmissionTime, instanceOf, state, patientPin, isActivityGlowing,
+                 currentCount, toBeDoneCount);
         this.faceItChallenges = faceItChallenges;
     }
 

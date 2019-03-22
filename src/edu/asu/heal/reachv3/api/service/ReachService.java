@@ -258,14 +258,20 @@ public class ReachService implements HealService {
 			if (activityInstance.getState() == null) activityInstance.setState(ActivityInstanceStatus.CREATED.status());
 			if (activityInstance.getUpdatedAt() == null) activityInstance.setUpdatedAt(new Date());
 
+			HashMap<String,Integer> mapCount = getCurrentAndToBeDoneCount(activityInstance.getPatientPin(),
+					activityInstance.getInstanceOf().getName());
+			int currentCount = mapCount.get(ActivityInstance.CURRENT_COUNT);
+			int toBeDoneCount = mapCount.get(ActivityInstance.TO_BE_DONE_COUNT);
+			
 			if (activityInstance.getInstanceOf().getName().equals("MakeBelieve")) { //todo need a more elegant way of making the check whether it is of type make believe
-				activityInstance =
-						new MakeBelieveActivityInstance(activityInstance.getActivityInstanceId(),
-								activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
-								activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
-								activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
-								activityInstance.getInstanceOf(), activityInstance.getState(),
-								activityInstance.getPatientPin(), dao.getMakeBelieveSituation(), activityInstance.getActivityGlowing());
+				activityInstance = new MakeBelieveActivityInstance(
+						activityInstance.getActivityInstanceId(),
+						activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
+						activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
+						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
+						activityInstance.getInstanceOf(), activityInstance.getState(),
+						activityInstance.getPatientPin(), dao.getMakeBelieveSituation(),
+						activityInstance.getActivityGlowing(),currentCount,toBeDoneCount);
 			} else if (activityInstance.getInstanceOf().getName().equals("FaceIt")) {
 				activityInstance = new FaceitActivityInstance(
 						activityInstance.getActivityInstanceId(),
@@ -273,8 +279,8 @@ public class ReachService implements HealService {
 						activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
 						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 						activityInstance.getInstanceOf(), activityInstance.getState(),
-						activityInstance.getPatientPin(), dao.getFaceItChallenges(), activityInstance.getActivityGlowing()
-						);
+						activityInstance.getPatientPin(), dao.getFaceItChallenges(),
+						activityInstance.getActivityGlowing(), currentCount,toBeDoneCount);
 			} else if (activityInstance.getInstanceOf().getName().equals("DailyDiary")) {
 				if(isLastDayOfModule(activityInstance.getPatientPin())) {
 					activityInstance = new DailyDiaryActivityInstance(
@@ -283,7 +289,7 @@ public class ReachService implements HealService {
 							activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
 							activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 							activityInstance.getInstanceOf(), activityInstance.getState(),
-							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),
+							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),currentCount,toBeDoneCount,
 							null,0,null,null,dao.getSUDSQuestion());
 				}else {
 					activityInstance = new DailyDiaryActivityInstance(
@@ -292,9 +298,8 @@ public class ReachService implements HealService {
 							activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
 							activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 							activityInstance.getInstanceOf(), activityInstance.getState(),
-							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),
-							null,0,null,null,null
-							);
+							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),currentCount,
+							toBeDoneCount,null,0,null,null,null);
 				}
 			} else if (activityInstance.getInstanceOf().getName().equals("STOP")) {
 				activityInstance = new SwapActivityInstance(activityInstance.getActivityInstanceId(),
@@ -302,8 +307,8 @@ public class ReachService implements HealService {
 						activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
 						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 						activityInstance.getInstanceOf(), activityInstance.getState(),
-						activityInstance.getPatientPin(), activityInstance.getActivityGlowing()
-						);
+						activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),
+						currentCount,toBeDoneCount);
 			} else if (activityInstance.getInstanceOf().getName().equals("WorryHeads")) {
 				activityInstance = new WorryHeadsActivityInstance(
 						activityInstance.getActivityInstanceId(),
@@ -311,7 +316,8 @@ public class ReachService implements HealService {
 						activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
 						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 						activityInstance.getInstanceOf(), activityInstance.getState(),
-						activityInstance.getPatientPin(), dao.getAllWorryHeadsSituations(), activityInstance.getActivityGlowing());
+						activityInstance.getPatientPin(), dao.getAllWorryHeadsSituations(),
+						activityInstance.getActivityGlowing(),currentCount,toBeDoneCount);
 			} else if (activityInstance.getInstanceOf().getName().equals("StandUp")) {
 				activityInstance = new StandUpActivityInstance(
 						activityInstance.getActivityInstanceId(),
@@ -319,7 +325,8 @@ public class ReachService implements HealService {
 						activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
 						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
 						activityInstance.getInstanceOf(), activityInstance.getState(),
-						activityInstance.getPatientPin(), dao.getStandUpSituations(), activityInstance.getActivityGlowing());
+						activityInstance.getPatientPin(), dao.getStandUpSituations(), 
+						activityInstance.getActivityGlowing(),currentCount,toBeDoneCount);
 			}
 			ActivityInstance newActivityInstance = dao.createActivityInstance(activityInstance);
 
@@ -845,7 +852,7 @@ public class ReachService implements HealService {
 										if(activity.getLevelOfUIPersonalization() != 1 &&
 												(l1_minVal == (moduleLen-l1_max) && notDoneDays == l1_minVal)
 												|| (notDoneDays >= l1_minVal
-													&& notDoneDays < (moduleLen-l1_max))) {
+												&& notDoneDays < (moduleLen-l1_max))) {
 
 											System.out.println("In send le notif");
 
@@ -860,7 +867,7 @@ public class ReachService implements HealService {
 												&& activity.getLevelOfUIPersonalization() != 2) {
 											//L2
 											levelTwoNotifActivities.add(activity.getActivity());
-											
+
 										}
 
 									} else {
@@ -880,7 +887,7 @@ public class ReachService implements HealService {
 										if(activity.getLevelOfUIPersonalization() != 1 &&
 												(l1_minVal == (moduleLen-l1_max) && dayOfModule == l1_minVal)
 												|| ((l1_minVal != (moduleLen-l1_max))
-													&& (dayOfModule >= l1_minVal
+														&& (dayOfModule >= l1_minVal
 														&& dayOfModule < (moduleLen-l1_max)))) {
 											// Send L1
 											if(sendLevelOneNotification(patientPin, module,
@@ -1013,12 +1020,12 @@ public class ReachService implements HealService {
 			DAO dao = DAOFactory.getTheDAO();
 			String activityName = "notifLandingPage";	
 
-				// Level 2
-				if (l2_class != null) {
-					Class<?> level_2 = Class.forName(l2_class);
-					Constructor<?> constructor = level_2.getConstructor();
-					notificationClass = (INotificationInterface) constructor.newInstance();
-//				}
+			// Level 2
+			if (l2_class != null) {
+				Class<?> level_2 = Class.forName(l2_class);
+				Constructor<?> constructor = level_2.getConstructor();
+				notificationClass = (INotificationInterface) constructor.newInstance();
+				//				}
 				if(notificationClass != null) {
 					if(notificationClass.sendNotification(activityName, patientPin, 0, 2, list)) {
 						rval =true;
@@ -1029,8 +1036,8 @@ public class ReachService implements HealService {
 						level="SENT";
 						// Updating level of UI personalization in schedule
 						// For update we have to do iteratively.
-					//	activity.setLevelOfUIPersonalization(2);
-						
+						//	activity.setLevelOfUIPersonalization(2);
+
 						if(dao.updateLvlTwoUIPersonalization(patientPin, module, dayOfModule,list,2))
 							System.out.println("Update successful");
 						else 
@@ -1135,7 +1142,7 @@ public class ReachService implements HealService {
 				}
 
 			}
-			
+
 			return rval;
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -1392,7 +1399,7 @@ public class ReachService implements HealService {
 		HashMap<String,Boolean> rval = new HashMap<String, Boolean>();
 
 		SUDSActivitiesWrapper scheduledActivityList = new SUDSActivitiesWrapper();
-		
+
 		try {
 			DAO dao = DAOFactory.getTheDAO();
 
@@ -1552,7 +1559,7 @@ public class ReachService implements HealService {
 
 
 	}
-	
+
 	public boolean isLastDayOfModule(int patientPin) {
 		try {
 			DAO dao = DAOFactory.getTheDAO();
@@ -1584,5 +1591,53 @@ public class ReachService implements HealService {
 		}
 		return false;
 	}
+
+	public HashMap<String,Integer> getCurrentAndToBeDoneCount(int patientPin, String activityName) {
+		HashMap<String,Integer> result = new HashMap<>();
+		result.put(ActivityInstance.CURRENT_COUNT, -1);
+		result.put(ActivityInstance.TO_BE_DONE_COUNT, -1);
+		try {
+			DAO dao = DAOFactory.getTheDAO();
+			PatientScheduleJSON patientScheduleJSON = dao.getSchedule(patientPin);
+			if(patientScheduleJSON == null || patientScheduleJSON.getSchedule() == null
+					|| patientScheduleJSON.getSchedule().size() == 0) {
+				return result;
+			}
+			Date today = new Date();
+			HashMap<String,Integer> map = getModuleAndDay(patientScheduleJSON, today);
+			Integer module =-1,dayOfModule=-1,moduleLen=0;
+			if(map != null && map.size() > 0) {
+				if (map.containsKey(this.MODULE) && map.get(this.MODULE) != null)
+					module = map.get(this.MODULE);
+				if (map.containsKey(this.DAY) && map.get(this.DAY) != null)
+					dayOfModule = map.get(this.DAY);
+				if (map.containsKey(this.MODULE_LENGTH) && map.get(this.MODULE_LENGTH) != null)
+					moduleLen=map.get(this.MODULE_LENGTH);
+
+			}
+			else {
+				return result;
+			}
+
+			List<ActivityScheduleJSON> activityList = patientScheduleJSON.getSchedule().get(module)
+					.getSchedule().get(dayOfModule).getActivitySchedule();
+
+			ActivityScheduleJSON activity = activityList.stream() 
+					.filter(x -> activityName.equals(x.getActivity()))   
+					.findAny()                                     		 
+					.orElse(null);
+			if(activity != null && (activity.getActualCount() < activity.getMinimumCount())) {
+				result.put(ActivityInstance.CURRENT_COUNT, activity.getActualCount()+1);
+				result.put(ActivityInstance.TO_BE_DONE_COUNT, activity.getMinimumCount());
+				System.out.println("Map" + map);
+				System.out.println("Result : " + result);
+			}
+			return result;	
+		}catch(Exception e) {
+			e.printStackTrace();
+			return result;
+		}
+	}
+
 }
 

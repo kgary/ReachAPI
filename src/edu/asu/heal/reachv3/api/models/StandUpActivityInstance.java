@@ -21,8 +21,13 @@ public class StandUpActivityInstance extends ActivityInstance{
     		return 0;
     }
 	
-	public StandUpActivityInstance(String activityInstanceId, Date createdAt, Date updatedAt, String description, Date startTime, Date endTime, Date userSubmissionTime, Date actualSubmissionTime, ActivityInstanceType instanceOf, String state, int patientPin, List<StandUpSituation> situation,boolean isActivityGlowing) {
-        super(activityInstanceId, createdAt, updatedAt, description, startTime, endTime, userSubmissionTime, actualSubmissionTime, instanceOf, state, patientPin, isActivityGlowing);
+	public StandUpActivityInstance(String activityInstanceId, Date createdAt, Date updatedAt,
+			String description, Date startTime, Date endTime, Date userSubmissionTime, 
+			Date actualSubmissionTime, ActivityInstanceType instanceOf, String state, int patientPin, 
+			List<StandUpSituation> situation,boolean isActivityGlowing,int currentCount,int toBeDoneCount) {
+        super(activityInstanceId, createdAt, updatedAt, description, startTime, endTime, 
+        		userSubmissionTime, actualSubmissionTime, instanceOf, state, patientPin, isActivityGlowing,
+        		 currentCount, toBeDoneCount);
         this.situations = situation;
         }
 	
