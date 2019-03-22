@@ -95,7 +95,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = "MongoDBDAO";
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -132,7 +132,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -159,7 +159,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -188,15 +188,21 @@ public class MongoDBDAO implements DAO {
 					.projection(Projections.excludeId())
 					.into(new ArrayList<>());
 
-		} catch (NullPointerException ne) {
-			ne.printStackTrace();
+		} catch (NullPointerException e) {
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return new ArrayList<>();
 		} catch (Exception e) {
 
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -222,7 +228,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -250,7 +256,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -273,7 +279,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -305,7 +311,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -347,7 +353,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -379,7 +385,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -411,7 +417,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -455,7 +461,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -492,7 +498,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -519,7 +525,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -561,7 +567,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -596,7 +602,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -633,7 +639,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -657,7 +663,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -690,7 +696,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -757,7 +763,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -781,7 +787,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -804,7 +810,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -829,7 +835,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -861,7 +867,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -886,7 +892,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -936,7 +942,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -968,7 +974,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -1000,7 +1006,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -1038,7 +1044,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -1083,7 +1089,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -1150,7 +1156,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -1185,7 +1191,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -1223,7 +1229,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -1255,7 +1261,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -1287,7 +1293,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -1311,7 +1317,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -1343,7 +1349,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -1380,7 +1386,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -1429,7 +1435,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -1468,7 +1474,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -1505,7 +1511,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -1542,7 +1548,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -1587,7 +1593,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -1617,7 +1623,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
@@ -1655,7 +1661,7 @@ public class MongoDBDAO implements DAO {
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
 			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
 			String classOfException = e.toString();
-			String nameOfClass = "ReachService";
+			String nameOfClass = this.getClass().getSimpleName();
 			String nameOfMethod = e.getStackTrace()[0].getMethodName();
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			
