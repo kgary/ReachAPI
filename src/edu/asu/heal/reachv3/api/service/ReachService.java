@@ -933,7 +933,7 @@ public class ReachService implements HealService {
 				notificationClass = (INotificationInterface) constructor.newInstance();
 			}
 			if(notificationClass != null) {
-				if(notificationClass.sendNotification(activityName, patientPin,0, 1, list)) {
+				if(notificationClass.sendNotification(activityName,module, patientPin,0, 1, list)) {
 					rval = true;
 					metaData = "{ \""+activityVal+ "\": \""+activityName+"\","
 							+ "\""+levelOfUXP+"\" : \"1\" ,"
@@ -1001,7 +1001,7 @@ public class ReachService implements HealService {
 				notificationClass = (INotificationInterface) constructor.newInstance();
 				//				}
 				if(notificationClass != null) {
-					if(notificationClass.sendNotification(activityName, patientPin, 0, 2, list)) {
+					if(notificationClass.sendNotification(activityName, module,patientPin, 0, 2, list)) {
 						rval =true;
 						metaData = "{ \""+activityVal+ "\": \""+activityName+"\","
 								+ "\""+levelOfUXP+"\" : \"2\" ,"

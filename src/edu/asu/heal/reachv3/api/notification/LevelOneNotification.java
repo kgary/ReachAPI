@@ -12,7 +12,6 @@ import java.util.Properties;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.core.api.models.NotificationData;
 
 public class LevelOneNotification implements INotificationInterface {
@@ -38,10 +37,10 @@ public class LevelOneNotification implements INotificationInterface {
 	}
 
 	@Override
-	public boolean sendNotification(String activityName, int patientPin, 
+	public boolean sendNotification(String activityName,int module, int patientPin, 
 			Integer numberOfDaysNotDone, int levelOfNotification,List<String> list ) {
 
-		String details = getNotifiactionDetails(activityName,levelOfNotification,numberOfDaysNotDone.toString());
+		String details = getNotifiactionDetails(String.valueOf(module),levelOfNotification,numberOfDaysNotDone.toString());
 		String url = _properties.getProperty(activityName);
 		String serverKey = _properties.getProperty("serverKey");
 
@@ -65,10 +64,10 @@ public class LevelOneNotification implements INotificationInterface {
 		return false;		
 	}
 
-	public String getNotifiactionDetails(String activityName, int levelOfNotification, String numberOfDaysNotDone ) {
+	public String getNotifiactionDetails(String module, int levelOfNotification, String numberOfDaysNotDone ) {
 
-		if (notificationData.has(activityName) && notificationData.getJSONObject(activityName) != null) {
-			JSONObject actDetails = notificationData.getJSONObject(activityName);
+		if (notificationData.has(module) && notificationData.getJSONObject(module) != null) {
+			JSONObject actDetails = notificationData.getJSONObject(module);
 			JSONArray arr = actDetails.getJSONArray("level_" + levelOfNotification);
 			ArrayList<String> detail = new ArrayList<String>();
 			if (arr != null) {
