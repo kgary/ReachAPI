@@ -101,7 +101,7 @@ public interface DAO {
     boolean updateUIPersonalization(int patientPin, int module, 
 			int dayOfModule, int indexOfActivity, int levelOfPersonalization);
     
-    boolean updateLvlTwoUIPersonalization(int patientPin, int module, 
+    boolean updateLvlOneTwoUIPersonalization(int patientPin, int module, 
 			int dayOfModule, List<String> activityNames, int levelOfPersonalization);
     
     boolean updatePatientScoreActualCount(int patientPin, int module, int day, 
@@ -114,6 +114,9 @@ public interface DAO {
     		int indexOfActivity,String activityInstanceId);
 
     boolean updateResetDate(int patientPin, Date newResetDate, String activityName);
+    
+    boolean updateAverageLevelOfPersonalization(int patientPin, int module, int day,
+    		Integer averageLevelOfPersonalization);
 
     List<SUDSQuestion> getSUDSQuestion();
 }

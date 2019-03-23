@@ -1,75 +1,35 @@
 {
-	"Relaxation":{
+	"1":{
 		"level_1" : [
-			"Belly Breathing makes you feel calm. Try it now?",
-			"Belly Breathing calms your thoughts. Try it now?",
-			"Belly Breathing quiets your mind. Try it now?"
+			"Daily Diary helps sort kids feelings\nBelly Breathing clams your mind. Try it!"
 		],
 		"level_2" : [
-			"If you try Belly breathing now, then Blob will do a new trick for you!",
-			"Are you there? If you do Belly breathing, then blob will do a new trick",
-			"Do belly breathing and show you got this. - Blob"
+			"Are you there? Blob wants a Daily Diary.\nplus 2 Belly Breathings. Go!"
 		]
 	},
-	"DailyDiary" :{
+	"2" :{
 		"level_1":[
-			"Daily Diary helps you think about your day. Try it now?",
-			"Daily Diary helps you organize your thoughts. Try it now?",
-			"Daily Diary can help you know yourself better. Try it now?"
+			"Are you there? SWAP helps fix thoughts\nWorryheads makes you a SWAP champion!\nPlay now."
 		],
 		"level_2":[
-			"If you write a Daily Diary now, then Blob will do a new trick.",
-			"Are you there? Blob has a new trick, but he can only show you if you do DD",
-            "Do a Daily Diary and show Blob how is done!"
+			"Hello?\nBlob wants 2 SWAPS plus Worryheads\nDo it!"
 		]
 
 	},
-	"STOP":{
+	"3":{
 		"level_1":[
-			"SWAP helps you think clearly. Try it now?",
-			"SWAP stops worries. Try it now?",
-			"P is for practice. Practice SWAP now?"
+			"MakeBelieve has talking-tips\nTry it now?"
 		],
 		"level_2":[
-			"Do SWAP and show Blob that you got this!",
-			"Are you there? If you do SWAP, then blob will do a new trick.",
-			"Worries in your head? Fight them with SWAP."
+			"Are u there?\nBlob wants to play MakeBelieve"
 		]
 	},
-	"WorryHeads": {
+	"4": {
 		"level_1" : [
-			"Trouble with SWAP? Worryheads makes your SWAPS better!",
-			"Double points for worryheads today. Get your points now!",
-			"Worryheads is a super power. Play or lose it!"
+			"Hey! Hey! Hey!\nStandUp feeds your courage\nPlay?"
 		],
 		"level_2" : [
-			"Are you there? If you do Worryheads, blob will do a crazy trick",
-			"If you try WorryHeads now, Blob will share a new trick.",
-			"Do Worryheads, and show you got it!"
-		]
-	},
-	"MakeBelieve" :{
-		"level_1" : [
-			"MakeBelieve can help you make friends. Play now?",
-			"MakeBelieve shows gives you talking tips. Try now?",
-			"MakeBelieve helps with keeping friends. Try now?"
-		],
-		"level_2": [
-			"Are you there? If you do MakeBelieve, then blob will do a new trick.",
-			"If you try MakeBelieve now, Blob will do a new dance.",
-			"Do MakeBelieve, and show you are a rock star!"
-		]
-	},
-	"StandUp":{
-		"level_1":[
-			"StandUp helps you brave. Try now?",
-			"Do a StandUp with your SAFE tips. Go!",
-			"Stand Up feeds your courage. Feed it!"
-		],
-		"level_2":[
-			"Are you there? If you do StandUp, then blob will do a new trick",
-            "If you try StandUp now, then Blob will do a crazy trick.",
-            "Play StandUp to show you got what it takes!"
+			"Blob + YOU = Play standup? Now Pls?"
 		]
 	}
 }

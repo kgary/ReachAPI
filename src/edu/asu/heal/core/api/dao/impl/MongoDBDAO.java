@@ -1119,7 +1119,7 @@ public class MongoDBDAO implements DAO {
 	}
 
 	@Override
-	public boolean updateLvlTwoUIPersonalization(int patientPin, int module, 
+	public boolean updateLvlOneTwoUIPersonalization(int patientPin, int module, 
 			int dayOfModule, List<String> activityNames, int levelOfUIPersonalization) {
 		try{
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
@@ -1319,6 +1319,38 @@ public class MongoDBDAO implements DAO {
 		}
 
 	}
+
+	@Override
+	public boolean updateAverageLevelOfPersonalization(int patientPin, int module, int day,
+			Integer averageLevelOfPersonalization) {
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+
+			MongoCollection<PatientScheduleJSON> scheduleMongoCollection =
+					database.getCollection(SCHEDULE_COLLECTION, PatientScheduleJSON.class);
+
+			PatientScheduleJSON patientScheduleJSON = scheduleMongoCollection
+					.find(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin))
+					.projection(Projections.excludeId())
+					.first();
+			patientScheduleJSON.getSchedule().get(module).getSchedule().get(day)
+			.setAverageLevelOfPersonalization(averageLevelOfPersonalization);
+			
+			scheduleMongoCollection.findOneAndReplace(Filters.eq(PatientScheduleJSON.PATIENTPIN_ATTRIBUTE, patientPin),
+					patientScheduleJSON);
+
+			return true;
+		}catch (NullPointerException ne){
+			System.out.println("Error in getting schedule.");
+			ne.printStackTrace();
+			return false;
+		}catch (Exception e){
+			System.out.println("Some problem in getting schedule.");
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 }
 
 //enum Emotions{

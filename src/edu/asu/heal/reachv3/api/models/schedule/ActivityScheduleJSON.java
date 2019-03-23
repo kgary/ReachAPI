@@ -98,6 +98,13 @@ public class ActivityScheduleJSON {
 		return actualCount;
 	}
 
+	public int getActualCountLimitToMinCount() {
+		if(this.actualCount <= this.getMinimumCount())
+			return actualCount;
+		else
+			return this.getMinimumCount();
+	}
+	
 	public void setActualCount(int actualCount) {
 		this.actualCount = actualCount;
 	}
