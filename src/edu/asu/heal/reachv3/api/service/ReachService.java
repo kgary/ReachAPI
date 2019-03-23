@@ -11,6 +11,8 @@ import edu.asu.heal.reachv3.api.models.schedule.ModuleJSON;
 import edu.asu.heal.reachv3.api.models.schedule.PatientScheduleJSON;
 import edu.asu.heal.reachv3.api.models.schedule.ScheduleArrayJSON;
 import edu.asu.heal.reachv3.api.notification.INotificationInterface;
+import edu.asu.heal.reachv3.api.notification.LevelOneNotification;
+import edu.asu.heal.reachv3.api.notification.LevelTwoNotification;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -174,7 +176,6 @@ public class ReachService implements HealService {
 			DAO dao = DAOFactory.getTheDAO();
 			System.out.println(dao);
 			List<ActivityInstance> instances = dao.getScheduledActivities(patientPin);
-
 			return instances;
 		} catch (Exception e) {
 			System.out.println("SOME ERROR IN GETACTIVITYINSTANCES() IN REACHSERVICE");
