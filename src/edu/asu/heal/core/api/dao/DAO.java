@@ -66,6 +66,8 @@ public interface DAO {
     Logger[] logMessage (Logger[] loggerInstance);
     
     Logger[] logPersonalizationMessage (Logger[] loggerInstance);
+    
+    Logger[] logExceptionMessage (Logger[] loggerInstance);
 
     /****************************************  Other DAO methods ******************************************************/
 

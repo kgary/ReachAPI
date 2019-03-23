@@ -28,6 +28,8 @@ import edu.asu.heal.reachv3.api.models.WorryHeadsActivityInstance;
 import edu.asu.heal.reachv3.api.models.WorryHeadsSituation;
 import edu.asu.heal.reachv3.api.models.schedule.ActivityScheduleJSON;
 import edu.asu.heal.reachv3.api.models.schedule.PatientScheduleJSON;
+import edu.asu.heal.reachv3.api.service.ServerExceptionLogger;
+
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -54,10 +56,11 @@ public class MongoDBDAO implements DAO {
 	private static final String SCHEDULE_COLLECTION = "schedule";
 	private static final String LOGGER_COLLECTION = "logger";
 	private static final String PERSONALIZE_LOGGER_COLLECTION = "personalizelogger";
+	private static final String EXCEPTION_LOGGER_COLLECTION = "exceptionlogger";
 	private static final String EMOTIONS_COLLECTION = "emotion";
 	private static final String BLOB_COLLECTION = "blobtricks";
 	private static final String SUDS_COLLECTION = "sudsquestions";
-
+	private static Integer INTERNAL_ERROR_CODE =500;
 
 	private static String __mongoDBName;
 	private static String __mongoURI;
@@ -88,8 +91,14 @@ public class MongoDBDAO implements DAO {
 			// get handle to "_mongoDBName" database
 			return mongoClient.getDatabase(__mongoDBName).withCodecRegistry(pojoCodecRegistry);
 		} catch (Exception e) {
-			System.out.println("SOME ERROR GETTING MONGO CONNECTION");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = "MongoDBDAO";
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 
@@ -119,7 +128,14 @@ public class MongoDBDAO implements DAO {
 
 			return domain;
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 
@@ -139,8 +155,14 @@ public class MongoDBDAO implements DAO {
 
 			return instance;
 		} catch (Exception e) {
-			System.out.println("SOME ERROR CREATING DOMAIN");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 
@@ -166,12 +188,24 @@ public class MongoDBDAO implements DAO {
 					.projection(Projections.excludeId())
 					.into(new ArrayList<>());
 
-		} catch (NullPointerException ne) {
-			ne.printStackTrace();
+		} catch (NullPointerException e) {
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return new ArrayList<>();
 		} catch (Exception e) {
-			System.out.println("SOME ERROR HERE **");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -190,7 +224,14 @@ public class MongoDBDAO implements DAO {
 
 			return activity;
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -211,8 +252,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return NullObjects.getNullActivity();
 		} catch (Exception e) {
-			System.out.println("SOME SERVER PROBLEM IN GETACTIVITY");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -228,7 +275,14 @@ public class MongoDBDAO implements DAO {
 					.findOneAndReplace(Filters.eq(Activity.ACTIVITYID_ATTRIBUTE, activity.getActivityId()), activity);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -253,8 +307,14 @@ public class MongoDBDAO implements DAO {
 
 			return deletedActivity;
 		} catch (Exception e) {
-			System.out.println("SOME PROBLEM DELETING ACTIVITY " + activityId);
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -289,8 +349,14 @@ public class MongoDBDAO implements DAO {
 					.projection(Projections.excludeId())
 					.into(new ArrayList<>());
 		} catch (Exception e) {
-			System.out.println("SOME ERROR IN GETSCHEDULEDACTIVITIES IN MONGODBDAO");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -315,8 +381,14 @@ public class MongoDBDAO implements DAO {
 
 			return deletedInstance;
 		} catch (Exception e) {
-			System.out.println("SOME PROBLEM DELETING ACTIVITY INSTANCE " + activityInstanceId);
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -341,8 +413,14 @@ public class MongoDBDAO implements DAO {
 			updatePatient(patient);
 			return instance;
 		} catch (Exception e) {
-			System.out.println("SOME ERROR INSERTING NEW ACTIVITY INSTANCE INTO DATABASE");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -379,8 +457,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return NullObjects.getNullActivityInstance();
 		} catch (Exception e) {
-			System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -410,8 +494,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return (FaceitActivityInstance) NullObjects.getNullActivityInstance();
 		} catch (Exception e) {
-			System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -431,7 +521,14 @@ public class MongoDBDAO implements DAO {
 			}
 			return false;
 		}catch (Exception e){
-			System.out.println("Some problem in updateActivityInstance() in MongoDBDao");
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return false;
 		}
 	}
@@ -466,7 +563,14 @@ public class MongoDBDAO implements DAO {
 			}
 			return false;
 		}catch (Exception e){
-			System.out.println("Some problem in updateFaceitActivityInstance() in MongoDBDao");
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return false;
 		}
 	}
@@ -494,8 +598,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return (WorryHeadsActivityInstance) NullObjects.getNullActivityInstance();
 		} catch (Exception e) {
-			System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -525,8 +635,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return null;
 		}catch (Exception e){
-			System.out.println("Some problem in getting Make believe situation");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -543,7 +659,14 @@ public class MongoDBDAO implements DAO {
 					.projection(Projections.excludeId())
 					.into(new ArrayList<>());
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -569,7 +692,14 @@ public class MongoDBDAO implements DAO {
 					.projection(Projections.excludeId())
 					.into(new ArrayList<>());
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -629,7 +759,14 @@ public class MongoDBDAO implements DAO {
 
 			return newPatient;
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -646,7 +783,14 @@ public class MongoDBDAO implements DAO {
 				return NullObjects.getNullPatient();
 			return patient;
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -662,7 +806,14 @@ public class MongoDBDAO implements DAO {
 					.findOneAndReplace(Filters.eq(Patient.PIN_ATTRIBUTE, patient.getPin()), patient);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -680,8 +831,14 @@ public class MongoDBDAO implements DAO {
 					.projection(Projections.excludeId())
 					.into(new ArrayList<>());
 		} catch (Exception e) {
-			System.out.println("SOME PROBLEM IN GETTRIALS() METHOD OF MONGODBDAO");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -706,8 +863,14 @@ public class MongoDBDAO implements DAO {
 					.projection(Projections.excludeId())
 					.into(new ArrayList<>());
 		} catch (Exception e) {
-			System.out.println("SOME PROBLEM IN GETTRIALS() METHOD OF MONGODBDAO");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -725,7 +888,14 @@ public class MongoDBDAO implements DAO {
 
 			return trialInstance;
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -768,8 +938,14 @@ public class MongoDBDAO implements DAO {
 
 			return loggerInstance;
 		} catch (Exception e){
-			System.out.println("Some problem in storing logs");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -794,8 +970,46 @@ public class MongoDBDAO implements DAO {
 			}
 			return loggerInstance;
 		} catch (Exception e){
-			System.out.println("Some problem in storing personlized logs");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
+			return null;
+		}
+	}
+	
+	@Override
+	public Logger[] logExceptionMessage (Logger[] loggerInstance) {
+		try{
+			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
+			MongoCollection<Trial> trialsCollection = MongoDBDAO.getConnectedDatabase()
+					.getCollection(MongoDBDAO.TRIALS_COLLECTION, Trial.class);
+
+			MongoCollection<Logger> loggerCollection = database.getCollection(MongoDBDAO.EXCEPTION_LOGGER_COLLECTION,
+					Logger.class);
+			for (Logger log: loggerInstance) {
+				String trialId = log.getTrialId();
+
+				Trial trial = trialsCollection.find(Filters.eq(Trial.TRIALID_ATTRIBUTE, trialId)).first();
+
+				if(trial != null) {
+					loggerCollection.insertOne(log);
+				}
+			}
+			return loggerInstance;
+		} catch (Exception e){
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -826,8 +1040,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return (MakeBelieveActivityInstance) NullObjects.getNullActivityInstance();
 		} catch (Exception e) {
-			System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -865,8 +1085,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return null;
 		}catch (Exception e){
-			System.out.println("Some problem in getting Make believe situation");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -925,8 +1151,15 @@ public class MongoDBDAO implements DAO {
 
 			Collections.shuffle(faceItchallenges);
 			return faceItchallenges;
-		} catch (java.lang.Exception exception) {
-			exception.printStackTrace();
+		} catch (Exception e) {
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -954,8 +1187,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return (StandUpActivityInstance) NullObjects.getNullActivityInstance();
 		} catch (Exception e) {
-			System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 
@@ -986,8 +1225,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return null;
 		}catch (Exception e){
-			System.out.println("Some problem in getting Make believe situation");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -1012,8 +1257,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return (DailyDiaryActivityInstance) NullObjects.getNullActivityInstance();
 		} catch (Exception e) {
-			System.out.println("SOME SERVER PROBLEM IN GETACTIVITYINSTANCEID");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 
@@ -1038,8 +1289,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return null;
 		}catch (Exception e){
-			System.out.println("Some problem in getting Make believe situation");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}	
 	}
@@ -1056,7 +1313,14 @@ public class MongoDBDAO implements DAO {
 
 		}
 		catch(Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 		}
 	}
 
@@ -1081,8 +1345,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return null;
 		}catch (Exception e){
-			System.out.println("Some problem in getting schedule.");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 	}
@@ -1112,8 +1382,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return false;
 		}catch (Exception e){
-			System.out.println("Some problem in getting schedule.");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return false;
 		}
 	}
@@ -1155,8 +1431,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return false;
 		}catch (Exception e){
-			System.out.println("Some problem in getting schedule.");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return false;
 		}
 	}
@@ -1188,8 +1470,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return false;
 		}catch (Exception e){
-			System.out.println("Some problem in getting schedule.");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return false;
 		}
 	}
@@ -1219,8 +1507,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return false;
 		}catch (Exception e){
-			System.out.println("Some problem in getting schedule.");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return false;
 		}
 	}
@@ -1250,8 +1544,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return false;
 		}catch (Exception e){
-			System.out.println("Some problem in getting schedule.");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return false;
 		}
 	}
@@ -1289,8 +1589,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return false;
 		}catch (Exception e){
-			System.out.println("Some problem in getting schedule.");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return false;
 		}
   }
@@ -1313,8 +1619,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return null;
 		}catch (Exception e){
-			System.out.println("Some problem in getting schedule.");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return null;
 		}
 
@@ -1345,8 +1657,14 @@ public class MongoDBDAO implements DAO {
 			ne.printStackTrace();
 			return false;
 		}catch (Exception e){
-			System.out.println("Some problem in getting schedule.");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+			
 			return false;
 		}
 	}

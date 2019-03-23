@@ -70,6 +70,8 @@ public class ReachService implements HealService {
 	private static String SU_RESET_COUNT = "StandUp.reset.count";
 	private static String LEVEL_1_ADHERENCE_THRESHOLD = "Level_1.adherence.threshold";
 	private static String LEVEL_2_ADHERENCE_THRESHOLD = "Level_2.adherence.threshold";
+	private static Integer INTERNAL_ERROR_CODE =500;
+	private static Integer BAD_REQUEST_STATUS_CODE =400;
 
 	private static Properties _properties;
 	static {
@@ -79,13 +81,14 @@ public class ReachService implements HealService {
 			_properties.load(propFile);
 			propFile.close();
 			days = _properties.getProperty(BLOB_TRICKS_DAYS);
-		} catch (Throwable t) {
-			t.printStackTrace();
-			try {
-				throw new Exception(t);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		} catch (Exception e) {
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = "ReachService";
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+
 		}
 	}
 
@@ -98,8 +101,15 @@ public class ReachService implements HealService {
 
 			return result;
 		} catch (Exception e) {
-			System.out.println("SOME ERROR IN GETACTIVITIES() IN REACHSERVICE CLASS");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, -1,INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
@@ -117,8 +127,15 @@ public class ReachService implements HealService {
 
 			return createdActivity;
 		} catch (Exception e) {
-			System.out.println("SOME PROBLEM IN REACH SERVICE - CREATEACTIVITY");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, 
+					nameOfMethod, -1,INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
@@ -129,7 +146,15 @@ public class ReachService implements HealService {
 			DAO dao = DAOFactory.getTheDAO();
 			return dao.getActivity(activityId);
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException,
+					nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
@@ -150,8 +175,15 @@ public class ReachService implements HealService {
 
 			return dao.updateActivity(activityInDatabase);
 		} catch (Exception e) {
-			System.out.println("SOME PROBLEM IN UPDATE ACTIVITY IN REACHSERVICE");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, 
+					nameOfMethod, -1,INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
@@ -162,8 +194,15 @@ public class ReachService implements HealService {
 			DAO dao = DAOFactory.getTheDAO();
 			return dao.deleteActivity(activityId);
 		} catch (Exception e) {
-			System.out.println("SOME PROBLEM IN REACH SERVICE DELETE ACTIVITY INSTANCE");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, 
+					nameOfMethod, -1,INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
@@ -174,12 +213,30 @@ public class ReachService implements HealService {
 		List<ActivityInstance> response = null;
 		try {
 			DAO dao = DAOFactory.getTheDAO();
-			System.out.println(dao);
 			List<ActivityInstance> instances = dao.getScheduledActivities(patientPin);
+			if(instances.get(0).equals(NullObjects.getNullActivityInstance())) {
+				StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+				ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+				
+				// Below line number returns the where the lineNumber variable is declared.
+				// This will be helpful when we have multiple null pointer for status code 400.
+				
+				int lineNumber = trace[1].getLineNumber(); 
+				String classOfException = NullPointerException.class.getSimpleName();
+				String nameOfClass = this.getClass().getSimpleName();
+				String nameOfMethod = trace[1].getClassName();
+				exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod, patientPin,400);
+			}
 			return instances;
 		} catch (Exception e) {
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, 
+					nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
 			System.out.println("SOME ERROR IN GETACTIVITYINSTANCES() IN REACHSERVICE");
-			e.printStackTrace();
 			return null;
 		}
 	}
@@ -218,13 +275,22 @@ public class ReachService implements HealService {
 			return emotionsActivities;
 
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, 
+					nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
 
 	@Override
 	public ActivityInstance getActivityInstance(String activityInstanceId) {
+		Integer ppin =-1;
 		try {
 			DAO dao = DAOFactory.getTheDAO();
 			ActivityInstance instance = dao.getActivityInstance(activityInstanceId);
@@ -234,7 +300,7 @@ public class ReachService implements HealService {
 			String trialTitle = TRIAL_NAME; // Refactor : needs to be done in a better way...
 			SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
 			String date = timeStampFormat.format(new Date());
-			Integer ppin = instance.getPatientPin();
+			ppin = instance.getPatientPin();
 			String metaData = "{ \"activityInstanceId :\" \"" + instance.getActivityInstanceId() + "\" , \"ACTIVITY_INSTANCE_STATE\" : \"" + ActivityInstanceStatus.IN_EXECUTION.status() + "\" } ";
 			Logger log = new Logger(dao.getTrialIdByTitle(trialTitle), date, "INFO", "ACTIVITY_INSTANCE_STATE", "JSON",
 					instance.getInstanceOf().getName(), ppin.toString(), metaData);
@@ -248,8 +314,14 @@ public class ReachService implements HealService {
 
 			return instance;
 		} catch (Exception e) {
-			System.out.println("SOME ERROR IN HEAL SERVICE getActivityInstance");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, ppin,INTERNAL_ERROR_CODE);
 			return null;
 		}
 	}
@@ -266,7 +338,7 @@ public class ReachService implements HealService {
 					activityInstance.getInstanceOf().getName());
 			int currentCount = mapCount.get(ActivityInstance.CURRENT_COUNT);
 			int toBeDoneCount = mapCount.get(ActivityInstance.TO_BE_DONE_COUNT);
-			
+
 			if (activityInstance.getInstanceOf().getName().equals("MakeBelieve")) { //todo need a more elegant way of making the check whether it is of type make believe
 				activityInstance = new MakeBelieveActivityInstance(
 						activityInstance.getActivityInstanceId(),
@@ -378,7 +450,15 @@ public class ReachService implements HealService {
 				} else {
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+
+				ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+				int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+				String classOfException = e.toString();
+				String nameOfClass = this.getClass().getSimpleName();
+				String nameOfMethod = e.getStackTrace()[0].getMethodName();
+				exceptionLogger.logServerException(lineNumber, classOfException,
+						nameOfClass, nameOfMethod, activityInstance.getPatientPin(),INTERNAL_ERROR_CODE);
+
 			} finally {
 				// Code to log state of activity instance in the Mongo...
 
@@ -403,8 +483,15 @@ public class ReachService implements HealService {
 
 
 		} catch (Exception e) {
-			System.out.println("SOME ERROR CREATING NE ACTIVITY INSTANCE IN REACH SERVICE - CREATEACTIVITYINSTANCE");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException,
+					nameOfClass, nameOfMethod, activityInstance.getPatientPin(),INTERNAL_ERROR_CODE);
+
 			return null;
 
 		}
@@ -412,6 +499,7 @@ public class ReachService implements HealService {
 
 	@Override
 	public ActivityInstance updateActivityInstance(String requestBody) {
+		Integer patientPin = -1;
 		try {
 			DAO dao = DAOFactory.getTheDAO();
 			ObjectMapper mapper = new ObjectMapper();
@@ -456,7 +544,7 @@ public class ReachService implements HealService {
 				instance.setUpdatedAt(new Date());      
 			}
 			instance.setUserSubmissionTime(new Date());
-
+			patientPin = instance.getPatientPin();
 			// Code to log state of activity instance in the Mongo...
 
 			String trialTitle = TRIAL_NAME; // Refactor : needs to be done in a better way...
@@ -516,11 +604,25 @@ public class ReachService implements HealService {
 				return instance;
 			}
 			return NullObjects.getNullActivityInstance();
-		} catch (NullPointerException ne) {
+		} catch (NullPointerException e) {
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, 
+					nameOfMethod, patientPin,BAD_REQUEST_STATUS_CODE);
 			return NullObjects.getNullActivityInstance();
+			
 		} catch (Exception e) {
-			System.out.println("Error from updateActivityInstance() in ReachService");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, 
+					nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
 			return null;
 		}
 
@@ -532,8 +634,15 @@ public class ReachService implements HealService {
 			DAO dao = DAOFactory.getTheDAO();
 			return dao.deleteActivityInstance(activityInstanceId);
 		} catch (Exception e) {
-			System.out.println("SOME PROBLEM IN REACH SERVICE DELETE ACTIVITY INSTANCE");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, 
+					nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
@@ -546,7 +655,15 @@ public class ReachService implements HealService {
 
 			return dao.getDomains();
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, nameOfMethod,
+					-1,INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
@@ -558,7 +675,14 @@ public class ReachService implements HealService {
 
 			return dao.getDomain(id);
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, 
+					nameOfClass, nameOfMethod, -1,INTERNAL_ERROR_CODE);
 			return null;
 		}
 	}
@@ -574,7 +698,15 @@ public class ReachService implements HealService {
 
 			return dao.createDomain(instance);
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, -1,INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
@@ -587,6 +719,7 @@ public class ReachService implements HealService {
 	/****************************************  Service methods for Patient  *******************************************/
 	@Override
 	public List<Patient> getPatients(String trialId) {
+		Integer patientPin =-1;
 		try {
 			DAO dao = DAOFactory.getTheDAO();
 			List<Patient> result;
@@ -598,11 +731,17 @@ public class ReachService implements HealService {
 				// return list of patients for given trialId
 				result = dao.getPatients(trialId);
 			}
-
 			return result;
 		} catch (Exception e) {
-			System.out.println("SOME PROBLEM WITH REACH SERVICE - GET PATIENTS");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
@@ -613,7 +752,15 @@ public class ReachService implements HealService {
 			DAO dao = DAOFactory.getTheDAO();
 			return dao.getPatient(patientPin);
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
@@ -624,7 +771,15 @@ public class ReachService implements HealService {
 			DAO dao = DAOFactory.getTheDAO();
 			return dao.createPatient(trialId,patientPin);
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
@@ -649,8 +804,15 @@ public class ReachService implements HealService {
 
 			return dao.updatePatient(patientInDatabase);
 		} catch (Exception e) {
-			System.out.println("SOME PROBLEM IN UPDATE PATIENT IN REACHSERVICE");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, patient.getPin(),INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
@@ -670,8 +832,15 @@ public class ReachService implements HealService {
 			p.getRegistrationToken().add(regiToken);
 			return dao.updatePatient(p);
 		} catch (Exception e) {
-			System.out.println("PROBLEM IN ADDING DEVICE ID TOKEN.");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 
@@ -693,8 +862,15 @@ public class ReachService implements HealService {
 
 			return trials;
 		} catch (Exception e) {
-			System.out.println("SOME ERROR IN GETTRIALS() IN REACHSERVICE CLASS");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, -1,INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
@@ -723,7 +899,15 @@ public class ReachService implements HealService {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, 
+					nameOfMethod, -1,INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
@@ -736,7 +920,15 @@ public class ReachService implements HealService {
 			String trialId = dao.getTrialIdByTitle(trialName);
 			return trialId;
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, -1,INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
@@ -749,7 +941,15 @@ public class ReachService implements HealService {
 			Logger[] logger = dao.logMessage(loggerInstance);
 			return logger;
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, -1,INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
@@ -762,7 +962,15 @@ public class ReachService implements HealService {
 			Logger[] logger = dao.logPersonalizationMessage(loggerInstance);
 			return logger;
 		} catch (Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, 
+					nameOfMethod, -1,INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
@@ -830,17 +1038,17 @@ public class ReachService implements HealService {
 				int averageLevelOfPersonalization;
 				Double totalAverageAdherence =100.0;
 				if(!adherenceActivityMap.isEmpty()) {
-				totalAverageAdherence = 
-						(adherenceActivityMap.values().stream()
-								.mapToDouble(Double :: doubleValue).sum())/adherenceActivityMap.size();
+					totalAverageAdherence = 
+							(adherenceActivityMap.values().stream()
+									.mapToDouble(Double :: doubleValue).sum())/adherenceActivityMap.size();
 				}
 
 				averageLevelOfPersonalization = convertTotalAverageAdherenceToLevel(totalAverageAdherence);
-				
+
 				// setting average level of personalization for this day.
-				
+
 				dao.updateAverageLevelOfPersonalization(patientPin, module, dayOfModule, averageLevelOfPersonalization);
-				
+
 				double l1_threshold = Double.parseDouble(_properties.getProperty(LEVEL_1_ADHERENCE_THRESHOLD));
 				double l2_threshold = Double.parseDouble(_properties.getProperty(LEVEL_2_ADHERENCE_THRESHOLD));
 
@@ -894,11 +1102,28 @@ public class ReachService implements HealService {
 				}
 			}
 			rval=true;
-		} catch (RuntimeException runtimeException) {
+		} catch (RuntimeException exception) {
 			rval = false;
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = exception.getStackTrace()[0].getLineNumber(); 
+			String classOfException = exception.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = exception.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, 
+					nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
+
 			//runtimeException.printStackTrace();
 		} catch (Exception exception) {
 			rval=false;
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = exception.getStackTrace()[0].getLineNumber(); 
+			String classOfException = exception.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = exception.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, 
+					nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
+
 			//exception.printStackTrace();
 		}
 		return rval;
@@ -968,7 +1193,15 @@ public class ReachService implements HealService {
 				dao.logPersonalizationMessage(logs);
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
+
 		}
 		return rval;
 	}
@@ -1043,7 +1276,15 @@ public class ReachService implements HealService {
 				dao.logPersonalizationMessage(logs);
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
+
 		}
 		return rval;
 	}
@@ -1198,18 +1439,34 @@ public class ReachService implements HealService {
 
 			return rval;
 		}catch(Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, 
+					nameOfMethod, patientScheduleJSON.getPin(),INTERNAL_ERROR_CODE);
+
 			return null;
 		}
 	}
 
-	public static Date getDateWithoutTime(Date date) throws ParseException {
+	public Date getDateWithoutTime(Date date) throws ParseException {
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat(
 					"dd/MM/yyyy");
 			return formatter.parse(formatter.format(date));
 		} catch (java.text.ParseException e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, -1,INTERNAL_ERROR_CODE);
+
 		}
 		return null;
 	}
@@ -1223,7 +1480,15 @@ public class ReachService implements HealService {
 			int currVal = dao.getReleasedBlobTricksDAO(patientPin).getCount();
 			return currVal;
 		}catch(Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
+
 			return 0;
 		}
 
@@ -1238,8 +1503,15 @@ public class ReachService implements HealService {
 			dao.updateBlobTrickCountDAO(obj);
 			return rval;
 		}catch(Exception e) {
-			System.out.println("Issue in updating blobtrick count.");
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
+
 			return 0;
 		}
 	}
@@ -1441,7 +1713,15 @@ public class ReachService implements HealService {
 			rval = true;
 		}catch (Exception e){
 			rval = false;
-			//e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
+
 		}
 		return rval;
 	}
@@ -1504,7 +1784,15 @@ public class ReachService implements HealService {
 			scheduledActivityList.setActvityMap(rval);
 
 		}catch(Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
+
 		} finally {
 			return scheduledActivityList;
 		}
@@ -1606,7 +1894,15 @@ public class ReachService implements HealService {
 			}
 			return rval;
 		}catch(Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, patientScheduleJSON.getPin(),INTERNAL_ERROR_CODE);
+
 			return false;
 		}
 
@@ -1639,7 +1935,15 @@ public class ReachService implements HealService {
 			}
 
 		}catch(Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, 
+					nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
+
 			return false;
 		}
 		return false;
@@ -1687,7 +1991,15 @@ public class ReachService implements HealService {
 			}
 			return result;	
 		}catch(Exception e) {
-			e.printStackTrace();
+
+			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
+			int lineNumber = e.getStackTrace()[0].getLineNumber(); 
+			String classOfException = e.toString();
+			String nameOfClass = this.getClass().getSimpleName();
+			String nameOfMethod = e.getStackTrace()[0].getMethodName();
+			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass,
+					nameOfMethod, patientPin,INTERNAL_ERROR_CODE);
+
 			return result;
 		}
 	}
