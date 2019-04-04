@@ -70,6 +70,7 @@ public class ReachService implements HealService {
 	private static String SU_RESET_COUNT = "StandUp.reset.count";
 	private static String LEVEL_1_ADHERENCE_THRESHOLD = "Level_1.adherence.threshold";
 	private static String LEVEL_2_ADHERENCE_THRESHOLD = "Level_2.adherence.threshold";
+	private static String AAVERAGE_SKILL_FOR_DAYS ="average_skill_for_days";
 	private static Integer INTERNAL_ERROR_CODE =500;
 	private static Integer BAD_REQUEST_STATUS_CODE =400;
 
@@ -1291,10 +1292,15 @@ public class ReachService implements HealService {
 
 	private double getAverageLevelOfAdherenceOfActivity(PatientScheduleJSON patientScheduleJSON,
 			int module, int dayOfModule,String activityName) {
-
+		int avgSkillForDays = Integer.parseInt(_properties.getProperty(AAVERAGE_SKILL_FOR_DAYS));
 		int totalActualCount =0;
 		int totalMinCount =0;
-		while(module >=0) {
+		int loopCount =-1;
+		if(avgSkillForDays < 0)
+			loopCount = module;
+		else
+			loopCount = avgSkillForDays;
+		while(loopCount >=0) {
 			ActivityScheduleJSON result = getActivityInDayAndModule(patientScheduleJSON, module, dayOfModule, activityName);
 
 			if(result != null) {
@@ -1312,6 +1318,7 @@ public class ReachService implements HealService {
 						.get(module).getSchedule();
 				dayOfModule = schedule.size()-1;	
 			}
+			loopCount--;
 		}
 		// If the the total minimum count is zero i.e. if it is for module 1 we return 100% adherence.
 		if(totalMinCount ==0)

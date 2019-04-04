@@ -41,26 +41,28 @@ public class LevelOneNotification implements INotificationInterface {
 			Integer numberOfDaysNotDone, int levelOfNotification,List<String> list ) {
 
 		String details = getNotifiactionDetails(String.valueOf(module),levelOfNotification,numberOfDaysNotDone.toString());
-		String url = _properties.getProperty(activityName);
-		String serverKey = _properties.getProperty("serverKey");
+		if(!details.equals("")) {
+			String url = _properties.getProperty(activityName);
+			String serverKey = _properties.getProperty("serverKey");
 
-		List<ActivityList> l1List = new ArrayList<>();
+			List<ActivityList> l1List = new ArrayList<>();
 
-		for(int i=0; i<list.size();i++) {
-			String activityUrl = "";
-			if (_properties.getProperty(list.get(i)) != null) {
-				activityUrl = _properties.getProperty(list.get(i));
+			for(int i=0; i<list.size();i++) {
+				String activityUrl = "";
+				if (_properties.getProperty(list.get(i)) != null) {
+					activityUrl = _properties.getProperty(list.get(i));
+				}
+				ActivityList obj = new ActivityList(list.get(i), activityUrl, false);
+				l1List.add(obj);
 			}
-			ActivityList obj = new ActivityList(list.get(i), activityUrl, false);
-			l1List.add(obj);
+
+			NotificationData data = new NotificationData(details, null, url, levelOfNotification, l1List);
+
+			Notification obj = new Notification();
+			if(obj.sendNotification(data, patientPin, serverKey)) {
+				return true;
+			}
 		}
-
-		NotificationData data = new NotificationData(details, null, url, levelOfNotification, l1List);
-
-		Notification obj = new Notification();
-		if(obj.sendNotification(data, patientPin, serverKey)) {
-			return true;
-		}		
 		return false;		
 	}
 

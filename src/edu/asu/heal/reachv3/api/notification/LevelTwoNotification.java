@@ -24,7 +24,7 @@ public class LevelTwoNotification implements INotificationInterface{
 		try {
 			String data = readFile("notificationData.json");
 			notificationData = new JSONObject(data);
-			
+
 			_properties = new Properties();
 			InputStream propFile = LevelTwoNotification.class.getResourceAsStream("urls.properties");
 			_properties.load(propFile);
@@ -40,30 +40,31 @@ public class LevelTwoNotification implements INotificationInterface{
 	public boolean sendNotification(String activityName, int module, int patientPin,
 			Integer numberOfDaysNotDone,int levelOfNotification, List<String> list) {
 		String details = getNotifiactionDetails(String.valueOf(module),levelOfNotification,numberOfDaysNotDone.toString());
-		String url = _properties.getProperty(activityName);
-		String serverKey = _properties.getProperty("serverKey");
-		
-		List<ActivityList> l2List = new ArrayList<>();
-		
-		for(int i=0; i<list.size();i++) {
-			String activityUrl = "";
-			if (_properties.getProperty(list.get(i)) != null) {
-                activityUrl = _properties.getProperty(list.get(i));
-			}
-			ActivityList obj = new ActivityList(list.get(i), activityUrl, false);
-			l2List.add(obj);
-		}
-		
-		NotificationData data = new NotificationData(details, null, url, levelOfNotification, l2List);
+		if(!details.equals("")) {
+			String url = _properties.getProperty(activityName);
+			String serverKey = _properties.getProperty("serverKey");
 
-		Notification obj = new Notification();
-		if(obj.sendNotification(data, patientPin, serverKey)) {
-			return true;
+			List<ActivityList> l2List = new ArrayList<>();
+
+			for(int i=0; i<list.size();i++) {
+				String activityUrl = "";
+				if (_properties.getProperty(list.get(i)) != null) {
+					activityUrl = _properties.getProperty(list.get(i));
+				}
+				ActivityList obj = new ActivityList(list.get(i), activityUrl, false);
+				l2List.add(obj);
+			}
+
+			NotificationData data = new NotificationData(details, null, url, levelOfNotification, l2List);
+
+			Notification obj = new Notification();
+			if(obj.sendNotification(data, patientPin, serverKey)) {
+				return true;
+			}
 		}
-		
 		return false;
 	}
-	
+
 	public String getNotifiactionDetails(String module, int levelOfNotification,String numberOfDaysNotDone) {
 		if (notificationData.has(module) && notificationData.getJSONObject(module) != null) {
 			JSONObject actDetails = notificationData.getJSONObject(module);
@@ -101,8 +102,8 @@ public class LevelTwoNotification implements INotificationInterface{
 		return result;
 	}
 
-	
-	
-	
+
+
+
 
 }
