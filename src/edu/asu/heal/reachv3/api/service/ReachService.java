@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mysql.jdbc.ConnectionPropertiesImpl.LongConnectionProperty;
+
 import edu.asu.heal.reachv3.api.models.*;
 import edu.asu.heal.reachv3.api.models.schedule.ActivityScheduleJSON;
 import edu.asu.heal.reachv3.api.models.schedule.AvailableTime;
@@ -70,7 +72,7 @@ public class ReachService implements HealService {
 	private static String SU_RESET_COUNT = "StandUp.reset.count";
 	private static String LEVEL_1_ADHERENCE_THRESHOLD = "Level_1.adherence.threshold";
 	private static String LEVEL_2_ADHERENCE_THRESHOLD = "Level_2.adherence.threshold";
-	private static String AAVERAGE_SKILL_FOR_DAYS ="average_skill_for_days";
+	private static String AVERAGE_UI_FOR_DAYS ="average_ui_for_days";
 	private static Integer INTERNAL_ERROR_CODE =500;
 	private static Integer BAD_REQUEST_STATUS_CODE =400;
 
@@ -215,13 +217,14 @@ public class ReachService implements HealService {
 		try {
 			DAO dao = DAOFactory.getTheDAO();
 			List<ActivityInstance> instances = dao.getScheduledActivities(patientPin);
-			if(instances.get(0).equals(NullObjects.getNullActivityInstance())) {
+
+			if(instances != null && instances.size() > 0 && instances.get(0).equals(NullObjects.getNullActivityInstance())) {
 				StackTraceElement[] trace = Thread.currentThread().getStackTrace();
 				ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
-				
+
 				// Below line number returns the where the lineNumber variable is declared.
 				// This will be helpful when we have multiple null pointer for status code 400.
-				
+
 				int lineNumber = trace[1].getLineNumber(); 
 				String classOfException = NullPointerException.class.getSimpleName();
 				String nameOfClass = this.getClass().getSimpleName();
@@ -614,7 +617,7 @@ public class ReachService implements HealService {
 			exceptionLogger.logServerException(lineNumber, classOfException, nameOfClass, 
 					nameOfMethod, patientPin,BAD_REQUEST_STATUS_CODE);
 			return NullObjects.getNullActivityInstance();
-			
+
 		} catch (Exception e) {
 
 			ServerExceptionLogger exceptionLogger = new ServerExceptionLogger();
@@ -1292,14 +1295,22 @@ public class ReachService implements HealService {
 
 	private double getAverageLevelOfAdherenceOfActivity(PatientScheduleJSON patientScheduleJSON,
 			int module, int dayOfModule,String activityName) {
-		int avgSkillForDays = Integer.parseInt(_properties.getProperty(AAVERAGE_SKILL_FOR_DAYS));
+		int	avgSkillForDays= Integer.parseInt(_properties.getProperty(AVERAGE_UI_FOR_DAYS));
 		int totalActualCount =0;
 		int totalMinCount =0;
 		int loopCount =-1;
-		if(avgSkillForDays < 0)
+		
+		// Create a flag varibale. flag = true means we have value in properties file > 0 
+		//or else it remains false (to calculate average so far)
+		
+		boolean flag =false;
+		if(avgSkillForDays < 0) {
 			loopCount = module;
-		else
+		}
+		else {
 			loopCount = avgSkillForDays;
+			flag=true;
+		}
 		while(loopCount >=0) {
 			ActivityScheduleJSON result = getActivityInDayAndModule(patientScheduleJSON, module, dayOfModule, activityName);
 
@@ -1311,6 +1322,8 @@ public class ReachService implements HealService {
 			}
 			dayOfModule--;
 			if(dayOfModule == -1) {
+				if(!flag)
+					loopCount--;
 				module--;
 				if(module < 0)
 					break;
@@ -1318,7 +1331,8 @@ public class ReachService implements HealService {
 						.get(module).getSchedule();
 				dayOfModule = schedule.size()-1;	
 			}
-			loopCount--;
+			if(flag)
+				loopCount--;
 		}
 		// If the the total minimum count is zero i.e. if it is for module 1 we return 100% adherence.
 		if(totalMinCount ==0)
