@@ -40,7 +40,9 @@ public class LevelOneNotification implements INotificationInterface {
 	public boolean sendNotification(String activityName,int module, int patientPin, 
 			Integer numberOfDaysNotDone, int levelOfNotification,List<String> list ) {
 
-		String details = getNotifiactionDetails(String.valueOf(module),levelOfNotification,numberOfDaysNotDone.toString());
+		String details = getNotifiactionDetails(String.valueOf(module),
+				levelOfNotification,numberOfDaysNotDone.toString(), list);
+
 		if(!details.equals("")) {
 			String url = _properties.getProperty(activityName);
 			String serverKey = _properties.getProperty("serverKey");
@@ -66,22 +68,25 @@ public class LevelOneNotification implements INotificationInterface {
 		return false;		
 	}
 
-	public String getNotifiactionDetails(String module, int levelOfNotification, String numberOfDaysNotDone ) {
+	public String getNotifiactionDetails(String module, int levelOfNotification, String numberOfDaysNotDone,
+										 List<String> activityList ) {
 
-		if (notificationData.has(module) && notificationData.getJSONObject(module) != null) {
-			JSONObject actDetails = notificationData.getJSONObject(module);
-			JSONArray arr = actDetails.getJSONArray("level_" + levelOfNotification);
-			ArrayList<String> detail = new ArrayList<String>();
-			if (arr != null) {
-				for (int i = 0; i < arr.length(); i++) {
-					detail.add(arr.getString(i));
+		if (notificationData.has("level_" + levelOfNotification)
+				&& notificationData.getJSONArray("level_" + levelOfNotification) != null) {
+			JSONArray arr = notificationData.getJSONArray("level_" + levelOfNotification);
+
+			for (int index = 0; index < arr.length(); index++) {
+				JSONObject obj = arr.getJSONObject(index);
+
+				if (obj.getString("activity") != null) {
+					if (activityList.contains(obj.getString("activity"))) {
+						return obj.getString("message");
+
+					} else if (obj.getString("activity").equalsIgnoreCase("Other")) {
+						return obj.getString("message");
+					}
 				}
 			}
-			Collections.shuffle(detail);
-			if (detail.get(0).contains("<N>")) {
-				detail.get(0).replaceAll("<N>", numberOfDaysNotDone);
-			}
-			return detail.get(0);
 		}
 		return "";
 	}
