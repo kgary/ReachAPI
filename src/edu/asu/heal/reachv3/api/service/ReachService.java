@@ -362,7 +362,7 @@ public class ReachService implements HealService {
 						activityInstance.getPatientPin(), dao.getFaceItChallenges(),
 						activityInstance.getActivityGlowing(), currentCount,toBeDoneCount);
 			} else if (activityInstance.getInstanceOf().getName().equals("DailyDiary")) {
-				if(isLastDayOfModule(activityInstance.getPatientPin())) {
+//				if(isLastDayOfModule(activityInstance.getPatientPin())) {
 					activityInstance = new DailyDiaryActivityInstance(
 							activityInstance.getActivityInstanceId(),
 							activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
@@ -371,16 +371,16 @@ public class ReachService implements HealService {
 							activityInstance.getInstanceOf(), activityInstance.getState(),
 							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),currentCount,toBeDoneCount,
 							null,0,null,null,dao.getSUDSQuestion());
-				}else {
-					activityInstance = new DailyDiaryActivityInstance(
-							activityInstance.getActivityInstanceId(),
-							activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
-							activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
-							activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
-							activityInstance.getInstanceOf(), activityInstance.getState(),
-							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),currentCount,
-							toBeDoneCount,null,0,null,null,null);
-				}
+//				}else {
+//					activityInstance = new DailyDiaryActivityInstance(
+//							activityInstance.getActivityInstanceId(),
+//							activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
+//							activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
+//							activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
+//							activityInstance.getInstanceOf(), activityInstance.getState(),
+//							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),currentCount,
+//							toBeDoneCount,null,0,null,null,null);
+//				}
 			} else if (activityInstance.getInstanceOf().getName().equals("STOP")) {
 				activityInstance = new SwapActivityInstance(activityInstance.getActivityInstanceId(),
 						activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
@@ -1032,13 +1032,85 @@ public class ReachService implements HealService {
 				ArrayList<ScheduleArrayJSON> schedule = patientScheduleJSON.getSchedule()
 						.get(module).getSchedule();
 
+				//get previous day
+				int prevDay = dayOfModule -1 ;
+				int prevDayModule = module;
+				ArrayList<ActivityScheduleJSON> prevDayActivityList = null;
+				if (prevDay == -1) {
+					prevDayModule --;
+					if(prevDayModule < 0) {
+						Logger log;
+						String trialTitle = TRIAL_NAME; // Refactor : needs to be done in a better way...
+						SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
+						String date = timeStampFormat.format(new Date());
+						Integer ppin = Integer.valueOf(patientPin);
+						String metaData ="";
+						String type ="PERSONALIZATION";
+						String format = "JSON";
+						String subType = "UX";
+						String level="NOT DONE";
+						log = new Logger(dao.getTrialIdByTitle(trialTitle),date,level,
+								type, format, subType, ppin.toString(), metaData);
+						ArrayList<Logger> al = new ArrayList<Logger>();
+						al.add(log);
+						Logger[] logs = new Logger[al.size()];
+
+						logs = al.toArray(logs);
+						dao.logPersonalizationMessage(logs);
+
+						return true;
+					}
+					ArrayList<ScheduleArrayJSON> prevDaySchedule = patientScheduleJSON.getSchedule().
+							get(prevDayModule).getSchedule();
+					prevDay = prevDaySchedule.size()-1;
+					prevDayActivityList = patientScheduleJSON.getSchedule()
+							.get(prevDayModule).getSchedule().get(prevDay).getActivitySchedule();
+
+				} else {
+					prevDayActivityList = patientScheduleJSON.getSchedule()
+							.get(prevDayModule).getSchedule().get(prevDay).getActivitySchedule();
+				}
+
+
+				boolean isPending = false;
 				// get schedule array for specific day
 				ArrayList<ActivityScheduleJSON> activityList = schedule.get(dayOfModule).getActivitySchedule();
 				for(ActivityScheduleJSON activityJson : activityList) {
+					if (activityJson.getActualCount() < activityJson.getMinimumCount()) {
+						isPending = true;
+					}
+				}
+
+				if (!isPending) {
+					Logger log;
+					String trialTitle = TRIAL_NAME; // Refactor : needs to be done in a better way...
+					SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
+					String date = timeStampFormat.format(new Date());
+					Integer ppin = Integer.valueOf(patientPin);
+					String metaData ="";
+					String type ="PERSONALIZATION";
+					String format = "JSON";
+					String subType = "UX";
+					String level="NOTHING PENDING";
+					log = new Logger(dao.getTrialIdByTitle(trialTitle),date,level,
+							type, format, subType, ppin.toString(), metaData);
+					ArrayList<Logger> al = new ArrayList<Logger>();
+					al.add(log);
+					Logger[] logs = new Logger[al.size()];
+
+					logs = al.toArray(logs);
+					dao.logPersonalizationMessage(logs);
+
+					return true;
+				}
+
+
+				for(ActivityScheduleJSON activityJson : prevDayActivityList) {
 					double value = getAverageLevelOfAdherenceOfActivity(patientScheduleJSON, 
-							module, dayOfModule, activityJson.getActivity());
+							prevDayModule, prevDay, activityJson.getActivity());
 					adherenceActivityMap.put(activityJson.getActivity(),value);
 				}
+
 				int averageLevelOfPersonalization;
 				Double totalAverageAdherence =100.0;
 				if(!adherenceActivityMap.isEmpty()) {
@@ -1308,7 +1380,7 @@ public class ReachService implements HealService {
 			loopCount = module;
 		}
 		else {
-			loopCount = avgSkillForDays;
+			loopCount = avgSkillForDays - 1; // going till 0
 			flag=true;
 		}
 		while(loopCount >=0) {
@@ -1800,6 +1872,7 @@ public class ReachService implements HealService {
 					}else {
 						rval.put(activity.getActivity(),false);
 					}
+					scheduledActivityList.setSudsConfig(true);
 				}
 			}
 			scheduledActivityList.setActvityMap(rval);
