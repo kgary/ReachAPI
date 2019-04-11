@@ -1,35 +1,46 @@
 {
-	"1":{
-		"level_1" : [
-			"Daily Diary helps sort kids feelings\nBelly Breathing clams your mind. Try it!"
-		],
-		"level_2" : [
-			"Are you there? Blob wants a Daily Diary.\nplus 2 Belly Breathings. Go!"
-		]
-	},
-	"2" :{
-		"level_1":[
-			"Are you there? SWAP helps fix thoughts\nWorryheads makes you a SWAP champion!\nPlay now."
-		],
-		"level_2":[
-			"Hello?\nBlob wants 2 SWAPS plus Worryheads\nDo it!"
-		]
-
-	},
-	"3":{
-		"level_1":[
-			"MakeBelieve has talking-tips\nTry it now?"
-		],
-		"level_2":[
-			"Are u there?\nBlob wants to play MakeBelieve"
-		]
-	},
-	"4": {
-		"level_1" : [
-			"Hey! Hey! Hey!\nStandUp feeds your courage\nPlay?"
-		],
-		"level_2" : [
-			"Blob + YOU = Play standup? Now Pls?"
-		]
-	}
+	"level_1":[
+		{
+			"activity":"StandUp",
+			"message":"Hey! Hey! Hey!\nStandUp feeds your courage\nPlay?"
+		},
+		{
+			"activity":"MakeBelieve",
+			"message":"MakeBelieve has talking-tips\nTry it now?"
+		},
+		{
+			"activity":"WorryHeads",
+			"message":"Are you there? SWAP helps fix thoughts\nWorryheads makes you a SWAP champion!\nPlay now."
+		},
+		{
+			"activity":"Relax",
+			"message":"Daily Diary helps sort kids feelings\nBelly Breathing clams your mind. Try it!"
+		},
+		{
+			"activity":"Other",
+			"message":"Do COMPASS & show Blob how its done!"
+		}
+	],
+	"level_2":[
+		{
+			"activity":"StandUp",
+			"message":"Blob + YOU = Play standup? Now Pls?"
+		},
+		{
+			"activity":"MakeBelieve",
+			"message":"Are u there?\nBlob wants to play MakeBelieve"
+		},
+		{
+			"activity":"WorryHeads",
+			"message":"Hello?\nBlob wants Worryheads and other activities\nDo it!"
+		},
+		{
+			"activity":"Relax",
+			"message":"Are you there? Blob wants a Daily Diary.\nplus 2 Belly Breathings. Go!"
+		},
+		{
+			"activity":"Other",
+			"message":"Show Blob how COMPASS helps you feel braver. Try now?"
+		}
+	]
 }
