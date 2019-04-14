@@ -17,6 +17,10 @@
 			"message":"Daily Diary helps sort kids feelings\nBelly Breathing clams your mind. Try it!"
 		},
 		{
+			"activity":"DailyDiary",
+			"message":"Daily Diary helps sort kids feelings\n Try it!"
+		},
+		{
 			"activity":"Other",
 			"message":"Do COMPASS & show Blob how its done!"
 		}
@@ -37,6 +41,10 @@
 		{
 			"activity":"Relax",
 			"message":"Are you there? Blob wants a Daily Diary.\nplus 2 Belly Breathings. Go!"
+		},
+		{
+			"activity":"DailyDiary",
+			"message":"Are you there? Blob wants a Daily Diary.\n Go!"
 		},
 		{
 			"activity":"Other",
