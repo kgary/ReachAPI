@@ -362,7 +362,7 @@ public class ReachService implements HealService {
 						activityInstance.getPatientPin(), dao.getFaceItChallenges(),
 						activityInstance.getActivityGlowing(), currentCount,toBeDoneCount);
 			} else if (activityInstance.getInstanceOf().getName().equals("DailyDiary")) {
-//				if(isLastDayOfModule(activityInstance.getPatientPin())) {
+				if(isLastDayOfModule(activityInstance.getPatientPin())) {
 					activityInstance = new DailyDiaryActivityInstance(
 							activityInstance.getActivityInstanceId(),
 							activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
@@ -371,16 +371,16 @@ public class ReachService implements HealService {
 							activityInstance.getInstanceOf(), activityInstance.getState(),
 							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),currentCount,toBeDoneCount,
 							null,0,null,null,dao.getSUDSQuestion());
-//				}else {
-//					activityInstance = new DailyDiaryActivityInstance(
-//							activityInstance.getActivityInstanceId(),
-//							activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
-//							activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
-//							activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
-//							activityInstance.getInstanceOf(), activityInstance.getState(),
-//							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),currentCount,
-//							toBeDoneCount,null,0,null,null,null);
-//				}
+				}else {
+					activityInstance = new DailyDiaryActivityInstance(
+							activityInstance.getActivityInstanceId(),
+							activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
+							activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
+							activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
+							activityInstance.getInstanceOf(), activityInstance.getState(),
+							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),currentCount,
+							toBeDoneCount,null,0,null,null,null);
+				}
 			} else if (activityInstance.getInstanceOf().getName().equals("STOP")) {
 				activityInstance = new SwapActivityInstance(activityInstance.getActivityInstanceId(),
 						activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
@@ -1872,7 +1872,6 @@ public class ReachService implements HealService {
 					}else {
 						rval.put(activity.getActivity(),false);
 					}
-					scheduledActivityList.setSudsConfig(true);
 				}
 			}
 			scheduledActivityList.setActvityMap(rval);
