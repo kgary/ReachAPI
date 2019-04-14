@@ -362,25 +362,25 @@ public class ReachService implements HealService {
 						activityInstance.getPatientPin(), dao.getFaceItChallenges(),
 						activityInstance.getActivityGlowing(), currentCount,toBeDoneCount);
 			} else if (activityInstance.getInstanceOf().getName().equals("DailyDiary")) {
-//				if(isLastDayOfModule(activityInstance.getPatientPin())) {
-					activityInstance = new DailyDiaryActivityInstance(
-							activityInstance.getActivityInstanceId(),
-							activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
-							activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
-							activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
-							activityInstance.getInstanceOf(), activityInstance.getState(),
-							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),currentCount,toBeDoneCount,
-							null,0,null,null,dao.getSUDSQuestion());
-//				}else {
-//					activityInstance = new DailyDiaryActivityInstance(
-//							activityInstance.getActivityInstanceId(),
-//							activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
-//							activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
-//							activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
-//							activityInstance.getInstanceOf(), activityInstance.getState(),
-//							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),currentCount,
-//							toBeDoneCount,null,0,null,null,null);
-//				}
+				//				if(isLastDayOfModule(activityInstance.getPatientPin())) {
+				activityInstance = new DailyDiaryActivityInstance(
+						activityInstance.getActivityInstanceId(),
+						activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
+						activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
+						activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
+						activityInstance.getInstanceOf(), activityInstance.getState(),
+						activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),currentCount,toBeDoneCount,
+						null,0,null,null,dao.getSUDSQuestion());
+				//				}else {
+				//					activityInstance = new DailyDiaryActivityInstance(
+				//							activityInstance.getActivityInstanceId(),
+				//							activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
+				//							activityInstance.getDescription(), activityInstance.getStartTime(), activityInstance.getEndTime(),
+				//							activityInstance.getUserSubmissionTime(), activityInstance.getActualSubmissionTime(),
+				//							activityInstance.getInstanceOf(), activityInstance.getState(),
+				//							activityInstance.getPatientPin(), activityInstance.getActivityGlowing(),currentCount,
+				//							toBeDoneCount,null,0,null,null,null);
+				//				}
 			} else if (activityInstance.getInstanceOf().getName().equals("STOP")) {
 				activityInstance = new SwapActivityInstance(activityInstance.getActivityInstanceId(),
 						activityInstance.getCreatedAt(), activityInstance.getUpdatedAt(),
@@ -1153,6 +1153,8 @@ public class ReachService implements HealService {
 				for(ActivityScheduleJSON activity : activityList) {
 					ArrayList<AvailableTime> time = activity.getAvailableTime();
 
+					if(activity.getActualCount() >= activity.getMinimumCount())
+						continue;
 					// Check if cutrrent time is in available time
 					for(AvailableTime t : time) {
 
@@ -1371,10 +1373,10 @@ public class ReachService implements HealService {
 		int totalActualCount =0;
 		int totalMinCount =0;
 		int loopCount =-1;
-		
+
 		// Create a flag varibale. flag = true means we have value in properties file > 0 
 		//or else it remains false (to calculate average so far)
-		
+
 		boolean flag =false;
 		if(avgSkillForDays < 0) {
 			loopCount = module;
