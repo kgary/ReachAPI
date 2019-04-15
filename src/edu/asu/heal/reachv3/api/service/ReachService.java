@@ -1153,6 +1153,8 @@ public class ReachService implements HealService {
 				for(ActivityScheduleJSON activity : activityList) {
 					ArrayList<AvailableTime> time = activity.getAvailableTime();
 
+					if(activity.getActualCount() >= activity.getMinimumCount())
+						continue;
 					// Check if cutrrent time is in available time
 					for(AvailableTime t : time) {
 
@@ -1371,10 +1373,10 @@ public class ReachService implements HealService {
 		int totalActualCount =0;
 		int totalMinCount =0;
 		int loopCount =-1;
-		
+
 		// Create a flag varibale. flag = true means we have value in properties file > 0 
 		//or else it remains false (to calculate average so far)
-		
+
 		boolean flag =false;
 		if(avgSkillForDays < 0) {
 			loopCount = module;
