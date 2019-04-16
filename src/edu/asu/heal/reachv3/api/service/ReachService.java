@@ -1758,7 +1758,7 @@ public class ReachService implements HealService {
 									metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
 											+ "\""+levelOfUXP+"\" : \"1\" } ";
 									level="UPDATED_SKILL_LEVEL";
-								}{
+								} else {
 									metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
 											+ "\""+levelOfUXP+"\" : \"1\" } ";
 									level="NOT_UPDATED_SKILL_LEVEL";
