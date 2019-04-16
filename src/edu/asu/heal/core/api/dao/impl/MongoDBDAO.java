@@ -64,8 +64,6 @@ public class MongoDBDAO implements DAO {
 
 	private static String __mongoDBName;
 	private static String __mongoURI;
-	private Properties properties1 = new Properties();
-	private Map<String, List<String>> emotionsMap = new HashMap<>();
 
 
 	public MongoDBDAO(Properties properties) {
