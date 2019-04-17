@@ -1159,6 +1159,7 @@ public class ReachService implements HealService {
 						}
 					}
 				}
+
 				if(!levelOneNotifActivities.isEmpty()) {
 					sendLevelOneNotification(patientPin, module,
 							dayOfModule,levelOneNotifActivities);
@@ -1227,13 +1228,17 @@ public class ReachService implements HealService {
 				Constructor<?> constructor = level_1.getConstructor();
 				notificationClass = (INotificationInterface) constructor.newInstance();
 			}
+
 			if(notificationClass != null) {
+
 				if(notificationClass.sendNotification(activityName,module+1, 
 						patientPin,0, 1, list,sudsConfig)) {
+
 					rval = true;
 					metaData = "{ \""+activityVal+ "\": \""+activityName+"\","
 							+ "\""+levelOfUXP+"\" : \"1\" ,"
 							+ "\"activityList\" : " + list.toString()
+							+ "\"sudsConfig\" : " + sudsConfig
 							+"\" } ";
 					level="SENT";
 					// Updating level of UI personalization in schedule
@@ -1241,6 +1246,14 @@ public class ReachService implements HealService {
 						System.out.println("Update successful");
 					else
 						System.out.println("Update failed.");	//May need to do something here. Also, add to logs - Vishakha
+				} else {
+					metaData = "{ \"" + activityVal + "\": \"" + activityName + "\","
+							+ "\"" + levelOfUXP + "\" : \"1\" ,"
+							+ "\"activityList\" : " + list.toString()
+							+ "\"sudsConfig\" : " + sudsConfig
+							+ "\" } ";
+					level = "NOT_SENT";
+
 				}
 
 			}
@@ -1248,8 +1261,10 @@ public class ReachService implements HealService {
 				metaData = "{ \"" + activityVal + "\": \"" + activityName + "\","
 						+ "\"" + levelOfUXP + "\" : \"1\" ,"
 						+ "\"activityList\" : " + list.toString()
+						+ "\"sudsConfig\" : " + sudsConfig
 						+ "\" } ";
 				level = "NOT_SENT";
+
 			}
 			if(!metaData.equals("")) {
 				log = new Logger(dao.getTrialIdByTitle(trialTitle),date,level,
@@ -1313,6 +1328,7 @@ public class ReachService implements HealService {
 						metaData = "{ \""+activityVal+ "\": \""+activityName+"\","
 								+ "\""+levelOfUXP+"\" : \"2\" ,"
 								+ "\"activityList\" : " + list.toString()
+								+ "\"sudsConfig\" : " + sudsConfig
 								+"\" } ";
 						level="SENT";
 						// Updating level of UI personalization in schedule
@@ -1330,6 +1346,7 @@ public class ReachService implements HealService {
 					metaData = "{ \""+activityVal+ "\": \""+activityName+"\","
 							+ "\""+levelOfUXP+"\" : \"2\" ,"
 							+ "\"activityList\" : " + list.toString()
+							+ "\"sudsConfig\" : " + sudsConfig
 							+"\" } ";
 					level="NOT_SENT";
 				}

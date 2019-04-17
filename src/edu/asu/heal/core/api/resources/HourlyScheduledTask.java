@@ -34,10 +34,10 @@ public class HourlyScheduledTask extends TimerTask {
 						null, null, startMetaData);
 
 				al.add(start);
-				logs = new Logger[al.size()];
-
-				logs = al.toArray(logs);
-				reachService.logPersonalizationMessage(logs);
+//				logs = new Logger[al.size()];
+//
+//				logs = al.toArray(logs);
+//				reachService.logPersonalizationMessage(logs);
 				al.clear();
 				for(int i=0;i<patients.size();i++){
 					Integer ppin = patients.get(i).getPin();
@@ -46,12 +46,13 @@ public class HourlyScheduledTask extends TimerTask {
 							null, ppin.toString(), startMetaData);
 
 					al.add(start);
-					logs = new Logger[al.size()];
-
-					logs = al.toArray(logs);
-					reachService.logPersonalizationMessage(logs);
+//					logs = new Logger[al.size()];
+//
+//					logs = al.toArray(logs);
+//					reachService.logPersonalizationMessage(logs);
 					boolean rval = reachService.personalizeUserExperience(patients.get(i).getPin());
-
+//					System.out.println("rval = " + rval);
+					System.out.println("ppin = " + ppin);
 					if(rval) {
 						endMetaData = "{ \"Message\" :  \"UX Personalization ended for PIN :"+ppin+"\" } ";
 					}else {
@@ -60,14 +61,14 @@ public class HourlyScheduledTask extends TimerTask {
 					end = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "UX_PERSONALIZATION_END", "JSON",
 							null, ppin.toString(), endMetaData);
 
-					al.clear();
+//					al.clear();
 					al.add(end);
-					logs = new Logger[al.size()];
-
-					logs = al.toArray(logs);
-					reachService.logPersonalizationMessage(logs);
+//					logs = new Logger[al.size()];
+//
+//					logs = al.toArray(logs);
+//					reachService.logPersonalizationMessage(logs);
 				}
-				al.clear();
+//				al.clear();
 				endMetaData = "{ \"Message\" :  \"------------ UX PERSONALIZATION CRON ENDED  -----------\" } ";
 				end = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "UX_PERSONALIZATION_END", "JSON",
 						null, null, endMetaData);
