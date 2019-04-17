@@ -1097,6 +1097,7 @@ public class MongoDBDAO implements DAO {
 
 	@Override
 	public List<String> getEmotionsActivityInstance(String emotion, Object intensity, String sessionId) {
+		MongoCursor<Document> cursor = null;
 		try {
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
 			// needs to incorporate Emotions model. - Task #386
@@ -1105,7 +1106,7 @@ public class MongoDBDAO implements DAO {
 
 			FindIterable<Document> result =	emotionMongoCollection.find(Filters.eq(Emotions.EMOTION_NAME,emotion));
 
-			MongoCursor<Document> cursor = result.iterator();
+			cursor = result.iterator();
 			List<String> rval = new ArrayList<String>();
 			while(cursor.hasNext()) {
 				Document doc = cursor.next();
@@ -1127,6 +1128,9 @@ public class MongoDBDAO implements DAO {
 		}catch (NullPointerException npe){
 			npe.printStackTrace();
 			return null;
+		} finally {
+			if (cursor != null)
+				cursor.close();
 		}
 
 	}
