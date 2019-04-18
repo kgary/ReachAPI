@@ -17,6 +17,7 @@ public class HourlyScheduledTask extends TimerTask {
 	Date now;
 	@Override
 	public void run() {
+		ArrayList<Logger> al = new ArrayList<Logger>();
 		try {
 			List<Patient> patients = reachService.getPatients("5a946ff566684905df608446");
 
@@ -26,19 +27,19 @@ public class HourlyScheduledTask extends TimerTask {
 				String date = timeStampFormat.format(new Date());
 				String startMetaData = "", endMetaData="";
 				Logger start,end;
-				Logger[] logs;
-				ArrayList<Logger> al = new ArrayList<Logger>();
+
+
 
 				startMetaData = "{ \"Message\" :  \"------------ UX PERSONALIZATION CRON STARTED -----------\" } ";
 				start = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "UX_PERSONALIZATION_BEGIN", "JSON",
 						null, null, startMetaData);
 
 				al.add(start);
-				logs = new Logger[al.size()];
-
-				logs = al.toArray(logs);
-				reachService.logPersonalizationMessage(logs);
-				al.clear();
+//				logs = new Logger[al.size()];
+//
+//				logs = al.toArray(logs);
+//				reachService.logPersonalizationMessage(logs);
+//				al.clear();
 				for(int i=0;i<patients.size();i++){
 					Integer ppin = patients.get(i).getPin();
 					startMetaData = "{ \"Message\" :  \"UX Personalization started for PIN :"+ppin+"\" } ";
@@ -46,12 +47,13 @@ public class HourlyScheduledTask extends TimerTask {
 							null, ppin.toString(), startMetaData);
 
 					al.add(start);
-					logs = new Logger[al.size()];
-
-					logs = al.toArray(logs);
-					reachService.logPersonalizationMessage(logs);
+//					logs = new Logger[al.size()];
+//
+//					logs = al.toArray(logs);
+//					reachService.logPersonalizationMessage(logs);
 					boolean rval = reachService.personalizeUserExperience(patients.get(i).getPin());
-
+//					System.out.println("rval = " + rval);
+					System.out.println("ppin = " + ppin);
 					if(rval) {
 						endMetaData = "{ \"Message\" :  \"UX Personalization ended for PIN :"+ppin+"\" } ";
 					}else {
@@ -60,21 +62,19 @@ public class HourlyScheduledTask extends TimerTask {
 					end = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "UX_PERSONALIZATION_END", "JSON",
 							null, ppin.toString(), endMetaData);
 
-					al.clear();
+//					al.clear();
 					al.add(end);
-					logs = new Logger[al.size()];
-
-					logs = al.toArray(logs);
-					reachService.logPersonalizationMessage(logs);
+//					logs = new Logger[al.size()];
+//
+//					logs = al.toArray(logs);
+//					reachService.logPersonalizationMessage(logs);
 				}
-				al.clear();
+//				al.clear();
 				endMetaData = "{ \"Message\" :  \"------------ UX PERSONALIZATION CRON ENDED  -----------\" } ";
 				end = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "UX_PERSONALIZATION_END", "JSON",
 						null, null, endMetaData);
 				al.add(end);
-				logs = new Logger[al.size()];
-				logs = al.toArray(logs);
-				reachService.logPersonalizationMessage(logs);
+
 				now = new Date();
 				System.out.println("Time is :" + now);
 			}else {
@@ -82,6 +82,14 @@ public class HourlyScheduledTask extends TimerTask {
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				Logger[] logs = new Logger[al.size()];
+				logs = al.toArray(logs);
+				reachService.logPersonalizationMessage(logs);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

@@ -1,18 +1,15 @@
 package edu.asu.heal.reachv3.api.notification;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import edu.asu.heal.core.api.dao.DAOFactory;
 import edu.asu.heal.core.api.models.NotificationData;
 
 public class LevelTwoNotification implements INotificationInterface{
@@ -38,7 +35,7 @@ public class LevelTwoNotification implements INotificationInterface{
 
 	@Override
 	public boolean sendNotification(String activityName, int module, int patientPin,
-			Integer numberOfDaysNotDone,int levelOfNotification, List<String> list) {
+			Integer numberOfDaysNotDone,int levelOfNotification, List<String> list, boolean sudsConfig) {
 		String details = getNotifiactionDetails(String.valueOf(module),levelOfNotification,
 				numberOfDaysNotDone.toString(), list);
 		if(!details.equals("")) {
@@ -56,7 +53,8 @@ public class LevelTwoNotification implements INotificationInterface{
 				l2List.add(obj);
 			}
 
-			NotificationData data = new NotificationData(details, null, url, levelOfNotification, l2List);
+			NotificationData data = new NotificationData(details, null, url, 
+					levelOfNotification, l2List, sudsConfig);
 
 			Notification obj = new Notification();
 			if(obj.sendNotification(data, patientPin, serverKey)) {

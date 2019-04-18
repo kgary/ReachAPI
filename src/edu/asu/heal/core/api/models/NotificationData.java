@@ -18,6 +18,7 @@ public class NotificationData implements IHealModelType {
     private String url;
     private Integer levelOfNotification;
     private List<ActivityList> activities;
+    private boolean sudsConfig;
   
 
 	private static ArrayList<Integer> values = new ArrayList<Integer>();
@@ -32,7 +33,8 @@ public class NotificationData implements IHealModelType {
     }
     
 
-    public NotificationData(String detail, String title, String url, Integer levelOfNotification, List<ActivityList> list) {
+    public NotificationData(String detail, String title, String url, 
+    		Integer levelOfNotification, List<ActivityList> list, boolean sudsConfig) {
         super();
         id = values.get(index);
         index++;
@@ -41,10 +43,21 @@ public class NotificationData implements IHealModelType {
         this.url=url;
         this.levelOfNotification=levelOfNotification;
         this.activities=list;
+        this.sudsConfig=sudsConfig;
     }
 
 
-    public List<ActivityList> getActivities() {
+    public boolean isSudsConfig() {
+		return sudsConfig;
+	}
+
+
+	public void setSudsConfig(boolean sudsConfig) {
+		this.sudsConfig = sudsConfig;
+	}
+
+
+	public List<ActivityList> getActivities() {
         return activities;
     }
 
@@ -103,6 +116,7 @@ public class NotificationData implements IHealModelType {
                 ", levelOfNotification=" + levelOfNotification +
                 ", title=" + title +
                 ", activities" + activities.toString() +
+                ", sudsConfig" + sudsConfig +
                 '}';
     }
 }

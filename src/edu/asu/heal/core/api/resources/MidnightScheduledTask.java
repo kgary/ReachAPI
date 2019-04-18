@@ -36,11 +36,11 @@ public class MidnightScheduledTask extends TimerTask {
 						null, null, startMetaData);
 
 				al.add(start);
-				logs = new Logger[al.size()];
-
-				logs = al.toArray(logs);
-				reachService.logPersonalizationMessage(logs);
-				al.clear();
+//				logs = new Logger[al.size()];
+//
+//				logs = al.toArray(logs);
+//				reachService.logPersonalizationMessage(logs);
+//				al.clear();
 				for(int i=0;i<patients.size();i++){
 					Integer ppin = patients.get(i).getPin();
 					startMetaData = "{ \"Message\" :  \"Skill Personalization started for PIN :"+ppin+"\" } ";
@@ -48,14 +48,15 @@ public class MidnightScheduledTask extends TimerTask {
 							null, ppin.toString(), startMetaData);
 
 					al.add(start);
-					logs = new Logger[al.size()];
-
-					logs = al.toArray(logs);
-					reachService.logPersonalizationMessage(logs);
+//					logs = new Logger[al.size()];
+//
+//					logs = al.toArray(logs);
+//					reachService.logPersonalizationMessage(logs);
 
 					((ReachService) reachService).updateBlobTricksCount(patients.get(i).getPin());
 
 					boolean rval = reachService.personalizeSkillSet(patients.get(i).getPin());
+//					System.out.println("rval = " + rval);
 					if(rval) {
 						endMetaData = "{ \"Message\" :  \"Skill Personalization ended for PIN :"+ppin+"\" } ";
 
@@ -66,14 +67,14 @@ public class MidnightScheduledTask extends TimerTask {
 					end = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "SKILL_PERSONALIZATION_END", "JSON",
 							null, ppin.toString(), endMetaData);
 
-					al.clear();
+//					al.clear();
 					al.add(end);
-					logs = new Logger[al.size()];
-
-					logs = al.toArray(logs);
-					reachService.logPersonalizationMessage(logs);
+//					logs = new Logger[al.size()];
+//
+//					logs = al.toArray(logs);
+//					reachService.logPersonalizationMessage(logs);
 				}
-				al.clear();
+//				al.clear();
 				endMetaData = "{ \"Message\" :  \"**************** SKILL PERSONALIZATION CRON ENDED ****************\" } ";
 				end = new Logger(reachService.getTrialIdByTitle(trialTitle), date, "INFO", "SKILL_PERSONALIZATION_END", "JSON",
 						null, null, endMetaData);

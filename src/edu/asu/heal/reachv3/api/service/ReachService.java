@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mysql.jdbc.ConnectionPropertiesImpl.LongConnectionProperty;
 
 import edu.asu.heal.reachv3.api.models.*;
 import edu.asu.heal.reachv3.api.models.schedule.ActivityScheduleJSON;
@@ -13,15 +12,8 @@ import edu.asu.heal.reachv3.api.models.schedule.ModuleJSON;
 import edu.asu.heal.reachv3.api.models.schedule.PatientScheduleJSON;
 import edu.asu.heal.reachv3.api.models.schedule.ScheduleArrayJSON;
 import edu.asu.heal.reachv3.api.notification.INotificationInterface;
-import edu.asu.heal.reachv3.api.notification.LevelOneNotification;
-import edu.asu.heal.reachv3.api.notification.LevelTwoNotification;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 
 import edu.asu.heal.core.api.dao.DAO;
 import edu.asu.heal.core.api.dao.DAOFactory;
@@ -36,11 +28,8 @@ import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.*;
 
 public class ReachService implements HealService {
 
@@ -439,7 +428,6 @@ public class ReachService implements HealService {
 								indexOfActivity++;
 								if (obj.getActivity().equals(newActivityInstance.getInstanceOf().getName())) {
 									if (dao.updateActivityInstanceInPatientSchedule(patientPin, module, dayOfModule, indexOfActivity, activityInstanceId)) {
-										System.out.println("AI is successfully updated in Schedule");
 										break;
 									} else {
 										System.out.println("AI update is failed in schedule");
@@ -1171,6 +1159,7 @@ public class ReachService implements HealService {
 						}
 					}
 				}
+
 				if(!levelOneNotifActivities.isEmpty()) {
 					sendLevelOneNotification(patientPin, module,
 							dayOfModule,levelOneNotifActivities);
@@ -1211,6 +1200,9 @@ public class ReachService implements HealService {
 			List<String> list) {
 		boolean rval = false;
 		try {
+			boolean sudsConfig =false;
+			if(isLastDayOfModule(patientPin))
+				sudsConfig = true;
 			String l1_class = _properties.getProperty("level_1.className");
 			INotificationInterface notificationClass = null;
 
@@ -1236,12 +1228,17 @@ public class ReachService implements HealService {
 				Constructor<?> constructor = level_1.getConstructor();
 				notificationClass = (INotificationInterface) constructor.newInstance();
 			}
+
 			if(notificationClass != null) {
-				if(notificationClass.sendNotification(activityName,module+1, patientPin,0, 1, list)) {
+
+				if(notificationClass.sendNotification(activityName,module+1, 
+						patientPin,0, 1, list,sudsConfig)) {
+
 					rval = true;
 					metaData = "{ \""+activityVal+ "\": \""+activityName+"\","
 							+ "\""+levelOfUXP+"\" : \"1\" ,"
 							+ "\"activityList\" : " + list.toString()
+							+ ",\"sudsConfig\" : " + sudsConfig
 							+"\" } ";
 					level="SENT";
 					// Updating level of UI personalization in schedule
@@ -1249,6 +1246,14 @@ public class ReachService implements HealService {
 						System.out.println("Update successful");
 					else
 						System.out.println("Update failed.");	//May need to do something here. Also, add to logs - Vishakha
+				} else {
+					metaData = "{ \"" + activityVal + "\": \"" + activityName + "\","
+							+ "\"" + levelOfUXP + "\" : \"1\" ,"
+							+ "\"activityList\" : " + list.toString()
+							+ ",\"sudsConfig\" : " + sudsConfig
+							+ "\" } ";
+					level = "NOT_SENT";
+
 				}
 
 			}
@@ -1256,9 +1261,10 @@ public class ReachService implements HealService {
 				metaData = "{ \"" + activityVal + "\": \"" + activityName + "\","
 						+ "\"" + levelOfUXP + "\" : \"1\" ,"
 						+ "\"activityList\" : " + list.toString()
+						+ ",\"sudsConfig\" : " + sudsConfig
 						+ "\" } ";
 				level = "NOT_SENT";
-				System.out.println("Notification class not set for level 1.");
+
 			}
 			if(!metaData.equals("")) {
 				log = new Logger(dao.getTrialIdByTitle(trialTitle),date,level,
@@ -1288,6 +1294,9 @@ public class ReachService implements HealService {
 			List<String> list) {
 		boolean rval = false;
 		try {
+			boolean sudsConfig =false;
+			if(isLastDayOfModule(patientPin))
+				sudsConfig = true;
 			Logger log;
 			String trialTitle = TRIAL_NAME; // Refactor : needs to be done in a better way...
 			SimpleDateFormat timeStampFormat = new SimpleDateFormat("MM.dd.YYYY HH:mm:ss", Locale.US);
@@ -1313,11 +1322,13 @@ public class ReachService implements HealService {
 				notificationClass = (INotificationInterface) constructor.newInstance();
 				//				}
 				if(notificationClass != null) {
-					if(notificationClass.sendNotification(activityName, module+1,patientPin, 0, 2, list)) {
+					if(notificationClass.sendNotification(activityName, module+1,
+							patientPin, 0, 2, list,sudsConfig)) {
 						rval =true;
 						metaData = "{ \""+activityVal+ "\": \""+activityName+"\","
 								+ "\""+levelOfUXP+"\" : \"2\" ,"
 								+ "\"activityList\" : " + list.toString()
+								+ ",\"sudsConfig\" : " + sudsConfig
 								+"\" } ";
 						level="SENT";
 						// Updating level of UI personalization in schedule
@@ -1335,9 +1346,9 @@ public class ReachService implements HealService {
 					metaData = "{ \""+activityVal+ "\": \""+activityName+"\","
 							+ "\""+levelOfUXP+"\" : \"2\" ,"
 							+ "\"activityList\" : " + list.toString()
+							+ ",\"sudsConfig\" : " + sudsConfig
 							+"\" } ";
 					level="NOT_SENT";
-					System.out.println("Notification class not set for level 2");
 				}
 			}
 			else {
@@ -1764,12 +1775,10 @@ public class ReachService implements HealService {
 									metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
 											+ "\""+levelOfUXP+"\" : \"1\" } ";
 									level="UPDATED_SKILL_LEVEL";
-									System.out.println("Skill level updated successfully to level 1");
 								} else {
 									metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
 											+ "\""+levelOfUXP+"\" : \"1\" } ";
 									level="NOT_UPDATED_SKILL_LEVEL";
-									System.out.println("Skill level updated FAILED !! to level 1");
 								}
 								//set levelOfSkillPersonalization to 2
 							} else if (result >= l2_min && result < l2_max && 
@@ -1780,12 +1789,10 @@ public class ReachService implements HealService {
 									metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
 											+ "\""+levelOfUXP+"\" : \"2\" } ";
 									level="UPDATED_SKILL_LEVEL";
-									System.out.println("Skill level updated successfully to level 2");
 								} else {
 									metaData = "{ \""+activityVal+ "\": \""+activity.getActivity()+"\","
 											+ "\""+levelOfUXP+"\" : \"2\" } ";
 									level="NOT_UPDATED_SKILL_LEVEL";
-									System.out.println("Skill level updated FAILED !!! to level 2");
 								}
 							}else {
 								System.out.println("Skill personalization has already applied for several days.");
@@ -2081,8 +2088,6 @@ public class ReachService implements HealService {
 			if(activity != null && (activity.getActualCount() < activity.getMinimumCount())) {
 				result.put(ActivityInstance.CURRENT_COUNT, activity.getActualCount()+1);
 				result.put(ActivityInstance.TO_BE_DONE_COUNT, activity.getMinimumCount());
-				System.out.println("Map" + map);
-				System.out.println("Result : " + result);
 			}
 			return result;	
 		}catch(Exception e) {

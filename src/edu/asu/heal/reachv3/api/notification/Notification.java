@@ -51,7 +51,7 @@ public class Notification {
 
 				StringEntity input = new StringEntity(notificationJson);
 				input.setContentType("application/json");
-				System.out.println(input);
+
 
 				// You can get it from firebase console.
 //				postRequest.addHeader("Authorization", "key=AAAAX5CbDOM:APA91bGd_AzSXfn64BsrxT1KEfCnh_yy99lXKPFo7l" +

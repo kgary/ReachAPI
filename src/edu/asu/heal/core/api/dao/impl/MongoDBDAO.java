@@ -64,8 +64,6 @@ public class MongoDBDAO implements DAO {
 
 	private static String __mongoDBName;
 	private static String __mongoURI;
-	private Properties properties1 = new Properties();
-	private Map<String, List<String>> emotionsMap = new HashMap<>();
 
 
 	public MongoDBDAO(Properties properties) {
@@ -1099,6 +1097,7 @@ public class MongoDBDAO implements DAO {
 
 	@Override
 	public List<String> getEmotionsActivityInstance(String emotion, Object intensity, String sessionId) {
+		MongoCursor<Document> cursor = null;
 		try {
 			MongoDatabase database = MongoDBDAO.getConnectedDatabase();
 			// needs to incorporate Emotions model. - Task #386
@@ -1107,7 +1106,7 @@ public class MongoDBDAO implements DAO {
 
 			FindIterable<Document> result =	emotionMongoCollection.find(Filters.eq(Emotions.EMOTION_NAME,emotion));
 
-			MongoCursor<Document> cursor = result.iterator();
+			cursor = result.iterator();
 			List<String> rval = new ArrayList<String>();
 			while(cursor.hasNext()) {
 				Document doc = cursor.next();
@@ -1129,6 +1128,9 @@ public class MongoDBDAO implements DAO {
 		}catch (NullPointerException npe){
 			npe.printStackTrace();
 			return null;
+		} finally {
+			if (cursor != null)
+				cursor.close();
 		}
 
 	}
@@ -1412,9 +1414,9 @@ public class MongoDBDAO implements DAO {
 						
 						for(ActivityScheduleJSON activity : activities) {
 							System.out.println("activity = " + activity);
-							System.out.println("activityNames = " + activityNames);
+
 							if(activityNames.contains(activity.getActivity())) {
-								System.out.println("Updating" + activity.getActivity());
+
 								activity.setLevelOfUIPersonalization(levelOfUIPersonalization);
 								System.out.println("activity.lvlUI = " + activity.getLevelOfUIPersonalization());
 							}
