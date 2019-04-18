@@ -1414,9 +1414,9 @@ public class MongoDBDAO implements DAO {
 						
 						for(ActivityScheduleJSON activity : activities) {
 							System.out.println("activity = " + activity);
-							System.out.println("activityNames = " + activityNames);
+
 							if(activityNames.contains(activity.getActivity())) {
-								System.out.println("Updating" + activity.getActivity());
+
 								activity.setLevelOfUIPersonalization(levelOfUIPersonalization);
 								System.out.println("activity.lvlUI = " + activity.getLevelOfUIPersonalization());
 							}

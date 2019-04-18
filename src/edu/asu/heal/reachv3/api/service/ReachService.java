@@ -1238,7 +1238,7 @@ public class ReachService implements HealService {
 					metaData = "{ \""+activityVal+ "\": \""+activityName+"\","
 							+ "\""+levelOfUXP+"\" : \"1\" ,"
 							+ "\"activityList\" : " + list.toString()
-							+ "\"sudsConfig\" : " + sudsConfig
+							+ ",\"sudsConfig\" : " + sudsConfig
 							+"\" } ";
 					level="SENT";
 					// Updating level of UI personalization in schedule
@@ -1250,7 +1250,7 @@ public class ReachService implements HealService {
 					metaData = "{ \"" + activityVal + "\": \"" + activityName + "\","
 							+ "\"" + levelOfUXP + "\" : \"1\" ,"
 							+ "\"activityList\" : " + list.toString()
-							+ "\"sudsConfig\" : " + sudsConfig
+							+ ",\"sudsConfig\" : " + sudsConfig
 							+ "\" } ";
 					level = "NOT_SENT";
 
@@ -1261,7 +1261,7 @@ public class ReachService implements HealService {
 				metaData = "{ \"" + activityVal + "\": \"" + activityName + "\","
 						+ "\"" + levelOfUXP + "\" : \"1\" ,"
 						+ "\"activityList\" : " + list.toString()
-						+ "\"sudsConfig\" : " + sudsConfig
+						+ ",\"sudsConfig\" : " + sudsConfig
 						+ "\" } ";
 				level = "NOT_SENT";
 
@@ -1328,7 +1328,7 @@ public class ReachService implements HealService {
 						metaData = "{ \""+activityVal+ "\": \""+activityName+"\","
 								+ "\""+levelOfUXP+"\" : \"2\" ,"
 								+ "\"activityList\" : " + list.toString()
-								+ "\"sudsConfig\" : " + sudsConfig
+								+ ",\"sudsConfig\" : " + sudsConfig
 								+"\" } ";
 						level="SENT";
 						// Updating level of UI personalization in schedule
@@ -1346,7 +1346,7 @@ public class ReachService implements HealService {
 					metaData = "{ \""+activityVal+ "\": \""+activityName+"\","
 							+ "\""+levelOfUXP+"\" : \"2\" ,"
 							+ "\"activityList\" : " + list.toString()
-							+ "\"sudsConfig\" : " + sudsConfig
+							+ ",\"sudsConfig\" : " + sudsConfig
 							+"\" } ";
 					level="NOT_SENT";
 				}
