@@ -89,9 +89,11 @@ public class LevelTwoNotification implements INotificationInterface{
 
 	public static String readFile(String filename) {
 		String result = "";
+		InputStream is = null;
+		BufferedReader br = null;
 		try {
-			InputStream is = LevelTwoNotification.class.getResourceAsStream(filename);
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			is = LevelTwoNotification.class.getResourceAsStream(filename);
+			br = new BufferedReader(new InputStreamReader(is));
 			StringBuilder sb = new StringBuilder();
 			String line = br.readLine();
 			while (line != null) {
@@ -101,8 +103,15 @@ public class LevelTwoNotification implements INotificationInterface{
 			result = sb.toString();
 		} catch(Exception e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				if (is != null) is.close();
+				if (br != null) br.close();
+			} catch (Exception e) {
+
+			}
+			return result;
 		}
-		return result;
 	}
 
 
