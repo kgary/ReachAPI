@@ -1,0 +1,54 @@
+{
+	"level_1":[
+		{
+			"activity":"StandUp",
+			"message":"Hey! Hey! Hey!\nStandUp feeds your courage\nPlay?"
+		},
+		{
+			"activity":"MakeBelieve",
+			"message":"MakeBelieve has talking-tips\nTry it now?"
+		},
+		{
+			"activity":"WorryHeads",
+			"message":"Are you there? SWAP helps fix thoughts\nWorryheads makes you a SWAP champion!\nPlay now."
+		},
+		{
+			"activity":"Relax",
+			"message":"Daily Diary helps sort kids feelings\nBelly Breathing clams your mind. Try it!"
+		},
+		{
+			"activity":"DailyDiary",
+			"message":"Daily Diary helps sort kids feelings\n Try it!"
+		},
+		{
+			"activity":"Other",
+			"message":"Do COMPASS & show Blob how its done!"
+		}
+	],
+	"level_2":[
+		{
+			"activity":"StandUp",
+			"message":"Blob + YOU = Play standup? Now Pls?"
+		},
+		{
+			"activity":"MakeBelieve",
+			"message":"Are u there?\nBlob wants to play MakeBelieve"
+		},
+		{
+			"activity":"WorryHeads",
+			"message":"Hello?\nBlob wants Worryheads and other activities\nDo it!"
+		},
+		{
+			"activity":"Relax",
+			"message":"Are you there? Blob wants a Daily Diary.\nplus 2 Belly Breathings. Go!"
+		},
+		{
+			"activity":"DailyDiary",
+			"message":"Are you there? Blob wants a Daily Diary.\n Go!"
+		},
+		{
+			"activity":"Other",
+			"message":"Show Blob how COMPASS helps you feel braver. Try now?"
+		}
+	]
+}

@@ -2,7 +2,10 @@ package edu.asu.heal.core.api.service;
 
 import edu.asu.heal.core.api.models.*;
 import edu.asu.heal.reachv3.api.models.MakeBelieveActivityInstance;
+import edu.asu.heal.reachv3.api.models.SUDSActivitiesWrapper;
+import edu.asu.heal.reachv3.api.models.schedule.ActivityScheduleJSON;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface HealService {
@@ -44,7 +47,7 @@ public interface HealService {
 
     Patient getPatient(int patientPin);
 
-    Patient createPatient(String trialId);
+    Patient createPatient(String trialId, int patientPin);
 
     Patient updatePatient(Patient patient);
 
@@ -54,15 +57,20 @@ public interface HealService {
     List<Trial> getTrials(String domain);
 
     Trial addTrial(Trial trialInstance);
+    
+    String getTrialIdByTitle(String trialName);
 
     /****************************************  Service methods for Logger  ********************************************/
     Logger[] logMessage (Logger[] loggerInstance);
+    
+    Logger[] logPersonalizationMessage (Logger[] loggerInstance);
+
 
     /****************************************  Other Service methods  *************************************************/
+    boolean personalizeUserExperience(int patientpin);
+    
+    boolean personalizeSkillSet(int patientPin);
+    
+    SUDSActivitiesWrapper getActivitySchedule(int patientPin);
 
-    String getWorryHeadsInstance();
-
-    String getEmotionsActivityInstance(int patientPin, String emotion, int intensity);
-
-    MakeBelieveActivityInstance getActivityMakeBelieveInstanceDAO(String activityInstanceId);
 }

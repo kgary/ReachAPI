@@ -18,7 +18,14 @@
     <copy file="${src}/${daopackage}/dao.properties" todir="${destdir}/WEB-INF/classes/${daopackage}"/>
     <copy file="${src}/${servicepackage}/service.properties" todir="${destdir}/WEB-INF/classes/${servicepackage}"/>
     <copy file="${src}/${halpackage}/hal.properties" todir="${destdir}/WEB-INF/classes/${halpackage}"/>
-    <copy file="${src}/${daopackage}/impl/emotions.properties" todir="${destdir}/WEB-INF/classes/${daopackage}/impl" />
+ <!-- <copy file="${src}/${daopackage}/impl/emotions.properties" todir="${destdir}/WEB-INF/classes/${daopackage}/impl" /> -->
+    <copy file="${src}/${mapperservicepackage}/mapper.properties" todir="${destdir}/WEB-INF/classes/${mapperservicepackage}" />
+    <copy file="${src}/${activitysuggestionpackage}/SuggestedActivityiesMappingServiceImpl/emotions.properties" todir="${destdir}/WEB-INF/classes/${activitysuggestionpackage}/SuggestedActivityiesMappingServiceImpl" />
+    <copy file="${src}/${activitysuggestionpackage}/days.properties" todir="${destdir}/WEB-INF/classes/${activitysuggestionpackage}" />
+    <copy file="${src}/${activitysuggestionpackage}/notificationRule.properties" todir="${destdir}/WEB-INF/classes/${activitysuggestionpackage}" />
+    <copy file="${src}/${activitysuggestionpackage}/scheduleActivity.json" todir="${destdir}/WEB-INF/classes/${activitysuggestionpackage}" />
+    <copy file="${src}/${notificationpackage}/urls.properties" todir="${destdir}/WEB-INF/classes/${notificationpackage}" />
+    <copy file="${src}/${notificationpackage}/notificationData.json" todir="${destdir}/WEB-INF/classes/${notificationpackage}" />
   </target>
 
   <target name="build" depends="compile">

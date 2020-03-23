@@ -13,7 +13,9 @@ public class ActivityInstance implements IHealModelType {
     public static String STATE_ATTRIBUTE = "state";
     public static String DESCRIPTION_ATTRIBUTE = "description";
     public static String ACTIVITYINSTANCEID_ATTRIBUTE = "activityInstanceId";
-
+    public static String GlOW_ATTRIBUTE = "activityGlowing";
+    public static String CURRENT_COUNT = "currentCount";
+    public static String TO_BE_DONE_COUNT = "toBeDoneCount";
 
     private String activityInstanceId;
     private Date createdAt;
@@ -26,13 +28,17 @@ public class ActivityInstance implements IHealModelType {
     private ActivityInstanceType instanceOf;
     private String state;
     private int patientPin;
-
+    private boolean activityGlowing;
+    private int currentCount;
+    private int toBeDoneCount;
+ 
     public ActivityInstance() {
     }
 
     public ActivityInstance(String activityInstanceId, Date createdAt, Date updatedAt, String description,
                             Date startTime, Date endTime, Date userSubmissionTime, Date actualSubmissionTime,
-                            ActivityInstanceType instanceOf, String state, int patientPin) {
+                            ActivityInstanceType instanceOf, String state, int patientPin, boolean activityGlowing,
+                            int currentCount,int toBeDoneCount ) {
         this.activityInstanceId = activityInstanceId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -44,8 +50,31 @@ public class ActivityInstance implements IHealModelType {
         this.instanceOf = instanceOf;
         this.state = state;
         this.patientPin = patientPin;
+        this.activityGlowing = activityGlowing;
+        this.currentCount = currentCount;
+        this.toBeDoneCount = toBeDoneCount;
     }
 
+    public int getCurrentCount() {
+		return currentCount;
+	}
+
+	public void setCurrentCount(int currentCount) {
+		this.currentCount = currentCount;
+	}
+
+	public int getToBeDoneCount() {
+		return toBeDoneCount;
+	}
+
+	public void setToBeDoneCount(int toBeDoneCount) {
+		this.toBeDoneCount = toBeDoneCount;
+	}
+
+	public int fetchResponseCount() {
+    	return 0;
+    }
+    
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -134,6 +163,10 @@ public class ActivityInstance implements IHealModelType {
         this.patientPin = patientPin;
     }
 
+    public boolean getActivityGlowing() { return activityGlowing; }
+
+    public void setActivityGlowing(boolean activityGlowing) { this.activityGlowing = activityGlowing; }
+
     @Override
     public String toString() {
         return "ActivityInstance{" +
@@ -148,6 +181,7 @@ public class ActivityInstance implements IHealModelType {
                 ", state='" + state + '\'' +
                 ", description='" + description + '\'' +
                 ", patientPin='" + patientPin + '\'' +
+                ", activityGlowing='" + activityGlowing + '\'' +
                 '}';
     }
 
@@ -166,7 +200,7 @@ public class ActivityInstance implements IHealModelType {
         result = PRIME * result + (this.instanceOf == null ? 0 :this.instanceOf.hashCode());
         result = PRIME * result + (this.state == null ? 0 :this.state.hashCode());
         result = PRIME * result + this.patientPin;
-
+        //Question - What is the significance of this method
         return result;
     }
 
@@ -187,7 +221,8 @@ public class ActivityInstance implements IHealModelType {
                 && this.actualSubmissionTime.equals(temp.actualSubmissionTime)
                 && this.instanceOf.equals(temp.instanceOf)
                 && this.state.equals(temp.state)
-                && this.patientPin == temp.patientPin;
+                && this.patientPin == temp.patientPin
+                && this.activityGlowing == temp.activityGlowing;
     }
 
 }
